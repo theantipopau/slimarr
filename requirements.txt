@@ -6,6 +6,7 @@ aiofiles==24.1.0
 
 # Database
 sqlalchemy==2.0.36
+greenlet>=3.0.0
 aiosqlite==0.20.0
 
 # Authentication
