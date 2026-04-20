@@ -63,8 +63,8 @@ export const api = {
   getSettings: () => client.get('/settings').then((r) => r.data),
   updateSettings: (data: unknown) =>
     client.put('/settings', data).then((r) => r.data),
-  testConnection: (service: string) =>
-    client.post(`/settings/test/${service}`).then((r) => r.data),
+  testConnection: (service: string, body?: unknown) =>
+    client.post(`/settings/test/${service}`, body ?? null).then((r) => r.data),
 
   // System
   systemStatus: () => client.get('/system/status').then((r) => r.data),

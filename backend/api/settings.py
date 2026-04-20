@@ -1,10 +1,13 @@
 """Settings API routes — read/write config and connection tests."""
 from __future__ import annotations
 
+from typing import Optional
+
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 
 from backend.auth.dependencies import get_current_user
-from backend.config import get_config, reload_config, save_config
+from backend.config import IndexerConfig, get_config, reload_config, save_config
 
 router = APIRouter(prefix="/settings", tags=["settings"])
 
@@ -35,8 +38,15 @@ async def update_settings(body: dict, user=Depends(get_current_user)):
     return {"status": "saved"}
 
 
+class IndexerTestBody(BaseModel):
+    name: Optional[str] = ""
+    url: Optional[str] = ""
+    api_key: Optional[str] = ""
+    categories: Optional[list[int]] = []
+
+
 @router.post("/test/{service}")
-async def test_connection(service: str, user=Depends(get_current_user)):
+async def test_connection(service: str, body: Optional[IndexerTestBody] = None, user=Depends(get_current_user)):
     config = get_config()
 
     if service == "plex":
@@ -52,6 +62,8 @@ async def test_connection(service: str, user=Depends(get_current_user)):
         return await SABnzbdClient().test_connection()
 
     if service == "prowlarr":
+        if not config.prowlarr.url or not config.prowlarr.url.startswith(("http://", "https://")):
+            return {"success": False, "error": "Prowlarr URL is not configured. Enter a valid URL and save first."}
         from backend.integrations.prowlarr import ProwlarrClient
         return await ProwlarrClient().test_connection()
 
@@ -60,11 +72,22 @@ async def test_connection(service: str, user=Depends(get_current_user)):
         return await RadarrClient().test_connection()
 
     if service.startswith("indexer-"):
-        try:
-            idx = int(service.split("-", 1)[1])
-            indexer_cfg = config.indexers[idx]
-        except (IndexError, ValueError):
-            raise HTTPException(status_code=404, detail="Indexer not found")
+        # Prefer body data (unsaved indexer) over saved config
+        if body and body.url:
+            indexer_cfg = IndexerConfig(
+                name=body.name or "",
+                url=body.url,
+                api_key=body.api_key or "",
+                categories=body.categories or [],
+            )
+        else:
+            try:
+                idx = int(service.split("-", 1)[1])
+                indexer_cfg = config.indexers[idx]
+            except (IndexError, ValueError):
+                return {"success": False, "error": "Indexer not found in config. Fill in the URL and try again."}
+        if not indexer_cfg.url or not indexer_cfg.url.startswith(("http://", "https://")):
+            return {"success": False, "error": "Indexer URL is missing or invalid. Enter a full URL including http:// or https://."}
         from backend.integrations.newznab import NewznabClient
         return await NewznabClient(indexer_cfg).test_connection()
 

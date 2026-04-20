@@ -141,7 +141,10 @@ export default function Settings() {
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-gray-300">Indexer {i + 1}{idx.name ? ` — ${idx.name}` : ''}</span>
               <div className="flex items-center gap-2">
-                <TestConnectionButton service={`indexer-${i}`} />
+                <TestConnectionButton
+                  service={`indexer-${i}`}
+                  body={{ name: idx.name, url: idx.url, api_key: idx.api_key, categories: idx.categories }}
+                />
                 <button
                   onClick={() => {
                     const indexers = ((settings?.indexers as Indexer[]) ?? []).filter((_, j) => j !== i)

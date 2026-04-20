@@ -4,9 +4,10 @@ import { api } from '@/lib/api'
 interface Props {
   service: string
   label?: string
+  body?: unknown
 }
 
-export default function TestConnectionButton({ service, label }: Props) {
+export default function TestConnectionButton({ service, label, body }: Props) {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<{ success: boolean; message?: string } | null>(null)
 
@@ -14,7 +15,7 @@ export default function TestConnectionButton({ service, label }: Props) {
     setLoading(true)
     setResult(null)
     try {
-      const data = await api.testConnection(service)
+      const data = await api.testConnection(service, body)
       setResult({ success: data.success, message: data.error ?? JSON.stringify(data) })
     } catch {
       setResult({ success: false, message: 'Request failed' })
