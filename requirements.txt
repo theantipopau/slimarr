@@ -42,7 +42,7 @@ lxml==5.3.0
 # Utilities
 python-dotenv==1.0.1
 
-# System tray (Windows)
-pystray==0.19.5
-pillow==11.1.0
-pywin32==308
+# System tray (Windows) — optional, install from requirements-tray.txt if needed
+# pystray==0.19.5
+# pillow==11.1.0
+# pywin32==308

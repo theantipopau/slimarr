@@ -157,10 +157,13 @@ if not exist venv (
 
 REM Install dependencies
 echo   Installing Python dependencies (first run may take a minute)...
-venv\Scripts\python.exe -m pip install -q --upgrade pip 2>>startup-error.log
-venv\Scripts\python.exe -m pip install -q -r requirements.txt 2>>startup-error.log
+venv\Scripts\python.exe -m pip install --upgrade pip >>startup-error.log 2>&1
+venv\Scripts\python.exe -m pip install -r requirements.txt >>startup-error.log 2>&1
 if errorlevel 1 (
-    echo   ERROR: Dependency install failed. See startup-error.log for details.
+    echo   ERROR: Dependency install failed. Details:
+    echo.
+    type startup-error.log
+    echo.
     pause
     exit /b 1
 )
