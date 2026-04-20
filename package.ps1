@@ -147,8 +147,8 @@ if not exist venv (
 
 REM Install dependencies
 echo   Installing dependencies...
-venv\Scripts\pip install -q --upgrade pip
-venv\Scripts\pip install -q -r requirements.txt
+venv\Scripts\python.exe -m pip install -q --upgrade pip
+venv\Scripts\python.exe -m pip install -q -r requirements.txt
 
 REM Start server
 echo.

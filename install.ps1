@@ -60,8 +60,8 @@ Write-Host "  Virtual environment ready." -ForegroundColor Green
 
 # ── 2. pip install ────────────────────────────────────────────────────────────
 Write-Host "[2/5] Installing Python dependencies..." -ForegroundColor Cyan
-& "$Root\venv\Scripts\pip" install --upgrade pip -q
-& "$Root\venv\Scripts\pip" install -r "$Root\requirements.txt" -q
+& "$Root\venv\Scripts\python.exe" -m pip install --upgrade pip -q
+& "$Root\venv\Scripts\python.exe" -m pip install -r "$Root\requirements.txt" -q
 Write-Host "  Python dependencies installed." -ForegroundColor Green
 
 # ── 3. Frontend ───────────────────────────────────────────────────────────────
@@ -207,8 +207,8 @@ Write-Host "  Virtual environment ready." -ForegroundColor Green
 
 # 2. pip install
 Write-Host "[2/5] Installing Python dependencies..." -ForegroundColor Cyan
-& "$Root\venv\Scripts\pip" install --upgrade pip -q
-& "$Root\venv\Scripts\pip" install -r "$Root\requirements.txt"
+& "$Root\venv\Scripts\python.exe" -m pip install --upgrade pip -q
+& "$Root\venv\Scripts\python.exe" -m pip install -r "$Root\requirements.txt" -q
 Write-Host "  Python dependencies installed." -ForegroundColor Green
 
 # 3. Frontend

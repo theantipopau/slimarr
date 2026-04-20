@@ -69,8 +69,8 @@ echo -e "${GREEN}  Virtual environment ready.${NC}"
 
 # ── 2. pip install ────────────────────────────────────────────────────────────
 echo -e "${CYAN}[2/5] Installing Python dependencies...${NC}"
-"$VENV/bin/pip" install --upgrade pip -q
-"$VENV/bin/pip" install -r "$ROOT/requirements.txt" -q
+"$VENV/bin/python" -m pip install --upgrade pip -q
+"$VENV/bin/python" -m pip install -r "$ROOT/requirements.txt" -q
 echo -e "${GREEN}  Python dependencies installed.${NC}"
 
 # ── 3 & 4. Frontend ──────────────────────────────────────────────────────────
