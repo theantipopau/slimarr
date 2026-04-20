@@ -99,9 +99,13 @@ async def download_result(
         raise HTTPException(status_code=404, detail="Search result not found")
 
     async def _do_download(sr_id: int) -> None:
-        from backend.core.downloader import start_download
+        from backend.core.downloader import start_download, monitor_download
+        from backend.core.replacer import replace_file
         try:
-            await start_download(sr_id)
+            dl = await start_download(sr_id)
+            final_status = await monitor_download(dl.id)
+            if final_status == "completed":
+                await replace_file(dl.id)
         except Exception as e:
             from loguru import logger
             logger.error(f"Download failed for search result {sr_id}: {e}")

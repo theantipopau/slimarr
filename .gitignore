@@ -14,6 +14,9 @@ build/
 data/
 config.yaml
 
+# Build artifacts
+slimarr-portable.zip
+
 # Frontend build output
 frontend/dist/
 frontend/node_modules/

@@ -2,6 +2,14 @@ import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 import { useToast } from '@/components/Toast'
 import TestConnectionButton from '@/components/TestConnectionButton'
+import { Plus, Trash2 } from 'lucide-react'
+
+interface Indexer {
+  name: string
+  url: string
+  api_key: string
+  categories: number[]
+}
 
 export default function Settings() {
   const { toast } = useToast()
@@ -102,8 +110,111 @@ export default function Settings() {
           <h2 className="font-semibold">Prowlarr (optional)</h2>
           <TestConnectionButton service="prowlarr" />
         </div>
+        <p className="text-xs text-gray-400">If disabled, Slimarr will use the Newznab indexers configured below instead.</p>
         {field('URL', ['prowlarr', 'url'])}
         {field('API Key', ['prowlarr', 'api_key'], 'password')}
+      </section>
+
+      {/* Newznab Indexers */}
+      <section className="bg-gray-900 rounded-xl p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="font-semibold">Newznab Indexers</h2>
+            <p className="text-xs text-gray-400 mt-1">Add your Usenet indexers directly. Used when Prowlarr is disabled or returns no results.</p>
+          </div>
+          <button
+            onClick={() => {
+              const indexers = ((settings?.indexers as Indexer[]) ?? []).slice()
+              indexers.push({ name: '', url: '', api_key: '', categories: [2000, 2010, 2020, 2030, 2040, 2045, 2050, 2060] })
+              setSettings((prev) => ({ ...prev!, indexers }))
+            }}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand-green text-white text-xs hover:bg-green-600"
+          >
+            <Plus size={14} /> Add Indexer
+          </button>
+        </div>
+        {((settings?.indexers as Indexer[]) ?? []).length === 0 && (
+          <p className="text-sm text-gray-500 italic">No indexers configured. Click &quot;Add Indexer&quot; to get started.</p>
+        )}
+        {((settings?.indexers as Indexer[]) ?? []).map((idx, i) => (
+          <div key={i} className="bg-gray-800 rounded-lg p-4 space-y-3 relative">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-300">Indexer {i + 1}{idx.name ? ` — ${idx.name}` : ''}</span>
+              <div className="flex items-center gap-2">
+                <TestConnectionButton service={`indexer-${i}`} />
+                <button
+                  onClick={() => {
+                    const indexers = ((settings?.indexers as Indexer[]) ?? []).filter((_, j) => j !== i)
+                    setSettings((prev) => ({ ...prev!, indexers }))
+                  }}
+                  className="p-1.5 rounded hover:bg-red-900/50 text-red-400"
+                  title="Remove indexer"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">Name</label>
+                <input
+                  type="text"
+                  value={idx.name}
+                  onChange={(e) => {
+                    const indexers = ((settings?.indexers as Indexer[]) ?? []).slice()
+                    indexers[i] = { ...indexers[i], name: e.target.value }
+                    setSettings((prev) => ({ ...prev!, indexers }))
+                  }}
+                  className="w-full bg-gray-700 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
+                  placeholder="NZBgeek"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">URL</label>
+                <input
+                  type="text"
+                  value={idx.url}
+                  onChange={(e) => {
+                    const indexers = ((settings?.indexers as Indexer[]) ?? []).slice()
+                    indexers[i] = { ...indexers[i], url: e.target.value }
+                    setSettings((prev) => ({ ...prev!, indexers }))
+                  }}
+                  className="w-full bg-gray-700 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
+                  placeholder="https://api.nzbgeek.info"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">API Key</label>
+              <input
+                type="password"
+                value={idx.api_key}
+                onChange={(e) => {
+                  const indexers = ((settings?.indexers as Indexer[]) ?? []).slice()
+                  indexers[i] = { ...indexers[i], api_key: e.target.value }
+                  setSettings((prev) => ({ ...prev!, indexers }))
+                }}
+                className="w-full bg-gray-700 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
+                placeholder="••••••••"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Categories (comma-separated Newznab IDs)</label>
+              <input
+                type="text"
+                value={idx.categories.join(', ')}
+                onChange={(e) => {
+                  const indexers = ((settings?.indexers as Indexer[]) ?? []).slice()
+                  const cats = e.target.value.split(',').map((s) => parseInt(s.trim(), 10)).filter((n) => !isNaN(n))
+                  indexers[i] = { ...indexers[i], categories: cats }
+                  setSettings((prev) => ({ ...prev!, indexers }))
+                }}
+                className="w-full bg-gray-700 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
+                placeholder="2000, 2010, 2020, 2030, 2040, 2045, 2050, 2060"
+              />
+            </div>
+          </div>
+        ))}
       </section>
 
       {/* Radarr */}
