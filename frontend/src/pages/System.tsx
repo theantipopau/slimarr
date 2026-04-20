@@ -143,20 +143,25 @@ export default function System() {
           {(['plex', 'sabnzbd', 'radarr', 'prowlarr', 'tmdb'] as const).map((svc) => {
             const h = services?.[svc]
             const label = { plex: 'Plex', sabnzbd: 'SABnzbd', radarr: 'Radarr', prowlarr: 'Prowlarr', tmdb: 'TMDB' }[svc]
-            const detail = h?.success
-              ? (h.server_name ?? h.version ?? (h.movie_count !== undefined ? `${h.movie_count} movies` : h.indexer_count !== undefined ? `${h.indexer_count} indexers` : 'Connected'))
-              : (h?.error ?? 'Checking…')
+            const isDisabled = h && !h.success && h.error === 'Disabled'
+            const detail = isDisabled
+              ? 'Disabled'
+              : h?.success
+                ? (h.server_name ?? (h.version ? `v${h.version}` + (h.movie_count !== undefined ? ` · ${h.movie_count} movies` : '') : h.movie_count !== undefined ? `${h.movie_count} movies` : h.indexer_count !== undefined ? `${h.indexer_count} indexers` : 'Connected'))
+                : (h?.error ?? 'Checking…')
             return (
               <div key={svc} className="px-4 py-3 flex items-center gap-3 text-sm">
                 {h === undefined ? (
                   <RefreshCw size={14} className="text-gray-500 animate-spin shrink-0" />
+                ) : isDisabled ? (
+                  <span className="w-3.5 h-3.5 rounded-full bg-gray-600 shrink-0" />
                 ) : h.success ? (
                   <CheckCircle size={14} className="text-green-400 shrink-0" />
                 ) : (
                   <XCircle size={14} className="text-red-400 shrink-0" />
                 )}
                 <span className="w-20 font-medium">{label}</span>
-                <span className="text-xs text-gray-400 truncate">{detail}</span>
+                <span className={`text-xs truncate ${isDisabled ? 'text-gray-600' : 'text-gray-400'}`}>{detail}</span>
               </div>
             )
           })}

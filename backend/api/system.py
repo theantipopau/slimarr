@@ -120,23 +120,33 @@ async def services_health(user=Depends(get_current_user)):
 
     # Radarr
     if config.radarr.enabled and config.radarr.url and config.radarr.api_key:
-        try:
-            from backend.integrations.radarr import RadarrClient
-            results["radarr"] = await RadarrClient().test_connection()
-        except Exception as e:
-            results["radarr"] = {"success": False, "error": str(e)}
+        if not config.radarr.url.startswith(("http://", "https://")):
+            results["radarr"] = {"success": False, "error": "URL missing http:// or https:// prefix"}
+        else:
+            try:
+                from backend.integrations.radarr import RadarrClient
+                results["radarr"] = await RadarrClient().test_connection()
+            except Exception as e:
+                results["radarr"] = {"success": False, "error": str(e)}
+    elif not config.radarr.enabled:
+        results["radarr"] = {"success": False, "error": "Disabled"}
     else:
-        results["radarr"] = {"success": False, "error": "Not configured" if not config.radarr.enabled else "Missing URL/key"}
+        results["radarr"] = {"success": False, "error": "Missing URL or API key"}
 
     # Prowlarr
     if config.prowlarr.enabled and config.prowlarr.url and config.prowlarr.api_key:
-        try:
-            from backend.integrations.prowlarr import ProwlarrClient
-            results["prowlarr"] = await ProwlarrClient().test_connection()
-        except Exception as e:
-            results["prowlarr"] = {"success": False, "error": str(e)}
+        if not config.prowlarr.url.startswith(("http://", "https://")):
+            results["prowlarr"] = {"success": False, "error": "URL missing http:// or https:// prefix"}
+        else:
+            try:
+                from backend.integrations.prowlarr import ProwlarrClient
+                results["prowlarr"] = await ProwlarrClient().test_connection()
+            except Exception as e:
+                results["prowlarr"] = {"success": False, "error": str(e)}
+    elif not config.prowlarr.enabled:
+        results["prowlarr"] = {"success": False, "error": "Disabled"}
     else:
-        results["prowlarr"] = {"success": False, "error": "Not configured" if not config.prowlarr.enabled else "Missing URL/key"}
+        results["prowlarr"] = {"success": False, "error": "Missing URL or API key"}
 
     # TMDB
     if config.tmdb.api_key:
@@ -146,6 +156,6 @@ async def services_health(user=Depends(get_current_user)):
         except Exception as e:
             results["tmdb"] = {"success": False, "error": str(e)}
     else:
-        results["tmdb"] = {"success": False, "error": "Not configured"}
+        results["tmdb"] = {"success": False, "error": "Disabled"}
 
     return results

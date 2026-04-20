@@ -21,7 +21,7 @@ const statusBorder: Record<string, string> = {
 
 export default function PosterCard({ movie }: Props) {
   const navigate = useNavigate()
-  const posterUrl = movie.tmdb_id && movie.poster_path
+  const posterUrl = movie.poster_path
     ? `/api/v1/images/${movie.id}/poster`
     : null
 
