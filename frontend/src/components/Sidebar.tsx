@@ -52,7 +52,7 @@ export default function Sidebar() {
         </NavLink>
       ))}
 
-      <div className="mt-auto mx-2">
+      <div className="mt-auto mx-2 flex flex-col gap-1">
         <button
           onClick={() => {
             auth.removeToken()
@@ -63,6 +63,26 @@ export default function Sidebar() {
           <LogOut size={18} />
           Sign Out
         </button>
+
+        {/* Donate */}
+        <a
+          href="https://www.paypal.com/donate/?business=XH8CKYF8T7EBU&no_recurring=0&item_name=Thank+you+for+your+generous+donation%2C+this+will+allow+me+to+continue+developing+my+programs.&currency_code=AUD"
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-lg text-xs text-yellow-400 hover:bg-white/10 w-full transition-colors"
+        >
+          ☕ Donate
+        </a>
+
+        {/* Creator credit */}
+        <a
+          href="https://matthurley.dev"
+          target="_blank"
+          rel="noreferrer"
+          className="block text-center text-xs text-gray-600 hover:text-gray-400 transition-colors px-2 py-2"
+        >
+          Created by Matt Hurley
+        </a>
       </div>
     </aside>
   )
