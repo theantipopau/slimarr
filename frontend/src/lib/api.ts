@@ -69,6 +69,7 @@ export const api = {
   // System
   systemStatus: () => client.get('/system/status').then((r) => r.data),
   systemInfo: () => client.get('/system/info').then((r) => r.data),
+  servicesHealth: () => client.get('/system/health/services').then((r) => r.data),
   scanLibrary: () => client.post('/system/scan').then((r) => r.data),
   tasks: () => client.get('/system/tasks').then((r) => r.data),
   runTask: (id: string) =>

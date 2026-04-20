@@ -106,6 +106,26 @@ export default function Settings() {
         {field('API Key', ['prowlarr', 'api_key'], 'password')}
       </section>
 
+      {/* Radarr */}
+      <section className="bg-gray-900 rounded-xl p-5 space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="font-semibold">Radarr (optional)</h2>
+          <TestConnectionButton service="radarr" />
+        </div>
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="radarr_enabled"
+            checked={!!((settings?.radarr as Record<string,unknown>)?.enabled)}
+            onChange={(e) => set(['radarr', 'enabled'], e.target.checked)}
+            className="w-4 h-4 accent-brand-green"
+          />
+          <label htmlFor="radarr_enabled" className="text-sm">Enable Radarr integration (triggers rescan after file replacement)</label>
+        </div>
+        {field('URL', ['radarr', 'url'])}
+        {field('API Key', ['radarr', 'api_key'], 'password')}
+      </section>
+
       {/* Plex library sections */}
       <section className="bg-gray-900 rounded-xl p-5 space-y-3">
         <h2 className="font-semibold">Plex Library Sections</h2>
@@ -132,6 +152,19 @@ export default function Settings() {
         {field('Downgrade Min Savings %', ['comparison', 'downgrade_min_savings_percent'], 'number')}
         {field('Minimum File Size (MB)', ['comparison', 'minimum_file_size_mb'], 'number')}
         {field('Max Candidate Age (days)', ['comparison', 'max_candidate_age_days'], 'number')}
+        <div>
+          <label className="block text-xs text-gray-400 mb-1">Preferred Codecs (comma-separated, e.g. av1, h265)</label>
+          <input
+            type="text"
+            value={((settings?.comparison as Record<string,unknown>)?.preferred_codecs as string[] | undefined)?.join(', ') ?? ''}
+            onChange={(e) => {
+              const val = e.target.value.split(',').map((s) => s.trim().toLowerCase()).filter(Boolean)
+              set(['comparison', 'preferred_codecs'], val as unknown as string)
+            }}
+            className="w-full bg-gray-800 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
+            placeholder="av1, h265"
+          />
+        </div>
         <div className="flex items-center gap-3">
           <input
             type="checkbox"
@@ -142,6 +175,13 @@ export default function Settings() {
           />
           <label htmlFor="allow_downgrade" className="text-sm">Allow resolution downgrade (if savings are large enough)</label>
         </div>
+      </section>
+
+      {/* Files */}
+      <section className="bg-gray-900 rounded-xl p-5 space-y-3">
+        <h2 className="font-semibold">Files</h2>
+        {field('Recycling Bin Path', ['files', 'recycling_bin'])}
+        {field('Recycling Bin Cleanup (days)', ['files', 'recycling_bin_cleanup_days'], 'number')}
       </section>
 
       {/* Schedule */}

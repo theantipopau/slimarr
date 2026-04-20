@@ -146,6 +146,19 @@ async def replace_file(download_id: int) -> bool:
             except Exception as e:
                 logger.warning(f"Plex refresh failed: {e}")
 
+        # Notify Radarr to rescan (so it picks up the new file size/codec)
+        if config.radarr.enabled and config.radarr.url and config.radarr.api_key and movie.imdb_id:
+            try:
+                from backend.integrations.radarr import RadarrClient
+                radarr = RadarrClient()
+                found = await radarr.rescan_by_imdb(movie.imdb_id)
+                if found:
+                    logger.info(f"Radarr rescan triggered for {movie.title}")
+                else:
+                    logger.debug(f"Movie not found in Radarr: {movie.title}")
+            except Exception as e:
+                logger.warning(f"Radarr rescan failed: {e}")
+
         # Clean up SABnzbd directory if it was a folder
         if os.path.isdir(storage_path):
             try:

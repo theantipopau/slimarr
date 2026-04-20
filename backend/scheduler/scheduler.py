@@ -22,18 +22,6 @@ async def _nightly_cycle() -> None:
     await run_full_cycle()
 
 
-async def _continuous_search() -> None:
-    """Light search pass: only search, don't auto-download."""
-    from backend.config import get_config
-    from backend.core.scanner import scan_library
-
-    config = get_config()
-    if not config.schedule.continuous_interval_hours:
-        return
-    logger.debug("Continuous interval scan triggered")
-    await scan_library()
-
-
 async def _cleanup_recycle_bin() -> None:
     """Remove files from recycle bin older than configured days."""
     import os

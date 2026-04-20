@@ -89,3 +89,63 @@ async def stop_cycle(user=Depends(get_current_user)):
         return {"status": "not_running"}
     request_stop()
     return {"status": "stop_requested"}
+
+
+@router.get("/health/services")
+async def services_health(user=Depends(get_current_user)):
+    """Quick connectivity check for all configured integrations."""
+    from backend.config import get_config
+    config = get_config()
+    results: dict = {}
+
+    # Plex
+    if config.plex.url and config.plex.token:
+        try:
+            from backend.integrations.plex import PlexClient
+            results["plex"] = PlexClient().test_connection()
+        except Exception as e:
+            results["plex"] = {"success": False, "error": str(e)}
+    else:
+        results["plex"] = {"success": False, "error": "Not configured"}
+
+    # SABnzbd
+    if config.sabnzbd.url and config.sabnzbd.api_key:
+        try:
+            from backend.integrations.sabnzbd import SABnzbdClient
+            results["sabnzbd"] = await SABnzbdClient().test_connection()
+        except Exception as e:
+            results["sabnzbd"] = {"success": False, "error": str(e)}
+    else:
+        results["sabnzbd"] = {"success": False, "error": "Not configured"}
+
+    # Radarr
+    if config.radarr.enabled and config.radarr.url and config.radarr.api_key:
+        try:
+            from backend.integrations.radarr import RadarrClient
+            results["radarr"] = await RadarrClient().test_connection()
+        except Exception as e:
+            results["radarr"] = {"success": False, "error": str(e)}
+    else:
+        results["radarr"] = {"success": False, "error": "Not configured" if not config.radarr.enabled else "Missing URL/key"}
+
+    # Prowlarr
+    if config.prowlarr.enabled and config.prowlarr.url and config.prowlarr.api_key:
+        try:
+            from backend.integrations.prowlarr import ProwlarrClient
+            results["prowlarr"] = await ProwlarrClient().test_connection()
+        except Exception as e:
+            results["prowlarr"] = {"success": False, "error": str(e)}
+    else:
+        results["prowlarr"] = {"success": False, "error": "Not configured" if not config.prowlarr.enabled else "Missing URL/key"}
+
+    # TMDB
+    if config.tmdb.api_key:
+        try:
+            from backend.integrations.tmdb import TMDBClient
+            results["tmdb"] = await TMDBClient().test_connection()
+        except Exception as e:
+            results["tmdb"] = {"success": False, "error": str(e)}
+    else:
+        results["tmdb"] = {"success": False, "error": "Not configured"}
+
+    return results

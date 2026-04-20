@@ -25,8 +25,41 @@ class RadarrClient:
             resp.raise_for_status()
             return resp.json()
 
+    async def _post(self, endpoint: str, body: dict) -> dict:
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            resp = await client.post(
+                f"{self.url}/api/v3{endpoint}",
+                json=body,
+                headers=self._headers(),
+            )
+            resp.raise_for_status()
+            return resp.json()
+
     async def get_movies(self) -> list[dict]:
         return await self._get("/movie")  # type: ignore[return-value]
+
+    async def find_movie_by_imdb(self, imdb_id: str) -> dict | None:
+        """Return the Radarr movie record matching an IMDb ID, or None."""
+        movies = await self.get_movies()
+        for m in movies:  # type: ignore[union-attr]
+            if m.get("imdbId") == imdb_id:
+                return m
+        return None
+
+    async def rescan_movie(self, radarr_id: int) -> None:
+        """Trigger Radarr to rescan a movie folder (so it picks up the new file)."""
+        await self._post("/command", {"name": "RescanMovie", "movieId": radarr_id})
+
+    async def rescan_by_imdb(self, imdb_id: str) -> bool:
+        """Find movie in Radarr by IMDb ID and trigger a rescan. Returns True if found."""
+        try:
+            movie = await self.find_movie_by_imdb(imdb_id)
+            if movie:
+                await self.rescan_movie(movie["id"])
+                return True
+        except Exception:
+            pass
+        return False
 
     async def test_connection(self) -> dict:
         try:
