@@ -62,15 +62,39 @@ if [[ -z $PYTHON_BIN ]]; then
   exit 1
 fi
 echo -e "  Using: $PYTHON_BIN ($($PYTHON_BIN --version))"
-if [[ ! -d $VENV ]]; then
-  "$PYTHON_BIN" -m venv "$VENV"
+
+# Remove broken venv if pip is missing inside it
+if [[ -d $VENV ]] && ! "$VENV/bin/python" -m pip --version &>/dev/null; then
+  echo -e "${YELLOW}  Removing broken virtual environment...${NC}"
+  rm -rf "$VENV"
 fi
+
+# Create venv if needed
+if [[ ! -d $VENV ]]; then
+  echo -e "  Creating virtual environment..."
+  "$PYTHON_BIN" -m venv "$VENV" --without-pip
+fi
+
+# Bootstrap pip if missing
+if ! "$VENV/bin/python" -m pip --version &>/dev/null; then
+  echo -e "  Bootstrapping pip..."
+  "$VENV/bin/python" -m ensurepip --upgrade 2>/dev/null || true
+fi
+if ! "$VENV/bin/python" -m pip --version &>/dev/null; then
+  echo -e "  Downloading pip installer..."
+  curl -sSL https://bootstrap.pypa.io/get-pip.py | "$VENV/bin/python"
+fi
+
 echo -e "${GREEN}  Virtual environment ready.${NC}"
 
 # ── 2. pip install ────────────────────────────────────────────────────────────
 echo -e "${CYAN}[2/5] Installing Python dependencies...${NC}"
 "$VENV/bin/python" -m pip install --upgrade pip -q
 "$VENV/bin/python" -m pip install -r "$ROOT/requirements.txt" -q
+if [[ $? -ne 0 ]]; then
+  echo -e "${RED}Dependency install failed. Check the output above.${NC}"
+  exit 1
+fi
 echo -e "${GREEN}  Python dependencies installed.${NC}"
 
 # ── 3 & 4. Frontend ──────────────────────────────────────────────────────────

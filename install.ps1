@@ -37,31 +37,64 @@ Write-Host ""
 
 # ── 1. Python venv ────────────────────────────────────────────────────────────
 Write-Host "[1/5] Setting up Python virtual environment..." -ForegroundColor Cyan
-if (-not (Test-Path "$Root\venv")) {
-    $pythons = @(
-        "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe",
-        "$env:LOCALAPPDATA\Programs\Python\Python313\python.exe",
-        "python3",
-        "python"
-    )
-    $pyExe = $null
-    foreach ($p in $pythons) {
-        if (Test-Path $p) { $pyExe = $p; break }
-        try { if (Get-Command $p -ErrorAction Stop) { $pyExe = $p; break } } catch {}
-    }
-    if (-not $pyExe) {
-        Write-Error "Python 3.12+ not found. Install from https://python.org and re-run."
-        exit 1
-    }
-    Write-Host "  Using: $pyExe" -ForegroundColor Gray
-    & $pyExe -m venv venv
+
+# Find Python executable
+$pythons = @(
+    "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe",
+    "$env:LOCALAPPDATA\Programs\Python\Python313\python.exe",
+    "python3",
+    "python"
+)
+$pyExe = $null
+foreach ($p in $pythons) {
+    if (Test-Path $p) { $pyExe = $p; break }
+    try { if (Get-Command $p -ErrorAction Stop) { $pyExe = $p; break } } catch {}
 }
+if (-not $pyExe) {
+    Write-Error "Python 3.12+ not found. Install from https://python.org and re-run."
+    exit 1
+}
+Write-Host "  Using: $pyExe" -ForegroundColor Gray
+
+# Remove broken venv if pip is missing inside it
+if (Test-Path "$Root\venv") {
+    $pipCheck = & "$Root\venv\Scripts\python.exe" -m pip --version 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "  Removing broken virtual environment..." -ForegroundColor Yellow
+        Remove-Item -Recurse -Force "$Root\venv"
+    }
+}
+
+# Create venv if needed
+if (-not (Test-Path "$Root\venv")) {
+    Write-Host "  Creating virtual environment..." -ForegroundColor Gray
+    & $pyExe -m venv "$Root\venv" --without-pip
+}
+
+# Bootstrap pip if missing
+$pipCheck = & "$Root\venv\Scripts\python.exe" -m pip --version 2>&1
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "  Bootstrapping pip..." -ForegroundColor Gray
+    & "$Root\venv\Scripts\python.exe" -m ensurepip --upgrade 2>&1 | Out-Null
+    $pipCheck = & "$Root\venv\Scripts\python.exe" -m pip --version 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "  Downloading pip installer..." -ForegroundColor Gray
+        Invoke-WebRequest -Uri "https://bootstrap.pypa.io/get-pip.py" -OutFile "$Root\get-pip.py"
+        & "$Root\venv\Scripts\python.exe" "$Root\get-pip.py"
+        Remove-Item "$Root\get-pip.py" -ErrorAction SilentlyContinue
+    }
+}
+
 Write-Host "  Virtual environment ready." -ForegroundColor Green
 
 # ── 2. pip install ────────────────────────────────────────────────────────────
 Write-Host "[2/5] Installing Python dependencies..." -ForegroundColor Cyan
 & "$Root\venv\Scripts\python.exe" -m pip install --upgrade pip -q
 & "$Root\venv\Scripts\python.exe" -m pip install -r "$Root\requirements.txt" -q
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Dependency install failed. Check the output above."
+    exit 1
+}
 Write-Host "  Python dependencies installed." -ForegroundColor Green
 
 # ── 3. Frontend ───────────────────────────────────────────────────────────────
