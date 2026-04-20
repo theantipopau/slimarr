@@ -144,14 +144,36 @@ if errorlevel 1 (
     exit /b 1
 )
 
+REM Remove broken venv if pip is missing inside it
+if exist venv (
+    venv\Scripts\python.exe -m pip --version >nul 2>&1
+    if errorlevel 1 (
+        echo   Removing broken virtual environment...
+        rmdir /s /q venv
+    )
+)
+
 REM Create venv if needed
 if not exist venv (
     echo   Creating virtual environment...
-    python -m venv venv
+    python -m venv venv --without-pip
     if errorlevel 1 (
         echo   ERROR: Failed to create virtual environment.
         pause
         exit /b 1
+    )
+)
+
+REM Bootstrap pip if missing (handles broken ensurepip on some Windows installs)
+venv\Scripts\python.exe -m pip --version >nul 2>&1
+if errorlevel 1 (
+    echo   Bootstrapping pip...
+    venv\Scripts\python.exe -m ensurepip --upgrade >>startup-error.log 2>&1
+    if errorlevel 1 (
+        echo   Downloading pip installer...
+        powershell -Command "Invoke-WebRequest -Uri 'https://bootstrap.pypa.io/get-pip.py' -OutFile get-pip.py"
+        venv\Scripts\python.exe get-pip.py >>startup-error.log 2>&1
+        del get-pip.py >nul 2>&1
     )
 )
 
