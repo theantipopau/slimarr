@@ -14,10 +14,13 @@ interface Indexer {
 export default function Settings() {
   const { toast } = useToast()
   const [settings, setSettings] = useState<Record<string, unknown> | null>(null)
+  const [savedSettings, setSavedSettings] = useState<Record<string, unknown> | null>(null)
   const [saving, setSaving] = useState(false)
 
+  const hasUnsaved = settings && savedSettings && JSON.stringify(settings) !== JSON.stringify(savedSettings)
+
   useEffect(() => {
-    api.getSettings().then(setSettings).catch(() => {})
+    api.getSettings().then((s) => { setSettings(s); setSavedSettings(s) }).catch(() => {})
   }, [])
 
   const save = async () => {
@@ -25,6 +28,7 @@ export default function Settings() {
     setSaving(true)
     try {
       await api.updateSettings(settings)
+      setSavedSettings(JSON.parse(JSON.stringify(settings)))
       toast('Settings saved', 'success')
     } catch {
       toast('Failed to save settings', 'error')
@@ -65,12 +69,15 @@ export default function Settings() {
     <div className="space-y-6 max-w-2xl">
       <div className="flex items-center gap-4">
         <h1 className="text-2xl font-bold flex-1">Settings</h1>
+        {hasUnsaved && (
+          <span className="text-xs text-yellow-400 font-medium">Unsaved changes — save before testing connections</span>
+        )}
         <button
           onClick={save}
           disabled={saving}
-          className="px-4 py-2 rounded-lg bg-brand-green text-white text-sm disabled:opacity-50"
+          className={`px-4 py-2 rounded-lg text-white text-sm disabled:opacity-50 ${hasUnsaved ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-brand-green'}`}
         >
-          {saving ? 'Saving…' : 'Save'}
+          {saving ? 'Saving…' : hasUnsaved ? 'Save Changes' : 'Save'}
         </button>
       </div>
 
