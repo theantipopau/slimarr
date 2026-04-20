@@ -46,6 +46,25 @@ class RadarrClient:
                 return m
         return None
 
+    async def get_movie_images(self, imdb_id: str) -> dict | None:
+        """Return poster/fanart remote URLs from Radarr for a given IMDb ID."""
+        try:
+            movie = await self.find_movie_by_imdb(imdb_id)
+            if not movie:
+                return None
+            images = movie.get("images", [])
+            result: dict = {}
+            for img in images:
+                cover = img.get("coverType", "")
+                url = img.get("remoteUrl") or img.get("url", "")
+                if cover == "poster" and url:
+                    result["poster_url"] = url
+                elif cover == "fanart" and url:
+                    result["fanart_url"] = url
+            return result or None
+        except Exception:
+            return None
+
     async def rescan_movie(self, radarr_id: int) -> None:
         """Trigger Radarr to rescan a movie folder (so it picks up the new file)."""
         await self._post("/command", {"name": "RescanMovie", "movieId": radarr_id})

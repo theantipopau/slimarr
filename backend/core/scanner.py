@@ -73,27 +73,40 @@ async def scan_library() -> int:
                 if movie.original_file_size is None:
                     movie.original_file_size = movie.file_size
 
-                # TMDB enrichment (only if poster_path is missing)
-                if not movie.poster_path and config.tmdb.api_key:
-                    try:
-                        tmdb_data = None
-                        if movie.imdb_id:
-                            tmdb_data = await tmdb.find_by_imdb(movie.imdb_id)
-                        if not tmdb_data and movie.tmdb_id:
-                            tmdb_data = await tmdb.get_movie(movie.tmdb_id)
-                        if not tmdb_data:
-                            tmdb_data = await tmdb.search_movie(movie.title, movie.year)
+                # Image enrichment: try TMDB first, fall back to Radarr
+                if not movie.poster_path:
+                    if config.tmdb.api_key:
+                        try:
+                            tmdb_data = None
+                            if movie.imdb_id:
+                                tmdb_data = await tmdb.find_by_imdb(movie.imdb_id)
+                            if not tmdb_data and movie.tmdb_id:
+                                tmdb_data = await tmdb.get_movie(movie.tmdb_id)
+                            if not tmdb_data:
+                                tmdb_data = await tmdb.search_movie(movie.title, movie.year)
 
-                        if tmdb_data:
-                            movie.tmdb_id = tmdb_data.get("id") or movie.tmdb_id
-                            movie.overview = tmdb_data.get("overview")
-                            movie.poster_path = tmdb_data.get("poster_path")
-                            movie.backdrop_path = tmdb_data.get("backdrop_path")
-                            genres = tmdb_data.get("genres") or []
-                            if genres and isinstance(genres[0], dict):
-                                movie.genres = json.dumps([g["name"] for g in genres])
-                    except Exception as te:
-                        logger.warning(f"TMDB lookup failed for {movie.title}: {te}")
+                            if tmdb_data:
+                                movie.tmdb_id = tmdb_data.get("id") or movie.tmdb_id
+                                movie.overview = tmdb_data.get("overview")
+                                movie.poster_path = tmdb_data.get("poster_path")
+                                movie.backdrop_path = tmdb_data.get("backdrop_path")
+                                genres = tmdb_data.get("genres") or []
+                                if genres and isinstance(genres[0], dict):
+                                    movie.genres = json.dumps([g["name"] for g in genres])
+                        except Exception as te:
+                            logger.warning(f"TMDB lookup failed for {movie.title}: {te}")
+
+                    # Radarr fallback — use already-cached poster URLs (no TMDB key needed)
+                    if not movie.poster_path and config.radarr.enabled and movie.imdb_id:
+                        try:
+                            from backend.integrations.radarr import RadarrClient
+                            imgs = await RadarrClient().get_movie_images(movie.imdb_id)
+                            if imgs:
+                                movie.poster_path = imgs.get("poster_url")
+                                if not movie.backdrop_path:
+                                    movie.backdrop_path = imgs.get("fanart_url")
+                        except Exception as re:
+                            logger.warning(f"Radarr image fallback failed for {movie.title}: {re}")
 
                 await db.commit()
 
