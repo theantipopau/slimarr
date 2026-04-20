@@ -1,0 +1,119 @@
+"""
+FastAPI application entry point.
+"""
+from __future__ import annotations
+
+import os
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+
+from backend.config import ensure_secrets, get_config, load_config
+from backend.database import init_db
+from backend.realtime.sio_instance import sio
+from backend.scheduler.scheduler import start_scheduler
+from backend.utils.logger import setup_logger
+
+import socketio
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # ── Startup ──────────────────────────────────────────────────────
+    config = get_config()
+    setup_logger(config.server.log_level.upper())
+
+    # Create required directories
+    for directory in [
+        "data",
+        "data/logs",
+        "data/MediaCover",
+        config.files.recycling_bin,
+    ]:
+        if directory:
+            os.makedirs(directory, exist_ok=True)
+
+    await init_db()
+    start_scheduler()
+
+    yield
+    # ── Shutdown ─────────────────────────────────────────────────────
+    from backend.scheduler.scheduler import stop_scheduler
+    stop_scheduler()
+
+
+app = FastAPI(
+    title="Slimarr",
+    version="1.0.0",
+    description="Smart Usenet replacement manager for Plex movie libraries",
+    lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ── API Routers ───────────────────────────────────────────────────────
+from backend.api.activity import router as activity_router
+from backend.api.dashboard import router as dashboard_router
+from backend.api.images import router as images_router
+from backend.api.library import router as library_router
+from backend.api.queue import router as queue_router
+from backend.api.settings import router as settings_router
+from backend.api.system import router as system_router
+from backend.auth.router import router as auth_router
+
+API_PREFIX = "/api/v1"
+
+app.include_router(auth_router, prefix=f"{API_PREFIX}/auth")
+app.include_router(dashboard_router, prefix=API_PREFIX)
+app.include_router(library_router, prefix=API_PREFIX)
+app.include_router(activity_router, prefix=API_PREFIX)
+app.include_router(settings_router, prefix=API_PREFIX)
+app.include_router(queue_router, prefix=API_PREFIX)
+app.include_router(system_router, prefix=API_PREFIX)
+app.include_router(images_router, prefix=API_PREFIX)
+
+# ── Frontend static files ─────────────────────────────────────────────
+FRONTEND_DIST = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
+ASSETS_DIR = os.path.join(FRONTEND_DIST, "assets")
+
+if os.path.isdir(ASSETS_DIR):
+    app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
+
+# Serve root-level static files (logo.png, favicon, etc.) from dist/
+if os.path.isdir(FRONTEND_DIST):
+    app.mount("/static-root", StaticFiles(directory=FRONTEND_DIST), name="static-root")
+
+
+@app.get("/logo.png", include_in_schema=False)
+async def logo():
+    path = os.path.join(FRONTEND_DIST, "logo.png")
+    if os.path.isfile(path):
+        return FileResponse(path)
+    # Fallback to images/ directory
+    path2 = os.path.join(os.path.dirname(__file__), "..", "images", "header-logo.PNG")
+    if os.path.isfile(path2):
+        return FileResponse(path2)
+    from fastapi import HTTPException
+    raise HTTPException(404)
+
+
+@app.get("/", include_in_schema=False)
+@app.get("/{full_path:path}", include_in_schema=False)
+async def spa_fallback(full_path: str = ""):
+    index = os.path.join(FRONTEND_DIST, "index.html")
+    if os.path.isfile(index):
+        return FileResponse(index)
+    return {"status": "Slimarr API running", "docs": "/docs"}
+
+
+# ── Wrap with Socket.IO ──────────────────────────────────────────────
+socket_app = socketio.ASGIApp(sio, app)

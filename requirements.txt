@@ -1,0 +1,48 @@
+# Web framework
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.18
+aiofiles==24.1.0
+
+# Database
+sqlalchemy==2.0.36
+aiosqlite==0.20.0
+
+# Authentication
+pyjwt==2.10.1
+passlib[bcrypt]==1.7.4
+bcrypt==4.2.1
+
+# HTTP client
+httpx==0.28.1
+
+# Real-time
+python-socketio==5.12.1
+
+# Plex
+plexapi==4.15.16
+
+# Scheduling
+apscheduler==3.10.4
+
+# Media analysis
+pymediainfo==6.1.0
+
+# Configuration
+pyyaml==6.0.2
+pydantic==2.10.4
+pydantic-settings==2.7.1
+
+# Logging
+loguru==0.7.3
+
+# XML parsing (for Newznab responses)
+lxml==5.3.0
+
+# Utilities
+python-dotenv==1.0.1
+
+# System tray (Windows)
+pystray==0.19.5
+pillow==11.1.0
+pywin32==308

@@ -1,0 +1,49 @@
+"""Download queue API routes."""
+from __future__ import annotations
+
+from fastapi import APIRouter, Depends
+from sqlalchemy import select
+
+from backend.auth.dependencies import get_current_user
+from backend.database import Download, async_session
+
+router = APIRouter(prefix="/queue", tags=["queue"])
+
+
+@router.get("/active")
+async def get_active_downloads(user=Depends(get_current_user)):
+    async with async_session() as db:
+        result = await db.execute(
+            select(Download)
+            .where(Download.status == "downloading")
+            .order_by(Download.started_at.desc())
+        )
+        downloads = result.scalars().all()
+    return [_dl_dict(d) for d in downloads]
+
+
+@router.get("/recent")
+async def get_recent_downloads(limit: int = 20, user=Depends(get_current_user)):
+    async with async_session() as db:
+        result = await db.execute(
+            select(Download)
+            .order_by(Download.started_at.desc())
+            .limit(limit)
+        )
+        downloads = result.scalars().all()
+    return [_dl_dict(d) for d in downloads]
+
+
+def _dl_dict(d: Download) -> dict:
+    return {
+        "id": d.id,
+        "movie_id": d.movie_id,
+        "release_title": d.release_title,
+        "status": d.status,
+        "progress_pct": d.progress_pct,
+        "expected_size": d.expected_size,
+        "nzo_id": d.nzo_id,
+        "started_at": d.started_at.isoformat() if d.started_at else None,
+        "completed_at": d.completed_at.isoformat() if d.completed_at else None,
+        "error_message": d.error_message,
+    }
