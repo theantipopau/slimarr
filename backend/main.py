@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI):
     config = get_config()
     setup_logger(config.server.log_level.upper())
 
-    # Create required directories
+    # Ensure directories exist (also done in run.py before import, belt-and-suspenders)
     for directory in [
         "data",
         "data/logs",
@@ -36,7 +36,12 @@ async def lifespan(app: FastAPI):
         if directory:
             os.makedirs(directory, exist_ok=True)
 
-    await init_db()
+    try:
+        await init_db()
+    except Exception as exc:
+        from loguru import logger
+        logger.critical(f"Database init failed: {exc}")
+        raise
     start_scheduler()
 
     yield

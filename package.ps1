@@ -126,6 +126,9 @@ schedule:
 # ── Create quick-start script ────────────────────────────────────────────────
 @"
 @echo off
+setlocal
+cd /d "%~dp0"
+
 echo.
 echo   Slimarr Quick Start
 echo   ====================
@@ -134,7 +137,9 @@ echo.
 REM Check Python
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo   ERROR: Python 3.12+ not found. Install from https://python.org
+    echo   ERROR: Python 3.12+ not found.
+    echo   Download from: https://www.python.org/downloads/
+    echo   Tick "Add Python to PATH" during install.
     pause
     exit /b 1
 )
@@ -143,46 +148,66 @@ REM Create venv if needed
 if not exist venv (
     echo   Creating virtual environment...
     python -m venv venv
+    if errorlevel 1 (
+        echo   ERROR: Failed to create virtual environment.
+        pause
+        exit /b 1
+    )
 )
 
 REM Install dependencies
-echo   Installing dependencies...
-venv\Scripts\python.exe -m pip install -q --upgrade pip
-venv\Scripts\python.exe -m pip install -q -r requirements.txt
+echo   Installing Python dependencies (first run may take a minute)...
+venv\Scripts\python.exe -m pip install -q --upgrade pip 2>>startup-error.log
+venv\Scripts\python.exe -m pip install -q -r requirements.txt 2>>startup-error.log
+if errorlevel 1 (
+    echo   ERROR: Dependency install failed. See startup-error.log for details.
+    pause
+    exit /b 1
+)
 
 REM Start server
 echo.
 echo   Starting Slimarr on http://localhost:9494
+echo   Open your browser to http://localhost:9494 to get started.
 echo   Press Ctrl+C to stop.
 echo.
-venv\Scripts\python run.py --headless
+venv\Scripts\python.exe run.py --headless 2>>startup-error.log
+if errorlevel 1 (
+    echo.
+    echo   ERROR: Slimarr crashed. Check startup-error.log and data\logs\slimarr.log
+    pause
+)
 "@ | Set-Content "$OutDir\start.bat" -Encoding ASCII
 
 @"
 #!/bin/bash
-set -e
+cd "`$(dirname "`$0")"
 echo ""
 echo "  Slimarr Quick Start"
 echo "  ===================="
 echo ""
 
-PYTHON=`$(command -v python3.12 || command -v python3.13 || command -v python3.11 || command -v python3)`
-if [ -z "`$PYTHON" ]; then echo "Python 3.11+ not found."; exit 1; fi
+PYTHON=`$(command -v python3.12 2>/dev/null || command -v python3.13 2>/dev/null || command -v python3.11 2>/dev/null || command -v python3 2>/dev/null)
+if [ -z "`$PYTHON" ]; then echo "ERROR: Python 3.11+ not found."; exit 1; fi
 
 if [ ! -d venv ]; then
     echo "  Creating virtual environment..."
-    `$PYTHON -m venv venv
+    "`$PYTHON" -m venv venv
 fi
 
-echo "  Installing dependencies..."
-venv/bin/pip install -q --upgrade pip
-venv/bin/pip install -q -r requirements.txt
+echo "  Installing Python dependencies..."
+venv/bin/python -m pip install -q --upgrade pip 2>>startup-error.log
+venv/bin/python -m pip install -q -r requirements.txt 2>>startup-error.log
 
 echo ""
 echo "  Starting Slimarr on http://localhost:9494"
 echo "  Press Ctrl+C to stop."
 echo ""
-venv/bin/python run.py --headless
+venv/bin/python run.py --headless 2>>startup-error.log || {
+    echo ""
+    echo "  ERROR: Slimarr crashed. Check startup-error.log and data/logs/slimarr.log"
+    exit 1
+}
 "@ | Set-Content "$OutDir\start.sh" -Encoding UTF8
 
 # ── Zip it ────────────────────────────────────────────────────────────────────
