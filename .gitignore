@@ -17,8 +17,8 @@ config.yaml
 # Build artifacts
 slimarr-portable.zip
 
-# Frontend build output
-frontend/dist/
+# Frontend build output (tracked so update.bat can pull pre-built frontend)
+# frontend/dist/
 frontend/node_modules/
 
 # Logs

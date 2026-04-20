@@ -61,6 +61,67 @@ foreach ($f in $files) {
     if (Test-Path $src) { Copy-Item $src $OutDir }
 }
 
+# ── Create update script ─────────────────────────────────────────────────────
+@"
+@echo off
+setlocal
+cd /d "%~dp0"
+
+echo.
+echo   Slimarr Updater
+echo   ================
+echo.
+echo   Downloading latest version from GitHub...
+echo.
+
+REM Download latest zip from GitHub
+powershell -Command "Invoke-WebRequest -Uri 'https://github.com/theantipopau/slimarr/archive/refs/heads/main.zip' -OutFile update-tmp.zip"
+if errorlevel 1 (
+    echo   ERROR: Download failed. Check your internet connection.
+    pause
+    exit /b 1
+)
+
+REM Extract to temp folder
+if exist update-tmp rmdir /s /q update-tmp
+powershell -Command "Expand-Archive -Path update-tmp.zip -DestinationPath update-tmp -Force"
+
+REM Copy code files (preserves config.yaml, data/, venv/)
+set SRC=update-tmp\slimarr-main
+
+echo   Updating backend...
+if exist backend rmdir /s /q backend
+xcopy "%SRC%\backend" "backend\" /E /I /Q /Y >nul
+
+echo   Updating frontend...
+if exist "%SRC%\frontend\dist" (
+    if exist "frontend\dist" rmdir /s /q "frontend\dist"
+    xcopy "%SRC%\frontend\dist" "frontend\dist\" /E /I /Q /Y >nul
+) else (
+    echo   NOTE: No pre-built frontend in repo. Keeping current version.
+)
+
+echo   Updating root files...
+for %%F in (requirements.txt run.py tray.py install.ps1 install.sh README.md LICENSE) do (
+    if exist "%SRC%\%%F" copy /Y "%SRC%\%%F" "%%F" >nul
+)
+
+REM Cleanup
+del update-tmp.zip >nul 2>&1
+rmdir /s /q update-tmp >nul 2>&1
+
+echo   Reinstalling dependencies...
+venv\Scripts\python.exe -m pip install -q -r requirements.txt 2>>startup-error.log
+if errorlevel 1 (
+    echo   WARNING: Dependency install had errors. Check startup-error.log
+)
+
+echo.
+echo   Update complete! Run start.bat to launch.
+echo.
+pause
+"@ | Set-Content "$OutDir\update.bat" -Encoding ASCII
+
 # ── Create data dirs ─────────────────────────────────────────────────────────
 foreach ($d in @("data", "data\logs", "data\MediaCover", "data\recycling")) {
     New-Item -ItemType Directory -Path "$OutDir\$d" -Force | Out-Null
