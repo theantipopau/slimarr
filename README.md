@@ -79,7 +79,7 @@ Slimarr is designed to look and feel like a native member of the **\*arr ecosyst
 
 **1. Clone the repository:**
 ```powershell
-git clone https://github.com/yourusername/slimarr.git C:\Slimarr
+git clone https://github.com/theantipopau/slimarr.git C:\Slimarr
 cd C:\Slimarr
 ```
 
