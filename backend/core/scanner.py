@@ -14,6 +14,13 @@ from backend.database import ActivityLog, Movie, async_session
 from backend.realtime.events import emit_event
 
 
+_scan_running = False
+
+
+def is_scan_running() -> bool:
+    return _scan_running
+
+
 async def scan_library() -> int:
     """
     Full library scan. Returns the number of movies processed.
@@ -22,6 +29,19 @@ async def scan_library() -> int:
     3. Fetch TMDB metadata if missing
     4. Emit real-time events
     """
+    global _scan_running
+    if _scan_running:
+        logger.warning("Scan already in progress — skipping duplicate trigger")
+        return 0
+
+    _scan_running = True
+    try:
+        return await _run_scan()
+    finally:
+        _scan_running = False
+
+
+async def _run_scan() -> int:
     from backend.integrations.plex import PlexClient
     from backend.integrations.tmdb import TMDBClient
     from backend.config import get_config
@@ -124,3 +144,4 @@ async def scan_library() -> int:
     await emit_event("scan:completed", {"total_movies": total})
     logger.info(f"Scan completed: {total} movies processed")
     return total
+

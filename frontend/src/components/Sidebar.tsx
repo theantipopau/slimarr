@@ -3,6 +3,7 @@ import logoSrc from '@/assets/logo.png'
 import {
   LayoutDashboard,
   Film,
+  Tv2,
   Activity,
   Download,
   Settings,
@@ -15,6 +16,7 @@ import clsx from 'clsx'
 const links = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/library', icon: Film, label: 'Library' },
+  { to: '/tv', icon: Tv2, label: 'TV Shows' },
   { to: '/activity', icon: Activity, label: 'Activity' },
   { to: '/queue', icon: Download, label: 'Queue' },
   { to: '/settings', icon: Settings, label: 'Settings' },

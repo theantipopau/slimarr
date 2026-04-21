@@ -108,7 +108,15 @@ async def search_for_movie(movie_id: int) -> list[dict]:
         await db.commit()
 
         accepted_count = sum(1 for s in stored if s.decision == "accept")
+        rejected_count = len(stored) - accepted_count
         best_savings = max((s.savings_pct for s in stored if s.decision == "accept"), default=0.0)
+
+        # Log some insights about why things were rejected
+        if rejected_count > 0:
+            res_downgrades = sum(1 for s in stored if s.reject_reason and s.reject_reason.startswith("Resolution downgrade"))
+            larger_size = sum(1 for s in stored if s.reject_reason and s.reject_reason.startswith("Candidate is not smaller"))
+            logger.info(f"Analyzed {len(stored)} results: {accepted_count} accepted, {rejected_count} rejected "
+                        f"({res_downgrades} due to resolution downgrade limit, {larger_size} due to larger size limit).")
 
         await emit_event("search:results", {
             "movie_id": movie.id,

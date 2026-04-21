@@ -69,9 +69,20 @@ async def run_task(task_id: str, background: BackgroundTasks, user=Depends(get_c
 @router.post("/scan")
 async def trigger_scan(background: BackgroundTasks, user=Depends(get_current_user)):
     """Trigger a full library scan in the background."""
-    from backend.core.scanner import scan_library
+    from backend.core.scanner import is_scan_running, scan_library
+    from backend.core.orchestrator import is_running as is_cycle_running
+    if is_scan_running() or is_cycle_running():
+        return {"status": "already_running"}
     background.add_task(scan_library)
     return {"status": "scan_started"}
+
+
+@router.post("/cleanup")
+async def trigger_cleanup(background: BackgroundTasks, user=Depends(get_current_user)):
+    """Trigger a duplicate file cleanup in the library."""
+    from backend.core.cleanup import scan_and_clean_duplicates
+    background.add_task(scan_and_clean_duplicates)
+    return {"status": "cleanup_started"}
 
 
 @router.post("/cycle/start")

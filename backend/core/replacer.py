@@ -73,18 +73,26 @@ async def replace_file(download_id: int) -> bool:
             await db.commit()
             return False
 
+        # Target path calculation
         target_dir = os.path.dirname(original_path)
         ext = os.path.splitext(video_file)[1]
         target_path = os.path.splitext(original_path)[0] + ext
 
         # Recycle bin step: move original to recycle directory (if configured)
         recycle_dir = config.files.recycling_bin
+        recycled_successfully = False
         if recycle_dir:
             os.makedirs(recycle_dir, exist_ok=True)
-            recycled_path = os.path.join(recycle_dir, os.path.basename(original_path))
+            # Include the parent folder name to avoid name collisions in the bin
+            # e.g.  /recycle/MovieFolderName_movie.mkv
+            folder_name = os.path.basename(os.path.dirname(original_path))
+            base_name = os.path.basename(original_path)
+            recycled_name = f"{folder_name}_{base_name}" if folder_name else base_name
+            recycled_path = os.path.join(recycle_dir, recycled_name)
             try:
                 shutil.move(original_path, recycled_path)
                 logger.info(f"Moved original to recycle bin: {recycled_path}")
+                recycled_successfully = True
             except Exception as e:
                 logger.warning(f"Recycle move failed (continuing): {e}")
 
@@ -101,6 +109,14 @@ async def replace_file(download_id: int) -> bool:
             return False
 
         logger.info(f"Replaced: {original_path} → {target_path}")
+
+        # If not recycled and extensions differ, we must explicitly delete the old file
+        if not recycled_successfully and original_path != target_path and os.path.exists(original_path):
+            try:
+                os.remove(original_path)
+                logger.info(f"Deleted old file: {original_path}")
+            except Exception as e:
+                logger.warning(f"Failed to delete old file: {e}")
 
         # Update movie record
         new_size = os.path.getsize(target_path)

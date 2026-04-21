@@ -71,6 +71,10 @@ async def test_connection(service: str, body: Optional[IndexerTestBody] = None, 
         from backend.integrations.radarr import RadarrClient
         return await RadarrClient().test_connection()
 
+    if service == "sonarr":
+        from backend.integrations.sonarr import SonarrClient
+        return await SonarrClient().test_connection()
+
     if service.startswith("indexer-"):
         # Prefer body data (unsaved indexer) over saved config
         if body and body.url:

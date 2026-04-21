@@ -54,6 +54,14 @@ def compare_release(
             f"Candidate is not smaller (+{diff_mb:.0f} MB vs local)"
         )
 
+    # Minimum candidate file size floor (avoid tiny broken encodes)
+    min_size_bytes = config.comparison.minimum_file_size_mb * 1_048_576
+    if min_size_bytes > 0 and candidate_size < min_size_bytes:
+        return _reject(
+            f"Candidate size {candidate_size / 1_048_576:.0f} MB is below "
+            f"minimum {config.comparison.minimum_file_size_mb} MB threshold"
+        )
+
     savings_bytes = local_size - candidate_size
     savings_pct = (savings_bytes / max(local_size, 1)) * 100
 
@@ -82,6 +90,16 @@ def compare_release(
     # Score calculation
     score = savings_pct
 
+    # Language check
+    if config.comparison.preferred_language:
+        pref = config.comparison.preferred_language.lower()
+        # If parsing found explicitly foreign tags but not the preferred one and not multi
+        if parsed.languages and pref not in parsed.languages and 'multi' not in parsed.languages:
+            return _reject(f"Language mismatch (found {','.join(parsed.languages)}, want {pref})")
+        # Add a small bonus if the language is explicitly tagged
+        if pref in parsed.languages:
+            score += 5.0
+            
     cand_codec = normalize_codec(parsed.video_codec or "")
     codec_delta = get_codec_rank(cand_codec) - get_codec_rank(normalize_codec(local_codec))
     score += codec_delta * 0.5

@@ -59,15 +59,19 @@ async def get_savings_history(days: int = 30, user=Depends(get_current_user)):
         )
         logs = result.scalars().all()
 
-    return [
-        {
+    # Build a cumulative series so the chart shows total reclaimed over time
+    running_total = 0
+    series = []
+    for log in logs:
+        running_total += log.savings_bytes or 0
+        series.append({
             "date": log.created_at.isoformat(),
             "movie_title": log.movie_title,
             "savings_bytes": log.savings_bytes,
             "savings_pct": log.savings_pct,
-        }
-        for log in logs
-    ]
+            "cumulative_bytes": running_total,
+        })
+    return series
 
 
 @router.get("/recent-activity")

@@ -76,4 +76,13 @@ export const api = {
     client.post(`/system/tasks/${id}/run`).then((r) => r.data),
   startCycle: () => client.post('/system/cycle/start').then((r) => r.data),
   stopCycle: () => client.post('/system/cycle/stop').then((r) => r.data),
+  cleanupDuplicates: () => client.post('/system/cleanup').then((r) => r.data),
+
+  // TV Shows
+  tvShows: (params?: Record<string, unknown>) =>
+    client.get('/tv/shows', { params }).then((r) => r.data),
+  deleteShow: (
+    ratingKey: string,
+    body: { plex_rating_key: string; title: string; unmonitor_sonarr: boolean },
+  ) => client.delete(`/tv/shows/${ratingKey}`, { data: body }).then((r) => r.data),
 }

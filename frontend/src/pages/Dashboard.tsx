@@ -90,16 +90,17 @@ export default function Dashboard() {
 
       {history.length > 0 && (
         <div className="bg-gray-900 rounded-xl p-5">
-          <h2 className="text-sm font-semibold text-gray-400 mb-4">Savings Last 30 Days</h2>
+          <h2 className="text-sm font-semibold text-gray-400 mb-4">Cumulative Space Reclaimed (Last 30 Days)</h2>
           <ResponsiveContainer width="100%" height={180}>
             <AreaChart data={history}>
               <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#9ca3af' }} tickFormatter={(v) => v.slice(0, 10)} />
               <YAxis tick={{ fontSize: 10, fill: '#9ca3af' }} tickFormatter={(v) => `${(v / 1e9).toFixed(1)}G`} />
               <Tooltip
                 contentStyle={{ background: '#111827', border: 'none' }}
-                formatter={(v: number) => [`${(v / 1e9).toFixed(2)} GB`, 'Saved']}
+                formatter={(v: number) => [`${(v / 1e9).toFixed(2)} GB`, 'Total Reclaimed']}
+                labelFormatter={(l) => l.slice(0, 10)}
               />
-              <Area type="monotone" dataKey="savings_bytes" stroke="#4CAF50" fill="#4CAF5033" strokeWidth={2} />
+              <Area type="monotone" dataKey="cumulative_bytes" stroke="#4CAF50" fill="#4CAF5033" strokeWidth={2} />
             </AreaChart>
           </ResponsiveContainer>
         </div>

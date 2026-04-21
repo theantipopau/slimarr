@@ -16,6 +16,7 @@ class ParsedRelease:
     source: Optional[str] = None        # "bluray" | "remux" | "web-dl" | "webrip" | "hdtv"
     hdr: Optional[str] = None           # "hdr10" | "hdr10+" | "dolby vision" | None (SDR)
     group: Optional[str] = None
+    languages: list[str] = field(default_factory=list)
 
 
 # Resolution priority (higher = better)
@@ -116,6 +117,18 @@ def parse_release_title(title: str) -> ParsedRelease:
     gm = re.search(r'-([a-zA-Z0-9]{2,20})(?:\.[a-z]{2,4})?$', title)
     if gm:
         result.group = gm.group(1)
+
+    # Language
+    langs = []
+    if re.search(r'\bfrench\b|\btruefrench\b|\bvff\b', t): langs.append('french')
+    if re.search(r'\bgerman\b', t): langs.append('german')
+    if re.search(r'\bitalian\b|\bita\b', t): langs.append('italian')
+    if re.search(r'\bspanish\b|\besp\b|\bcastellano\b', t): langs.append('spanish')
+    if re.search(r'\brussian\b|\brus\b', t): langs.append('russian')
+    if re.search(r'\bnordic\b', t): langs.append('nordic')
+    if re.search(r'\benglish\b|\beng\b', t): langs.append('english')
+    if re.search(r'\bmulti\b|\bdual[- ]?audio\b', t): langs.append('multi')
+    result.languages = langs
 
     return result
 

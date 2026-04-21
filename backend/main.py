@@ -73,6 +73,7 @@ from backend.api.library import router as library_router
 from backend.api.queue import router as queue_router
 from backend.api.settings import router as settings_router
 from backend.api.system import router as system_router
+from backend.api.tv import router as tv_router
 from backend.auth.router import router as auth_router
 
 API_PREFIX = "/api/v1"
@@ -84,6 +85,7 @@ app.include_router(activity_router, prefix=API_PREFIX)
 app.include_router(settings_router, prefix=API_PREFIX)
 app.include_router(queue_router, prefix=API_PREFIX)
 app.include_router(system_router, prefix=API_PREFIX)
+app.include_router(tv_router, prefix=API_PREFIX)
 app.include_router(images_router, prefix=API_PREFIX)
 
 # ── Frontend static files ─────────────────────────────────────────────

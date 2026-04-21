@@ -41,7 +41,11 @@ Slimarr is designed to look and feel like a native member of the **\*arr ecosyst
 
 | Queue | Activity | Settings |
 |-------|----------|----------|
-| Live download progress bars with speed and ETA | Full replacement history with savings per movie | Per-service connection testing |
+| Live download progress bars with speed and ETA | Full replacement history with savings per movie | Per-service connection testing, language/codec preferences, Sonarr/Radarr config |
+
+| TV Shows | System | |
+|----------|--------|--|
+| Never-watched and stale show recommendations with disk usage, watch history, and safe one-click deletion | Duplicate cleanup, manual scan, cycle control | |
 
 ---
 
@@ -52,10 +56,15 @@ Slimarr is designed to look and feel like a native member of the **\*arr ecosyst
 - **SABnzbd integration** — submit NZBs and monitor downloads in real time
 - **Plex sync** — reads your library via PlexAPI, refreshes Plex after each replacement
 - **TMDB enrichment** — posters, backdrops, and metadata fetched and cached locally
-- **Smart comparison engine** — configurable minimum savings %, resolution downgrade protection, codec preferences
+- **Smart comparison engine** — configurable minimum savings %, resolution downgrade protection, codec preferences, language filtering
+- **Language filtering** — reject candidates in unwanted languages; prefer English (or any configured language)
+- **AV1/h265 preference** — codec scoring bonus for modern efficient codecs
+- **Minimum file size floor** — skip tiny low-quality candidates regardless of savings %
 - **Real-time UI** — Socket.IO pushes scan progress, download progress, and replacement events to the browser instantly
 - **Toast notifications** — non-intrusive feedback for every action
-- **Recycling bin** — original files moved to a configurable recycle directory before replacement
+- **Recycling bin** — original files moved to a configurable recycle directory before replacement (collision-safe naming)
+- **Duplicate file cleanup** — detect and remove inferior duplicate copies within your Plex library
+- **TV Show Stale Media Sweeper** — Slimarr surfaces never-watched or long-unwatched TV shows with their disk footprint so *you* can decide what to delete; optionally unmonitors in Sonarr to prevent re-download
 - **System tray** — runs as a Windows tray app with one-click open browser
 - **Activity log** — full history of every replacement with old/new size and savings %
 - **Radarr-compatible feel** — sidebar nav, poster grid, quality badges, test connection buttons
@@ -139,6 +148,18 @@ comparison:
   min_savings_percent: 10.0         # Reject candidates saving less than this
   allow_resolution_downgrade: false  # e.g. block 1080p → 720p replacements
   preferred_codecs: ["av1", "h265"]
+  preferred_language: "english"      # Reject foreign-language releases
+  minimum_file_size_mb: 500          # Ignore candidates below this size
+
+radarr:
+  enabled: false
+  url: "http://localhost:7878"
+  api_key: "your-radarr-api-key"
+
+sonarr:
+  enabled: false
+  url: "http://localhost:8989"
+  api_key: "your-sonarr-api-key"
 
 schedule:
   start_time: "01:00"   # UTC
@@ -162,6 +183,7 @@ schedule:
 | HTTP client | httpx (async) |
 | Auth | JWT (PyJWT) + bcrypt |
 | Tray | pystray + Pillow |
+| Sonarr | httpx REST client (v3 API) |
 
 ---
 
@@ -170,16 +192,16 @@ schedule:
 ```
 C:\Slimarr\
 ├── backend/
-│   ├── api/          # FastAPI routers (library, queue, activity, settings, system, dashboard)
+│   ├── api/          # FastAPI routers (library, queue, activity, settings, system, dashboard, tv)
 │   ├── auth/         # JWT authentication
-│   ├── core/         # Business logic (scanner, searcher, comparer, downloader, replacer)
-│   ├── integrations/ # Plex, SABnzbd, TMDB, Prowlarr, Newznab clients
+│   ├── core/         # Business logic (scanner, searcher, comparer, downloader, replacer, cleanup)
+│   ├── integrations/ # Plex, SABnzbd, TMDB, Prowlarr, Newznab, Radarr, Sonarr clients
 │   ├── realtime/     # Socket.IO instance and event emitter
 │   ├── scheduler/    # APScheduler nightly job
 │   └── main.py       # App entry point, static file serving
 ├── frontend/
 │   └── src/
-│       ├── pages/    # Dashboard, Library, MovieDetail, Queue, Activity, Settings, System
+│       ├── pages/    # Dashboard, Library, MovieDetail, Queue, Activity, Settings, System, TVShows
 │       ├── components/ # PosterCard, StatCard, QualityBadge, Toast, Sidebar, Layout
 │       ├── hooks/    # useSocket, useAuth
 │       └── lib/      # api.ts, socket.ts, types.ts
@@ -205,14 +227,24 @@ For each `pending` movie, Slimarr queries Prowlarr (or direct Newznab indexers) 
 Each result is scored against the local file:
 - **Hard reject** if the candidate is not smaller
 - **Hard reject** if savings fall below `min_savings_percent`
+- **Hard reject** if candidate falls below `minimum_file_size_mb`
+- **Hard reject** if candidate has a foreign-language tag and doesn't match `preferred_language`
 - **Configurable** resolution downgrade protection
-- Score considers savings %, codec preference, and release quality
+- Score considers savings %, codec preference (AV1 > h265 > h264), language match bonus, and release quality
 
 ### 4. Download
 The best accepted candidate is submitted to SABnzbd as an NZB. Slimarr polls for progress and emits `download:progress` events for the live progress bar.
 
 ### 5. Replace
-Once complete, the original file is moved to the recycling bin and the new file is moved into place. Plex is refreshed, an activity log entry is written, and a `replace:completed` event is emitted.
+Once complete, the original file is moved to the recycling bin (using a collision-safe name) and the new file is moved into place. Plex is refreshed, an activity log entry is written, and a `replace:completed` event is emitted. If the extension changes, any orphaned old file is explicitly removed.
+
+### 6. TV Show Stale Media Sweeper
+The **TV Shows** page lets you explore your Plex TV library by disk usage and watch history. Slimarr surfaces shows that have never been watched (or not watched within your chosen time window) alongside their total size on disk. Nothing is automatic — you review the suggestions and choose what to delete. Deleting a show:
+1. Optionally unmonitors the series in Sonarr (so it won't be automatically re-downloaded)
+2. Instructs Plex to delete all associated files from disk
+
+### 7. Duplicate File Cleanup
+The System page includes a one-click **Find Duplicates** tool. Slimarr scans Plex for movies that have multiple file copies, scores them by resolution and codec quality, and deletes the inferior copies — keeping the best version.
 
 ---
 

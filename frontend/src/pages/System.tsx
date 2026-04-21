@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 import { useSocket } from '@/hooks/useSocket'
 import { useToast } from '@/components/Toast'
-import { Play, Square, RefreshCw, Database, Clock, Server, CheckCircle, XCircle } from 'lucide-react'
+import { Play, Square, RefreshCw, Database, Clock, Server, CheckCircle, XCircle, Trash2 } from 'lucide-react'
 
 interface ServiceHealth {
   success: boolean
@@ -43,6 +43,7 @@ export default function System() {
   const [services, setServices] = useState<Record<string, ServiceHealth> | null>(null)
   const [starting, setStarting] = useState(false)
   const [scanning, setScanning] = useState(false)
+  const [cleaning, setCleaning] = useState(false)
 
   const loadStatus = () => api.systemStatus().then(setStatus).catch(() => {})
   const loadServices = () => api.servicesHealth().then(setServices).catch(() => {})
@@ -88,6 +89,15 @@ export default function System() {
       await api.scanLibrary()
       toast('Library scan started', 'info')
     } catch { toast('Scan failed to start', 'error') }
+  }
+
+  const cleanDuplicates = async () => {
+    setCleaning(true)
+    try {
+      await api.cleanupDuplicates()
+      toast('Duplicate scan started — check logs for results', 'info')
+    } catch { toast('Failed to start duplicate scan', 'error') }
+    setTimeout(() => setCleaning(false), 8000)
   }
 
   const cycle = (status?.cycle as Record<string, boolean>) ?? {}
@@ -181,6 +191,22 @@ export default function System() {
         >
           <RefreshCw size={14} className={scanning ? 'animate-spin' : ''} />
           {scanning ? 'Scanning…' : 'Scan Now'}
+        </button>
+      </div>
+
+      {/* Duplicate cleanup */}
+      <div className="bg-gray-900 rounded-xl p-5 flex items-center justify-between">
+        <div>
+          <h2 className="font-semibold">Duplicate File Cleanup</h2>
+          <p className="text-xs text-gray-400 mt-0.5">Find movies with multiple files and delete the lower-quality copy. Uses your recycling bin if configured.</p>
+        </div>
+        <button
+          onClick={cleanDuplicates}
+          disabled={cleaning}
+          className="flex items-center gap-2 px-3 py-1.5 rounded bg-gray-700 text-sm hover:bg-gray-600 disabled:opacity-50"
+        >
+          <Trash2 size={14} className={cleaning ? 'animate-pulse' : ''} />
+          {cleaning ? 'Scanning…' : 'Find Duplicates'}
         </button>
       </div>
 

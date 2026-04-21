@@ -53,6 +53,12 @@ class RadarrConfig(BaseModel):
     api_key: str = ""
 
 
+class SonarrConfig(BaseModel):
+    enabled: bool = False
+    url: str = ""
+    api_key: str = ""
+
+
 class TmdbConfig(BaseModel):
     api_key: str = ""
     language: str = "en-US"
@@ -63,6 +69,7 @@ class ComparisonConfig(BaseModel):
     allow_resolution_downgrade: bool = False
     downgrade_min_savings_percent: float = 40.0
     preferred_codecs: list[str] = ["av1", "h265"]
+    preferred_language: str = "english"
     max_candidate_age_days: int = 3650
     minimum_file_size_mb: int = 500
 
@@ -90,6 +97,7 @@ class SlimarrConfig(BaseModel):
     indexers: list[IndexerConfig] = []
     prowlarr: ProwlarrConfig = ProwlarrConfig()
     radarr: RadarrConfig = RadarrConfig()
+    sonarr: SonarrConfig = SonarrConfig()
     tmdb: TmdbConfig = TmdbConfig()
     comparison: ComparisonConfig = ComparisonConfig()
     files: FilesConfig = FilesConfig()

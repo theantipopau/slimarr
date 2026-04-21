@@ -10,6 +10,7 @@ import Activity from '@/pages/Activity'
 import Queue from '@/pages/Queue'
 import Settings from '@/pages/Settings'
 import System from '@/pages/System'
+import TVShows from '@/pages/TVShows'
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
             <Route path="queue" element={<Queue />} />
             <Route path="settings" element={<Settings />} />
             <Route path="system" element={<System />} />
+            <Route path="tv" element={<TVShows />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
