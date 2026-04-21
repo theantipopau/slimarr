@@ -7,16 +7,20 @@ from backend.config import get_config
 
 
 class SonarrClient:
-    def __init__(self) -> None:
+    def __init__(self, url: str | None = None, api_key: str | None = None) -> None:
         config = get_config()
-        self.url = config.sonarr.url.rstrip("/")
-        self.api_key = config.sonarr.api_key
+        self.url = (url or config.sonarr.url).rstrip("/")
+        self.api_key = api_key or config.sonarr.api_key
 
     def _headers(self) -> dict:
         return {"X-Api-Key": self.api_key, "Content-Type": "application/json"}
 
+    def _http(self) -> httpx.AsyncClient:
+        """SSL verification disabled — Sonarr on local network often uses self-signed certs."""
+        return httpx.AsyncClient(timeout=15.0, verify=False)
+
     async def get_all_series(self) -> list[dict]:
-        async with httpx.AsyncClient(timeout=15.0) as client:
+        async with self._http() as client:
             resp = await client.get(f"{self.url}/api/v3/series", headers=self._headers())
             resp.raise_for_status()
             return resp.json()
@@ -50,7 +54,7 @@ class SonarrClient:
         for season in match.get("seasons", []):
             season["monitored"] = False
 
-        async with httpx.AsyncClient(timeout=15.0) as client:
+        async with self._http() as client:
             resp = await client.put(
                 f"{self.url}/api/v3/series/{series_id}",
                 json=match,
@@ -63,7 +67,7 @@ class SonarrClient:
 
     async def test_connection(self) -> dict:
         try:
-            async with httpx.AsyncClient(timeout=10.0) as client:
+            async with self._http() as client:
                 resp = await client.get(
                     f"{self.url}/api/v3/system/status",
                     headers=self._headers(),

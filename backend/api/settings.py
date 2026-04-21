@@ -69,11 +69,19 @@ async def test_connection(service: str, body: Optional[IndexerTestBody] = None, 
 
     if service == "radarr":
         from backend.integrations.radarr import RadarrClient
-        return await RadarrClient().test_connection()
+        url = (body and body.url) or config.radarr.url
+        api_key = (body and body.api_key) or config.radarr.api_key
+        if not url or not url.startswith(("http://", "https://")):
+            return {"success": False, "error": "Enter a valid Radarr URL (including http:// or https://) and try again."}
+        return await RadarrClient(url=url, api_key=api_key).test_connection()
 
     if service == "sonarr":
         from backend.integrations.sonarr import SonarrClient
-        return await SonarrClient().test_connection()
+        url = (body and body.url) or config.sonarr.url
+        api_key = (body and body.api_key) or config.sonarr.api_key
+        if not url or not url.startswith(("http://", "https://")):
+            return {"success": False, "error": "Enter a valid Sonarr URL (including http:// or https://) and try again."}
+        return await SonarrClient(url=url, api_key=api_key).test_connection()
 
     if service.startswith("indexer-"):
         # Prefer body data (unsaved indexer) over saved config

@@ -144,6 +144,21 @@ async def services_health(user=Depends(get_current_user)):
     else:
         results["radarr"] = {"success": False, "error": "Missing URL or API key"}
 
+    # Sonarr
+    if config.sonarr.enabled and config.sonarr.url and config.sonarr.api_key:
+        if not config.sonarr.url.startswith(("http://", "https://")):
+            results["sonarr"] = {"success": False, "error": "URL missing http:// or https:// prefix"}
+        else:
+            try:
+                from backend.integrations.sonarr import SonarrClient
+                results["sonarr"] = await SonarrClient().test_connection()
+            except Exception as e:
+                results["sonarr"] = {"success": False, "error": str(e)}
+    elif not config.sonarr.enabled:
+        results["sonarr"] = {"success": False, "error": "Disabled"}
+    else:
+        results["sonarr"] = {"success": False, "error": "Missing URL or API key"}
+
     # Prowlarr
     if config.prowlarr.enabled and config.prowlarr.url and config.prowlarr.api_key:
         if not config.prowlarr.url.startswith(("http://", "https://")):

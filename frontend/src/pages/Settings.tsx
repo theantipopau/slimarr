@@ -231,7 +231,10 @@ export default function Settings() {
       <section className="bg-gray-900 rounded-xl p-5 space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">Radarr (optional)</h2>
-          <TestConnectionButton service="radarr" />
+          <TestConnectionButton
+            service="radarr"
+            body={{ url: (settings?.radarr as Record<string,unknown>)?.url, api_key: (settings?.radarr as Record<string,unknown>)?.api_key }}
+          />
         </div>
         <div className="flex items-center gap-3">
           <input
@@ -251,7 +254,10 @@ export default function Settings() {
       <section className="bg-gray-900 rounded-xl p-5 space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">Sonarr (optional)</h2>
-          <TestConnectionButton service="sonarr" />
+          <TestConnectionButton
+            service="sonarr"
+            body={{ url: (settings?.sonarr as Record<string,unknown>)?.url, api_key: (settings?.sonarr as Record<string,unknown>)?.api_key }}
+          />
         </div>
         <div className="flex items-center gap-3">
           <input

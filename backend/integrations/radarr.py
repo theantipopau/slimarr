@@ -7,16 +7,20 @@ from backend.config import get_config
 
 
 class RadarrClient:
-    def __init__(self) -> None:
+    def __init__(self, url: str | None = None, api_key: str | None = None) -> None:
         config = get_config()
-        self.url = config.radarr.url.rstrip("/")
-        self.api_key = config.radarr.api_key
+        self.url = (url or config.radarr.url).rstrip("/")
+        self.api_key = api_key or config.radarr.api_key
 
     def _headers(self) -> dict:
         return {"X-Api-Key": self.api_key}
 
+    def _http(self) -> httpx.AsyncClient:
+        """Return an httpx client with SSL verification disabled for private IPs."""
+        return httpx.AsyncClient(timeout=15.0, verify=False)
+
     async def _get(self, endpoint: str, params: dict | None = None) -> dict | list:
-        async with httpx.AsyncClient(timeout=15.0) as client:
+        async with self._http() as client:
             resp = await client.get(
                 f"{self.url}/api/v3{endpoint}",
                 params=params,
@@ -26,7 +30,7 @@ class RadarrClient:
             return resp.json()
 
     async def _post(self, endpoint: str, body: dict) -> dict:
-        async with httpx.AsyncClient(timeout=15.0) as client:
+        async with self._http() as client:
             resp = await client.post(
                 f"{self.url}/api/v3{endpoint}",
                 json=body,
