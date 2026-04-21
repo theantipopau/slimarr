@@ -1,10 +1,11 @@
 """
 System tray application — pystray icon with menu.
+Works in both dev mode (run directly) and as a PyInstaller bundle.
 """
 from __future__ import annotations
 
 import os
-import subprocess
+import shutil
 import sys
 import threading
 import webbrowser
@@ -12,16 +13,53 @@ import webbrowser
 from PIL import Image
 
 
+def _resource_dir() -> str:
+    """Directory containing bundled resources (images/, frontend/dist/)."""
+    if getattr(sys, 'frozen', False):
+        return os.path.dirname(sys.executable)
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+def _data_dir() -> str:
+    """
+    User data directory (config.yaml, data/slimarr.db, logs/).
+    - Bundled: %AppData%\Slimarr
+    - Dev:     same folder as tray.py
+    """
+    if getattr(sys, 'frozen', False):
+        appdata = os.environ.get('APPDATA', os.path.expanduser('~'))
+        return os.path.join(appdata, 'Slimarr')
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+def _ensure_data_dir() -> str:
+    """Create data dir and seed a default config.yaml if missing."""
+    data = _data_dir()
+    os.makedirs(data, exist_ok=True)
+    os.makedirs(os.path.join(data, 'data'), exist_ok=True)
+
+    cfg_path = os.path.join(data, 'config.yaml')
+    if not os.path.exists(cfg_path):
+        # Seed from bundled template if available
+        template = os.path.join(_resource_dir(), 'config.yaml.example')
+        if os.path.exists(template):
+            shutil.copy(template, cfg_path)
+        else:
+            # Write minimal defaults
+            with open(cfg_path, 'w') as f:
+                f.write('# Slimarr configuration\n# Edit these settings via the web UI at http://localhost:9494\nserver:\n  port: 9494\n')
+    return cfg_path
+
+
 def _get_icon_path() -> str:
-    here = os.path.dirname(os.path.abspath(__file__))
-    return os.path.join(here, "images", "icon.PNG")
+    return os.path.join(_resource_dir(), 'images', 'icon.PNG')
 
 
 def _open_browser(icon=None, item=None) -> None:
     from backend.config import get_config
     config = get_config()
     port = config.server.port
-    webbrowser.open(f"http://localhost:{port}")
+    webbrowser.open(f'http://localhost:{port}')
 
 
 _server_thread: threading.Thread | None = None
@@ -31,15 +69,18 @@ _server_running = False
 def _start_server() -> None:
     global _server_running
     import uvicorn
-    from backend.config import get_config, load_config
+    from backend.config import get_config, load_config, set_config_path
 
-    # Ensure config is loaded
-    load_config(os.path.join(os.path.dirname(__file__), "config.yaml"))
+    cfg_path = _ensure_data_dir()
+    # Tell config module where to find config.yaml (important for bundled app)
+    set_config_path(cfg_path)
+    # Also change CWD to data dir so relative db path in SQLAlchemy resolves correctly
+    os.chdir(_data_dir())
     config = get_config()
 
     _server_running = True
     uvicorn.run(
-        "backend.main:socket_app",
+        'backend.main:socket_app',
         host=config.server.host,
         port=config.server.port,
         log_level=config.server.log_level.lower(),
