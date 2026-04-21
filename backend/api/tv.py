@@ -7,6 +7,7 @@ user confirmation from the UI.
 """
 from __future__ import annotations
 
+import asyncio
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -64,7 +65,8 @@ async def list_shows(
     plex = PlexClient()
 
     try:
-        shows = plex.get_all_shows()
+        loop = asyncio.get_event_loop()
+        shows = await loop.run_in_executor(None, plex.get_all_shows)
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"Plex connection failed: {e}")
 
@@ -149,7 +151,8 @@ async def delete_show(
 
     # Step 2: Delete from Plex (removes files from disk)
     try:
-        deleted = plex.delete_show(plex_rating_key)
+        loop = asyncio.get_event_loop()
+        deleted = await loop.run_in_executor(None, plex.delete_show, plex_rating_key)
         result["plex_deleted"] = deleted
         if deleted:
             logger.info(f"TV Cleanup: Deleted '{body.title}' from Plex and disk")

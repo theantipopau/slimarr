@@ -95,56 +95,71 @@ class PlexClient:
         Return all TV shows across all TV library sections with file size
         and watch history data.
 
+        Uses batch fetching (one episodes search per section, one shows fetch
+        per section) to minimise round-trips to the Plex server.
+
         Each dict has:
           plex_rating_key, title, year, total_size_bytes, episode_count,
           poster_path, last_watched_at (ISO string or None),
           watched_by (list of usernames who have any watch history),
-          never_watched (bool — True if zero plays across all accounts)
+          never_watched (bool)
         """
-        import os
-        from datetime import timezone
-
         server = self._get_server()
         shows: list[dict] = []
 
         tv_sections = [s for s in server.library.sections() if s.type == "show"]
 
         for section in tv_sections:
-            for show in section.all():
-                # Aggregate file sizes across all episodes
-                total_size = 0
-                episode_count = 0
-                for episode in show.episodes():
-                    for media in episode.media:
+            # --- 1. Batch-fetch all episodes (single HTTP request) to sum sizes ---
+            show_sizes: dict[str, int] = {}
+            show_ep_counts: dict[str, int] = {}
+            try:
+                all_episodes = section.search(libtype="episode")
+                for ep in all_episodes:
+                    key = str(ep.grandparentRatingKey)
+                    for media in ep.media:
                         for part in media.parts:
-                            total_size += part.size or 0
-                    episode_count += 1
+                            show_sizes[key] = show_sizes.get(key, 0) + (part.size or 0)
+                    show_ep_counts[key] = show_ep_counts.get(key, 0) + 1
+            except Exception:
+                pass  # fall back to per-show episode iteration below
 
-                # Pull watch history — history() returns ViewedItem objects
+            # --- 2. Iterate shows (already loaded by section.all()) ---
+            for show in section.all():
+                key = str(show.ratingKey)
+
+                total_size = show_sizes.get(key, 0)
+                episode_count = show_ep_counts.get(key, 0)
+
+                # Fall back to per-show episode iteration if batch failed
+                if total_size == 0 and episode_count == 0:
+                    for episode in show.episodes():
+                        for media in episode.media:
+                            for part in media.parts:
+                                total_size += part.size or 0
+                        episode_count += 1
+
+                # --- 3. Watch history per show ---
                 last_watched_at = None
                 watched_by: list[str] = []
                 try:
                     history = show.history()
                     for entry in history:
-                        username = getattr(entry, "username", None) or getattr(entry, "accountID", "unknown")
+                        username = (
+                            getattr(entry, "username", None)
+                            or str(getattr(entry, "accountID", "unknown"))
+                        )
                         if username not in watched_by:
-                            watched_by.append(str(username))
+                            watched_by.append(username)
                         viewed_at = getattr(entry, "viewedAt", None)
                         if viewed_at is not None:
-                            # plexapi returns a datetime; convert to UTC ISO string
-                            if hasattr(viewed_at, "isoformat"):
-                                ts = viewed_at.isoformat()
-                            else:
-                                ts = str(viewed_at)
+                            ts = viewed_at.isoformat() if hasattr(viewed_at, "isoformat") else str(viewed_at)
                             if last_watched_at is None or ts > last_watched_at:
                                 last_watched_at = ts
                 except Exception:
-                    pass  # history() may fail if Plex account has no history enabled
+                    pass  # history() may fail on managed accounts or restricted servers
 
-                # Poster path (TMDB-style /t/p/... path stored in thumb)
-                poster_path = getattr(show, "thumb", None)
-
-                # Extract IDs
+                # Extract IDs from guids
                 tvdb_id = None
                 imdb_id = None
                 for guid in (show.guids or []):
@@ -158,14 +173,14 @@ class PlexClient:
                         imdb_id = gid.replace("imdb://", "")
 
                 shows.append({
-                    "plex_rating_key": str(show.ratingKey),
+                    "plex_rating_key": key,
                     "title": show.title,
                     "year": show.year,
                     "tvdb_id": tvdb_id,
                     "imdb_id": imdb_id,
                     "total_size_bytes": total_size,
                     "episode_count": episode_count,
-                    "poster_path": poster_path,
+                    "poster_path": getattr(show, "thumb", None),
                     "last_watched_at": last_watched_at,
                     "watched_by": watched_by,
                     "never_watched": len(watched_by) == 0,
