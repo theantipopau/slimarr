@@ -184,4 +184,20 @@ async def services_health(user=Depends(get_current_user)):
     else:
         results["tmdb"] = {"success": False, "error": "Disabled"}
 
+    # Indexers
+    indexer_results = []
+    for idx in config.indexers:
+        if not idx.name or not idx.url:
+            continue
+        if not idx.url.startswith(("http://", "https://")):
+            indexer_results.append({"name": idx.name, "success": False, "error": "Invalid URL"})
+            continue
+        try:
+            from backend.integrations.newznab import NewznabClient
+            status = await NewznabClient(idx).test_connection()
+            indexer_results.append({"name": idx.name, "success": status.get("success", False), "error": status.get("error")})
+        except Exception as e:
+            indexer_results.append({"name": idx.name, "success": False, "error": str(e)})
+    results["indexers"] = indexer_results
+
     return results

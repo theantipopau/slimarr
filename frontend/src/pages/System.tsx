@@ -13,6 +13,12 @@ interface ServiceHealth {
   indexer_count?: number
 }
 
+interface IndexerHealth {
+  name: string
+  success: boolean
+  error?: string
+}
+
 function fmtUptime(secs: number) {
   const h = Math.floor(secs / 3600)
   const m = Math.floor((secs % 3600) / 60)
@@ -150,9 +156,9 @@ export default function System() {
           </button>
         </div>
         <div className="divide-y divide-gray-800">
-          {(['plex', 'sabnzbd', 'radarr', 'prowlarr', 'tmdb'] as const).map((svc) => {
+          {(['plex', 'sabnzbd', 'radarr', 'sonarr', 'prowlarr', 'tmdb'] as const).map((svc) => {
             const h = services?.[svc]
-            const label = { plex: 'Plex', sabnzbd: 'SABnzbd', radarr: 'Radarr', prowlarr: 'Prowlarr', tmdb: 'TMDB' }[svc]
+            const label = { plex: 'Plex', sabnzbd: 'SABnzbd', radarr: 'Radarr', sonarr: 'Sonarr', prowlarr: 'Prowlarr', tmdb: 'TMDB' }[svc]
             const isDisabled = h && !h.success && h.error === 'Disabled'
             const detail = isDisabled
               ? 'Disabled'
@@ -176,6 +182,25 @@ export default function System() {
             )
           })}
         </div>
+        {/* Indexers */}
+        {services && (services['indexers'] as unknown as IndexerHealth[] | undefined)?.length ? (
+          <>
+            <div className="px-4 py-2 border-t border-gray-800 text-xs text-gray-500 font-medium uppercase tracking-wide">Indexers</div>
+            {(services['indexers'] as unknown as IndexerHealth[]).map((idx) => (
+              <div key={idx.name} className="px-4 py-2.5 flex items-center gap-3 text-sm border-t border-gray-800">
+                {idx.success ? (
+                  <CheckCircle size={14} className="text-green-400 shrink-0" />
+                ) : (
+                  <XCircle size={14} className="text-red-400 shrink-0" />
+                )}
+                <span className="font-medium">{idx.name}</span>
+                {!idx.success && idx.error && (
+                  <span className="text-xs text-gray-500 truncate">{idx.error}</span>
+                )}
+              </div>
+            ))}
+          </>
+        ) : null}
       </div>
 
       {/* Scan library */}
