@@ -75,7 +75,8 @@ class SABnzbdClient:
         for item in queue:
             if item["nzo_id"] == nzo_id:
                 return {**item, "location": "queue"}
-        history = await self.get_history(limit=100)
+        # Search a large history window so recently-completed jobs are not missed
+        history = await self.get_history(limit=500)
         for item in history:
             if item["nzo_id"] == nzo_id:
                 return {**item, "location": "history"}

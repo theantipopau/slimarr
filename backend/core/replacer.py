@@ -47,22 +47,26 @@ async def replace_file(download_id: int) -> bool:
 
         storage_path = dl.storage_path
         if not storage_path or not os.path.exists(storage_path):
-            err = f"Downloaded storage path missing: {storage_path}"
+            err = f"Downloaded storage path missing or inaccessible: {storage_path!r}"
             logger.error(err)
             dl.status = "failed"
             dl.error_message = err
             await db.commit()
             return False
 
+        logger.info(f"Replace starting — storage_path={storage_path!r}")
+
         # Find the actual video file inside the SABnzbd completed folder
         video_file = _find_video_file(storage_path) if os.path.isdir(storage_path) else storage_path
         if not video_file:
-            err = f"No video file found in {storage_path}"
+            err = f"No video file found in {storage_path!r}"
             logger.error(err)
             dl.status = "failed"
             dl.error_message = err
             await db.commit()
             return False
+
+        logger.info(f"Video file found: {video_file!r}")
 
         original_path = movie.file_path
         if not original_path:
@@ -73,10 +77,20 @@ async def replace_file(download_id: int) -> bool:
             await db.commit()
             return False
 
+        logger.info(f"Original Plex path: {original_path!r}")
+
+        if not os.path.exists(original_path):
+            logger.warning(
+                f"Original file does not exist at {original_path!r} — "
+                "it may have been moved or deleted already. Proceeding with placement only."
+            )
+
         # Target path calculation
         target_dir = os.path.dirname(original_path)
         ext = os.path.splitext(video_file)[1]
         target_path = os.path.splitext(original_path)[0] + ext
+
+        logger.info(f"Target dir: {target_dir!r} — target path: {target_path!r}")
 
         # Recycle bin step: move original to recycle directory (if configured)
         recycle_dir = config.files.recycling_bin
@@ -97,7 +111,18 @@ async def replace_file(download_id: int) -> bool:
                 logger.warning(f"Recycle move failed (continuing): {e}")
 
         # Move new file into place
+        if not os.path.isdir(target_dir):
+            logger.error(
+                f"Target directory does not exist: {target_dir!r} — "
+                "check that the Plex library path is accessible from Slimarr"
+            )
+            dl.status = "failed"
+            dl.error_message = f"Target directory not found: {target_dir}"
+            await db.commit()
+            return False
+
         os.makedirs(target_dir, exist_ok=True)
+        logger.info(f"Moving {video_file!r} → {target_path!r}")
         try:
             shutil.move(video_file, target_path)
         except Exception as e:
@@ -108,7 +133,7 @@ async def replace_file(download_id: int) -> bool:
             await db.commit()
             return False
 
-        logger.info(f"Replaced: {original_path} → {target_path}")
+        logger.info(f"File move succeeded. New size: {os.path.getsize(target_path):,} bytes")
 
         # If not recycled and extensions differ, we must explicitly delete the old file
         if not recycled_successfully and original_path != target_path and os.path.exists(original_path):

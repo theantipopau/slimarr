@@ -67,6 +67,8 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
     from backend.integrations.sabnzbd import SABnzbdClient
 
     sab = SABnzbdClient()
+    consecutive_none = 0  # count polls where job is not found at all
+    MAX_NONE_RETRIES = 6  # ~30s of grace before giving up
 
     while True:
         await asyncio.sleep(poll_interval)
@@ -84,16 +86,36 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
                 continue
 
             if status is None:
-                # Job disappeared from both queue and history
-                if dl.progress_pct and dl.progress_pct >= 99:
+                consecutive_none += 1
+                logger.warning(
+                    f"Download {download_id}: job not found in SABnzbd queue or history "
+                    f"(attempt {consecutive_none}/{MAX_NONE_RETRIES})"
+                )
+                if consecutive_none < MAX_NONE_RETRIES:
+                    # Race condition: job may be moving from queue to history — retry
+                    continue
+                # Exhausted retries
+                if dl.progress_pct and dl.progress_pct >= 50:
+                    logger.warning(
+                        f"Download {download_id}: marking as completed based on "
+                        f"{dl.progress_pct:.0f}% progress (job disappeared from SABnzbd)"
+                    )
                     dl.status = "completed"
                 else:
+                    logger.error(
+                        f"Download {download_id}: marking as failed — job not found in SABnzbd "
+                        f"after {MAX_NONE_RETRIES} retries (progress was {dl.progress_pct or 0:.0f}%)"
+                    )
                     dl.status = "failed"
                     dl.error_message = "Job not found in SABnzbd"
                 await db.commit()
-                await emit_event("download:failed" if dl.status == "failed" else "download:completed",
-                                 {"download_id": dl.id, "movie_id": dl.movie_id})
+                await emit_event(
+                    "download:failed" if dl.status == "failed" else "download:completed",
+                    {"download_id": dl.id, "movie_id": dl.movie_id},
+                )
                 return dl.status
+            else:
+                consecutive_none = 0  # reset on any successful status response
 
             location = status.get("location", "queue")
 
@@ -113,6 +135,10 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
             elif location == "history":
                 sab_status = status.get("status", "").lower()
                 dl.storage_path = status.get("storage", "")
+                logger.info(
+                    f"Download {download_id}: found in SABnzbd history — "
+                    f"sab_status={sab_status!r} storage={dl.storage_path!r}"
+                )
 
                 if sab_status in ("completed", "repaired"):
                     dl.status = "completed"
