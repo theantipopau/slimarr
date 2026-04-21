@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { api } from '@/lib/api'
 import { useToast } from '@/components/Toast'
-import { Tv2, HardDrive, Eye, EyeOff, Trash2, RefreshCw, AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react'
+import { Tv2, Eye, Trash2, RefreshCw, AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react'
 
 interface TVShow {
   plex_rating_key: string
@@ -122,7 +122,7 @@ interface ShowRowProps {
   onDelete: (show: TVShow) => void
 }
 
-function ShowRow({ show, staleDays, sonarrEnabled, onDelete }: ShowRowProps) {
+function ShowRow({ show, staleDays, onDelete }: ShowRowProps) {
   const [expanded, setExpanded] = useState(false)
   const s = staleness(show, staleDays)
 
