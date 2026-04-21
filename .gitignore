@@ -6,8 +6,8 @@ __pycache__/
 *.pyd
 .Python
 *.egg-info/
-dist/
-build/
+backend/dist/
+backend/build/
 .eggs/
 
 # Data (user-specific, never commit)
