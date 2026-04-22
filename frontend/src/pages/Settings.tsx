@@ -348,6 +348,60 @@ export default function Settings() {
         {field('Recycling Bin Cleanup (days)', ['files', 'recycling_bin_cleanup_days'], 'number')}
       </section>
 
+      {/* Path Mappings */}
+      <section className="bg-gray-900 rounded-xl p-5 space-y-3">
+        <div>
+          <h2 className="font-semibold">Path Mappings</h2>
+          <p className="text-xs text-gray-400 mt-1">
+            If Plex reports file paths that Slimarr can't access directly (e.g. different machine or mount point),
+            map the Plex-reported prefix to the locally accessible equivalent.
+            Example: Plex path <code className="text-gray-300">/data/media</code> → Local path <code className="text-gray-300">E:/media</code>
+          </p>
+        </div>
+        {((settings?.files as Record<string,unknown>)?.plex_path_mappings as Array<{plex_path:string,local_path:string}> | undefined ?? []).map((mapping, i) => (
+          <div key={i} className="flex gap-2 items-center">
+            <input
+              type="text"
+              placeholder="Plex path (e.g. /data/media)"
+              value={mapping.plex_path}
+              onChange={(e) => {
+                const maps = [...((settings?.files as Record<string,unknown>)?.plex_path_mappings as Array<{plex_path:string,local_path:string}> ?? [])]
+                maps[i] = { ...maps[i], plex_path: e.target.value }
+                set(['files', 'plex_path_mappings'], maps as unknown as string)
+              }}
+              className="flex-1 bg-gray-800 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
+            />
+            <span className="text-gray-500 text-sm">→</span>
+            <input
+              type="text"
+              placeholder="Local path (e.g. E:/media)"
+              value={mapping.local_path}
+              onChange={(e) => {
+                const maps = [...((settings?.files as Record<string,unknown>)?.plex_path_mappings as Array<{plex_path:string,local_path:string}> ?? [])]
+                maps[i] = { ...maps[i], local_path: e.target.value }
+                set(['files', 'plex_path_mappings'], maps as unknown as string)
+              }}
+              className="flex-1 bg-gray-800 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
+            />
+            <button
+              onClick={() => {
+                const maps = ((settings?.files as Record<string,unknown>)?.plex_path_mappings as Array<{plex_path:string,local_path:string}> ?? []).filter((_, j) => j !== i)
+                set(['files', 'plex_path_mappings'], maps as unknown as string)
+              }}
+              className="text-red-400 hover:text-red-300 px-2 text-lg leading-none"
+              title="Remove mapping"
+            >×</button>
+          </div>
+        ))}
+        <button
+          onClick={() => {
+            const maps = [...((settings?.files as Record<string,unknown>)?.plex_path_mappings as Array<{plex_path:string,local_path:string}> ?? []), { plex_path: '', local_path: '' }]
+            set(['files', 'plex_path_mappings'], maps as unknown as string)
+          }}
+          className="text-sm text-brand-green hover:text-green-300"
+        >+ Add Mapping</button>
+      </section>
+
       {/* Schedule */}
       <section className="bg-gray-900 rounded-xl p-5 space-y-3">
         <h2 className="font-semibold">Schedule</h2>

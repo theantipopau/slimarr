@@ -17,6 +17,9 @@ router = APIRouter(prefix="/system", tags=["system"])
 _start_time = datetime.now(timezone.utc)
 
 
+CURRENT_VERSION = "1.0.0"
+GITHUB_REPO = "theantipopau/slimarr"
+
 @router.get("/health")
 async def health():
     return {"status": "ok"}
@@ -32,12 +35,52 @@ async def get_system_info(user=Depends(get_current_user)):
     uptime_seconds = int((datetime.now(timezone.utc) - _start_time).total_seconds())
 
     return {
-        "version": "1.0.0",
+        "version": CURRENT_VERSION,
         "python": sys.version.split()[0],
         "platform": platform.system(),
         "uptime_seconds": uptime_seconds,
         "db_size_bytes": db_size,
         "port": cfg.server.port,
+    }
+
+
+@router.get("/update-check")
+async def check_for_update(user=Depends(get_current_user)):
+    """Check GitHub releases for a newer version."""
+    import httpx
+    try:
+        async with httpx.AsyncClient(timeout=8.0) as client:
+            resp = await client.get(
+                f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest",
+                headers={"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"},
+            )
+            if resp.status_code == 404:
+                # No releases published yet
+                return {"update_available": False, "current": CURRENT_VERSION, "latest": CURRENT_VERSION}
+            resp.raise_for_status()
+            data = resp.json()
+    except Exception as e:
+        return {"update_available": False, "current": CURRENT_VERSION, "error": str(e)}
+
+    latest_tag = data.get("tag_name", "").lstrip("v")
+    latest_name = data.get("name", latest_tag)
+    release_url = data.get("html_url", f"https://github.com/{GITHUB_REPO}/releases/latest")
+    published_at = data.get("published_at", "")
+
+    def _version_tuple(v: str):
+        try:
+            return tuple(int(x) for x in v.split("."))
+        except Exception:
+            return (0,)
+
+    update_available = _version_tuple(latest_tag) > _version_tuple(CURRENT_VERSION)
+    return {
+        "update_available": update_available,
+        "current": CURRENT_VERSION,
+        "latest": latest_tag,
+        "latest_name": latest_name,
+        "release_url": release_url,
+        "published_at": published_at,
     }
 
 

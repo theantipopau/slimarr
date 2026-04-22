@@ -24,15 +24,53 @@ def _find_video_file(directory: str) -> str | None:
     return None
 
 
+def _cleanup_download_folder(storage_path: str) -> None:
+    """Remove the SABnzbd download folder. Called on both success and failure."""
+    if not storage_path:
+        return
+    try:
+        if os.path.isdir(storage_path):
+            shutil.rmtree(storage_path, ignore_errors=True)
+            logger.info(f"Cleaned up download folder: {storage_path!r}")
+        elif os.path.isfile(storage_path):
+            os.remove(storage_path)
+            logger.info(f"Cleaned up download file: {storage_path!r}")
+    except Exception as e:
+        logger.warning(f"Cleanup of {storage_path!r} failed (non-fatal): {e}")
+
+
+def _apply_path_mapping(path: str, mappings: list) -> str:
+    """
+    Translate a Plex-reported file path to the local path Slimarr can write to.
+    Mappings: list of dicts with 'plex_path' and 'local_path' keys.
+    Example: plex_path=/data/media, local_path=E:/media
+    """
+    if not path or not mappings:
+        return path
+    # Normalise separators for comparison
+    norm = path.replace("\\", "/")
+    for m in mappings:
+        plex_pfx = m.get("plex_path", "").rstrip("/\\").replace("\\", "/")
+        local_pfx = m.get("local_path", "").rstrip("/\\")
+        if plex_pfx and norm.startswith(plex_pfx + "/"):
+            remainder = path[len(plex_pfx):].lstrip("/\\")
+            mapped = os.path.join(local_pfx, remainder)
+            logger.info(f"Path mapping applied: {path!r} → {mapped!r}")
+            return mapped
+    return path
+
+
 async def replace_file(download_id: int) -> bool:
     """
     Move the downloaded file to the library, remove the old file,
     refresh Plex. Returns True on success.
+    Always cleans up the SABnzbd download folder regardless of outcome.
     """
     from backend.config import get_config
     from backend.integrations.plex import PlexClient
 
     config = get_config()
+    storage_path: str = ""
 
     async with async_session() as db:
         dl_result = await db.execute(select(Download).where(Download.id == download_id))
@@ -52,6 +90,7 @@ async def replace_file(download_id: int) -> bool:
             dl.status = "failed"
             dl.error_message = err
             await db.commit()
+            _cleanup_download_folder(storage_path)
             return False
 
         logger.info(f"Replace starting — storage_path={storage_path!r}")
@@ -64,6 +103,7 @@ async def replace_file(download_id: int) -> bool:
             dl.status = "failed"
             dl.error_message = err
             await db.commit()
+            _cleanup_download_folder(storage_path)
             return False
 
         logger.info(f"Video file found: {video_file!r}")
@@ -75,20 +115,27 @@ async def replace_file(download_id: int) -> bool:
             dl.status = "failed"
             dl.error_message = err
             await db.commit()
+            _cleanup_download_folder(storage_path)
             return False
 
         logger.info(f"Original Plex path: {original_path!r}")
 
-        if not os.path.exists(original_path):
+        # Apply path mappings (Plex-reported path → locally accessible path)
+        path_mappings = getattr(config.files, 'plex_path_mappings', [])
+        mapped_path = _apply_path_mapping(original_path, path_mappings)
+        if mapped_path != original_path:
+            logger.info(f"Mapped original path: {mapped_path!r}")
+
+        if not os.path.exists(mapped_path):
             logger.warning(
-                f"Original file does not exist at {original_path!r} — "
+                f"Original file does not exist at {mapped_path!r} — "
                 "it may have been moved or deleted already. Proceeding with placement only."
             )
 
         # Target path calculation
-        target_dir = os.path.dirname(original_path)
+        target_dir = os.path.dirname(mapped_path)
         ext = os.path.splitext(video_file)[1]
-        target_path = os.path.splitext(original_path)[0] + ext
+        target_path = os.path.splitext(mapped_path)[0] + ext
 
         logger.info(f"Target dir: {target_dir!r} — target path: {target_path!r}")
 
@@ -97,14 +144,12 @@ async def replace_file(download_id: int) -> bool:
         recycled_successfully = False
         if recycle_dir:
             os.makedirs(recycle_dir, exist_ok=True)
-            # Include the parent folder name to avoid name collisions in the bin
-            # e.g.  /recycle/MovieFolderName_movie.mkv
-            folder_name = os.path.basename(os.path.dirname(original_path))
-            base_name = os.path.basename(original_path)
+            folder_name = os.path.basename(os.path.dirname(mapped_path))
+            base_name = os.path.basename(mapped_path)
             recycled_name = f"{folder_name}_{base_name}" if folder_name else base_name
             recycled_path = os.path.join(recycle_dir, recycled_name)
             try:
-                shutil.move(original_path, recycled_path)
+                shutil.move(mapped_path, recycled_path)
                 logger.info(f"Moved original to recycle bin: {recycled_path}")
                 recycled_successfully = True
             except Exception as e:
@@ -114,11 +159,13 @@ async def replace_file(download_id: int) -> bool:
         if not os.path.isdir(target_dir):
             logger.error(
                 f"Target directory does not exist: {target_dir!r} — "
-                "check that the Plex library path is accessible from Slimarr"
+                "check that the Plex library path is accessible from Slimarr, "
+                "or configure a path mapping in Settings."
             )
             dl.status = "failed"
             dl.error_message = f"Target directory not found: {target_dir}"
             await db.commit()
+            _cleanup_download_folder(storage_path)
             return False
 
         os.makedirs(target_dir, exist_ok=True)
@@ -131,15 +178,16 @@ async def replace_file(download_id: int) -> bool:
             dl.status = "failed"
             dl.error_message = err
             await db.commit()
+            _cleanup_download_folder(storage_path)
             return False
 
         logger.info(f"File move succeeded. New size: {os.path.getsize(target_path):,} bytes")
 
-        # If not recycled and extensions differ, we must explicitly delete the old file
-        if not recycled_successfully and original_path != target_path and os.path.exists(original_path):
+        # If not recycled and extensions differ, explicitly delete the old file
+        if not recycled_successfully and mapped_path != target_path and os.path.exists(mapped_path):
             try:
-                os.remove(original_path)
-                logger.info(f"Deleted old file: {original_path}")
+                os.remove(mapped_path)
+                logger.info(f"Deleted old file: {mapped_path}")
             except Exception as e:
                 logger.warning(f"Failed to delete old file: {e}")
 
@@ -200,11 +248,7 @@ async def replace_file(download_id: int) -> bool:
             except Exception as e:
                 logger.warning(f"Radarr rescan failed: {e}")
 
-        # Clean up SABnzbd directory if it was a folder
-        if os.path.isdir(storage_path):
-            try:
-                shutil.rmtree(storage_path, ignore_errors=True)
-            except Exception:
-                pass
+        # Clean up the SABnzbd download folder now that we're done with it
+        _cleanup_download_folder(storage_path)
 
         return True

@@ -74,10 +74,16 @@ class ComparisonConfig(BaseModel):
     minimum_file_size_mb: int = 500
 
 
+class PathMapping(BaseModel):
+    plex_path: str = ""
+    local_path: str = ""
+
+
 class FilesConfig(BaseModel):
     recycling_bin: str = "./data/recycling"
     recycling_bin_cleanup_days: int = 30
     verify_after_download: bool = True
+    plex_path_mappings: list[PathMapping] = []
 
 
 class ScheduleConfig(BaseModel):

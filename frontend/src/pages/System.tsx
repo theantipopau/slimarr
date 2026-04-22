@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 import { useSocket } from '@/hooks/useSocket'
 import { useToast } from '@/components/Toast'
-import { Play, Square, RefreshCw, Database, Clock, Server, CheckCircle, XCircle, Trash2 } from 'lucide-react'
+import { Play, Square, RefreshCw, Database, Clock, Server, CheckCircle, XCircle, Trash2, ArrowUpCircle } from 'lucide-react'
 
 interface ServiceHealth {
   success: boolean
@@ -50,6 +50,7 @@ export default function System() {
   const [starting, setStarting] = useState(false)
   const [scanning, setScanning] = useState(false)
   const [cleaning, setCleaning] = useState(false)
+  const [updateInfo, setUpdateInfo] = useState<{ update_available: boolean; latest?: string; release_url?: string } | null>(null)
 
   const loadStatus = () => api.systemStatus().then(setStatus).catch(() => {})
   const loadServices = () => api.servicesHealth().then(setServices).catch(() => {})
@@ -57,6 +58,7 @@ export default function System() {
   useEffect(() => {
     loadStatus()
     api.systemInfo().then(setInfo).catch(() => {})
+    api.updateCheck().then(setUpdateInfo).catch(() => {})
     loadServices()
     const iv = setInterval(loadStatus, 10000)
     return () => clearInterval(iv)
@@ -120,7 +122,21 @@ export default function System() {
             <Server size={16} className="text-gray-400" />
             <div>
               <p className="text-xs text-gray-400">Version</p>
-              <p className="text-sm font-medium">Slimarr {info.version}</p>
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-medium">Slimarr {info.version}</p>
+                {updateInfo?.update_available && (
+                  <a
+                    href={updateInfo.release_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-xs bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 rounded-full px-2 py-0.5 hover:bg-yellow-500/30"
+                    title={`v${updateInfo.latest} available`}
+                  >
+                    <ArrowUpCircle size={11} />
+                    v{updateInfo.latest} available
+                  </a>
+                )}
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3">
