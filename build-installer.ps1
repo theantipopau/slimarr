@@ -1,5 +1,5 @@
 # build-installer.ps1 — Build the Slimarr Windows installer
-# Output: dist/installer/SlimarrSetup-1.0.0.exe
+# Output: dist/installer/SlimarrSetup-1.0.0.1.exe
 #
 # Prerequisites (install once):
 #   pip install pyinstaller          (in your venv)

@@ -52,7 +52,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Slimarr",
-    version="1.0.0",
+    version="1.0.0.1",
     description="Smart Usenet replacement manager for Plex movie libraries",
     lifespan=lifespan,
 )

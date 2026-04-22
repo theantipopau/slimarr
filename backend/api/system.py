@@ -17,7 +17,7 @@ router = APIRouter(prefix="/system", tags=["system"])
 _start_time = datetime.now(timezone.utc)
 
 
-CURRENT_VERSION = "1.0.0"
+CURRENT_VERSION = "1.0.0.1"
 GITHUB_REPO = "theantipopau/slimarr"
 
 @router.get("/health")
