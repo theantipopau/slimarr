@@ -57,16 +57,18 @@ Slimarr is designed to look and feel like a native member of the **\*arr ecosyst
 - **Plex sync** — reads your library via PlexAPI, refreshes Plex after each replacement
 - **TMDB enrichment** — posters, backdrops, and metadata fetched and cached locally
 - **Smart comparison engine** — configurable minimum savings %, resolution downgrade protection, codec preferences, language filtering
+- **Path mappings** — translate Plex-reported file paths to locally accessible paths when Plex and Slimarr run on different machines or use different mount points
 - **Language filtering** — reject candidates in unwanted languages; prefer English (or any configured language)
 - **AV1/h265 preference** — codec scoring bonus for modern efficient codecs
 - **Minimum file size floor** — skip tiny low-quality candidates regardless of savings %
 - **Real-time UI** — Socket.IO pushes scan progress, download progress, and replacement events to the browser instantly
 - **Toast notifications** — non-intrusive feedback for every action
-- **Recycling bin** — original files moved to a configurable recycle directory before replacement (collision-safe naming)
+- **Recycling bin** — optionally move original files to a configured directory before replacement instead of deleting immediately
 - **Duplicate file cleanup** — detect and remove inferior duplicate copies within your Plex library
 - **TV Show Stale Media Sweeper** — Slimarr surfaces never-watched or long-unwatched TV shows with their disk footprint so *you* can decide what to delete; optionally unmonitors in Sonarr to prevent re-download
 - **System tray** — runs as a Windows tray app with one-click open browser
 - **Activity log** — full history of every replacement with old/new size and savings %
+- **Update checker** — System page shows a badge when a newer version is available on GitHub
 - **Radarr-compatible feel** — sidebar nav, poster grid, quality badges, test connection buttons
 
 ---
@@ -86,6 +88,12 @@ Slimarr is designed to look and feel like a native member of the **\*arr ecosyst
 
 ## Installation (Windows)
 
+### Option A — Installer (recommended for sharing)
+
+Download `SlimarrSetup-*.exe` from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies — no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
+
+### Option B — From source
+
 **1. Clone the repository:**
 ```powershell
 git clone https://github.com/theantipopau/slimarr.git C:\Slimarr
@@ -102,21 +110,22 @@ The installer will:
 - Install all Python dependencies
 - Install Node.js frontend dependencies and build the React app
 
-**3. Edit `config.yaml`** with your service credentials (created on first run).
-
-**4. Start Slimarr:**
+**3. Start Slimarr:**
 ```powershell
 # With system tray (Windows default):
 python run.py
 
 # Headless (no tray):
 python run.py --headless
-
-# Direct uvicorn:
-.\venv\Scripts\python.exe -m uvicorn backend.main:socket_app --host 0.0.0.0 --port 9494
 ```
 
-**5. Open your browser to `http://localhost:9494`** and complete the one-time registration.
+**4. Open your browser to `http://localhost:9494`** and complete the one-time registration.
+
+**5. Configure** your services in Settings — Plex, SABnzbd, TMDB, and at least one indexer are required.
+
+### Keeping up to date
+
+On machines that pull from git, run `update.bat` (or `git pull`). The System page shows a badge when a newer release is available.
 
 ---
 
@@ -145,11 +154,11 @@ tmdb:
   api_key: "your-tmdb-api-key"
 
 comparison:
-  min_savings_percent: 10.0         # Reject candidates saving less than this
-  allow_resolution_downgrade: false  # e.g. block 1080p → 720p replacements
+  min_savings_percent: 10.0          # Reject candidates saving less than this
+  allow_resolution_downgrade: false   # e.g. block 1080p → 720p replacements
   preferred_codecs: ["av1", "h265"]
-  preferred_language: "english"      # Reject foreign-language releases
-  minimum_file_size_mb: 500          # Ignore candidates below this size
+  preferred_language: "english"       # Reject foreign-language releases
+  minimum_file_size_mb: 500           # Ignore candidates below this size
 
 radarr:
   enabled: false
@@ -161,12 +170,28 @@ sonarr:
   url: "http://localhost:8989"
   api_key: "your-sonarr-api-key"
 
+files:
+  recycling_bin: ""              # Leave empty to delete originals immediately (recommended).
+                                 # Set a path (e.g. D:/recycle) to keep copies temporarily.
+  recycling_bin_cleanup_days: 30 # Auto-delete recycled files older than this many days
+
+  # Path mappings: use when Plex reports file paths that Slimarr can't
+  # access directly (different machine, different drive letter/mount point).
+  # plex_path: what Plex says  →  local_path: what Slimarr can write to
+  plex_path_mappings: []
+  # Example:
+  # plex_path_mappings:
+  #   - plex_path: "/data/media"
+  #     local_path: "E:/media"
+
 schedule:
   start_time: "01:00"   # UTC
   end_time: "07:00"
   max_downloads_per_night: 10
   throttle_seconds: 30
 ```
+
+> **Note on disk space:** By default `recycling_bin` is empty, meaning old files are deleted immediately when a replacement succeeds. If you configure a recycling bin path, be aware that replaced movie files (typically 10–50 GB each) accumulate there until the nightly cleanup runs. Use a path on a drive with plenty of headroom, or leave the setting empty.
 
 ---
 
@@ -236,7 +261,9 @@ Each result is scored against the local file:
 The best accepted candidate is submitted to SABnzbd as an NZB. Slimarr polls for progress and emits `download:progress` events for the live progress bar.
 
 ### 5. Replace
-Once complete, the original file is moved to the recycling bin (using a collision-safe name) and the new file is moved into place. Plex is refreshed, an activity log entry is written, and a `replace:completed` event is emitted. If the extension changes, any orphaned old file is explicitly removed.
+Once complete, the new file is moved into the exact location of the original in your Plex library. If configured, the old file is moved to the recycling bin first (using a collision-safe name); otherwise it is deleted immediately. Plex is refreshed, an activity log entry is written, and a `replace:completed` event is emitted.
+
+> **Tip:** If your Plex server and Slimarr run on different machines (or see the same storage under different paths), configure **Path Mappings** in Settings so Slimarr can translate Plex-reported paths to locally accessible ones.
 
 ### 6. TV Show Stale Media Sweeper
 The **TV Shows** page lets you explore your Plex TV library by disk usage and watch history. Slimarr surfaces shows that have never been watched (or not watched within your chosen time window) alongside their total size on disk. Nothing is automatic — you review the suggestions and choose what to delete. Deleting a show:

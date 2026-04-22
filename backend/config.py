@@ -80,7 +80,7 @@ class PathMapping(BaseModel):
 
 
 class FilesConfig(BaseModel):
-    recycling_bin: str = "./data/recycling"
+    recycling_bin: str = ""   # Empty = delete originals directly (recommended). Set a path to keep copies.
     recycling_bin_cleanup_days: int = 30
     verify_after_download: bool = True
     plex_path_mappings: list[PathMapping] = []
