@@ -1,0 +1,37 @@
+﻿# Slimarr configuration - edit these settings via the web UI at http://localhost:9494
+server:
+  port: 9494
+
+auth:
+  secret_key: ""
+
+plex:
+  url: ""
+  token: ""
+
+sabnzbd:
+  url: ""
+  api_key: ""
+
+tmdb:
+  api_key: ""
+
+radarr:
+  enabled: false
+  url: ""
+  api_key: ""
+
+sonarr:
+  enabled: false
+  url: ""
+  api_key: ""
+
+prowlarr:
+  enabled: false
+  url: ""
+  api_key: ""
+
+files:
+  recycling_bin: ""
+
+indexers: []
