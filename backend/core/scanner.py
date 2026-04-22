@@ -4,6 +4,7 @@ Library scanner — reads Plex, enriches with TMDB metadata, stores in database.
 from __future__ import annotations
 
 import json
+import asyncio
 from datetime import datetime, timezone
 
 from loguru import logger
@@ -15,6 +16,7 @@ from backend.realtime.events import emit_event
 
 
 _scan_running = False
+_scan_lock = asyncio.Lock()
 
 
 def is_scan_running() -> bool:
@@ -30,15 +32,16 @@ async def scan_library() -> int:
     4. Emit real-time events
     """
     global _scan_running
-    if _scan_running:
-        logger.warning("Scan already in progress — skipping duplicate trigger")
+    if _scan_lock.locked():
+        logger.warning("Scan already in progress — skipping")
         return 0
 
-    _scan_running = True
-    try:
-        return await _run_scan()
-    finally:
-        _scan_running = False
+    async with _scan_lock:
+        _scan_running = True
+        try:
+            return await _run_scan()
+        finally:
+            _scan_running = False
 
 
 async def _run_scan() -> int:

@@ -17,16 +17,14 @@ async def list_activity(
     event: str = "",
     user=Depends(get_current_user),
 ):
+    per_page = min(per_page, 200)
+
     async with async_session() as db:
         query = select(ActivityLog)
         if event:
             query = query.where(ActivityLog.event == event)
 
-        total_result = await db.execute(
-            select(func.count()).select_from(
-                query.subquery()
-            )
-        )
+        total_result = await db.execute(select(func.count()).select_from(query.subquery()))
         total = total_result.scalar_one()
 
         query = query.order_by(ActivityLog.created_at.desc()).offset((page - 1) * per_page).limit(per_page)

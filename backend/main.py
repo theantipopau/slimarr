@@ -18,13 +18,25 @@ from backend.scheduler.scheduler import start_scheduler
 from backend.utils.logger import setup_logger
 
 import socketio
+import httpx
+
+# Shared async HTTP client — reused across all integrations for connection pooling
+_http_client: httpx.AsyncClient | None = None
+
+
+def get_http_client() -> httpx.AsyncClient:
+    if _http_client is None:
+        raise RuntimeError("HTTP client not initialised")
+    return _http_client
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # ── Startup ──────────────────────────────────────────────────────
+    global _http_client
     config = get_config()
     setup_logger(config.server.log_level.upper())
+    _http_client = httpx.AsyncClient(timeout=15.0, verify=False)
 
     # Ensure directories exist (also done in run.py before import, belt-and-suspenders)
     for directory in [
@@ -48,6 +60,8 @@ async def lifespan(app: FastAPI):
     # ── Shutdown ─────────────────────────────────────────────────────
     from backend.scheduler.scheduler import stop_scheduler
     stop_scheduler()
+    if _http_client:
+        await _http_client.aclose()
 
 
 app = FastAPI(
@@ -60,7 +74,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
