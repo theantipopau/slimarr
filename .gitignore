@@ -16,6 +16,10 @@ config.yaml
 
 # Build artifacts
 slimarr-portable.zip
+dist/Slimarr/
+dist/installer/
+build/
+images/icon.ico
 
 # Frontend build output (tracked so update.bat can pull pre-built frontend)
 # frontend/dist/
