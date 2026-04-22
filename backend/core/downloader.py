@@ -94,26 +94,46 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
                 if consecutive_none < MAX_NONE_RETRIES:
                     # Race condition: job may be moving from queue to history — retry
                     continue
-                # Exhausted retries
-                if dl.progress_pct and dl.progress_pct >= 50:
-                    logger.warning(
-                        f"Download {download_id}: marking as completed based on "
-                        f"{dl.progress_pct:.0f}% progress (job disappeared from SABnzbd)"
+                # Final fallback: large history window lookup before declaring failure
+                try:
+                    history = await sab.get_history(limit=2000)
+                    fallback = next((h for h in history if h.get("nzo_id") == dl.nzo_id), None)
+                except Exception as e:
+                    logger.warning(f"Download {download_id}: fallback history lookup failed: {e}")
+                    fallback = None
+
+                if fallback:
+                    sab_status = str(fallback.get("status", "")).lower()
+                    dl.storage_path = fallback.get("storage", "")
+                    logger.info(
+                        f"Download {download_id}: recovered from history fallback — "
+                        f"sab_status={sab_status!r} storage={dl.storage_path!r}"
                     )
-                    dl.status = "completed"
-                else:
-                    logger.error(
-                        f"Download {download_id}: marking as failed — job not found in SABnzbd "
-                        f"after {MAX_NONE_RETRIES} retries (progress was {dl.progress_pct or 0:.0f}%)"
-                    )
-                    dl.status = "failed"
-                    dl.error_message = "Job not found in SABnzbd"
-                await db.commit()
-                await emit_event(
-                    "download:failed" if dl.status == "failed" else "download:completed",
-                    {"download_id": dl.id, "movie_id": dl.movie_id},
+                    if sab_status in ("completed", "repaired") and dl.storage_path:
+                        dl.status = "completed"
+                        dl.progress_pct = 100.0
+                        dl.completed_at = datetime.now(timezone.utc)
+                        await db.commit()
+                        await emit_event("download:completed", {
+                            "download_id": dl.id,
+                            "movie_id": dl.movie_id,
+                            "storage": dl.storage_path,
+                        })
+                        return "completed"
+
+                logger.error(
+                    f"Download {download_id}: marking as failed — job not found in SABnzbd "
+                    f"after {MAX_NONE_RETRIES} retries (progress was {dl.progress_pct or 0:.0f}%)"
                 )
-                return dl.status
+                dl.status = "failed"
+                dl.error_message = "Job not found in SABnzbd history/queue"
+                await db.commit()
+                await emit_event("download:failed", {
+                    "download_id": dl.id,
+                    "movie_id": dl.movie_id,
+                    "reason": dl.error_message,
+                })
+                return "failed"
             else:
                 consecutive_none = 0  # reset on any successful status response
 
@@ -141,6 +161,16 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
                 )
 
                 if sab_status in ("completed", "repaired"):
+                    if not dl.storage_path:
+                        dl.status = "failed"
+                        dl.error_message = "SABnzbd completed job has no storage path"
+                        await db.commit()
+                        await emit_event("download:failed", {
+                            "download_id": dl.id,
+                            "movie_id": dl.movie_id,
+                            "reason": dl.error_message,
+                        })
+                        return "failed"
                     dl.status = "completed"
                     dl.progress_pct = 100.0
                     dl.completed_at = datetime.now(timezone.utc)

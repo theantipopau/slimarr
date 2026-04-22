@@ -101,13 +101,15 @@ async def download_result(
     async def _do_download(sr_id: int) -> None:
         from backend.core.downloader import start_download, monitor_download
         from backend.core.replacer import replace_file
+        from loguru import logger
         try:
             dl = await start_download(sr_id)
             final_status = await monitor_download(dl.id)
             if final_status == "completed":
-                await replace_file(dl.id)
+                replaced = await replace_file(dl.id)
+                if not replaced:
+                    logger.error(f"Replace step failed after completed download: download_id={dl.id}")
         except Exception as e:
-            from loguru import logger
             logger.error(f"Download failed for search result {sr_id}: {e}")
 
     background.add_task(_do_download, result_id)
