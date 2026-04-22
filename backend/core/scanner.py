@@ -65,9 +65,65 @@ async def _run_scan() -> int:
     await emit_event("scan:started", {"total_movies": total})
     logger.info(f"Scan started: {total} movies in Plex")
 
-    async with async_session() as db:
-        for i, pm in enumerate(plex_movies):
-            try:
+    for i, pm in enumerate(plex_movies):
+        # Fetch enrichment data OUTSIDE the DB session to avoid long-held locks
+        poster_path: str | None = None
+        backdrop_path: str | None = None
+        overview: str | None = None
+        tmdb_id_found: int | None = None
+        genres_json: str | None = None
+
+        try:
+            # We need the existing movie's current poster to decide whether to fetch
+            async with async_session() as db:
+                result = await db.execute(
+                    select(Movie).where(Movie.plex_rating_key == pm["plex_rating_key"])
+                )
+                existing = result.scalar_one_or_none()
+                needs_poster = existing is None or not existing.poster_path
+                existing_imdb = existing.imdb_id if existing else None
+                existing_tmdb = existing.tmdb_id if existing else None
+                existing_overview = existing.overview if existing else None
+
+            if needs_poster:
+                if config.tmdb.api_key:
+                    try:
+                        tmdb_data = None
+                        imdb_id = pm.get("imdb_id") or existing_imdb
+                        tmdb_id = pm.get("tmdb_id") or existing_tmdb
+                        if imdb_id:
+                            tmdb_data = await tmdb.find_by_imdb(imdb_id)
+                        if not tmdb_data and tmdb_id:
+                            tmdb_data = await tmdb.get_movie(tmdb_id)
+                        if not tmdb_data:
+                            tmdb_data = await tmdb.search_movie(pm["title"], pm.get("year"))
+                        if tmdb_data:
+                            tmdb_id_found = tmdb_data.get("id")
+                            overview = tmdb_data.get("overview")
+                            poster_path = tmdb_data.get("poster_path")
+                            backdrop_path = tmdb_data.get("backdrop_path")
+                            genres = tmdb_data.get("genres") or []
+                            if genres and isinstance(genres[0], dict):
+                                genres_json = json.dumps([g["name"] for g in genres])
+                    except Exception as te:
+                        logger.warning(f"TMDB lookup failed for {pm['title']}: {te}")
+
+                if not poster_path and config.radarr.enabled and (pm.get("imdb_id") or existing_imdb):
+                    try:
+                        from backend.integrations.radarr import RadarrClient
+                        imgs = await RadarrClient().get_movie_images(pm.get("imdb_id") or existing_imdb)
+                        if imgs:
+                            poster_path = imgs.get("poster_url")
+                            backdrop_path = backdrop_path or imgs.get("fanart_url")
+                    except Exception as re:
+                        logger.warning(f"Radarr image fallback failed for {pm['title']}: {re}")
+
+        except Exception as e:
+            logger.warning(f"Enrichment fetch failed for {pm.get('title', '?')}: {e}")
+
+        # Short-lived DB write per movie
+        try:
+            async with async_session() as db:
                 result = await db.execute(
                     select(Movie).where(Movie.plex_rating_key == pm["plex_rating_key"])
                 )
@@ -77,11 +133,10 @@ async def _run_scan() -> int:
                     movie = Movie(plex_rating_key=pm["plex_rating_key"], status="pending")
                     db.add(movie)
 
-                # Update from Plex data
                 movie.title = pm["title"]
                 movie.year = pm.get("year")
                 movie.imdb_id = pm.get("imdb_id") or movie.imdb_id
-                movie.tmdb_id = pm.get("tmdb_id") or movie.tmdb_id
+                movie.tmdb_id = tmdb_id_found or pm.get("tmdb_id") or movie.tmdb_id
                 movie.file_path = pm.get("file_path")
                 movie.file_size = pm.get("file_size") or 0
                 movie.resolution = normalize_resolution(pm.get("resolution") or "")
@@ -93,40 +148,14 @@ async def _run_scan() -> int:
                 if movie.original_file_size is None:
                     movie.original_file_size = movie.file_size
 
-                # Image enrichment: try TMDB first, fall back to Radarr
-                if not movie.poster_path:
-                    if config.tmdb.api_key:
-                        try:
-                            tmdb_data = None
-                            if movie.imdb_id:
-                                tmdb_data = await tmdb.find_by_imdb(movie.imdb_id)
-                            if not tmdb_data and movie.tmdb_id:
-                                tmdb_data = await tmdb.get_movie(movie.tmdb_id)
-                            if not tmdb_data:
-                                tmdb_data = await tmdb.search_movie(movie.title, movie.year)
-
-                            if tmdb_data:
-                                movie.tmdb_id = tmdb_data.get("id") or movie.tmdb_id
-                                movie.overview = tmdb_data.get("overview")
-                                movie.poster_path = tmdb_data.get("poster_path")
-                                movie.backdrop_path = tmdb_data.get("backdrop_path")
-                                genres = tmdb_data.get("genres") or []
-                                if genres and isinstance(genres[0], dict):
-                                    movie.genres = json.dumps([g["name"] for g in genres])
-                        except Exception as te:
-                            logger.warning(f"TMDB lookup failed for {movie.title}: {te}")
-
-                    # Radarr fallback — use already-cached poster URLs (no TMDB key needed)
-                    if not movie.poster_path and config.radarr.enabled and movie.imdb_id:
-                        try:
-                            from backend.integrations.radarr import RadarrClient
-                            imgs = await RadarrClient().get_movie_images(movie.imdb_id)
-                            if imgs:
-                                movie.poster_path = imgs.get("poster_url")
-                                if not movie.backdrop_path:
-                                    movie.backdrop_path = imgs.get("fanart_url")
-                        except Exception as re:
-                            logger.warning(f"Radarr image fallback failed for {movie.title}: {re}")
+                if poster_path:
+                    movie.poster_path = poster_path
+                if backdrop_path:
+                    movie.backdrop_path = backdrop_path
+                if overview and not movie.overview:
+                    movie.overview = overview
+                if genres_json and not movie.genres:
+                    movie.genres = genres_json
 
                 await db.commit()
 
@@ -137,9 +166,8 @@ async def _run_scan() -> int:
                     "total": total,
                 })
 
-            except Exception as e:
-                logger.error(f"Error scanning {pm.get('title', '?')}: {e}")
-                await db.rollback()
+        except Exception as e:
+            logger.error(f"Error saving {pm.get('title', '?')}: {e}")
 
     await emit_event("scan:completed", {"total_movies": total})
     logger.info(f"Scan completed: {total} movies processed")
