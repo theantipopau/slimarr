@@ -34,6 +34,13 @@ class SabnzbdConfig(BaseModel):
     category: str = "slimarr"
 
 
+class NzbgetConfig(BaseModel):
+    url: str = ""
+    username: str = ""
+    password: str = ""
+    category: str = "slimarr"
+
+
 class IndexerConfig(BaseModel):
     name: str = ""
     url: str = ""
@@ -99,7 +106,9 @@ class SlimarrConfig(BaseModel):
     server: ServerConfig = ServerConfig()
     auth: AuthConfig = AuthConfig()
     plex: PlexConfig = PlexConfig()
+    download_client: str = "sabnzbd"
     sabnzbd: SabnzbdConfig = SabnzbdConfig()
+    nzbget: NzbgetConfig = NzbgetConfig()
     indexers: list[IndexerConfig] = []
     prowlarr: ProwlarrConfig = ProwlarrConfig()
     radarr: RadarrConfig = RadarrConfig()

@@ -11,6 +11,12 @@ interface Indexer {
   categories: number[]
 }
 
+interface DownloadClientConfig {
+  download_client?: string
+  sabnzbd?: { url?: string; api_key?: string; category?: string }
+  nzbget?: { url?: string; username?: string; password?: string; category?: string }
+}
+
 interface RecyclingBinInfo {
   enabled: boolean
   path: string
@@ -109,6 +115,8 @@ export default function Settings() {
 
   if (!settings) return <div className="text-gray-400">Loading settings…</div>
 
+  const downloadClient = ((settings as DownloadClientConfig).download_client ?? 'sabnzbd')
+
   function field(label: string, path: string[], type: string = 'text') {
     const val = path.reduce((o: unknown, k) => (o as Record<string, unknown>)?.[k], settings) as string | number | undefined
     return (
@@ -166,9 +174,40 @@ export default function Settings() {
           <h2 className="font-semibold">SABnzbd</h2>
           <TestConnectionButton service="sabnzbd" />
         </div>
+        <p className="text-xs text-gray-400">Default downloader. Best-supported path and current fallback default.</p>
         {field('URL', ['sabnzbd', 'url'])}
         {field('API Key', ['sabnzbd', 'api_key'], 'password')}
         {field('Category', ['sabnzbd', 'category'])}
+      </section>
+
+      {/* Download client */}
+      <section className="bg-gray-900 rounded-xl p-5 space-y-3">
+        <h2 className="font-semibold">Download Client</h2>
+        <p className="text-xs text-gray-400">Choose which Usenet downloader Slimarr sends accepted releases to. SABnzbd remains the default.</p>
+        <div>
+          <label className="block text-xs text-gray-400 mb-1">Active Download Client</label>
+          <select
+            value={downloadClient}
+            onChange={(e) => set(['download_client'], e.target.value)}
+            className="w-full bg-gray-800 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
+          >
+            <option value="sabnzbd">SABnzbd</option>
+            <option value="nzbget">NZBGet</option>
+          </select>
+        </div>
+      </section>
+
+      {/* NZBGet */}
+      <section className="bg-gray-900 rounded-xl p-5 space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="font-semibold">NZBGet</h2>
+          <TestConnectionButton service="nzbget" />
+        </div>
+        <p className="text-xs text-gray-400">Optional second Usenet downloader. Configure it fully before selecting it as the active client.</p>
+        {field('URL', ['nzbget', 'url'])}
+        {field('Username', ['nzbget', 'username'])}
+        {field('Password', ['nzbget', 'password'], 'password')}
+        {field('Category', ['nzbget', 'category'])}
       </section>
 
       {/* Prowlarr */}

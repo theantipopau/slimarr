@@ -61,6 +61,10 @@ async def test_connection(service: str, body: Optional[IndexerTestBody] = None, 
         from backend.integrations.sabnzbd import SABnzbdClient
         return await SABnzbdClient().test_connection()
 
+    if service == "nzbget":
+        from backend.integrations.nzbget import NZBGetClient
+        return await NZBGetClient().test_connection()
+
     if service == "prowlarr":
         if not config.prowlarr.url or not config.prowlarr.url.startswith(("http://", "https://")):
             return {"success": False, "error": "Prowlarr URL is not configured. Enter a valid URL and save first."}

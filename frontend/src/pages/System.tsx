@@ -13,6 +13,14 @@ interface ServiceHealth {
   indexer_count?: number
 }
 
+interface RecyclingBinInfo {
+  enabled: boolean
+  path: string
+  exists: boolean
+  files: number
+  bytes: number
+}
+
 interface IndexerHealth {
   name: string
   success: boolean
@@ -31,7 +39,8 @@ function fmtUptime(secs: number) {
 function fmtBytes(b: number) {
   if (b < 1024) return `${b} B`
   if (b < 1048576) return `${(b / 1024).toFixed(1)} KB`
-  return `${(b / 1048576).toFixed(1)} MB`
+  if (b < 1073741824) return `${(b / 1048576).toFixed(1)} MB`
+  return `${(b / 1073741824).toFixed(2)} GB`
 }
 
 interface SystemInfo {
@@ -51,17 +60,34 @@ export default function System() {
   const [scanning, setScanning] = useState(false)
   const [cleaning, setCleaning] = useState(false)
   const [updateInfo, setUpdateInfo] = useState<{ update_available: boolean; latest?: string; release_url?: string } | null>(null)
+  const [recyclingInfo, setRecyclingInfo] = useState<RecyclingBinInfo | null>(null)
+  const [recyclingLoading, setRecyclingLoading] = useState(false)
+  const [recyclingPurging, setRecyclingPurging] = useState(false)
 
   const loadStatus = () => api.systemStatus().then(setStatus).catch(() => {})
   const loadServices = () => api.servicesHealth().then(setServices).catch(() => {})
+  const loadRecyclingInfo = (showLoading = false) => {
+    if (showLoading) setRecyclingLoading(true)
+    return api.recyclingBinInfo()
+      .then(setRecyclingInfo)
+      .catch(() => {})
+      .finally(() => {
+        if (showLoading) setRecyclingLoading(false)
+      })
+  }
 
   useEffect(() => {
     loadStatus()
     api.systemInfo().then(setInfo).catch(() => {})
     api.updateCheck().then(setUpdateInfo).catch(() => {})
     loadServices()
+    void loadRecyclingInfo(true)
     const iv = setInterval(loadStatus, 10000)
-    return () => clearInterval(iv)
+    const recycleIv = setInterval(() => { void loadRecyclingInfo() }, 15000)
+    return () => {
+      clearInterval(iv)
+      clearInterval(recycleIv)
+    }
   }, [])
 
   useSocket('scan:started', () => setScanning(true))
@@ -106,6 +132,28 @@ export default function System() {
       toast('Duplicate scan started — check logs for results', 'info')
     } catch { toast('Failed to start duplicate scan', 'error') }
     setTimeout(() => setCleaning(false), 8000)
+  }
+
+  const purgeRecyclingBin = async () => {
+    const path = recyclingInfo?.path
+    if (!recyclingInfo?.enabled || !recyclingInfo?.exists || !path) {
+      toast('Recycling bin is not configured', 'error')
+      return
+    }
+    const confirmed = window.confirm(`Permanently delete everything in the recycling folder?\n\n${path}`)
+    if (!confirmed) return
+
+    setRecyclingPurging(true)
+    try {
+      const result = await api.emptyRecyclingBin()
+      const freed = Number((result as Record<string, unknown>)?.freed_bytes ?? 0)
+      toast(`Recycling folder purged (${fmtBytes(freed)} freed)`, 'success')
+      await loadRecyclingInfo(true)
+    } catch {
+      toast('Failed to purge recycling folder', 'error')
+    } finally {
+      setRecyclingPurging(false)
+    }
   }
 
   const cycle = (status?.cycle as Record<string, boolean>) ?? {}
@@ -172,9 +220,9 @@ export default function System() {
           </button>
         </div>
         <div className="divide-y divide-gray-800">
-          {(['plex', 'sabnzbd', 'radarr', 'sonarr', 'prowlarr', 'tmdb'] as const).map((svc) => {
+          {(['plex', 'sabnzbd', 'nzbget', 'radarr', 'sonarr', 'prowlarr', 'tmdb'] as const).map((svc) => {
             const h = services?.[svc]
-            const label = { plex: 'Plex', sabnzbd: 'SABnzbd', radarr: 'Radarr', sonarr: 'Sonarr', prowlarr: 'Prowlarr', tmdb: 'TMDB' }[svc]
+            const label = { plex: 'Plex', sabnzbd: 'SABnzbd', nzbget: 'NZBGet', radarr: 'Radarr', sonarr: 'Sonarr', prowlarr: 'Prowlarr', tmdb: 'TMDB' }[svc]
             const isDisabled = h && !h.success && h.error === 'Disabled'
             const detail = isDisabled
               ? 'Disabled'
@@ -217,6 +265,44 @@ export default function System() {
             ))}
           </>
         ) : null}
+      </div>
+
+      {/* Recycling folder */}
+      <div className="bg-gray-900 rounded-xl p-5 flex items-center justify-between gap-4">
+        <div className="min-w-0">
+          <h2 className="font-semibold">Recycling Folder</h2>
+          <p className="text-xs text-gray-400 mt-0.5">
+            {recyclingInfo?.enabled && recyclingInfo?.path
+              ? `Recycling folder is ${fmtBytes(recyclingInfo?.bytes ?? 0)}${recyclingInfo?.files ? ` across ${recyclingInfo.files} files` : ''} — click purge to permanently delete everything in that folder.`
+              : 'No recycling folder configured.'}
+          </p>
+          {recyclingInfo?.path && (
+            <p className="text-xs text-gray-500 mt-1 break-all">{recyclingInfo.path}</p>
+          )}
+        </div>
+        <div className="flex gap-2 shrink-0">
+          <button
+            onClick={() => { void loadRecyclingInfo(true) }}
+            disabled={recyclingLoading || recyclingPurging}
+            className="flex items-center gap-2 px-3 py-1.5 rounded bg-gray-700 text-sm hover:bg-gray-600 disabled:opacity-50"
+          >
+            <RefreshCw size={14} className={recyclingLoading ? 'animate-spin' : ''} />
+            Refresh
+          </button>
+          <button
+            onClick={purgeRecyclingBin}
+            disabled={
+              recyclingPurging
+              || !recyclingInfo?.enabled
+              || !recyclingInfo?.exists
+              || (recyclingInfo?.files ?? 0) === 0
+            }
+            className="flex items-center gap-2 px-3 py-1.5 rounded bg-red-700 text-sm text-white hover:bg-red-600 disabled:opacity-50"
+          >
+            <Trash2 size={14} />
+            {recyclingPurging ? 'Purging…' : 'Purge'}
+          </button>
+        </div>
       </div>
 
       {/* Scan library */}

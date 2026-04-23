@@ -260,6 +260,17 @@ async def services_health(user=Depends(get_current_user)):
     else:
         results["sabnzbd"] = {"success": False, "error": "Not configured"}
 
+    # NZBGet
+    # Username/password are optional in some installations; URL is the only hard requirement.
+    if config.nzbget.url:
+        try:
+            from backend.integrations.nzbget import NZBGetClient
+            results["nzbget"] = await NZBGetClient().test_connection()
+        except Exception as e:
+            results["nzbget"] = {"success": False, "error": str(e)}
+    else:
+        results["nzbget"] = {"success": False, "error": "Not configured"}
+
     # Radarr
     if config.radarr.enabled and config.radarr.url and config.radarr.api_key:
         if not config.radarr.url.startswith(("http://", "https://")):

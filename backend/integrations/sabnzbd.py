@@ -9,6 +9,8 @@ from backend.config import get_config
 
 
 class SABnzbdClient:
+    name = "sabnzbd"
+
     def __init__(self) -> None:
         config = get_config()
         self.url = config.sabnzbd.url.rstrip("/")
@@ -35,6 +37,9 @@ class SABnzbdClient:
         if not nzo_ids:
             raise RuntimeError(f"SABnzbd addurl failed: {result}")
         return nzo_ids[0]
+
+    async def submit_url(self, url: str, title: str = "") -> str:
+        return await self.add_nzb_url(url, title)
 
     async def get_queue(self) -> list[dict]:
         result = await self._api("queue")
@@ -76,7 +81,7 @@ class SABnzbdClient:
             if item["nzo_id"] == nzo_id:
                 return {**item, "location": "queue"}
         # Search a large history window so recently-completed jobs are not missed
-        history = await self.get_history(limit=500)
+        history = await self.get_history(limit=2000)
         for item in history:
             if item["nzo_id"] == nzo_id:
                 return {**item, "location": "history"}

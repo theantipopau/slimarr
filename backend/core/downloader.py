@@ -1,5 +1,5 @@
 """
-Download manager — sends NZBs to SABnzbd and polls for completion.
+Download manager — sends NZB URLs to the active downloader and polls for completion.
 """
 from __future__ import annotations
 
@@ -10,14 +10,14 @@ from loguru import logger
 from sqlalchemy import select
 
 from backend.database import Download, Movie, SearchResult, async_session
+from backend.integrations.download_client import decode_job_id, encode_job_id, get_active_download_client_name, get_download_client
 from backend.realtime.events import emit_event
 
 
 async def start_download(search_result_id: int) -> Download:
-    """Submit a search result to SABnzbd. Returns the Download row."""
-    from backend.integrations.sabnzbd import SABnzbdClient
-
-    sab = SABnzbdClient()
+    """Submit a search result to the active downloader. Returns the Download row."""
+    client_name = get_active_download_client_name()
+    client = get_download_client(client_name)
 
     async with async_session() as db:
         sr_result = await db.execute(
@@ -32,13 +32,16 @@ async def start_download(search_result_id: int) -> Download:
         if not movie:
             raise ValueError(f"Movie {sr.movie_id} not found")
 
-        nzo_id = await sab.add_nzb_url(sr.nzb_url, sr.release_title)
-        logger.info(f"Submitted to SABnzbd: {sr.release_title} → nzo_id={nzo_id}")
+        external_job_id = await client.submit_url(sr.nzb_url, sr.release_title)
+        stored_job_id = encode_job_id(client_name, external_job_id)
+        logger.info(
+            f"Submitted to {client_name}: {sr.release_title} → job_id={external_job_id}"
+        )
 
         dl = Download(
             movie_id=movie.id,
             search_result_id=sr.id,
-            nzo_id=nzo_id,
+            nzo_id=stored_job_id,
             release_title=sr.release_title,
             expected_size=sr.size,
             status="downloading",
@@ -53,7 +56,8 @@ async def start_download(search_result_id: int) -> Download:
         await emit_event("download:started", {
             "movie_id": movie.id,
             "title": movie.title,
-            "nzo_id": nzo_id,
+            "nzo_id": stored_job_id,
+            "download_client": client_name,
             "release_title": sr.release_title,
         })
         return dl
@@ -61,12 +65,9 @@ async def start_download(search_result_id: int) -> Download:
 
 async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
     """
-    Poll SABnzbd until the download completes or fails.
+    Poll the stored download client until the download completes or fails.
     Returns final status: "completed" | "failed" | "missing"
     """
-    from backend.integrations.sabnzbd import SABnzbdClient
-
-    sab = SABnzbdClient()
     consecutive_none = 0  # count polls where job is not found at all
     MAX_NONE_RETRIES = 6  # ~30s of grace before giving up
 
@@ -79,54 +80,30 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
             if not dl:
                 return "missing"
 
+            client_name, external_job_id = decode_job_id(dl.nzo_id)
+            client = get_download_client(client_name)
+
             try:
-                status = await sab.get_job_status(dl.nzo_id)
+                status = await client.get_job_status(external_job_id)
             except Exception as e:
-                logger.warning(f"SABnzbd poll error for download {download_id}: {e}")
+                logger.warning(f"{client_name} poll error for download {download_id}: {e}")
                 continue
 
             if status is None:
                 consecutive_none += 1
                 logger.warning(
-                    f"Download {download_id}: job not found in SABnzbd queue or history "
+                    f"Download {download_id}: job not found in {client_name} queue or history "
                     f"(attempt {consecutive_none}/{MAX_NONE_RETRIES})"
                 )
                 if consecutive_none < MAX_NONE_RETRIES:
-                    # Race condition: job may be moving from queue to history — retry
                     continue
-                # Final fallback: large history window lookup before declaring failure
-                try:
-                    history = await sab.get_history(limit=2000)
-                    fallback = next((h for h in history if h.get("nzo_id") == dl.nzo_id), None)
-                except Exception as e:
-                    logger.warning(f"Download {download_id}: fallback history lookup failed: {e}")
-                    fallback = None
-
-                if fallback:
-                    sab_status = str(fallback.get("status", "")).lower()
-                    dl.storage_path = fallback.get("storage", "")
-                    logger.info(
-                        f"Download {download_id}: recovered from history fallback — "
-                        f"sab_status={sab_status!r} storage={dl.storage_path!r}"
-                    )
-                    if sab_status in ("completed", "repaired") and dl.storage_path:
-                        dl.status = "completed"
-                        dl.progress_pct = 100.0
-                        dl.completed_at = datetime.now(timezone.utc)
-                        await db.commit()
-                        await emit_event("download:completed", {
-                            "download_id": dl.id,
-                            "movie_id": dl.movie_id,
-                            "storage": dl.storage_path,
-                        })
-                        return "completed"
 
                 logger.error(
-                    f"Download {download_id}: marking as failed — job not found in SABnzbd "
+                    f"Download {download_id}: marking as failed — job not found in {client_name} "
                     f"after {MAX_NONE_RETRIES} retries (progress was {dl.progress_pct or 0:.0f}%)"
                 )
                 dl.status = "failed"
-                dl.error_message = "Job not found in SABnzbd history/queue"
+                dl.error_message = f"Job not found in {client_name} history/queue"
                 await db.commit()
                 await emit_event("download:failed", {
                     "download_id": dl.id,
@@ -140,7 +117,7 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
             location = status.get("location", "queue")
 
             if location == "queue":
-                pct = float(status.get("percentage", 0))
+                pct = float(status.get("percentage", 0) or 0)
                 dl.progress_pct = pct
                 await db.commit()
                 await emit_event("download:progress", {
@@ -150,20 +127,23 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
                     "status": status.get("status", ""),
                     "speed": status.get("speed", ""),
                     "timeleft": status.get("timeleft", ""),
+                    "download_client": client_name,
                 })
 
             elif location == "history":
-                sab_status = status.get("status", "").lower()
+                raw_status = str(status.get("status", ""))
+                normalized_status = raw_status.lower()
                 dl.storage_path = status.get("storage", "")
                 logger.info(
-                    f"Download {download_id}: found in SABnzbd history — "
-                    f"sab_status={sab_status!r} storage={dl.storage_path!r}"
+                    f"Download {download_id}: found in {client_name} history — "
+                    f"status={normalized_status!r} storage={dl.storage_path!r}"
                 )
 
-                if sab_status in ("completed", "repaired"):
+                is_success = normalized_status in ("completed", "repaired") or normalized_status.startswith("success") or normalized_status.startswith("warning")
+                if is_success:
                     if not dl.storage_path:
                         dl.status = "failed"
-                        dl.error_message = "SABnzbd completed job has no storage path"
+                        dl.error_message = f"{client_name} completed job has no storage path"
                         await db.commit()
                         await emit_event("download:failed", {
                             "download_id": dl.id,
@@ -183,7 +163,7 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
                     return "completed"
                 else:
                     dl.status = "failed"
-                    dl.error_message = f"SABnzbd status: {sab_status}"
+                    dl.error_message = f"{client_name} status: {raw_status}"
                     await db.commit()
                     await emit_event("download:failed", {
                         "download_id": dl.id,
