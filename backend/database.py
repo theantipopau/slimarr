@@ -37,7 +37,7 @@ class Movie(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     plex_rating_key: Mapped[str] = mapped_column(String, unique=True, index=True)
-    title: Mapped[str] = mapped_column(String, nullable=False)
+    title: Mapped[str] = mapped_column(String, nullable=False, index=True)
     year: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     imdb_id: Mapped[Optional[str]] = mapped_column(String, nullable=True, index=True)
     tmdb_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True, index=True)

@@ -4,6 +4,30 @@ All notable changes to Slimarr are documented here.
 
 ---
 
+## [1.0.0.2] — 2026-04-23
+
+### Release focus
+
+This release hardens replacement reliability and adds final UX polish for production rollout.
+
+**Settings and file management**
+- Added live recycling bin usage in Settings (file count + total size)
+- Added one-click "Empty Recycling Bin" action in Settings with confirmation and freed-space feedback
+- Recycling bin stats now auto-refresh in the UI for live monitoring
+
+**Reliability**
+- Hardened SAB completion flow so replacement only proceeds when SAB history provides a valid storage path
+- Improved logging for failed replacement outcomes to make diagnostics clearer
+
+**UI and polish**
+- Updated browser favicon to use the dedicated square app icon
+- Added backend favicon routes so icon loads correctly in packaged and source deployments
+
+**Release packaging**
+- Version bump to `1.0.0.2` across backend API/app, frontend package metadata, and installer
+- Windows installer output updated to `SlimarrSetup-1.0.0.2.exe`
+- Installer build script now reports the newest generated installer artifact correctly when multiple versions exist in `dist/installer`
+
 ## [1.0.0.1] — 2026-04-22
 
 ### Initial release

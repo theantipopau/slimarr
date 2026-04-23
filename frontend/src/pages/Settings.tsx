@@ -11,16 +11,76 @@ interface Indexer {
   categories: number[]
 }
 
+interface RecyclingBinInfo {
+  enabled: boolean
+  path: string
+  exists: boolean
+  files: number
+  bytes: number
+}
+
 export default function Settings() {
   const { toast } = useToast()
   const [settings, setSettings] = useState<Record<string, unknown> | null>(null)
   const [savedSettings, setSavedSettings] = useState<Record<string, unknown> | null>(null)
   const [saving, setSaving] = useState(false)
+  const [recyclingInfo, setRecyclingInfo] = useState<RecyclingBinInfo | null>(null)
+  const [recyclingLoading, setRecyclingLoading] = useState(false)
+  const [recyclingEmptying, setRecyclingEmptying] = useState(false)
 
   const hasUnsaved = settings && savedSettings && JSON.stringify(settings) !== JSON.stringify(savedSettings)
 
+  const formatBytes = (bytes: number) => {
+    if (!Number.isFinite(bytes) || bytes <= 0) return '0 B'
+    const units = ['B', 'KB', 'MB', 'GB', 'TB']
+    const idx = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1)
+    const value = bytes / (1024 ** idx)
+    return `${value >= 10 || idx === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[idx]}`
+  }
+
+  const loadRecyclingInfo = async (showLoading = false) => {
+    if (showLoading) setRecyclingLoading(true)
+    try {
+      const info = await api.recyclingBinInfo()
+      setRecyclingInfo(info)
+    } catch {
+      if (showLoading) toast('Failed to load recycling bin status', 'error')
+    } finally {
+      if (showLoading) setRecyclingLoading(false)
+    }
+  }
+
+  const emptyRecyclingBin = async () => {
+    if (!recyclingInfo?.enabled || !recyclingInfo?.path) {
+      toast('Set a recycling bin path first', 'error')
+      return
+    }
+    const confirmed = window.confirm('Empty recycling bin now? This permanently deletes all files currently in the bin.')
+    if (!confirmed) return
+
+    setRecyclingEmptying(true)
+    try {
+      const result = await api.emptyRecyclingBin()
+      const freed = Number((result as Record<string, unknown>)?.freed_bytes ?? 0)
+      toast(`Recycling bin emptied (${formatBytes(freed)} freed)`, 'success')
+      await loadRecyclingInfo(true)
+    } catch {
+      toast('Failed to empty recycling bin', 'error')
+    } finally {
+      setRecyclingEmptying(false)
+    }
+  }
+
   useEffect(() => {
     api.getSettings().then((s) => { setSettings(s); setSavedSettings(s) }).catch(() => {})
+    void loadRecyclingInfo(true)
+  }, [])
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      void loadRecyclingInfo()
+    }, 15000)
+    return () => window.clearInterval(intervalId)
   }, [])
 
   const save = async () => {
@@ -346,6 +406,49 @@ export default function Settings() {
         <h2 className="font-semibold">Files</h2>
         {field('Recycling Bin Path', ['files', 'recycling_bin'])}
         {field('Recycling Bin Cleanup (days)', ['files', 'recycling_bin_cleanup_days'], 'number')}
+        <div className="mt-2 bg-gray-800/70 rounded-lg p-3 space-y-3 border border-gray-700">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium text-gray-200">Recycling Bin Status</p>
+              <p className="text-xs text-gray-400">Live usage, auto-refreshes every 15 seconds</p>
+            </div>
+            <button
+              onClick={() => { void loadRecyclingInfo(true) }}
+              disabled={recyclingLoading || recyclingEmptying}
+              className="px-3 py-1.5 rounded-md text-xs bg-gray-700 hover:bg-gray-600 disabled:opacity-50"
+            >
+              {recyclingLoading ? 'Refreshing…' : 'Refresh'}
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="bg-gray-900 rounded-md p-2">
+              <p className="text-xs text-gray-400">Files</p>
+              <p className="font-semibold text-gray-100">{recyclingInfo?.files ?? 0}</p>
+            </div>
+            <div className="bg-gray-900 rounded-md p-2">
+              <p className="text-xs text-gray-400">Size</p>
+              <p className="font-semibold text-gray-100">{formatBytes(recyclingInfo?.bytes ?? 0)}</p>
+            </div>
+          </div>
+
+          <p className="text-xs text-gray-500 break-all">
+            {recyclingInfo?.path ? `Path: ${recyclingInfo.path}` : 'Path not configured. Set "Recycling Bin Path" and save settings.'}
+          </p>
+
+          <button
+            onClick={() => { void emptyRecyclingBin() }}
+            disabled={
+              recyclingEmptying
+              || !recyclingInfo?.enabled
+              || !recyclingInfo?.exists
+              || (recyclingInfo?.files ?? 0) === 0
+            }
+            className="px-3 py-2 rounded-lg text-sm bg-red-600 hover:bg-red-700 text-white disabled:opacity-40"
+          >
+            {recyclingEmptying ? 'Emptying…' : 'Empty Recycling Bin'}
+          </button>
+        </div>
       </section>
 
       {/* Path Mappings */}

@@ -18,7 +18,7 @@ from backend.realtime.events import emit_event
 
 _running = False
 _stop_requested = False
-_current_task: asyncio.Task | None = None
+_lock = asyncio.Lock()
 
 
 def is_running() -> bool:
@@ -62,13 +62,16 @@ async def run_full_cycle() -> dict:
     """
     Full cycle: scan library → search + process movies that need improvement.
     """
-    global _running, _stop_requested, _current_task
+    global _running, _stop_requested
 
-    if _running:
+    if _lock.locked():
         return {"status": "already_running"}
 
-    _running = True
-    _stop_requested = False
+    async with _lock:
+        if _running:
+            return {"status": "already_running"}
+        _running = True
+        _stop_requested = False
     summary = {"scanned": 0, "processed": 0, "improved": 0, "failed": 0}
 
     try:
@@ -106,4 +109,4 @@ async def run_full_cycle() -> dict:
         _stop_requested = False
         await emit_event("cycle:completed", {**summary, "timestamp": datetime.now(timezone.utc).isoformat()})
 
-    return summary
+        return summary

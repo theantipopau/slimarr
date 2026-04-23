@@ -12,6 +12,7 @@
   <img src="https://img.shields.io/badge/react-18-61DAFB?logo=react&logoColor=black" />
   <img src="https://img.shields.io/badge/license-MIT-green" />
   <img src="https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white" />
+  <img src="https://img.shields.io/badge/release-1.0.0.2-success" />
 </p>
 
 ---
@@ -30,6 +31,15 @@ Scan Plex library → Search Usenet indexers → Compare releases
 **Core rule: never increase file size.** A release is only accepted if it is strictly smaller than your existing copy.
 
 Slimarr is designed to look and feel like a native member of the **\*arr ecosystem** (Radarr, Sonarr, Prowlarr). If you're familiar with those tools, you'll feel right at home.
+
+Current stable release: **1.0.0.2**.
+
+### What's New in 1.0.0.2
+
+- Live recycling bin status in Settings (file count + total size), with auto-refresh and manual refresh
+- One-click **Empty Recycling Bin** action with confirmation and freed-space feedback toast
+- Improved replacement reliability around SAB completion path validation
+- Release packaging polish, including installer output: `SlimarrSetup-1.0.0.2.exe`
 
 ---
 
@@ -63,7 +73,7 @@ Slimarr is designed to look and feel like a native member of the **\*arr ecosyst
 - **Minimum file size floor** — skip tiny low-quality candidates regardless of savings %
 - **Real-time UI** — Socket.IO pushes scan progress, download progress, and replacement events to the browser instantly
 - **Toast notifications** — non-intrusive feedback for every action
-- **Recycling bin** — optionally move original files to a configured directory before replacement instead of deleting immediately
+- **Recycling bin controls** — optionally move originals to a configured directory, monitor live usage in Settings, and empty it on demand
 - **Duplicate file cleanup** — detect and remove inferior duplicate copies within your Plex library
 - **TV Show Stale Media Sweeper** — Slimarr surfaces never-watched or long-unwatched TV shows with their disk footprint so *you* can decide what to delete; optionally unmonitors in Sonarr to prevent re-download
 - **System tray** — runs as a Windows tray app with one-click open browser
@@ -90,7 +100,7 @@ Slimarr is designed to look and feel like a native member of the **\*arr ecosyst
 
 ### Option A — Installer (recommended for sharing)
 
-Download `SlimarrSetup-*.exe` from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies — no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
+Download `SlimarrSetup-1.0.0.2.exe` (or the latest `SlimarrSetup-*.exe`) from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies — no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
 
 ### Option B — From source
 

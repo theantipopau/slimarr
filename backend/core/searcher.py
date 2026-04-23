@@ -47,17 +47,22 @@ async def search_for_movie(movie_id: int) -> list[dict]:
 
         # Direct indexer path
         if not config.prowlarr.enabled or not all_raw:
-            for idx_cfg in config.indexers:
-                try:
-                    client = NewznabClient(idx_cfg)
-                    if movie.imdb_id:
-                        results = await client.search_by_imdb(movie.imdb_id)
-                    else:
+                import asyncio
+
+                async def _search_one(idx_cfg) -> list[dict]:
+                    try:
+                        client = NewznabClient(idx_cfg)
+                        if movie.imdb_id:
+                            return await client.search_by_imdb(movie.imdb_id)
                         query = f"{movie.title} {movie.year}" if movie.year else movie.title
-                        results = await client.search_by_query(query)
-                    all_raw.extend(results)
-                except Exception as e:
-                    logger.error(f"Indexer {idx_cfg.name} search failed: {e}")
+                        return await client.search_by_query(query)
+                    except Exception as e:
+                        logger.error(f"Indexer {idx_cfg.name} search failed: {e}")
+                        return []
+
+                results_per_indexer = await asyncio.gather(*[_search_one(idx) for idx in config.indexers])
+                for r in results_per_indexer:
+                    all_raw.extend(r)
 
         logger.info(f"Found {len(all_raw)} raw results for {movie.title}")
 

@@ -1,5 +1,7 @@
 """Auth API router — login, register, check."""
-from fastapi import APIRouter, Depends, HTTPException
+import time
+from collections import defaultdict
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 from sqlalchemy import select
 
@@ -8,6 +10,21 @@ from backend.config import get_config
 from backend.database import AsyncSession, User, get_db
 
 router = APIRouter()
+
+# Simple in-memory rate limiter: {ip: [timestamps]}
+_login_attempts: dict[str, list[float]] = defaultdict(list)
+_RATE_WINDOW = 60   # seconds
+_RATE_MAX    = 10   # attempts per window
+
+
+def _check_rate_limit(ip: str) -> None:
+    now = time.monotonic()
+    attempts = _login_attempts[ip]
+    # Purge old entries
+    _login_attempts[ip] = [t for t in attempts if now - t < _RATE_WINDOW]
+    if len(_login_attempts[ip]) >= _RATE_MAX:
+        raise HTTPException(status_code=429, detail="Too many login attempts. Try again later.")
+    _login_attempts[ip].append(now)
 
 
 class LoginRequest(BaseModel):
@@ -38,8 +55,9 @@ async def check_auth_status(db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/login", response_model=LoginResponse)
-async def login(body: LoginRequest, db: AsyncSession = Depends(get_db)):
+async def login(body: LoginRequest, request: Request, db: AsyncSession = Depends(get_db)):
     from passlib.hash import bcrypt
+    _check_rate_limit(request.client.host if request.client else "unknown")
 
     result = await db.execute(select(User).where(User.username == body.username))
     user = result.scalar_one_or_none()

@@ -66,7 +66,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Slimarr",
-    version="1.0.0.1",
+    version="1.0.0.2",
     description="Smart Usenet replacement manager for Plex movie libraries",
     lifespan=lifespan,
 )
@@ -125,6 +125,27 @@ async def logo():
         return FileResponse(path2)
     from fastapi import HTTPException
     raise HTTPException(404)
+
+
+@app.get("/favicon.png", include_in_schema=False)
+async def favicon_png():
+    path = os.path.join(FRONTEND_DIST, "favicon.png")
+    if os.path.isfile(path):
+        return FileResponse(path)
+    # Fallback to source icon in development/source mode
+    path2 = os.path.join(os.path.dirname(__file__), "..", "images", "icon.PNG")
+    if os.path.isfile(path2):
+        return FileResponse(path2)
+    from fastapi import HTTPException
+    raise HTTPException(404)
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon_ico():
+    path = os.path.join(os.path.dirname(__file__), "..", "images", "icon.ico")
+    if os.path.isfile(path):
+        return FileResponse(path)
+    return await favicon_png()
 
 
 @app.get("/", include_in_schema=False)

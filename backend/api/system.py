@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import os
 import platform
+import shutil
 import sys
 from datetime import datetime, timezone
 
@@ -17,8 +18,30 @@ router = APIRouter(prefix="/system", tags=["system"])
 _start_time = datetime.now(timezone.utc)
 
 
-CURRENT_VERSION = "1.0.0.1"
+CURRENT_VERSION = "1.0.0.2"
 GITHUB_REPO = "theantipopau/slimarr"
+
+
+def _get_recycling_bin_path() -> str:
+    from backend.config import get_config
+    cfg = get_config()
+    return (cfg.files.recycling_bin or "").strip()
+
+
+def _dir_stats(path: str) -> tuple[int, int]:
+    """Return (files_count, total_bytes) for a directory tree."""
+    files_count = 0
+    total_bytes = 0
+    for root, _dirs, files in os.walk(path):
+        for name in files:
+            files_count += 1
+            file_path = os.path.join(root, name)
+            try:
+                total_bytes += os.path.getsize(file_path)
+            except OSError:
+                # Ignore unreadable files but keep scanning
+                pass
+    return files_count, total_bytes
 
 @router.get("/health")
 async def health():
@@ -81,6 +104,71 @@ async def check_for_update(user=Depends(get_current_user)):
         "latest_name": latest_name,
         "release_url": release_url,
         "published_at": published_at,
+    }
+
+
+@router.get("/recycling-bin")
+async def recycling_bin_info(user=Depends(get_current_user)):
+    """Return live recycling bin status and size."""
+    recycle_path = _get_recycling_bin_path()
+    if not recycle_path:
+        return {
+            "enabled": False,
+            "path": "",
+            "exists": False,
+            "files": 0,
+            "bytes": 0,
+        }
+
+    exists = os.path.isdir(recycle_path)
+    files_count, total_bytes = _dir_stats(recycle_path) if exists else (0, 0)
+    return {
+        "enabled": True,
+        "path": recycle_path,
+        "exists": exists,
+        "files": files_count,
+        "bytes": total_bytes,
+    }
+
+
+@router.post("/recycling-bin/empty")
+async def recycling_bin_empty(user=Depends(get_current_user)):
+    """Delete all files/folders inside the configured recycling bin."""
+    recycle_path = _get_recycling_bin_path()
+    if not recycle_path:
+        return {"status": "disabled", "removed_files": 0, "removed_dirs": 0, "freed_bytes": 0}
+
+    if not os.path.isdir(recycle_path):
+        return {"status": "not_found", "removed_files": 0, "removed_dirs": 0, "freed_bytes": 0}
+
+    removed_files = 0
+    removed_dirs = 0
+    freed_bytes = 0
+
+    for entry in os.scandir(recycle_path):
+        try:
+            if entry.is_file(follow_symlinks=False):
+                try:
+                    freed_bytes += os.path.getsize(entry.path)
+                except OSError:
+                    pass
+                os.remove(entry.path)
+                removed_files += 1
+            elif entry.is_dir(follow_symlinks=False):
+                files_count, bytes_count = _dir_stats(entry.path)
+                shutil.rmtree(entry.path, ignore_errors=True)
+                removed_dirs += 1
+                removed_files += files_count
+                freed_bytes += bytes_count
+        except Exception:
+            # Continue cleaning even if one entry fails
+            continue
+
+    return {
+        "status": "emptied",
+        "removed_files": removed_files,
+        "removed_dirs": removed_dirs,
+        "freed_bytes": freed_bytes,
     }
 
 
@@ -244,3 +332,89 @@ async def services_health(user=Depends(get_current_user)):
     results["indexers"] = indexer_results
 
     return results
+
+
+# ---------------------------------------------------------------------------
+# Self-update
+# ---------------------------------------------------------------------------
+_update_lock = False  # prevent concurrent updates
+
+
+@router.post("/update")
+async def trigger_update(background: BackgroundTasks, user=Depends(get_current_user)):
+    """
+    Pull latest code from GitHub, install new dependencies, then signal the
+    watchdog (run.py) to restart the server by exiting with code 42.
+    Progress is streamed to the frontend via Socket.IO events.
+    """
+    global _update_lock
+    if _update_lock:
+        return {"status": "already_running"}
+    _update_lock = True
+    background.add_task(_run_update)
+    return {"status": "started"}
+
+
+async def _run_update() -> None:
+    global _update_lock
+    import asyncio
+    from loguru import logger
+    from backend.realtime.events import emit_event
+
+    async def _emit(line: str, level: str = "info") -> None:
+        await emit_event("update:log", {"line": line, "level": level})
+        logger.info(f"[update] {line}")
+
+    try:
+        # backend/api/system.py -> backend/api -> backend -> project root
+        root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        python = sys.executable
+
+        await _emit("Starting update...")
+
+        # 1. git pull
+        await _emit("Running git pull...")
+        git_result = await asyncio.create_subprocess_exec(
+            "git", "pull", "--ff-only",
+            cwd=root,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.STDOUT,
+        )
+        async for raw in git_result.stdout:
+            await _emit(raw.decode(errors="replace").rstrip())
+        await git_result.wait()
+        if git_result.returncode != 0:
+            await _emit(f"git pull failed (exit {git_result.returncode})", "error")
+            await emit_event("update:failed", {"reason": "git pull failed"})
+            return
+
+        # 2. pip install -r requirements.txt
+        await _emit("Installing dependencies...")
+        pip_result = await asyncio.create_subprocess_exec(
+            python, "-m", "pip", "install", "-r", os.path.join(root, "requirements.txt"), "--quiet",
+            cwd=root,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.STDOUT,
+        )
+        async for raw in pip_result.stdout:
+            line = raw.decode(errors="replace").rstrip()
+            if line:
+                await _emit(line)
+        await pip_result.wait()
+        if pip_result.returncode != 0:
+            await _emit(f"pip install failed (exit {pip_result.returncode})", "error")
+            await emit_event("update:failed", {"reason": "pip install failed"})
+            return
+
+        await _emit("Update complete — restarting server...")
+        await emit_event("update:restarting", {})
+        # Give the WebSocket event time to reach the client before we exit
+        await asyncio.sleep(1.5)
+        # Signal the watchdog to restart (os._exit bypasses asyncio cleanup)
+        os._exit(42)
+
+    except Exception as e:
+        await emit_event("update:failed", {"reason": str(e)})
+        logger.error(f"Update failed: {e}")
+    finally:
+        _update_lock = False

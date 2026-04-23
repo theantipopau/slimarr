@@ -78,6 +78,9 @@ export const api = {
   startCycle: () => client.post('/system/cycle/start').then((r) => r.data),
   stopCycle: () => client.post('/system/cycle/stop').then((r) => r.data),
   cleanupDuplicates: () => client.post('/system/cleanup').then((r) => r.data),
+  triggerUpdate: () => client.post('/system/update').then((r) => r.data),
+  recyclingBinInfo: () => client.get('/system/recycling-bin').then((r) => r.data),
+  emptyRecyclingBin: () => client.post('/system/recycling-bin/empty').then((r) => r.data),
 
   // TV Shows
   tvShows: (params?: Record<string, unknown>) =>

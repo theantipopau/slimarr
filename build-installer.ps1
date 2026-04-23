@@ -1,5 +1,5 @@
 # build-installer.ps1 - Build the Slimarr Windows installer
-# Output: dist/installer/SlimarrSetup-1.0.0.1.exe
+# Output: dist/installer/SlimarrSetup-1.0.0.2.exe
 #
 # Prerequisites (install once):
 #   pip install pyinstaller          (in your venv)
@@ -142,7 +142,9 @@ New-Item -ItemType Directory -Path "$Root\dist\installer" -Force | Out-Null
 & $ISCC "$Root\installer\slimarr.iss"
 if ($LASTEXITCODE -ne 0) { Write-Err "Inno Setup failed" }
 
-$installer = Get-ChildItem "$Root\dist\installer\SlimarrSetup*.exe" | Select-Object -First 1
+$installer = Get-ChildItem "$Root\dist\installer\SlimarrSetup*.exe" |
+    Sort-Object LastWriteTime -Descending |
+    Select-Object -First 1
 Write-Ok "Installer: $($installer.FullName)"
 
 # ---- Done -------------------------------------------------------------------
