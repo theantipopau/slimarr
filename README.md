@@ -15,6 +15,10 @@
   <img src="https://img.shields.io/badge/release-1.0.0.2-success" />
 </p>
 
+<p align="center">
+  <a href="https://theantipopau.github.io/slimarr/">Project Website (GitHub Pages)</a>
+</p>
+
 ---
 
 ## What is Slimarr?
@@ -45,17 +49,13 @@ Current stable release: **1.0.0.2**.
 
 ## Screenshots
 
-| Dashboard | Library | Movie Detail |
-|-----------|---------|--------------|
-| Live savings stats, recent activity, and area chart | Poster grid with status overlays and real-time scan progress | Per-result download with quality badges and comparison scores |
+| Dashboard | Movie Detail |
+|-----------|--------------|
+| ![Dashboard](images/dashboard.png) | ![Movie Detail](images/moviedetails.png) |
 
-| Queue | Activity | Settings |
-|-------|----------|----------|
-| Live download progress bars with speed and ETA | Full replacement history with savings per movie | Per-service connection testing, language/codec preferences, Sonarr/Radarr config |
-
-| TV Shows | System | |
-|----------|--------|--|
-| Never-watched and stale show recommendations with disk usage, watch history, and safe one-click deletion | Duplicate cleanup, manual scan, cycle control | |
+| Activity | System |
+|----------|--------|
+| ![Activity](images/activity.png) | ![System](images/system.png) |
 
 ---
 
@@ -136,6 +136,22 @@ python run.py --headless
 ### Keeping up to date
 
 On machines that pull from git, run `update.bat` (or `git pull`). The System page shows a badge when a newer release is available.
+
+## GitHub Pages Website
+
+Slimarr includes a simple project website in `docs/` for GitHub Pages.
+
+1. Push this repository to GitHub.
+2. Open **Settings → Pages** in your GitHub repo.
+3. Under **Build and deployment**, set:
+  - **Source**: Deploy from a branch
+  - **Branch**: `main`
+  - **Folder**: `/docs`
+4. Save and wait for deployment.
+
+Your site URL will be:
+
+`https://theantipopau.github.io/slimarr/`
 
 ---
 

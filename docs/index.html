@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slimarr | Shrink Your Plex Library</title>
+    <meta name="description" content="Slimarr automatically finds smaller, efficient releases for Plex libraries and replaces bloated media overnight." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-shapes" aria-hidden="true">
+      <div class="shape shape-a"></div>
+      <div class="shape shape-b"></div>
+      <div class="shape shape-c"></div>
+    </div>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Slimarr home">
+        <img src="images/header-logo.PNG" alt="Slimarr" />
+      </a>
+      <nav class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#screenshots">Screenshots</a>
+        <a href="#integrations">Integrations</a>
+        <a href="https://github.com/theantipopau/slimarr" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero reveal">
+        <p class="eyebrow">Plex Optimization Automation</p>
+        <h1>Stop hoarding bloated releases.<br />Let Slimarr slim your library overnight.</h1>
+        <p class="subtitle">
+          Slimarr scans your Plex library, finds smaller Usenet releases, and safely replaces media while you sleep.
+          Built to feel native in the *arr ecosystem.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://github.com/theantipopau/slimarr" target="_blank" rel="noopener noreferrer">View On GitHub</a>
+          <a class="btn btn-ghost" href="https://github.com/theantipopau/slimarr/releases" target="_blank" rel="noopener noreferrer">Download Release</a>
+        </div>
+      </section>
+
+      <section id="features" class="panel reveal">
+        <h2>What Slimarr Does</h2>
+        <div class="feature-grid">
+          <article>
+            <h3>Nightly Replacement Cycles</h3>
+            <p>Runs scheduled scans and replacements with strict size-reduction rules so your library keeps shrinking.</p>
+          </article>
+          <article>
+            <h3>Usenet + *arr Friendly</h3>
+            <p>Works with SABnzbd and NZBGet, plus Prowlarr/Newznab indexers and optional Sonarr/Radarr connections.</p>
+          </article>
+          <article>
+            <h3>Safety-First Logic</h3>
+            <p>Never increases file size. Optional recycling folder support adds a rollback-friendly safety net.</p>
+          </article>
+          <article>
+            <h3>Realtime Web UI</h3>
+            <p>See queue progress, scan state, replacement savings, and system health from one dashboard.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="screenshots" class="reveal">
+        <div class="section-head">
+          <h2>Screenshots</h2>
+          <p>Core workflow views from the Slimarr web app.</p>
+        </div>
+        <div class="shot-grid">
+          <figure>
+            <img src="images/dashboard.png" alt="Slimarr dashboard" loading="lazy" />
+            <figcaption>Dashboard</figcaption>
+          </figure>
+          <figure>
+            <img src="images/moviedetails.png" alt="Slimarr movie details" loading="lazy" />
+            <figcaption>Movie Details</figcaption>
+          </figure>
+          <figure>
+            <img src="images/activity.png" alt="Slimarr activity page" loading="lazy" />
+            <figcaption>Activity</figcaption>
+          </figure>
+          <figure>
+            <img src="images/system.png" alt="Slimarr system page" loading="lazy" />
+            <figcaption>System</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="integrations" class="panel reveal">
+        <h2>Quick Integration Links</h2>
+        <p class="integration-copy">Slimarr is designed to work alongside your existing media stack:</p>
+        <div class="integration-grid">
+          <a href="https://sonarr.tv/" target="_blank" rel="noopener noreferrer">Sonarr</a>
+          <a href="https://radarr.video/" target="_blank" rel="noopener noreferrer">Radarr</a>
+          <a href="https://sabnzbd.org/" target="_blank" rel="noopener noreferrer">SABnzbd</a>
+          <a href="https://www.plex.tv/" target="_blank" rel="noopener noreferrer">Plex</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Slimarr is an independent open-source project and is not affiliated with Sonarr, Radarr, SABnzbd, or Plex.</p>
+    </footer>
+  </body>
+</html>
