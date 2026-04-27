@@ -22,5 +22,20 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          const normalizedId = id.replace(/\\/g, '/')
+          if (!normalizedId.includes('/node_modules/')) return undefined
+          if (normalizedId.includes('/node_modules/recharts/')) return 'charts'
+          if (
+            normalizedId.includes('/node_modules/socket.io-client/')
+            || normalizedId.includes('/node_modules/engine.io-client/')
+          ) return 'socket'
+          if (normalizedId.includes('/node_modules/lucide-react/')) return 'icons'
+          return 'vendor'
+        },
+      },
+    },
   },
 })

@@ -30,7 +30,7 @@ const links = [
 
 export default function Sidebar() {
   return (
-    <aside className="w-56 bg-brand-blue flex flex-col py-6 gap-1">
+    <aside className="w-56 bg-brand-blue flex h-full min-h-0 flex-col py-6 gap-1">
       {/* Logo */}
       <div className="px-4 mb-6 flex items-center gap-2">
         <img src={logoSrc} alt="Slimarr" className="h-8 w-auto" />
@@ -40,24 +40,26 @@ export default function Sidebar() {
         </span>
       </div>
 
-      {links.map(({ to, icon: Icon, label }) => (
-        <NavLink
-          key={to}
-          to={to}
-          end={to === '/'}
-          className={({ isActive }) =>
-            clsx(
-              'flex items-center gap-3 px-4 py-2 rounded-lg mx-2 text-sm font-medium transition-colors',
-              isActive
-                ? 'bg-brand-green text-white'
-                : 'text-gray-300 hover:bg-white/10'
-            )
-          }
-        >
-          <Icon size={18} />
-          {label}
-        </NavLink>
-      ))}
+      <nav className="flex-1 min-h-0 overflow-y-auto px-2">
+        {links.map(({ to, icon: Icon, label }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end={to === '/'}
+            className={({ isActive }) =>
+              clsx(
+                'flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+                isActive
+                  ? 'bg-brand-green text-white'
+                  : 'text-gray-300 hover:bg-white/10'
+              )
+            }
+          >
+            <Icon size={18} />
+            {label}
+          </NavLink>
+        ))}
+      </nav>
 
       <div className="mt-auto mx-2 flex flex-col gap-1">
         <button

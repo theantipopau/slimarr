@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 import { useSocket } from '@/hooks/useSocket'
 import { useToast } from '@/components/Toast'
-import type { DecisionAuditEntry, HealthMatrix } from '@/lib/types'
-import { Play, Square, RefreshCw, Database, Clock, Server, CheckCircle, XCircle, Trash2, ArrowUpCircle } from 'lucide-react'
+import type { DecisionAuditEntry, HealthMatrix, PreflightResult } from '@/lib/types'
+import { Play, Square, RefreshCw, Database, Clock, Server, CheckCircle, XCircle, Trash2, ArrowUpCircle, ShieldCheck } from 'lucide-react'
 
 interface ServiceHealth {
   success: boolean
@@ -67,6 +67,8 @@ export default function System() {
   const [quickStats, setQuickStats] = useState<{ active_downloads?: number; total_movies?: number; improved?: number } | null>(null)
   const [recyclingLoading, setRecyclingLoading] = useState(false)
   const [recyclingPurging, setRecyclingPurging] = useState(false)
+  const [preflight, setPreflight] = useState<PreflightResult | null>(null)
+  const [preflightLoading, setPreflightLoading] = useState(false)
 
   const loadStatus = () => api.systemStatus().then(setStatus).catch(() => {})
   const loadServices = () => api.servicesHealth().then(setServices).catch(() => {})
@@ -93,11 +95,13 @@ export default function System() {
     void loadRecyclingInfo(true)
     const iv = setInterval(loadStatus, 10000)
     const recycleIv = setInterval(() => { void loadRecyclingInfo() }, 15000)
+    const servicesIv = setInterval(loadServices, 30000)
     const matrixIv = setInterval(loadHealthMatrix, 30000)
     const auditIv = setInterval(loadDecisionAudit, 30000)
     return () => {
       clearInterval(iv)
       clearInterval(recycleIv)
+      clearInterval(servicesIv)
       clearInterval(matrixIv)
       clearInterval(auditIv)
     }
@@ -113,9 +117,42 @@ export default function System() {
 
   const { toast } = useToast()
 
+  const runPreflight = async () => {
+    setPreflightLoading(true)
+    try {
+      const result = await api.preflight() as PreflightResult
+      setPreflight(result)
+      return result
+    } catch {
+      toast('Preflight check failed', 'error')
+      return null
+    } finally {
+      setPreflightLoading(false)
+    }
+  }
+
   const startCycle = async () => {
     setStarting(true)
     try {
+      const result = await runPreflight()
+      if (!result) {
+        setStarting(false)
+        return
+      }
+      if (result.status === 'block') {
+        const blocked = result.checks.filter((item) => item.status === 'block').map((item) => item.name).join(', ')
+        toast(`Preflight blocked automation: ${blocked}`, 'error')
+        setStarting(false)
+        return
+      }
+      if (result.status === 'warn') {
+        const warnings = result.checks.filter((item) => item.status === 'warn').map((item) => `${item.name}: ${item.message}`).join('\n')
+        const confirmed = window.confirm(`Preflight found warnings:\n\n${warnings}\n\nStart automation anyway?`)
+        if (!confirmed) {
+          setStarting(false)
+          return
+        }
+      }
       await api.startCycle()
       toast('Automation cycle started', 'success')
     } catch { toast('Failed to start cycle', 'error') }
@@ -177,6 +214,12 @@ export default function System() {
     if (value === 'healthy') return 'text-green-400'
     if (value === 'degraded') return 'text-yellow-300'
     if (value === 'disabled') return 'text-gray-500'
+    return 'text-red-400'
+  }
+
+  const preflightStatusClass = (value?: string) => {
+    if (value === 'ok') return 'text-green-400'
+    if (value === 'warn') return 'text-yellow-300'
     return 'text-red-400'
   }
 
@@ -381,7 +424,7 @@ export default function System() {
       </div>
 
       {/* Recycling folder */}
-      <div className="bg-gray-900 rounded-xl p-5 flex items-center justify-between gap-4">
+      <div className="bg-gray-900 rounded-xl p-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <h2 className="font-semibold">Recycling Folder</h2>
           <p className="text-xs text-gray-400 mt-0.5">
@@ -393,11 +436,11 @@ export default function System() {
             <p className="text-xs text-gray-500 mt-1 break-all">{recyclingInfo.path}</p>
           )}
         </div>
-        <div className="flex gap-2 shrink-0">
+        <div className="flex w-full gap-2 sm:w-auto sm:shrink-0">
           <button
             onClick={() => { void loadRecyclingInfo(true) }}
             disabled={recyclingLoading || recyclingPurging}
-            className="flex items-center gap-2 px-3 py-1.5 rounded bg-gray-700 text-sm hover:bg-gray-600 disabled:opacity-50"
+            className="flex flex-1 items-center justify-center gap-2 px-3 py-1.5 rounded bg-gray-700 text-sm hover:bg-gray-600 disabled:opacity-50 sm:flex-none"
           >
             <RefreshCw size={14} className={recyclingLoading ? 'animate-spin' : ''} />
             Refresh
@@ -410,7 +453,7 @@ export default function System() {
               || !recyclingInfo?.exists
               || (recyclingInfo?.files ?? 0) === 0
             }
-            className="flex items-center gap-2 px-3 py-1.5 rounded bg-red-700 text-sm text-white hover:bg-red-600 disabled:opacity-50"
+            className="flex flex-1 items-center justify-center gap-2 px-3 py-1.5 rounded bg-red-700 text-sm text-white hover:bg-red-600 disabled:opacity-50 sm:flex-none"
           >
             <Trash2 size={14} />
             {recyclingPurging ? 'Purging…' : 'Purge'}
@@ -419,7 +462,7 @@ export default function System() {
       </div>
 
       {/* Scan library */}
-      <div className="bg-gray-900 rounded-xl p-5 flex items-center justify-between">
+      <div className="bg-gray-900 rounded-xl p-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="font-semibold">Library Scan</h2>
           <p className="text-xs text-gray-400 mt-0.5">Sync movies from Plex and enrich with TMDB metadata</p>
@@ -427,7 +470,7 @@ export default function System() {
         <button
           onClick={scanNow}
           disabled={scanning}
-          className="flex items-center gap-2 px-3 py-1.5 rounded bg-gray-700 text-sm hover:bg-gray-600 disabled:opacity-50"
+          className="flex items-center justify-center gap-2 px-3 py-1.5 rounded bg-gray-700 text-sm hover:bg-gray-600 disabled:opacity-50"
         >
           <RefreshCw size={14} className={scanning ? 'animate-spin' : ''} />
           {scanning ? 'Scanning…' : 'Scan Now'}
@@ -435,7 +478,7 @@ export default function System() {
       </div>
 
       {/* Duplicate cleanup */}
-      <div className="bg-gray-900 rounded-xl p-5 flex items-center justify-between">
+      <div className="bg-gray-900 rounded-xl p-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="font-semibold">Duplicate File Cleanup</h2>
           <p className="text-xs text-gray-400 mt-0.5">Find movies with multiple files and delete the lower-quality copy. Uses your recycling bin if configured.</p>
@@ -443,7 +486,7 @@ export default function System() {
         <button
           onClick={cleanDuplicates}
           disabled={cleaning}
-          className="flex items-center gap-2 px-3 py-1.5 rounded bg-gray-700 text-sm hover:bg-gray-600 disabled:opacity-50"
+          className="flex items-center justify-center gap-2 px-3 py-1.5 rounded bg-gray-700 text-sm hover:bg-gray-600 disabled:opacity-50"
         >
           <Trash2 size={14} className={cleaning ? 'animate-pulse' : ''} />
           {cleaning ? 'Scanning…' : 'Find Duplicates'}
@@ -451,7 +494,8 @@ export default function System() {
       </div>
 
       {/* Automation cycle */}
-      <div className="bg-gray-900 rounded-xl p-5 flex items-center justify-between">
+      <div className="bg-gray-900 rounded-xl p-5 space-y-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="font-semibold">Automation Cycle</h2>
           <p className="text-xs text-gray-400 mt-0.5">
@@ -459,11 +503,19 @@ export default function System() {
             {cycle.stop_requested ? ' — stop requested' : ''}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex w-full gap-2 sm:w-auto">
+          <button
+            onClick={() => { void runPreflight() }}
+            disabled={preflightLoading || starting || !!cycle.running}
+            className="flex flex-1 items-center justify-center gap-2 px-3 py-1.5 rounded bg-gray-700 text-sm hover:bg-gray-600 disabled:opacity-50 sm:flex-none"
+          >
+            <ShieldCheck size={14} />
+            {preflightLoading ? 'Checking...' : 'Preflight'}
+          </button>
           {cycle.running ? (
             <button
               onClick={stopCycle}
-              className="flex items-center gap-2 px-3 py-1.5 rounded bg-red-700 text-sm text-white hover:bg-red-600"
+              className="flex flex-1 items-center justify-center gap-2 px-3 py-1.5 rounded bg-red-700 text-sm text-white hover:bg-red-600 sm:flex-none"
             >
               <Square size={14} /> Stop
             </button>
@@ -471,12 +523,31 @@ export default function System() {
             <button
               onClick={startCycle}
               disabled={starting}
-              className="flex items-center gap-2 px-3 py-1.5 rounded bg-brand-green text-white text-sm disabled:opacity-50"
+              className="flex flex-1 items-center justify-center gap-2 px-3 py-1.5 rounded bg-brand-green text-white text-sm disabled:opacity-50 sm:flex-none"
             >
               <Play size={14} /> {starting ? 'Starting…' : 'Run Now'}
             </button>
           )}
         </div>
+        </div>
+
+        {preflight && (
+          <div className="rounded-lg bg-gray-800/70 border border-gray-700 overflow-hidden">
+            <div className="px-3 py-2 text-xs flex items-center justify-between gap-3 border-b border-gray-700">
+              <span className="font-medium">Last preflight</span>
+              <span className={preflightStatusClass(preflight.status)}>{preflight.status}</span>
+            </div>
+            <div className="divide-y divide-gray-700">
+              {preflight.checks.map((item) => (
+                <div key={`${item.name}-${item.message}`} className="px-3 py-2 text-xs flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
+                  <span className={`w-14 uppercase text-[11px] ${preflightStatusClass(item.status)}`}>{item.status}</span>
+                  <span className="font-medium text-gray-200 sm:w-40">{item.name}</span>
+                  <span className="text-gray-400 break-words">{item.message}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Scheduled tasks */}

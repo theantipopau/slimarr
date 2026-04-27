@@ -35,6 +35,8 @@ async def update_settings(body: dict, user=Depends(get_current_user)):
     new_config = SlimarrConfig(**d)
     save_config(new_config, _CONFIG_PATH)
     reload_config()
+    from backend.api.system import invalidate_services_health_cache
+    invalidate_services_health_cache()
     return {"status": "saved"}
 
 

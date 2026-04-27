@@ -1,10 +1,12 @@
 """System/health API routes."""
 from __future__ import annotations
 
+import asyncio
 import os
 import platform
 import shutil
 import sys
+import time
 from datetime import datetime, timezone
 from typing import Any
 
@@ -21,8 +23,20 @@ router = APIRouter(prefix="/system", tags=["system"])
 _start_time = datetime.now(timezone.utc)
 
 
-CURRENT_VERSION = "1.0.0.3"
+CURRENT_VERSION = "1.0.0.4"
 GITHUB_REPO = "theantipopau/slimarr"
+
+_SERVICES_HEALTH_TTL_SECONDS = 20.0
+_services_health_cache: dict[str, Any] | None = None
+_services_health_cache_at = 0.0
+_services_health_lock = asyncio.Lock()
+
+
+def invalidate_services_health_cache() -> None:
+    """Clear cached integration health after settings changes."""
+    global _services_health_cache, _services_health_cache_at
+    _services_health_cache = None
+    _services_health_cache_at = 0.0
 
 
 def _get_recycling_bin_path() -> str:
@@ -45,6 +59,44 @@ def _dir_stats(path: str) -> tuple[int, int]:
                 # Ignore unreadable files but keep scanning
                 pass
     return files_count, total_bytes
+
+
+def _check(status: str, name: str, message: str, detail: Any | None = None) -> dict[str, Any]:
+    result: dict[str, Any] = {"status": status, "name": name, "message": message}
+    if detail is not None:
+        result["detail"] = detail
+    return result
+
+
+def _find_existing_parent(path: str) -> str | None:
+    current = os.path.abspath(path)
+    while current and not os.path.exists(current):
+        parent = os.path.dirname(current)
+        if parent == current:
+            return None
+        current = parent
+    return current if os.path.exists(current) else None
+
+
+def _disk_preflight_check(name: str, path: str, warn_below_gb: float = 10.0, block_below_gb: float = 1.0) -> dict[str, Any]:
+    existing_path = _find_existing_parent(path)
+    if not existing_path:
+        return _check("block", name, f"No accessible parent path for {path}", {"path": path})
+
+    usage = shutil.disk_usage(existing_path)
+    free_gb = usage.free / (1024 ** 3)
+    detail = {
+        "path": existing_path,
+        "free_bytes": usage.free,
+        "total_bytes": usage.total,
+        "free_gb": round(free_gb, 2),
+    }
+    if free_gb < block_below_gb:
+        return _check("block", name, f"{free_gb:.2f} GB free at {existing_path}", detail)
+    if free_gb < warn_below_gb:
+        return _check("warn", name, f"{free_gb:.2f} GB free at {existing_path}", detail)
+    return _check("ok", name, f"{free_gb:.2f} GB free at {existing_path}", detail)
+
 
 @router.get("/health")
 async def health():
@@ -237,115 +289,251 @@ async def stop_cycle(user=Depends(get_current_user)):
     return {"status": "stop_requested"}
 
 
+@router.get("/preflight")
+async def automation_preflight(user=Depends(get_current_user)):
+    """Run quick checks before starting a full automation cycle."""
+    from backend.config import get_config
+    from backend.integrations.download_client import get_active_download_client_name
+
+    config = get_config()
+    checks: list[dict[str, Any]] = []
+
+    cycle = get_status()
+    if cycle.get("running"):
+        checks.append(_check("block", "Automation cycle", "A cycle is already running"))
+    elif cycle.get("stop_requested"):
+        checks.append(_check("warn", "Automation cycle", "A stop request is still pending"))
+    else:
+        checks.append(_check("ok", "Automation cycle", "No active cycle"))
+
+    try:
+        async with async_session() as db:
+            active_downloads = (
+                await db.execute(
+                    select(func.count()).select_from(Download).where(
+                        Download.status.in_(["queued", "downloading", "processing"])
+                    )
+                )
+            ).scalar_one()
+            failed_pending = (
+                await db.execute(
+                    select(func.count()).select_from(Download).where(
+                        Download.status == "failed",
+                        Download.cleanup_status.in_(["pending", "error"]),
+                    )
+                )
+            ).scalar_one()
+
+        active_downloads = int(active_downloads)
+        failed_pending = int(failed_pending)
+        max_downloads = max(1, int(config.schedule.max_downloads_per_night or 1))
+        if active_downloads >= max_downloads:
+            checks.append(_check(
+                "warn",
+                "Queue saturation",
+                f"{active_downloads} active downloads already queued or running",
+                {"active_downloads": active_downloads, "max_downloads_per_night": max_downloads},
+            ))
+        else:
+            checks.append(_check(
+                "ok",
+                "Queue saturation",
+                f"{active_downloads} active downloads",
+                {"active_downloads": active_downloads, "max_downloads_per_night": max_downloads},
+            ))
+
+        if failed_pending > 0:
+            checks.append(_check(
+                "warn",
+                "Failed download cleanup",
+                f"{failed_pending} failed downloads still need cleanup review",
+                {"failed_pending": failed_pending},
+            ))
+        else:
+            checks.append(_check("ok", "Failed download cleanup", "No pending failed cleanup items"))
+    except Exception as e:
+        checks.append(_check("block", "Database", f"Unable to inspect queue state: {e}"))
+
+    services = await _build_services_health()
+    active_client = get_active_download_client_name()
+
+    required_services = [
+        ("plex", "Plex"),
+        (active_client, active_client.upper() if active_client == "nzbget" else active_client.title()),
+        ("tmdb", "TMDB"),
+    ]
+    for key, label in required_services:
+        health = services.get(key, {})
+        if isinstance(health, dict) and health.get("success"):
+            checks.append(_check("ok", label, "Connected"))
+        else:
+            error = health.get("error", "Unavailable") if isinstance(health, dict) else "Unavailable"
+            checks.append(_check("block", label, error))
+
+    prowlarr = services.get("prowlarr", {})
+    indexers = services.get("indexers", [])
+    has_prowlarr = isinstance(prowlarr, dict) and bool(prowlarr.get("success"))
+    healthy_indexers = [
+        idx for idx in indexers
+        if isinstance(idx, dict) and idx.get("success")
+    ] if isinstance(indexers, list) else []
+    if has_prowlarr or healthy_indexers:
+        source = "Prowlarr" if has_prowlarr else f"{len(healthy_indexers)} direct indexer(s)"
+        checks.append(_check("ok", "Search source", f"{source} available"))
+    else:
+        checks.append(_check("block", "Search source", "No healthy Prowlarr or direct Newznab indexer"))
+
+    if config.radarr.enabled:
+        radarr = services.get("radarr", {})
+        checks.append(_check(
+            "ok" if isinstance(radarr, dict) and radarr.get("success") else "warn",
+            "Radarr",
+            "Connected" if isinstance(radarr, dict) and radarr.get("success") else str(radarr.get("error", "Unavailable")),
+        ))
+    if config.sonarr.enabled:
+        sonarr = services.get("sonarr", {})
+        checks.append(_check(
+            "ok" if isinstance(sonarr, dict) and sonarr.get("success") else "warn",
+            "Sonarr",
+            "Connected" if isinstance(sonarr, dict) and sonarr.get("success") else str(sonarr.get("error", "Unavailable")),
+        ))
+
+    checks.append(_disk_preflight_check("Data disk", "data"))
+    recycle_path = _get_recycling_bin_path()
+    if recycle_path:
+        checks.append(_disk_preflight_check("Recycling disk", recycle_path))
+
+    if any(item["status"] == "block" for item in checks):
+        overall = "block"
+    elif any(item["status"] == "warn" for item in checks):
+        overall = "warn"
+    else:
+        overall = "ok"
+
+    return {
+        "status": overall,
+        "checked_at": datetime.now(timezone.utc).isoformat(),
+        "checks": checks,
+    }
+
+
 async def _build_services_health() -> dict[str, Any]:
     """Quick connectivity check for all configured integrations."""
     from backend.config import get_config
 
+    global _services_health_cache, _services_health_cache_at
+
+    now = time.monotonic()
+    if (
+        _services_health_cache is not None
+        and now - _services_health_cache_at < _SERVICES_HEALTH_TTL_SECONDS
+    ):
+        return _services_health_cache
+
+    async with _services_health_lock:
+        now = time.monotonic()
+        if (
+            _services_health_cache is not None
+            and now - _services_health_cache_at < _SERVICES_HEALTH_TTL_SECONDS
+        ):
+            return _services_health_cache
+
     config = get_config()
-    results: dict[str, Any] = {}
 
-    # Plex
-    if config.plex.url and config.plex.token:
+    async def _safe_check(name: str, check) -> tuple[str, Any]:
         try:
-            from backend.integrations.plex import PlexClient
-            results["plex"] = PlexClient().test_connection()
+            return name, await check()
         except Exception as e:
-            results["plex"] = {"success": False, "error": str(e)}
-    else:
-        results["plex"] = {"success": False, "error": "Not configured"}
+            return name, {"success": False, "error": str(e)}
 
-    # SABnzbd
-    if config.sabnzbd.url and config.sabnzbd.api_key:
-        try:
-            from backend.integrations.sabnzbd import SABnzbdClient
-            results["sabnzbd"] = await SABnzbdClient().test_connection()
-        except Exception as e:
-            results["sabnzbd"] = {"success": False, "error": str(e)}
-    else:
-        results["sabnzbd"] = {"success": False, "error": "Not configured"}
+    async def _check_plex() -> dict[str, Any]:
+        if not (config.plex.url and config.plex.token):
+            return {"success": False, "error": "Not configured"}
+        from backend.integrations.plex import PlexClient
+        return await asyncio.to_thread(PlexClient().test_connection)
 
-    # NZBGet
-    # Username/password are optional in some installations; URL is the only hard requirement.
-    if config.nzbget.url:
-        try:
-            from backend.integrations.nzbget import NZBGetClient
-            results["nzbget"] = await NZBGetClient().test_connection()
-        except Exception as e:
-            results["nzbget"] = {"success": False, "error": str(e)}
-    else:
-        results["nzbget"] = {"success": False, "error": "Not configured"}
+    async def _check_sabnzbd() -> dict[str, Any]:
+        if not (config.sabnzbd.url and config.sabnzbd.api_key):
+            return {"success": False, "error": "Not configured"}
+        from backend.integrations.sabnzbd import SABnzbdClient
+        return await SABnzbdClient().test_connection()
 
-    # Radarr
-    if config.radarr.enabled and config.radarr.url and config.radarr.api_key:
+    async def _check_nzbget() -> dict[str, Any]:
+        # Username/password are optional in some installations; URL is the only hard requirement.
+        if not config.nzbget.url:
+            return {"success": False, "error": "Not configured"}
+        from backend.integrations.nzbget import NZBGetClient
+        return await NZBGetClient().test_connection()
+
+    async def _check_radarr() -> dict[str, Any]:
+        if not config.radarr.enabled:
+            return {"success": False, "error": "Disabled"}
+        if not (config.radarr.url and config.radarr.api_key):
+            return {"success": False, "error": "Missing URL or API key"}
         if not config.radarr.url.startswith(("http://", "https://")):
-            results["radarr"] = {"success": False, "error": "URL missing http:// or https:// prefix"}
-        else:
-            try:
-                from backend.integrations.radarr import RadarrClient
-                results["radarr"] = await RadarrClient().test_connection()
-            except Exception as e:
-                results["radarr"] = {"success": False, "error": str(e)}
-    elif not config.radarr.enabled:
-        results["radarr"] = {"success": False, "error": "Disabled"}
-    else:
-        results["radarr"] = {"success": False, "error": "Missing URL or API key"}
+            return {"success": False, "error": "URL missing http:// or https:// prefix"}
+        from backend.integrations.radarr import RadarrClient
+        return await RadarrClient().test_connection()
 
-    # Sonarr
-    if config.sonarr.enabled and config.sonarr.url and config.sonarr.api_key:
+    async def _check_sonarr() -> dict[str, Any]:
+        if not config.sonarr.enabled:
+            return {"success": False, "error": "Disabled"}
+        if not (config.sonarr.url and config.sonarr.api_key):
+            return {"success": False, "error": "Missing URL or API key"}
         if not config.sonarr.url.startswith(("http://", "https://")):
-            results["sonarr"] = {"success": False, "error": "URL missing http:// or https:// prefix"}
-        else:
-            try:
-                from backend.integrations.sonarr import SonarrClient
-                results["sonarr"] = await SonarrClient().test_connection()
-            except Exception as e:
-                results["sonarr"] = {"success": False, "error": str(e)}
-    elif not config.sonarr.enabled:
-        results["sonarr"] = {"success": False, "error": "Disabled"}
-    else:
-        results["sonarr"] = {"success": False, "error": "Missing URL or API key"}
+            return {"success": False, "error": "URL missing http:// or https:// prefix"}
+        from backend.integrations.sonarr import SonarrClient
+        return await SonarrClient().test_connection()
 
-    # Prowlarr
-    if config.prowlarr.enabled and config.prowlarr.url and config.prowlarr.api_key:
+    async def _check_prowlarr() -> dict[str, Any]:
+        if not config.prowlarr.enabled:
+            return {"success": False, "error": "Disabled"}
+        if not (config.prowlarr.url and config.prowlarr.api_key):
+            return {"success": False, "error": "Missing URL or API key"}
         if not config.prowlarr.url.startswith(("http://", "https://")):
-            results["prowlarr"] = {"success": False, "error": "URL missing http:// or https:// prefix"}
-        else:
-            try:
-                from backend.integrations.prowlarr import ProwlarrClient
-                results["prowlarr"] = await ProwlarrClient().test_connection()
-            except Exception as e:
-                results["prowlarr"] = {"success": False, "error": str(e)}
-    elif not config.prowlarr.enabled:
-        results["prowlarr"] = {"success": False, "error": "Disabled"}
-    else:
-        results["prowlarr"] = {"success": False, "error": "Missing URL or API key"}
+            return {"success": False, "error": "URL missing http:// or https:// prefix"}
+        from backend.integrations.prowlarr import ProwlarrClient
+        return await ProwlarrClient().test_connection()
 
-    # TMDB
-    if config.tmdb.api_key:
-        try:
-            from backend.integrations.tmdb import TMDBClient
-            results["tmdb"] = await TMDBClient().test_connection()
-        except Exception as e:
-            results["tmdb"] = {"success": False, "error": str(e)}
-    else:
-        results["tmdb"] = {"success": False, "error": "Disabled"}
+    async def _check_tmdb() -> dict[str, Any]:
+        if not config.tmdb.api_key:
+            return {"success": False, "error": "Disabled"}
+        from backend.integrations.tmdb import TMDBClient
+        return await TMDBClient().test_connection()
 
-    # Indexers
-    indexer_results = []
-    for idx in config.indexers:
+    async def _check_indexer(idx) -> dict[str, Any]:
         if not idx.name or not idx.url:
-            continue
+            return {"name": idx.name or "Unnamed", "success": False, "error": "Missing name or URL"}
         if not idx.url.startswith(("http://", "https://")):
-            indexer_results.append({"name": idx.name, "success": False, "error": "Invalid URL"})
-            continue
+            return {"name": idx.name, "success": False, "error": "Invalid URL"}
         try:
             from backend.integrations.newznab import NewznabClient
             status = await NewznabClient(idx).test_connection()
-            indexer_results.append({"name": idx.name, "success": status.get("success", False), "error": status.get("error")})
+            return {"name": idx.name, "success": status.get("success", False), "error": status.get("error")}
         except Exception as e:
-            indexer_results.append({"name": idx.name, "success": False, "error": str(e)})
+            return {"name": idx.name, "success": False, "error": str(e)}
+
+    service_checks = [
+        _safe_check("plex", _check_plex),
+        _safe_check("sabnzbd", _check_sabnzbd),
+        _safe_check("nzbget", _check_nzbget),
+        _safe_check("radarr", _check_radarr),
+        _safe_check("sonarr", _check_sonarr),
+        _safe_check("prowlarr", _check_prowlarr),
+        _safe_check("tmdb", _check_tmdb),
+    ]
+
+    results = dict(await asyncio.gather(*service_checks))
+    indexer_checks = [
+        _check_indexer(idx)
+        for idx in config.indexers
+        if idx.name or idx.url
+    ]
+    indexer_results = await asyncio.gather(*indexer_checks) if indexer_checks else []
     results["indexers"] = indexer_results
 
+    _services_health_cache = results
+    _services_health_cache_at = time.monotonic()
     return results
 
 

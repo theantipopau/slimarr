@@ -4,6 +4,65 @@ All notable changes to Slimarr are documented here.
 
 ---
 
+## [1.0.0.4] — 2026-04-28
+
+### Planned focus
+
+Usability polish, ecosystem expansion, and higher-confidence automation workflows.
+
+**Implemented so far**
+- Optimized System health checks:
+  * Parallelize integration probes instead of checking services one by one
+  * Cache health probe results briefly so the System page and Health Matrix do not duplicate network checks
+  * Refresh the Integration Status panel on an interval to match the Health Matrix freshness
+- Added production frontend chunk splitting for charts, sockets, icons, and remaining vendor code to reduce oversized main bundle risk
+- Added route-level lazy loading so major pages are loaded on demand instead of bundled into the initial app payload
+- Added automation preflight checks before full-cycle start:
+  * Blocks cycles when critical services/search sources are unavailable
+  * Warns about queue saturation, pending failed-download cleanup, optional integration issues, and low disk headroom
+  * Adds a System page preflight panel with per-check status details
+- Improved Queue page UX:
+  * Unified active/recent refresh path with manual refresh and 15-second fallback polling
+  * Added active/completed/failed summary counters
+  * Added recent-download status filters and timestamps
+  * Improved responsive row layout for long release names and error messages
+- Added service-health cache invalidation after settings saves so connection status reflects configuration changes quickly
+
+**UI and usability (planned)**
+- Sidebar resilience on smaller windows:
+  * Ensure navigation remains reachable when viewport height is constrained
+  * Keep footer actions visible while allowing menu items to scroll
+- Additional responsive polish pass across pages with long action stacks (System/Settings/Queue)
+- Settings page structure audit:
+  * Consider section tabs or collapsible groups for smaller windows
+  * Add validation summaries before save for malformed URLs, missing API keys, and invalid numeric ranges
+
+**Integration opportunities under investigation**
+- Bazarr companion integration:
+  * Trigger subtitle refresh/search after successful replacements
+  * Surface missing subtitle counts per media item in Slimarr UI
+- Lidarr integration (music):
+  * Evaluate extending Slimarr's scoring/replacement model to albums/tracks
+  * Reuse existing downloader/indexer plumbing for audio workflows
+- Whisparr parity integration:
+  * Reuse Sonarr-like API patterns for monitor/unmonitor and post-import sync
+  * Keep feature toggled/optional like current Radarr/Sonarr integration approach
+- Readarr status note:
+  * Readarr is currently retired by the Servarr team, so direct integration is lower priority unless ecosystem support stabilizes
+
+**Reliability and automation candidates**
+- Smarter retry windows (time-based backoff + indexer/uploader failure weighting)
+- Download-client abstraction improvements to make adding future clients easier
+- Integration health history (not just latest state) for trend-based diagnostics
+- Optional preflight checks before full cycle start (disk, integration connectivity, queue saturation)
+- Persist preflight and health snapshots for trend views instead of keeping only the latest result
+- Add a downloader capability matrix so future clients can declare support for purge, history, categories, pause/resume, and storage-path lookup
+
+**Packaging and performance candidates**
+- Frontend chunk splitting to reduce main bundle size warnings in production builds
+- Installer/package footprint audit (exclude unnecessary test modules from packaged runtime where safe)
+- Add a package manifest smoke test that verifies generated `dist/assets/*` references from `index.html` all exist before installer packaging
+
 ## [1.0.0.3] — 2026-04-27
 
 ### Release focus

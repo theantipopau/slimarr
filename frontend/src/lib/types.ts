@@ -105,6 +105,19 @@ export interface HealthMatrix {
   components: Record<string, HealthMatrixComponent>
 }
 
+export interface PreflightCheck {
+  status: 'ok' | 'warn' | 'block'
+  name: string
+  message: string
+  detail?: Record<string, unknown>
+}
+
+export interface PreflightResult {
+  status: 'ok' | 'warn' | 'block'
+  checked_at: string
+  checks: PreflightCheck[]
+}
+
 export interface DecisionAuditEntry {
   id: number
   movie_id?: number
