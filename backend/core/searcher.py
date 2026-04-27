@@ -10,7 +10,7 @@ from sqlalchemy import select
 
 from backend.core.comparer import compare_release
 from backend.core.parser import parse_release_title
-from backend.database import Movie, SearchResult, async_session
+from backend.database import DecisionAuditLog, Movie, SearchResult, async_session
 from backend.realtime.events import emit_event
 
 
@@ -81,6 +81,7 @@ async def search_for_movie(movie_id: int) -> list[dict]:
             await db.delete(old_sr)
 
         stored = []
+        audit_logs = []
         for r in unique_raw:
             parsed = parse_release_title(r["release_title"])
             cmp = compare_release(
@@ -108,6 +109,26 @@ async def search_for_movie(movie_id: int) -> list[dict]:
             )
             db.add(sr)
             stored.append(sr)
+
+            audit_logs.append(
+                DecisionAuditLog(
+                    movie_id=movie.id,
+                    movie_title=movie.title,
+                    indexer_name=r.get("indexer_name"),
+                    release_title=r["release_title"],
+                    candidate_size=r.get("size"),
+                    local_size=movie.file_size,
+                    decision=cmp.decision,
+                    score=cmp.score,
+                    savings_bytes=cmp.savings_bytes,
+                    savings_pct=cmp.savings_pct,
+                    reject_reason=cmp.reject_reason,
+                    notes=cmp.notes or None,
+                )
+            )
+
+        if audit_logs:
+            db.add_all(audit_logs)
 
         movie.last_searched = datetime.now(timezone.utc)
         await db.commit()

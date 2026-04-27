@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import Optional
 
 import httpx
+from loguru import logger
 
 from backend.config import get_config
 

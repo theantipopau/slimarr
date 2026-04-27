@@ -102,6 +102,16 @@ class ScheduleConfig(BaseModel):
     throttle_seconds: int = 30
 
 
+class BlacklistConfig(BaseModel):
+    auto_expire_days: int = 30
+    max_retry_count: int = 3
+
+
+class QualityConfig(BaseModel):
+    stale_release_days: int = 30
+    reject_uploader_health_below: float = 0.3
+
+
 class SlimarrConfig(BaseModel):
     server: ServerConfig = ServerConfig()
     auth: AuthConfig = AuthConfig()
@@ -117,6 +127,8 @@ class SlimarrConfig(BaseModel):
     comparison: ComparisonConfig = ComparisonConfig()
     files: FilesConfig = FilesConfig()
     schedule: ScheduleConfig = ScheduleConfig()
+    blacklist: BlacklistConfig = BlacklistConfig()
+    quality: QualityConfig = QualityConfig()
 
 
 # Module-level config path — can be overridden before first get_config() call

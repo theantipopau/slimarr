@@ -8,7 +8,7 @@ All notable changes to Slimarr are documented here.
 
 ### Release focus
 
-Failed download recovery and diagnostics. This release adds comprehensive tooling to detect, diagnose, and recover from failed downloads—including automatic folder cleanup, downloader history purge, and a dedicated failed-download management page.
+Failed download recovery, retry automation, and downloader hygiene. This release adds comprehensive tooling to detect, diagnose, recover, and prevent repeated failed downloads, including cleanup workflows, retry ladder logic, blacklist memory, orphan discovery, and richer quality/comparison rules.
 
 **Failed download handling**
 - Added `cleanup_status` field to download records to track cleanup attempts (`"pending"` | `"cleaned"` | `"error"`)
@@ -27,19 +27,70 @@ Failed download recovery and diagnostics. This release adds comprehensive toolin
   * Storage folder path (formatted for readability)
   * Cleanup status indicator (pending | cleaned | error)
   * "Clean Folder" button — manually trigger cleanup for any failed download
-  * "Retry Search" button (stubbed for Phase 2)
+  * "Retry Search" button wired to retry ladder API
   * Real-time updates via `download:cleanup` socket events
 - Pagination ready (initial: 50 failed downloads per page)
+
+**Retry ladder and failure recovery (Phase 2A)**
+- Added retry metadata to downloads:
+  * `retry_count`
+  * `grabbed_at`
+  * `last_error_at`
+  * `blacklist_reason`
+- Added retry endpoint: `POST /queue/{id}/retry`
+- Implemented retry selection flow that:
+  * Verifies retry eligibility and max retry count
+  * Selects next candidate by score while skipping failed/blacklisted options
+  * Starts replacement download and schedules monitor flow
+  * Carries retry metadata forward for diagnostics
+- Failed Downloads page "Retry Search" action is now fully wired to backend retry flow
+
+**Blacklist memory and management**
+- Added persistent blacklist table and logic to prevent repeated attempts of bad releases
+- Added blacklist CRUD endpoints:
+  * `GET /settings/blacklist`
+  * `POST /settings/blacklist`
+  * `DELETE /settings/blacklist/{release_hash}`
+- Added dedicated Blacklist management page in UI with add/remove workflows
+- Added blacklist expiry/cleanup support for temporary and timed entries
+
+**Orphan scanner and cleanup tooling (Phase 2B)**
+- Added orphan tracking table for downloader jobs/folders not represented in Slimarr DB
+- Added orphan scanner service for SABnzbd and NZBGet history reconciliation
+- Added orphan endpoints:
+  * `GET /queue/orphaned`
+  * `POST /queue/orphaned/{id}/cleanup`
+- Added dedicated Orphaned Downloads page for review and manual cleanup scheduling
+- Scheduler now includes:
+  * Daily orphan scan job (04:00 UTC)
+  * Periodic downloader health pulse (every 30 minutes)
+
+**Quality and comparison enhancements**
+- Parser now extracts additional metadata:
+  * uploader/group (`uploader`)
+  * release freshness (`release_age_days`)
+- Comparison engine now applies stricter and richer decision rules:
+  * Strong preference for higher resolution (including smaller 4K upgrades)
+  * Preferred-language enforcement with safer handling for untagged releases
+  * Staleness penalties for older releases
+  * Uploader health scoring and low-health rejection thresholds
+
+**Uploader health tracking**
+- Added uploader statistics table with success/failure/corruption counters and computed health score
+- Download monitor now updates uploader health stats on completion/failure paths
+- Comparison pipeline uses uploader health data to reduce repeat failures
 
 **API additions**
 - `GET /queue/failed?limit=50` — fetch failed downloads with cleanup metadata
 - `POST /queue/{id}/cleanup` — manually trigger cleanup for a download
 - Updated `/queue/active` and `/queue/recent` responses to include `storage_path` and `cleanup_status`
+- Updated queue payloads to include retry metadata fields for diagnostics and UI state
 
 **Diagnostics**
 - Download model now tracks:
   * `storage_path` — downloader's folder location (captured from job metadata)
   * `cleanup_status` — cleanup attempt outcome
+- Added explicit retry/failure timing metadata in API output for supportability
 - Logs now include full storage paths for failed jobs, making it easy to diagnose orphaned folders
 - Failed downloads are queryable by status, making audit and recovery workflows simpler
 
@@ -49,11 +100,16 @@ Failed download recovery and diagnostics. This release adds comprehensive toolin
 - NZBGet client now uses `editqueue` RPC with `GroupDelete` operation for job removal
 - Client purge failures are non-fatal and logged as warnings (cleanup continues with folder deletion)
 
-**Next steps (Phase 2)**
-- Implement retry ladder: on failure, automatically try next accepted candidate instead of marking movie as failed
-- Add blacklist memory: prevent same exact release from retrying repeatedly
-- Add orphan scanner: find downloader folders that Slimarr no longer tracks, offer bulk cleanup
-- Implement retry endpoint: `/POST /queue/{id}/retry`
+**System and UX quick wins**
+- Added quick stats block in System page for active downloads, total movies, and improved items
+- Added navigation links/routes for Orphaned Downloads and Blacklist pages
+- Extended frontend API/types for retry/orphan/blacklist workflows
+
+**Post-merge improvements (same 1.0.0.3 release)**
+- Added end-to-end health matrix API (`GET /system/health/matrix`) covering API, DB, queue, scheduler, orchestrator, recycling bin, and integration summaries
+- Added release decision audit logging with persistent decision rationale and endpoint (`GET /system/decision-audit`)
+- System page now includes a live Health Matrix panel and recent Release Decision Audit feed
+- Orphan auto-cleanup now deletes orphaned storage paths from disk before removing stale orphan records
 
 ---
 

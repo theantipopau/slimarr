@@ -64,11 +64,13 @@ export default function FailedDownloads() {
   const handleRetry = async (downloadId: number) => {
     setActionInProgress((prev) => ({ ...prev, [downloadId]: 'retry' }))
     try {
-      // TODO: Implement retry endpoint in backend
-      toast('Retry not yet implemented', 'info')
-      // await api.retryFailedDownload(downloadId)
-      // toast('Retry queued', 'success')
-      // await loadFailed()
+      const res = await api.retryFailedDownload(downloadId) as { success: boolean; message?: string }
+      if (res.success) {
+        toast(res.message || 'Retry queued', 'success')
+      } else {
+        toast(res.message || 'Retry rejected', 'error')
+      }
+      await loadFailed()
     } catch {
       toast('Retry failed', 'error')
     } finally {

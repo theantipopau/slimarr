@@ -4,6 +4,8 @@ Core rule: NEVER increase file size.
 """
 from __future__ import annotations
 
+import os
+import sqlite3
 from dataclasses import dataclass
 from typing import Optional
 
@@ -12,6 +14,7 @@ from backend.core.parser import (
     get_codec_rank, get_resolution_rank, normalize_codec, normalize_resolution,
     parse_release_title,
 )
+
 
 
 @dataclass
@@ -23,6 +26,28 @@ class ComparisonResult:
     reject_reason: Optional[str] = None
     notes: str = ""
 
+
+
+def _uploader_health_score(uploader: Optional[str]) -> float:
+    """Fetch uploader health score from SQLite, defaulting to neutral (0.5)."""
+    if not uploader:
+        return 0.5
+
+    db_path = os.environ.get("SLIMARR_DB", "data/slimarr.db")
+    if not os.path.exists(db_path):
+        return 0.5
+
+    try:
+        conn = sqlite3.connect(db_path)
+        cur = conn.cursor()
+        cur.execute("SELECT health_score FROM uploader_stats WHERE uploader = ?", (uploader,))
+        row = cur.fetchone()
+        conn.close()
+        if not row:
+            return 0.5
+        return max(0.0, min(1.0, float(row[0])))
+    except Exception:
+        return 0.5
 
 def compare_release(
     local_size: int,
@@ -90,15 +115,29 @@ def compare_release(
     # Score calculation
     score = savings_pct
 
-    # Language check
+    # Resolution priority: strongly prefer 4K/UHD upgrades when they are smaller.
+    if cand_res_rank >= 4 and cand_res_rank > local_res_rank:
+        score += 50.0
+
+    # LANGUAGE VALIDATION: Enforce English-only by default
     if config.comparison.preferred_language:
         pref = config.comparison.preferred_language.lower()
-        # If parsing found explicitly foreign tags but not the preferred one and not multi
-        if parsed.languages and pref not in parsed.languages and 'multi' not in parsed.languages:
-            return _reject(f"Language mismatch (found {','.join(parsed.languages)}, want {pref})")
-        # Add a small bonus if the language is explicitly tagged
-        if pref in parsed.languages:
-            score += 5.0
+        # STRENGTHENED: Reject any release with non-English tags unless multi
+        if parsed.languages:
+            has_pref = pref in parsed.languages
+            has_multi = 'multi' in parsed.languages
+            
+            # If no explicit preference or if we found explicit non-preferred languages
+            if not has_pref and not has_multi:
+                found_langs = ','.join(parsed.languages)
+                return _reject(f"Non-English release detected: {found_langs} (expected {pref})")
+            
+            # Bonus if language is explicitly tagged as preferred
+            if has_pref:
+                score += 5.0
+        else:
+            # No languages tagged - assume English (safe assumption for most content)
+            score += 2.0
             
     cand_codec = normalize_codec(parsed.video_codec or "")
     codec_delta = get_codec_rank(cand_codec) - get_codec_rank(normalize_codec(local_codec))
@@ -110,11 +149,32 @@ def compare_release(
     if cand_codec in [c.lower() for c in config.comparison.preferred_codecs]:
         score += 10.0
 
+    # Release freshness: stale releases get penalized.
+    if parsed.release_age_days is not None:
+        if parsed.release_age_days > 30:
+            staleness_penalty = min(20.0, parsed.release_age_days / 5)
+            score -= staleness_penalty
+        elif parsed.release_age_days > 7:
+            staleness_penalty = (parsed.release_age_days - 7) * 0.3
+            score -= staleness_penalty
+        else:
+            score += 2.0
+
+    # Uploader quality: bad uploaders are rejected, good ones rewarded.
+    uploader_health = _uploader_health_score(parsed.uploader or parsed.group)
+    if uploader_health < 0.3:
+        return _reject(f"Uploader quality too low ({uploader_health:.2f})")
+    score += uploader_health * 10.0
+
     notes = []
     if cand_res_rank > local_res_rank:
         notes.append(f"Resolution upgrade: {local_resolution}→{cand_res}")
     if codec_delta > 0:
         notes.append(f"Codec upgrade: {local_codec}→{cand_codec}")
+    if parsed.release_age_days is not None:
+        notes.append(f"Release age: {parsed.release_age_days} days")
+    if parsed.uploader or parsed.group:
+        notes.append(f"Uploader score: {uploader_health:.2f}")
 
     return ComparisonResult(
         decision="accept",

@@ -50,6 +50,34 @@ async def _cleanup_recycle_bin() -> None:
         logger.info(f"Cleaned {removed} file(s) from recycle bin")
 
 
+async def _orphan_scanner() -> None:
+    from backend.core.orphan_scanner import auto_cleanup_old_orphans, scan_orphaned_downloads
+
+    logger.info("Orphan scanner triggered")
+    found = await scan_orphaned_downloads()
+    if found:
+        logger.info(f"Orphan scanner found {found} new orphaned download(s)")
+
+    cleaned = await auto_cleanup_old_orphans(days_old=7)
+    if cleaned:
+        logger.info(f"Orphan auto-cleanup removed {cleaned} old orphan record(s)")
+
+
+async def _downloader_health_pulse() -> None:
+    from backend.integrations.download_client import get_active_download_client_name, get_download_client
+
+    client_name = get_active_download_client_name()
+    client = get_download_client(client_name)
+    try:
+        health = await client.test_connection()
+        if not health.get("success"):
+            logger.warning(f"Downloader health pulse failed for {client_name}: {health.get('error', 'unknown')}")
+        else:
+            logger.debug(f"Downloader health pulse OK for {client_name}")
+    except Exception as exc:
+        logger.warning(f"Downloader health pulse exception for {client_name}: {exc}")
+
+
 def start_scheduler() -> None:
     from backend.config import get_config
     config = get_config()
@@ -76,6 +104,22 @@ def start_scheduler() -> None:
         _cleanup_recycle_bin,
         CronTrigger(hour=3, minute=0),
         id="recycle_cleanup",
+        replace_existing=True,
+    )
+
+    # Orphan scanner — daily at 04:00 UTC
+    scheduler.add_job(
+        _orphan_scanner,
+        CronTrigger(hour=4, minute=0),
+        id="orphan_scanner",
+        replace_existing=True,
+    )
+
+    # Downloader health pulse — every 30 minutes
+    scheduler.add_job(
+        _downloader_health_pulse,
+        IntervalTrigger(minutes=30),
+        id="downloader_health_pulse",
         replace_existing=True,
     )
 

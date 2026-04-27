@@ -9,6 +9,8 @@ import MovieDetail from '@/pages/MovieDetail'
 import Activity from '@/pages/Activity'
 import Queue from '@/pages/Queue'
 import FailedDownloads from '@/pages/FailedDownloads'
+import OrphanedDownloads from '@/pages/OrphanedDownloads'
+import BlacklistManagement from '@/pages/BlacklistManagement'
 import Settings from '@/pages/Settings'
 import System from '@/pages/System'
 import TVShows from '@/pages/TVShows'
@@ -33,6 +35,8 @@ export default function App() {
             <Route path="activity" element={<Activity />} />
             <Route path="queue" element={<Queue />} />
             <Route path="queue/failed" element={<FailedDownloads />} />
+            <Route path="queue/orphaned" element={<OrphanedDownloads />} />
+            <Route path="settings/blacklist" element={<BlacklistManagement />} />
             <Route path="settings" element={<Settings />} />
             <Route path="system" element={<System />} />
             <Route path="tv" element={<TVShows />} />

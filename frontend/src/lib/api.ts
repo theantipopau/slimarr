@@ -62,6 +62,12 @@ export const api = {
     client.get(`/queue/failed?limit=${limit}`).then((r) => r.data),
   cleanupFailedDownload: (downloadId: number) =>
     client.post(`/queue/${downloadId}/cleanup`).then((r) => r.data),
+  retryFailedDownload: (downloadId: number) =>
+    client.post(`/queue/${downloadId}/retry`).then((r) => r.data),
+  orphanedDownloads: (limit = 100) =>
+    client.get(`/queue/orphaned?limit=${limit}`).then((r) => r.data),
+  cleanupOrphanedDownload: (orphanId: number) =>
+    client.post(`/queue/orphaned/${orphanId}/cleanup`).then((r) => r.data),
 
   // Settings
   getSettings: () => client.get('/settings').then((r) => r.data),
@@ -69,11 +75,24 @@ export const api = {
     client.put('/settings', data).then((r) => r.data),
   testConnection: (service: string, body?: unknown) =>
     client.post(`/settings/test/${service}`, body ?? null).then((r) => r.data),
+  getBlacklist: () => client.get('/settings/blacklist').then((r) => r.data),
+  addBlacklistEntry: (data: {
+    release_title: string
+    uploader?: string
+    indexer_name?: string
+    reason?: string
+    expires_in_days?: number
+  }) => client.post('/settings/blacklist', data).then((r) => r.data),
+  removeBlacklistEntry: (releaseHash: string) =>
+    client.delete(`/settings/blacklist/${releaseHash}`).then((r) => r.data),
 
   // System
   systemStatus: () => client.get('/system/status').then((r) => r.data),
   systemInfo: () => client.get('/system/info').then((r) => r.data),
   servicesHealth: () => client.get('/system/health/services').then((r) => r.data),
+  healthMatrix: () => client.get('/system/health/matrix').then((r) => r.data),
+  decisionAudit: (params?: { limit?: number; decision?: 'accept' | 'reject' }) =>
+    client.get('/system/decision-audit', { params }).then((r) => r.data),
   updateCheck: () => client.get('/system/update-check').then((r) => r.data),
   scanLibrary: () => client.post('/system/scan').then((r) => r.data),
   tasks: () => client.get('/system/tasks').then((r) => r.data),

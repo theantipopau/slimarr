@@ -9,9 +9,38 @@ from datetime import datetime, timezone
 from loguru import logger
 from sqlalchemy import select
 
-from backend.database import Download, Movie, SearchResult, async_session
+from backend.database import Download, Movie, SearchResult, UploaderStats, async_session
 from backend.integrations.download_client import decode_job_id, encode_job_id, get_active_download_client_name, get_download_client
+from backend.core.parser import parse_release_title
 from backend.realtime.events import emit_event
+
+
+async def _update_uploader_stats(release_title: str | None, success: bool) -> None:
+    if not release_title:
+        return
+
+    parsed = parse_release_title(release_title)
+    uploader = parsed.uploader or parsed.group
+    if not uploader:
+        return
+
+    async with async_session() as db:
+        result = await db.execute(select(UploaderStats).where(UploaderStats.uploader == uploader))
+        stats = result.scalar_one_or_none()
+        if not stats:
+            stats = UploaderStats(uploader=uploader)
+            db.add(stats)
+
+        if success:
+            stats.success_count = int(stats.success_count or 0) + 1
+        else:
+            stats.failure_count = int(stats.failure_count or 0) + 1
+
+        total = int(stats.success_count or 0) + int(stats.failure_count or 0) + int(stats.corruption_count or 0)
+        if total > 0:
+            stats.health_score = max(0.0, min(1.0, float(stats.success_count) / float(total)))
+        stats.last_seen = datetime.now(timezone.utc)
+        await db.commit()
 
 
 async def start_download(search_result_id: int) -> Download:
@@ -105,6 +134,7 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
                 dl.status = "failed"
                 dl.error_message = f"Job not found in {client_name} history/queue"
                 await db.commit()
+                await _update_uploader_stats(dl.release_title, success=False)
                 await emit_event("download:failed", {
                     "download_id": dl.id,
                     "movie_id": dl.movie_id,
@@ -145,6 +175,7 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
                         dl.status = "failed"
                         dl.error_message = f"{client_name} completed job has no storage path"
                         await db.commit()
+                        await _update_uploader_stats(dl.release_title, success=False)
                         await emit_event("download:failed", {
                             "download_id": dl.id,
                             "movie_id": dl.movie_id,
@@ -155,6 +186,7 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
                     dl.progress_pct = 100.0
                     dl.completed_at = datetime.now(timezone.utc)
                     await db.commit()
+                    await _update_uploader_stats(dl.release_title, success=True)
                     await emit_event("download:completed", {
                         "download_id": dl.id,
                         "movie_id": dl.movie_id,
@@ -165,6 +197,7 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
                     dl.status = "failed"
                     dl.error_message = f"{client_name} status: {raw_status}"
                     await db.commit()
+                    await _update_uploader_stats(dl.release_title, success=False)
                     await emit_event("download:failed", {
                         "download_id": dl.id,
                         "movie_id": dl.movie_id,

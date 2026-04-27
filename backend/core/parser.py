@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import re
+from datetime import datetime
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -17,6 +18,8 @@ class ParsedRelease:
     hdr: Optional[str] = None           # "hdr10" | "hdr10+" | "dolby vision" | None (SDR)
     group: Optional[str] = None
     languages: list[str] = field(default_factory=list)
+    uploader: Optional[str] = None      # Release group/uploader name
+    release_age_days: Optional[int] = None  # Days since release (if parseable)
 
 
 # Resolution priority (higher = better)
@@ -129,6 +132,8 @@ def parse_release_title(title: str) -> ParsedRelease:
     if re.search(r'\benglish\b|\beng\b', t): langs.append('english')
     if re.search(r'\bmulti\b|\bdual[- ]?audio\b', t): langs.append('multi')
     result.languages = langs
+    result.uploader = parse_uploader(title)
+    result.release_age_days = parse_release_age(title)
 
     return result
 
@@ -159,3 +164,79 @@ def get_resolution_rank(resolution: str) -> int:
 
 def get_codec_rank(codec: str) -> int:
     return CODEC_RANK.get(normalize_codec(codec), 0)
+
+
+def parse_release_age(title: str) -> Optional[int]:
+    """
+    Attempt to extract release date from title and return age in days.
+    Common patterns:
+    - YYYY.MM.DD
+    - YYYY-MM-DD
+    - Month DD YYYY
+    """
+    t = title.lower()
+    now = datetime.now()
+    
+    # Try ISO-like date patterns: YYYY.MM.DD or YYYY-MM-DD
+    date_match = re.search(r'(\d{4})[.-](\d{1,2})[.-](\d{1,2})', title)
+    if date_match:
+        try:
+            year, month, day = int(date_match.group(1)), int(date_match.group(2)), int(date_match.group(3))
+            release_date = datetime(year, month, day)
+            age = (now - release_date).days
+            return max(0, age)  # Don't return negative ages
+        except ValueError:
+            pass
+    
+    # Try month name patterns: Jan 15 2023, January 15 2023, etc.
+    month_names = {
+        'jan': 1, 'january': 1, 'feb': 2, 'february': 2, 'mar': 3, 'march': 3,
+        'apr': 4, 'april': 4, 'may': 5, 'jun': 6, 'june': 6, 'jul': 7, 'july': 7,
+        'aug': 8, 'august': 8, 'sep': 9, 'september': 9, 'oct': 10, 'october': 10,
+        'nov': 11, 'november': 11, 'dec': 12, 'december': 12
+    }
+    
+    for month_name, month_num in month_names.items():
+        pattern = rf'{month_name}.*?(\d{{1,2}}).*?(\d{{4}})'
+        match = re.search(pattern, t)
+        if match:
+            try:
+                day = int(match.group(1))
+                year = int(match.group(2))
+                release_date = datetime(year, month_num, day)
+                age = (now - release_date).days
+                return max(0, age)
+            except ValueError:
+                pass
+    
+    return None
+
+
+def parse_uploader(title: str) -> Optional[str]:
+    """
+    Extract uploader/group name from release title.
+    Typically at the end after a dash or as the group name.
+    """
+    # Pattern 1: Trailing group after dash
+    # Movie.Title.2023.1080p.BluRay.x264-GROUPNAME
+    group_match = re.search(r'-([a-zA-Z0-9]{2,20})(?:\.[a-z]{2,4})?$', title)
+    if group_match:
+        return group_match.group(1)
+    
+    # Pattern 2: Group in brackets at end
+    # Movie.Title.2023.1080p.BluRay.x264.[GROUPNAME]
+    bracket_match = re.search(r'\[([a-zA-Z0-9]{2,20})\]$', title)
+    if bracket_match:
+        return bracket_match.group(1)
+    
+    # Pattern 3: Before extension if no dash
+    # Movie.Title.2023.1080p.BluRay.x264.GROUPNAME.mkv
+    if not group_match:
+        last_part = re.search(r'([a-zA-Z0-9]{2,20})(?:\.[a-z]{2,4})?$', title)
+        if last_part:
+            candidate = last_part.group(1)
+            # Filter out common extensions
+            if candidate.lower() not in ['mkv', 'avi', 'mp4', 'wmv', 'mov']:
+                return candidate
+    
+    return None

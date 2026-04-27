@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/react-18-61DAFB?logo=react&logoColor=black" />
   <img src="https://img.shields.io/badge/license-MIT-green" />
   <img src="https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white" />
-  <img src="https://img.shields.io/badge/release-1.0.0.2-success" />
+  <img src="https://img.shields.io/badge/release-1.0.0.3-success" />
 </p>
 
 <p align="center">
@@ -36,14 +36,16 @@ Scan Plex library → Search Usenet indexers → Compare releases
 
 Slimarr is designed to look and feel like a native member of the **\*arr ecosystem** (Radarr, Sonarr, Prowlarr). If you're familiar with those tools, you'll feel right at home.
 
-Current stable release: **1.0.0.2**.
+Current stable release: **1.0.0.3**.
 
-### What's New in 1.0.0.2
+### What's New in 1.0.0.3
 
-- Live recycling bin status in Settings (file count + total size), with auto-refresh and manual refresh
-- One-click **Empty Recycling Bin** action with confirmation and freed-space feedback toast
-- Improved replacement reliability around SAB completion path validation
-- Release packaging polish, including installer output: `SlimarrSetup-1.0.0.2.exe`
+- Failed download recovery tooling with cleanup + retry workflows
+- Retry ladder with blacklist memory to avoid repeated bad grabs
+- Orphaned download detection and cleanup tooling for downloader hygiene
+- Health Matrix visibility in System page for end-to-end operational status
+- Release Decision Audit feed for accept/reject rationale traceability
+- Installer packaging target: `SlimarrSetup-1.0.0.3.exe`
 
 ---
 
@@ -100,9 +102,9 @@ Current stable release: **1.0.0.2**.
 
 ### Option A — Installer (recommended for sharing)
 
-Download `SlimarrSetup-1.0.0.2.exe` (or the latest `SlimarrSetup-*.exe`) from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies — no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
+Download `SlimarrSetup-1.0.0.3.exe` (or the latest `SlimarrSetup-*.exe`) from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies — no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
 
-`1.0.0.2` is the latest published installer release. Newer `main` branch changes may land before the next installer is cut; if you want those immediately, run Slimarr from source or build a fresh installer from `main`.
+`1.0.0.3` is the latest published installer release. Newer `main` branch changes may land before the next installer is cut; if you want those immediately, run Slimarr from source or build a fresh installer from `main`.
 
 ### Option B — From source
 

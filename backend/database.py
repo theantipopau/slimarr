@@ -5,7 +5,7 @@ Database: SQLite via aiosqlite.
 from __future__ import annotations
 
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from sqlalchemy import (
@@ -121,6 +121,10 @@ class Download(Base):
     progress_pct: Mapped[float] = mapped_column(Float, default=0.0)
     error_message: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     cleanup_status: Mapped[str] = mapped_column(String, default="pending", nullable=True)
+    retry_count: Mapped[int] = mapped_column(Integer, default=0)
+    grabbed_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    last_error_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    blacklist_reason: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     started_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
@@ -157,6 +161,67 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String, nullable=False)
     is_admin: Mapped[bool] = mapped_column(default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+
+
+
+class DownloadBlacklist(Base):
+    __tablename__ = "download_blacklist"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    release_title: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    release_hash: Mapped[Optional[str]] = mapped_column(String, unique=True, nullable=True)
+    uploader: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    indexer_name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    added_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    reason: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    manual: Mapped[bool] = mapped_column(default=False)
+
+
+class OrphanedDownload(Base):
+    __tablename__ = "orphaned_downloads"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    downloader_name: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    downloader_job_id: Mapped[str] = mapped_column(String, nullable=False)
+    release_name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    storage_path: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    found_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    cleanup_scheduled: Mapped[bool] = mapped_column(default=False)
+    cleanup_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    age_hours: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+
+
+class UploaderStats(Base):
+    __tablename__ = "uploader_stats"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    uploader: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
+    success_count: Mapped[int] = mapped_column(Integer, default=0)
+    failure_count: Mapped[int] = mapped_column(Integer, default=0)
+    corruption_count: Mapped[int] = mapped_column(Integer, default=0)
+    last_seen: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    health_score: Mapped[float] = mapped_column(Float, default=0.5)
+
+
+class DecisionAuditLog(Base):
+    __tablename__ = "decision_audit_log"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    movie_id: Mapped[Optional[int]] = mapped_column(ForeignKey("movies.id"), nullable=True, index=True)
+    movie_title: Mapped[Optional[str]] = mapped_column(String, nullable=True, index=True)
+    indexer_name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    release_title: Mapped[str] = mapped_column(String, nullable=False)
+    candidate_size: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    local_size: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    decision: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    savings_bytes: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    savings_pct: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    reject_reason: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc), index=True)
 
 
 async def init_db() -> None:

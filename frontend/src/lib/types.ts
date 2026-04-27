@@ -41,9 +41,34 @@ export interface Download {
   nzo_id?: string
   storage_path?: string
   cleanup_status?: string
+  retry_count?: number
+  grabbed_at?: string
+  last_error_at?: string
   started_at?: string
   completed_at?: string
   error_message?: string
+}
+
+export interface OrphanedDownload {
+  id: number
+  downloader_name: string
+  downloader_job_id: string
+  release_name?: string
+  storage_path?: string
+  found_at?: string
+  age_hours?: number
+}
+
+export interface BlacklistEntry {
+  id: number
+  release_title: string
+  release_hash: string
+  uploader?: string
+  indexer_name?: string
+  reason?: string
+  manual?: boolean
+  added_at?: string
+  expires_at?: string
 }
 
 export interface ActivityEntry {
@@ -66,4 +91,33 @@ export interface DashboardStats {
   pending: number
   total_savings_bytes: number
   active_downloads: number
+}
+
+export interface HealthMatrixComponent {
+  status: 'healthy' | 'degraded' | 'down' | 'disabled'
+  detail: string
+  [key: string]: unknown
+}
+
+export interface HealthMatrix {
+  status: 'healthy' | 'degraded' | 'down'
+  checked_at: string
+  components: Record<string, HealthMatrixComponent>
+}
+
+export interface DecisionAuditEntry {
+  id: number
+  movie_id?: number
+  movie_title?: string
+  indexer_name?: string
+  release_title: string
+  candidate_size?: number
+  local_size?: number
+  decision: 'accept' | 'reject'
+  score?: number
+  savings_bytes?: number
+  savings_pct?: number
+  reject_reason?: string
+  notes?: string
+  created_at?: string
 }

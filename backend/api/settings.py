@@ -116,3 +116,68 @@ def _deep_merge(base: dict, override: dict) -> None:
             _deep_merge(base[key], value)
         else:
             base[key] = value
+
+
+# Blacklist management endpoints
+@router.get("/blacklist")
+async def get_blacklist(user=Depends(get_current_user)):
+    """Get all active blacklist entries."""
+    from backend.core.blacklist import get_all_blacklist_entries
+    
+    entries = await get_all_blacklist_entries()
+    return [
+        {
+            "id": e.id,
+            "release_title": e.release_title,
+            "release_hash": e.release_hash,
+            "uploader": e.uploader,
+            "indexer_name": e.indexer_name,
+            "reason": e.reason,
+            "manual": e.manual,
+            "added_at": e.added_at.isoformat() if e.added_at else None,
+            "expires_at": e.expires_at.isoformat() if e.expires_at else None,
+        }
+        for e in entries
+    ]
+
+
+class BlacklistAddBody(BaseModel):
+    release_title: str
+    uploader: Optional[str] = None
+    indexer_name: Optional[str] = None
+    reason: str = "manual"
+    expires_in_days: Optional[int] = 30
+
+
+@router.post("/blacklist")
+async def add_blacklist_entry(body: BlacklistAddBody, user=Depends(get_current_user)):
+    """Add a release to the blacklist."""
+    from backend.core.blacklist import add_to_blacklist
+    
+    entry = await add_to_blacklist(
+        release_title=body.release_title,
+        uploader=body.uploader,
+        indexer_name=body.indexer_name,
+        reason=body.reason,
+        manual=True,
+        expires_in_days=body.expires_in_days,
+    )
+    
+    return {
+        "success": True,
+        "id": entry.id,
+        "release_hash": entry.release_hash,
+    }
+
+
+@router.delete("/blacklist/{release_hash}")
+async def remove_blacklist_entry(release_hash: str, user=Depends(get_current_user)):
+    """Remove a release from the blacklist."""
+    from backend.core.blacklist import remove_from_blacklist
+    
+    removed = await remove_from_blacklist(release_hash)
+    
+    return {
+        "success": removed,
+        "message": "Blacklist entry removed" if removed else "Entry not found",
+    }

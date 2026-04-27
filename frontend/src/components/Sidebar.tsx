@@ -7,6 +7,7 @@ import {
   Activity,
   Download,
   AlertCircle,
+  ShieldBan,
   Settings,
   Server,
   LogOut,
@@ -21,6 +22,8 @@ const links = [
   { to: '/activity', icon: Activity, label: 'Activity' },
   { to: '/queue', icon: Download, label: 'Queue' },
   { to: '/queue/failed', icon: AlertCircle, label: 'Failed Downloads' },
+  { to: '/queue/orphaned', icon: AlertCircle, label: 'Orphaned Downloads' },
+  { to: '/settings/blacklist', icon: ShieldBan, label: 'Blacklist' },
   { to: '/settings', icon: Settings, label: 'Settings' },
   { to: '/system', icon: Server, label: 'System' },
 ]

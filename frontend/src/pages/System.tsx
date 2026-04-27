@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 import { useSocket } from '@/hooks/useSocket'
 import { useToast } from '@/components/Toast'
+import type { DecisionAuditEntry, HealthMatrix } from '@/lib/types'
 import { Play, Square, RefreshCw, Database, Clock, Server, CheckCircle, XCircle, Trash2, ArrowUpCircle } from 'lucide-react'
 
 interface ServiceHealth {
@@ -56,16 +57,21 @@ export default function System() {
   const [status, setStatus] = useState<Record<string, unknown> | null>(null)
   const [info, setInfo] = useState<SystemInfo | null>(null)
   const [services, setServices] = useState<Record<string, ServiceHealth> | null>(null)
+  const [healthMatrix, setHealthMatrix] = useState<HealthMatrix | null>(null)
+  const [decisionAudit, setDecisionAudit] = useState<DecisionAuditEntry[]>([])
   const [starting, setStarting] = useState(false)
   const [scanning, setScanning] = useState(false)
   const [cleaning, setCleaning] = useState(false)
   const [updateInfo, setUpdateInfo] = useState<{ update_available: boolean; latest?: string; release_url?: string } | null>(null)
   const [recyclingInfo, setRecyclingInfo] = useState<RecyclingBinInfo | null>(null)
+  const [quickStats, setQuickStats] = useState<{ active_downloads?: number; total_movies?: number; improved?: number } | null>(null)
   const [recyclingLoading, setRecyclingLoading] = useState(false)
   const [recyclingPurging, setRecyclingPurging] = useState(false)
 
   const loadStatus = () => api.systemStatus().then(setStatus).catch(() => {})
   const loadServices = () => api.servicesHealth().then(setServices).catch(() => {})
+  const loadHealthMatrix = () => api.healthMatrix().then(setHealthMatrix).catch(() => {})
+  const loadDecisionAudit = () => api.decisionAudit({ limit: 8 }).then((rows) => setDecisionAudit(rows as DecisionAuditEntry[])).catch(() => {})
   const loadRecyclingInfo = (showLoading = false) => {
     if (showLoading) setRecyclingLoading(true)
     return api.recyclingBinInfo()
@@ -79,14 +85,21 @@ export default function System() {
   useEffect(() => {
     loadStatus()
     api.systemInfo().then(setInfo).catch(() => {})
+    api.stats().then((d) => setQuickStats(d as { active_downloads?: number; total_movies?: number; improved?: number })).catch(() => {})
     api.updateCheck().then(setUpdateInfo).catch(() => {})
     loadServices()
+    loadHealthMatrix()
+    loadDecisionAudit()
     void loadRecyclingInfo(true)
     const iv = setInterval(loadStatus, 10000)
     const recycleIv = setInterval(() => { void loadRecyclingInfo() }, 15000)
+    const matrixIv = setInterval(loadHealthMatrix, 30000)
+    const auditIv = setInterval(loadDecisionAudit, 30000)
     return () => {
       clearInterval(iv)
       clearInterval(recycleIv)
+      clearInterval(matrixIv)
+      clearInterval(auditIv)
     }
   }, [])
 
@@ -158,6 +171,14 @@ export default function System() {
 
   const cycle = (status?.cycle as Record<string, boolean>) ?? {}
   const jobs = (status?.jobs as Array<{ id: string; next_run: string }>) ?? []
+  const healthComponents = Object.entries(healthMatrix?.components ?? {})
+
+  const matrixStatusClass = (value?: string) => {
+    if (value === 'healthy') return 'text-green-400'
+    if (value === 'degraded') return 'text-yellow-300'
+    if (value === 'disabled') return 'text-gray-500'
+    return 'text-red-400'
+  }
 
   return (
     <div className="space-y-6 max-w-2xl">
@@ -207,6 +228,24 @@ export default function System() {
               <p className="text-xs text-gray-400">Python / Port</p>
               <p className="text-sm font-medium">{info.python} · :{info.port}</p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Integration health */}
+      {quickStats && (
+        <div className="bg-gray-900 rounded-xl p-5 grid grid-cols-3 gap-4">
+          <div>
+            <p className="text-xs text-gray-400">Active Downloads</p>
+            <p className="text-xl font-semibold">{quickStats.active_downloads ?? 0}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-400">Movies</p>
+            <p className="text-xl font-semibold">{quickStats.total_movies ?? 0}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-400">Improved</p>
+            <p className="text-xl font-semibold">{quickStats.improved ?? 0}</p>
           </div>
         </div>
       )}
@@ -265,6 +304,80 @@ export default function System() {
             ))}
           </>
         ) : null}
+      </div>
+
+      {/* End-to-end health matrix */}
+      <div className="bg-gray-900 rounded-xl overflow-hidden">
+        <div className="px-4 py-3 border-b border-gray-800 text-sm font-semibold flex items-center justify-between">
+          Health Matrix
+          <button onClick={loadHealthMatrix} className="text-xs text-gray-400 hover:text-white">
+            <RefreshCw size={12} />
+          </button>
+        </div>
+        <div className="px-4 py-2 text-xs text-gray-500">
+          Overall: <span className={matrixStatusClass(healthMatrix?.status)}>{healthMatrix?.status ?? 'unknown'}</span>
+        </div>
+        <div className="divide-y divide-gray-800">
+          {healthComponents.length === 0 ? (
+            <p className="px-4 py-4 text-gray-500 text-sm">No health data yet.</p>
+          ) : (
+            healthComponents.map(([name, component]) => {
+              const comp = component as { status?: string; detail?: string }
+              return (
+                <div key={name} className="px-4 py-3 flex items-center gap-3 text-sm">
+                  {comp.status === 'healthy' ? (
+                    <CheckCircle size={14} className="text-green-400 shrink-0" />
+                  ) : comp.status === 'degraded' ? (
+                    <XCircle size={14} className="text-yellow-300 shrink-0" />
+                  ) : comp.status === 'disabled' ? (
+                    <span className="w-3.5 h-3.5 rounded-full bg-gray-600 shrink-0" />
+                  ) : (
+                    <XCircle size={14} className="text-red-400 shrink-0" />
+                  )}
+                  <span className="w-32 font-medium capitalize">{name.replace(/_/g, ' ')}</span>
+                  <span className="text-xs text-gray-400 truncate">{comp.detail ?? 'No details'}</span>
+                </div>
+              )
+            })
+          )}
+        </div>
+      </div>
+
+      {/* Decision audit log */}
+      <div className="bg-gray-900 rounded-xl overflow-hidden">
+        <div className="px-4 py-3 border-b border-gray-800 text-sm font-semibold flex items-center justify-between">
+          Release Decision Audit
+          <button onClick={loadDecisionAudit} className="text-xs text-gray-400 hover:text-white">
+            <RefreshCw size={12} />
+          </button>
+        </div>
+        <div className="divide-y divide-gray-800">
+          {decisionAudit.length === 0 ? (
+            <p className="px-4 py-4 text-gray-500 text-sm">No decision history yet.</p>
+          ) : (
+            decisionAudit.map((entry) => (
+              <div key={entry.id} className="px-4 py-3 text-sm space-y-1">
+                <div className="flex items-center gap-2">
+                  {entry.decision === 'accept' ? (
+                    <CheckCircle size={14} className="text-green-400 shrink-0" />
+                  ) : (
+                    <XCircle size={14} className="text-red-400 shrink-0" />
+                  )}
+                  <span className="font-medium truncate">{entry.release_title}</span>
+                </div>
+                <p className="text-xs text-gray-400">
+                  {(entry.movie_title ?? 'Unknown movie')} · score {Number(entry.score ?? 0).toFixed(1)} · savings {Number(entry.savings_pct ?? 0).toFixed(1)}%
+                </p>
+                {entry.reject_reason && (
+                  <p className="text-xs text-red-300">{entry.reject_reason}</p>
+                )}
+                {!entry.reject_reason && entry.notes && (
+                  <p className="text-xs text-gray-500 truncate">{entry.notes}</p>
+                )}
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
       {/* Recycling folder */}

@@ -6,11 +6,14 @@ import platform
 import shutil
 import sys
 from datetime import datetime, timezone
+from typing import Any
 
 from fastapi import APIRouter, BackgroundTasks, Depends
+from sqlalchemy import func, select
 
 from backend.auth.dependencies import get_current_user
 from backend.core.orchestrator import get_status, is_running, request_stop
+from backend.database import DecisionAuditLog, Download, Movie, async_session
 from backend.scheduler.scheduler import get_scheduler, list_jobs
 
 router = APIRouter(prefix="/system", tags=["system"])
@@ -18,7 +21,7 @@ router = APIRouter(prefix="/system", tags=["system"])
 _start_time = datetime.now(timezone.utc)
 
 
-CURRENT_VERSION = "1.0.0.2"
+CURRENT_VERSION = "1.0.0.3"
 GITHUB_REPO = "theantipopau/slimarr"
 
 
@@ -174,9 +177,10 @@ async def recycling_bin_empty(user=Depends(get_current_user)):
 
 @router.get("/status")
 async def get_system_status(user=Depends(get_current_user)):
+    scheduler = get_scheduler()
     return {
         "cycle": get_status(),
-        "scheduler_running": get_scheduler().running if get_scheduler() else False,
+        "scheduler_running": scheduler.running if scheduler else False,
         "jobs": list_jobs(),
     }
 
@@ -233,12 +237,12 @@ async def stop_cycle(user=Depends(get_current_user)):
     return {"status": "stop_requested"}
 
 
-@router.get("/health/services")
-async def services_health(user=Depends(get_current_user)):
+async def _build_services_health() -> dict[str, Any]:
     """Quick connectivity check for all configured integrations."""
     from backend.config import get_config
+
     config = get_config()
-    results: dict = {}
+    results: dict[str, Any] = {}
 
     # Plex
     if config.plex.url and config.plex.token:
@@ -343,6 +347,154 @@ async def services_health(user=Depends(get_current_user)):
     results["indexers"] = indexer_results
 
     return results
+
+
+@router.get("/health/services")
+async def services_health(user=Depends(get_current_user)):
+    return await _build_services_health()
+
+
+@router.get("/health/matrix")
+async def health_matrix(user=Depends(get_current_user)):
+    """Return end-to-end health for app, DB, scheduler, queue, and integrations."""
+    components: dict[str, dict[str, Any]] = {
+        "api": {"status": "healthy", "detail": "HTTP API reachable"},
+    }
+
+    try:
+        async with async_session() as db:
+            movies_total = (await db.execute(select(func.count()).select_from(Movie))).scalar_one()
+            active_downloads = (
+                await db.execute(
+                    select(func.count()).select_from(Download).where(
+                        Download.status.in_(["queued", "downloading", "processing"])
+                    )
+                )
+            ).scalar_one()
+        components["database"] = {
+            "status": "healthy",
+            "detail": "Connected",
+            "movies_total": int(movies_total),
+        }
+        components["queue"] = {
+            "status": "healthy",
+            "detail": f"{int(active_downloads)} active downloads",
+            "active_downloads": int(active_downloads),
+        }
+    except Exception as e:
+        components["database"] = {"status": "down", "detail": str(e)}
+        components["queue"] = {"status": "down", "detail": "Unavailable while database is down"}
+
+    scheduler = get_scheduler()
+    if scheduler and scheduler.running:
+        components["scheduler"] = {"status": "healthy", "detail": "Scheduler running"}
+    elif scheduler:
+        components["scheduler"] = {"status": "degraded", "detail": "Scheduler initialized but not running"}
+    else:
+        components["scheduler"] = {"status": "down", "detail": "Scheduler unavailable"}
+
+    cycle = get_status()
+    if cycle.get("running"):
+        components["orchestrator"] = {"status": "healthy", "detail": "Cycle currently running"}
+    elif cycle.get("stop_requested"):
+        components["orchestrator"] = {"status": "degraded", "detail": "Stop requested"}
+    else:
+        components["orchestrator"] = {"status": "healthy", "detail": "Idle"}
+
+    recycle_path = _get_recycling_bin_path()
+    if not recycle_path:
+        components["recycling_bin"] = {"status": "disabled", "detail": "Not configured"}
+    elif os.path.isdir(recycle_path):
+        files_count, bytes_count = _dir_stats(recycle_path)
+        components["recycling_bin"] = {
+            "status": "healthy",
+            "detail": "Configured",
+            "path": recycle_path,
+            "files": files_count,
+            "bytes": bytes_count,
+        }
+    else:
+        components["recycling_bin"] = {
+            "status": "degraded",
+            "detail": "Configured path does not exist",
+            "path": recycle_path,
+        }
+
+    integration_results = await _build_services_health()
+    integration_summary = {"healthy": 0, "down": 0, "disabled": 0}
+    for key, value in integration_results.items():
+        if key == "indexers":
+            continue
+        success = bool(value.get("success")) if isinstance(value, dict) else False
+        error = value.get("error") if isinstance(value, dict) else None
+        if success:
+            integration_summary["healthy"] += 1
+        elif error in {"Disabled", "Not configured", "Missing URL or API key"}:
+            integration_summary["disabled"] += 1
+        else:
+            integration_summary["down"] += 1
+
+    components["integrations"] = {
+        "status": "healthy" if integration_summary["down"] == 0 else "degraded",
+        "detail": (
+            f"{integration_summary['healthy']} healthy, "
+            f"{integration_summary['down']} down, "
+            f"{integration_summary['disabled']} disabled"
+        ),
+        "summary": integration_summary,
+    }
+
+    down_count = sum(1 for comp in components.values() if comp.get("status") == "down")
+    degraded_count = sum(1 for comp in components.values() if comp.get("status") == "degraded")
+    overall = "healthy"
+    if down_count > 0:
+        overall = "down"
+    elif degraded_count > 0:
+        overall = "degraded"
+
+    return {
+        "status": overall,
+        "checked_at": datetime.now(timezone.utc).isoformat(),
+        "components": components,
+    }
+
+
+@router.get("/decision-audit")
+async def decision_audit(limit: int = 50, decision: str = "", user=Depends(get_current_user)):
+    """Return recent comparison decisions with rationale."""
+    limit = max(1, min(limit, 500))
+    query = select(DecisionAuditLog).order_by(DecisionAuditLog.created_at.desc()).limit(limit)
+    normalized_decision = (decision or "").strip().lower()
+    if normalized_decision in {"accept", "reject"}:
+        query = (
+            select(DecisionAuditLog)
+            .where(DecisionAuditLog.decision == normalized_decision)
+            .order_by(DecisionAuditLog.created_at.desc())
+            .limit(limit)
+        )
+
+    async with async_session() as db:
+        rows = (await db.execute(query)).scalars().all()
+
+    return [
+        {
+            "id": row.id,
+            "movie_id": row.movie_id,
+            "movie_title": row.movie_title,
+            "indexer_name": row.indexer_name,
+            "release_title": row.release_title,
+            "candidate_size": row.candidate_size,
+            "local_size": row.local_size,
+            "decision": row.decision,
+            "score": row.score,
+            "savings_bytes": row.savings_bytes,
+            "savings_pct": row.savings_pct,
+            "reject_reason": row.reject_reason,
+            "notes": row.notes,
+            "created_at": row.created_at.isoformat() if row.created_at else None,
+        }
+        for row in rows
+    ]
 
 
 # ---------------------------------------------------------------------------
