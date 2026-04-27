@@ -94,3 +94,15 @@ class SABnzbdClient:
             return {"success": True, "version": version}
         except Exception as e:
             return {"success": False, "error": str(e)}
+
+    async def purge_job(self, nzo_id: str) -> bool:
+        """Remove job from SABnzbd queue/history. Returns True if successful."""
+        try:
+            result = await self._api("queue", {"name": "delete", "value": nzo_id})
+            success = result.get("status", False)
+            if success:
+                logger.info(f"SABnzbd purged job {nzo_id}")
+            return bool(success)
+        except Exception as e:
+            logger.warning(f"SABnzbd purge failed for {nzo_id}: {e}")
+            return False

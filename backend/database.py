@@ -120,6 +120,7 @@ class Download(Base):
     status: Mapped[str] = mapped_column(String, default="queued", index=True)
     progress_pct: Mapped[float] = mapped_column(Float, default=0.0)
     error_message: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    cleanup_status: Mapped[str] = mapped_column(String, default="pending", nullable=True)
     started_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 

@@ -18,6 +18,9 @@ class DownloadClient(Protocol):
     async def test_connection(self) -> dict:
         """Quick connectivity check for the configured client."""
 
+    async def purge_job(self, job_id: str) -> bool:
+        """Remove job from queue/history. Returns True if successful."""
+
 
 def get_active_download_client_name() -> str:
     config = get_config()

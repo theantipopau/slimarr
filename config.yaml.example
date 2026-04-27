@@ -9,9 +9,18 @@ plex:
   url: ""
   token: ""
 
+download_client: "sabnzbd"
+
 sabnzbd:
   url: ""
   api_key: ""
+  category: "slimarr"
+
+nzbget:
+  url: ""
+  username: ""
+  password: ""
+  category: "slimarr"
 
 tmdb:
   api_key: ""

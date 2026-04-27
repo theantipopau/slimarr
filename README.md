@@ -29,7 +29,7 @@ Plex libraries accumulate large files over time — bloated remuxes, old h264 Bl
 
 ```
 Scan Plex library → Search Usenet indexers → Compare releases
-→ Queue download via SABnzbd → Replace file → Refresh Plex → Log savings
+→ Queue download via SABnzbd or NZBGet → Replace file → Refresh Plex → Log savings
 ```
 
 **Core rule: never increase file size.** A release is only accepted if it is strictly smaller than your existing copy.
@@ -63,7 +63,7 @@ Current stable release: **1.0.0.2**.
 
 - **Nightly automation** — scheduled cycle searches, downloads and replaces movies while you sleep
 - **Usenet search** — supports Prowlarr (recommended) or direct Newznab/NZBGeek indexers
-- **SABnzbd integration** — submit NZBs and monitor downloads in real time
+- **Download client integration** — supports SABnzbd by default, with NZBGet support on the current `main` branch
 - **Plex sync** — reads your library via PlexAPI, refreshes Plex after each replacement
 - **TMDB enrichment** — posters, backdrops, and metadata fetched and cached locally
 - **Smart comparison engine** — configurable minimum savings %, resolution downgrade protection, codec preferences, language filtering
@@ -90,7 +90,7 @@ Current stable release: **1.0.0.2**.
 | Python | 3.12+ | |
 | Node.js | 18+ | For building the frontend |
 | Plex Media Server | Any | PlexAPI token required |
-| SABnzbd | Any | API key required |
+| SABnzbd or NZBGet | Any | Configure at least one download client |
 | Prowlarr **or** Newznab indexer | Any | At least one required |
 | TMDB API key | Free | For posters and metadata |
 
@@ -101,6 +101,8 @@ Current stable release: **1.0.0.2**.
 ### Option A — Installer (recommended for sharing)
 
 Download `SlimarrSetup-1.0.0.2.exe` (or the latest `SlimarrSetup-*.exe`) from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies — no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
+
+`1.0.0.2` is the latest published installer release. Newer `main` branch changes may land before the next installer is cut; if you want those immediately, run Slimarr from source or build a fresh installer from `main`.
 
 ### Option B — From source
 
@@ -169,6 +171,14 @@ plex:
 sabnzbd:
   url: "http://localhost:8080"
   api_key: "your-sabnzbd-api-key"
+  category: "slimarr"
+
+download_client: "sabnzbd"   # "sabnzbd" or "nzbget"
+
+nzbget:
+  url: "http://localhost:6789"
+  username: ""
+  password: ""
   category: "slimarr"
 
 prowlarr:
@@ -284,7 +294,7 @@ Each result is scored against the local file:
 - Score considers savings %, codec preference (AV1 > h265 > h264), language match bonus, and release quality
 
 ### 4. Download
-The best accepted candidate is submitted to SABnzbd as an NZB. Slimarr polls for progress and emits `download:progress` events for the live progress bar.
+The best accepted candidate is submitted to the active download client as an NZB. Slimarr currently supports SABnzbd and NZBGet, then polls for progress and emits `download:progress` events for the live progress bar.
 
 ### 5. Replace
 Once complete, the new file is moved into the exact location of the original in your Plex library. If configured, the old file is moved to the recycling bin first (using a collision-safe name); otherwise it is deleted immediately. Plex is refreshed, an activity log entry is written, and a `replace:completed` event is emitted.

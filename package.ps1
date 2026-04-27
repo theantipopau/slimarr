@@ -140,9 +140,17 @@ plex:
   token: ""
   library_sections: []
 
+download_client: "sabnzbd"
+
 sabnzbd:
   url: "http://localhost:8080"
   api_key: ""
+  category: "slimarr"
+
+nzbget:
+  url: "http://localhost:6789"
+  username: ""
+  password: ""
   category: "slimarr"
 
 indexers: []

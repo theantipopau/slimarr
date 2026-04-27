@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import Any, Optional
 
 import httpx
+from loguru import logger
 
 from backend.config import get_config
 
@@ -115,3 +116,13 @@ class NZBGetClient:
             return {"success": True, "version": str(result)}
         except Exception as e:
             return {"success": False, "error": str(e)}
+
+    async def purge_job(self, job_id: str) -> bool:
+        """Remove job from NZBGet queue/history."""
+        try:
+            await self._rpc("editqueue", ["GroupOperation", 0, "GroupDelete", job_id])
+            logger.info(f"NZBGet purged job {job_id}")
+            return True
+        except Exception as e:
+            logger.warning(f"NZBGet purge failed for {job_id}: {e}")
+            return False

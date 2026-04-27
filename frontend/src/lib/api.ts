@@ -58,6 +58,10 @@ export const api = {
   activeDownloads: () => client.get('/queue/active').then((r) => r.data),
   recentDownloads: (limit = 20) =>
     client.get(`/queue/recent?limit=${limit}`).then((r) => r.data),
+  failedDownloads: (limit = 50) =>
+    client.get(`/queue/failed?limit=${limit}`).then((r) => r.data),
+  cleanupFailedDownload: (downloadId: number) =>
+    client.post(`/queue/${downloadId}/cleanup`).then((r) => r.data),
 
   // Settings
   getSettings: () => client.get('/settings').then((r) => r.data),

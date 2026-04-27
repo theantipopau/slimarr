@@ -6,6 +6,7 @@ import {
   Tv2,
   Activity,
   Download,
+  AlertCircle,
   Settings,
   Server,
   LogOut,
@@ -19,6 +20,7 @@ const links = [
   { to: '/tv', icon: Tv2, label: 'TV Shows' },
   { to: '/activity', icon: Activity, label: 'Activity' },
   { to: '/queue', icon: Download, label: 'Queue' },
+  { to: '/queue/failed', icon: AlertCircle, label: 'Failed Downloads' },
   { to: '/settings', icon: Settings, label: 'Settings' },
   { to: '/system', icon: Server, label: 'System' },
 ]

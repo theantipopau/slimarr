@@ -39,6 +39,8 @@ export interface Download {
   progress_pct?: number
   expected_size?: number
   nzo_id?: string
+  storage_path?: string
+  cleanup_status?: string
   started_at?: string
   completed_at?: string
   error_message?: string

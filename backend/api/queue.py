@@ -34,6 +34,29 @@ async def get_recent_downloads(limit: int = 20, user=Depends(get_current_user)):
     return [_dl_dict(d) for d in downloads]
 
 
+@router.get("/failed")
+async def get_failed_downloads(limit: int = 50, user=Depends(get_current_user)):
+    """List all failed downloads with cleanup status."""
+    async with async_session() as db:
+        result = await db.execute(
+            select(Download)
+            .where(Download.status == "failed")
+            .order_by(Download.completed_at.desc())
+            .limit(limit)
+        )
+        downloads = result.scalars().all()
+    return [_dl_dict(d) for d in downloads]
+
+
+@router.post("/{download_id}/cleanup")
+async def cleanup_failed_download_endpoint(download_id: int, user=Depends(get_current_user)):
+    """Manually trigger cleanup of a failed download."""
+    from backend.core.downloader import cleanup_failed_download
+
+    result = await cleanup_failed_download(download_id)
+    return result
+
+
 def _dl_dict(d: Download) -> dict:
     return {
         "id": d.id,
@@ -43,6 +66,8 @@ def _dl_dict(d: Download) -> dict:
         "progress_pct": d.progress_pct,
         "expected_size": d.expected_size,
         "nzo_id": d.nzo_id,
+        "storage_path": d.storage_path,
+        "cleanup_status": d.cleanup_status,
         "started_at": d.started_at.isoformat() if d.started_at else None,
         "completed_at": d.completed_at.isoformat() if d.completed_at else None,
         "error_message": d.error_message,

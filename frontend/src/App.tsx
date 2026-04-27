@@ -8,6 +8,7 @@ import Library from '@/pages/Library'
 import MovieDetail from '@/pages/MovieDetail'
 import Activity from '@/pages/Activity'
 import Queue from '@/pages/Queue'
+import FailedDownloads from '@/pages/FailedDownloads'
 import Settings from '@/pages/Settings'
 import System from '@/pages/System'
 import TVShows from '@/pages/TVShows'
@@ -31,6 +32,7 @@ export default function App() {
             <Route path="library/:id" element={<MovieDetail />} />
             <Route path="activity" element={<Activity />} />
             <Route path="queue" element={<Queue />} />
+            <Route path="queue/failed" element={<FailedDownloads />} />
             <Route path="settings" element={<Settings />} />
             <Route path="system" element={<System />} />
             <Route path="tv" element={<TVShows />} />

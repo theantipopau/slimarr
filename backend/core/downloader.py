@@ -171,3 +171,63 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
                         "reason": dl.error_message,
                     })
                     return "failed"
+
+
+async def cleanup_failed_download(download_id: int) -> dict:
+    """
+    Attempt to delete storage folder and remove job from downloader history.
+    Returns: {
+        "status": "cleaned" | "error" | "skipped",
+        "folder_deleted": bool,
+        "downloader_purged": bool,
+        "error_reason": str | None,
+    }
+    """
+    import os
+    import shutil
+
+    async with async_session() as db:
+        dl_result = await db.execute(select(Download).where(Download.id == download_id))
+        dl = dl_result.scalar_one_or_none()
+        if not dl:
+            return {"status": "skipped", "reason": "download not found"}
+
+        if dl.status != "failed":
+            return {"status": "skipped", "reason": f"download status is {dl.status}, not failed"}
+
+        client_name, external_job_id = decode_job_id(dl.nzo_id)
+        client = get_download_client(client_name)
+
+        # Step 1: Try to remove from downloader
+        downloader_purged = await client.purge_job(external_job_id)
+
+        # Step 2: Try to delete storage folder
+        folder_deleted = False
+        if dl.storage_path:
+            try:
+                if os.path.isdir(dl.storage_path):
+                    shutil.rmtree(dl.storage_path, ignore_errors=True)
+                    logger.info(f"Cleaned up failed download folder: {dl.storage_path}")
+                    folder_deleted = True
+                elif os.path.isfile(dl.storage_path):
+                    os.remove(dl.storage_path)
+                    logger.info(f"Cleaned up failed download file: {dl.storage_path}")
+                    folder_deleted = True
+            except Exception as e:
+                logger.warning(f"Failed to delete {dl.storage_path}: {e}")
+
+        # Mark cleanup attempt
+        dl.cleanup_status = "cleaned" if (folder_deleted or downloader_purged) else "error"
+        await db.commit()
+
+        await emit_event("download:cleanup", {
+            "download_id": dl.id,
+            "folder_deleted": folder_deleted,
+            "downloader_purged": downloader_purged,
+        })
+
+        return {
+            "status": "cleaned",
+            "folder_deleted": folder_deleted,
+            "downloader_purged": downloader_purged,
+        }
