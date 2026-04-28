@@ -293,7 +293,10 @@ async def stop_cycle(user=Depends(get_current_user)):
 async def automation_preflight(user=Depends(get_current_user)):
     """Run quick checks before starting a full automation cycle."""
     from backend.config import get_config
-    from backend.integrations.download_client import get_active_download_client_name
+    from backend.integrations.download_client import (
+        get_active_download_client_name,
+        get_download_client_capabilities,
+    )
 
     config = get_config()
     checks: list[dict[str, Any]] = []
@@ -356,6 +359,34 @@ async def automation_preflight(user=Depends(get_current_user)):
 
     services = await _build_services_health()
     active_client = get_active_download_client_name()
+    try:
+        capabilities = get_download_client_capabilities(active_client)
+        missing_capabilities = [
+            label for key, label in [
+                ("submit_url", "submit URLs"),
+                ("queue_status", "read queue status"),
+                ("history_status", "read history status"),
+                ("purge", "purge failed jobs"),
+                ("storage_path_lookup", "locate storage paths"),
+            ]
+            if not getattr(capabilities, key)
+        ]
+        if missing_capabilities:
+            checks.append(_check(
+                "block",
+                "Downloader capabilities",
+                f"{active_client} cannot {', '.join(missing_capabilities)}",
+                capabilities.to_dict(),
+            ))
+        else:
+            checks.append(_check(
+                "ok",
+                "Downloader capabilities",
+                f"{active_client} supports required automation operations",
+                capabilities.to_dict(),
+            ))
+    except ValueError as e:
+        checks.append(_check("block", "Downloader capabilities", str(e)))
 
     required_services = [
         ("plex", "Plex"),

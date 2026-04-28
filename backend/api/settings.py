@@ -22,6 +22,19 @@ async def get_settings(user=Depends(get_current_user)):
     return d
 
 
+@router.get("/download-clients/capabilities")
+async def download_client_capabilities(user=Depends(get_current_user)):
+    from backend.integrations.download_client import (
+        get_active_download_client_name,
+        list_download_client_capabilities,
+    )
+
+    return {
+        "active": get_active_download_client_name(),
+        "clients": list_download_client_capabilities(),
+    }
+
+
 @router.put("")
 async def update_settings(body: dict, user=Depends(get_current_user)):
     config = get_config()

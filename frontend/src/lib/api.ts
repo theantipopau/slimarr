@@ -71,6 +71,7 @@ export const api = {
 
   // Settings
   getSettings: () => client.get('/settings').then((r) => r.data),
+  downloadClientCapabilities: () => client.get('/settings/download-clients/capabilities').then((r) => r.data),
   updateSettings: (data: unknown) =>
     client.put('/settings', data).then((r) => r.data),
   testConnection: (service: string, body?: unknown) =>

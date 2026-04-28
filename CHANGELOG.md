@@ -27,15 +27,19 @@ Usability polish, ecosystem expansion, and higher-confidence automation workflow
   * Added recent-download status filters and timestamps
   * Improved responsive row layout for long release names and error messages
 - Added service-health cache invalidation after settings saves so connection status reflects configuration changes quickly
+- Improved Settings page review workflow:
+  * Added inline validation for malformed URLs, invalid numeric ranges, incomplete active downloader config, and missing search sources
+  * Added quick-jump section navigation for long Settings pages on smaller windows
+  * Added downloader capability display for SABnzbd/NZBGet support coverage
+- Added a download-client capability matrix and API so future clients can declare support for submit, queue/history status, purge, categories, pause/resume, and storage-path lookup
+- Added active-downloader capability checks to automation preflight
+- Added installer frontend asset-manifest smoke test so packaging fails early if `frontend/dist/index.html` references missing built assets
 
 **UI and usability (planned)**
 - Sidebar resilience on smaller windows:
   * Ensure navigation remains reachable when viewport height is constrained
   * Keep footer actions visible while allowing menu items to scroll
-- Additional responsive polish pass across pages with long action stacks (System/Settings/Queue)
-- Settings page structure audit:
-  * Consider section tabs or collapsible groups for smaller windows
-  * Add validation summaries before save for malformed URLs, missing API keys, and invalid numeric ranges
+- Additional responsive polish pass across pages with long action stacks beyond System/Settings/Queue
 
 **Integration opportunities under investigation**
 - Bazarr companion integration:
@@ -52,16 +56,11 @@ Usability polish, ecosystem expansion, and higher-confidence automation workflow
 
 **Reliability and automation candidates**
 - Smarter retry windows (time-based backoff + indexer/uploader failure weighting)
-- Download-client abstraction improvements to make adding future clients easier
 - Integration health history (not just latest state) for trend-based diagnostics
-- Optional preflight checks before full cycle start (disk, integration connectivity, queue saturation)
 - Persist preflight and health snapshots for trend views instead of keeping only the latest result
-- Add a downloader capability matrix so future clients can declare support for purge, history, categories, pause/resume, and storage-path lookup
 
 **Packaging and performance candidates**
-- Frontend chunk splitting to reduce main bundle size warnings in production builds
 - Installer/package footprint audit (exclude unnecessary test modules from packaged runtime where safe)
-- Add a package manifest smoke test that verifies generated `dist/assets/*` references from `index.html` all exist before installer packaging
 
 ## [1.0.0.3] — 2026-04-27
 

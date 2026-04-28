@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 import { useToast } from '@/components/Toast'
 import TestConnectionButton from '@/components/TestConnectionButton'
-import { Plus, Trash2 } from 'lucide-react'
+import { CheckCircle, Plus, Trash2, XCircle } from 'lucide-react'
 
 interface Indexer {
   name: string
@@ -25,6 +25,11 @@ interface RecyclingBinInfo {
   bytes: number
 }
 
+interface DownloadClientCapabilities {
+  active: string
+  clients: Record<string, Record<string, boolean>>
+}
+
 export default function Settings() {
   const { toast } = useToast()
   const [settings, setSettings] = useState<Record<string, unknown> | null>(null)
@@ -33,8 +38,73 @@ export default function Settings() {
   const [recyclingInfo, setRecyclingInfo] = useState<RecyclingBinInfo | null>(null)
   const [recyclingLoading, setRecyclingLoading] = useState(false)
   const [recyclingEmptying, setRecyclingEmptying] = useState(false)
+  const [capabilities, setCapabilities] = useState<DownloadClientCapabilities | null>(null)
 
   const hasUnsaved = settings && savedSettings && JSON.stringify(settings) !== JSON.stringify(savedSettings)
+
+  const isUrl = (value?: unknown) => {
+    const text = String(value ?? '').trim()
+    return text === '' || text.startsWith('http://') || text.startsWith('https://')
+  }
+
+  const read = (path: string[]) =>
+    path.reduce((o: unknown, k) => (o as Record<string, unknown>)?.[k], settings)
+
+  const validateSettings = () => {
+    if (!settings) return { errors: [] as string[], warnings: [] as string[] }
+
+    const errors: string[] = []
+    const warnings: string[] = []
+    const activeClient = String(read(['download_client']) ?? 'sabnzbd')
+    const indexers = (settings.indexers as Indexer[] | undefined) ?? []
+
+    const urlChecks: Array<[string, string[]]> = [
+      ['Plex URL', ['plex', 'url']],
+      ['SABnzbd URL', ['sabnzbd', 'url']],
+      ['NZBGet URL', ['nzbget', 'url']],
+      ['Prowlarr URL', ['prowlarr', 'url']],
+      ['Radarr URL', ['radarr', 'url']],
+      ['Sonarr URL', ['sonarr', 'url']],
+    ]
+    urlChecks.forEach(([label, path]) => {
+      if (!isUrl(read(path))) errors.push(`${label} must include http:// or https://`)
+    })
+    indexers.forEach((idx, i) => {
+      if (idx.url && !isUrl(idx.url)) errors.push(`Indexer ${i + 1} URL must include http:// or https://`)
+      if ((idx.url || idx.name || idx.api_key) && (!idx.name || !idx.url)) {
+        errors.push(`Indexer ${i + 1} needs both a name and URL`)
+      }
+      if (idx.url && idx.categories.length === 0) warnings.push(`Indexer ${i + 1} has no categories configured`)
+    })
+
+    const numericChecks: Array<[string, string[], number, number]> = [
+      ['Min savings %', ['comparison', 'min_savings_percent'], 0, 100],
+      ['Downgrade min savings %', ['comparison', 'downgrade_min_savings_percent'], 0, 100],
+      ['Minimum file size MB', ['comparison', 'minimum_file_size_mb'], 1, 1000000],
+      ['Max candidate age days', ['comparison', 'max_candidate_age_days'], 1, 36500],
+      ['Recycling cleanup days', ['files', 'recycling_bin_cleanup_days'], 1, 3650],
+      ['Max downloads per night', ['schedule', 'max_downloads_per_night'], 1, 1000],
+      ['Throttle seconds', ['schedule', 'throttle_seconds'], 0, 86400],
+    ]
+    numericChecks.forEach(([label, path, min, max]) => {
+      const raw = Number(read(path))
+      if (!Number.isFinite(raw) || raw < min || raw > max) {
+        errors.push(`${label} must be between ${min} and ${max}`)
+      }
+    })
+
+    if (activeClient === 'sabnzbd' && (!read(['sabnzbd', 'url']) || !read(['sabnzbd', 'api_key']))) {
+      warnings.push('SABnzbd is selected but URL/API key is incomplete')
+    }
+    if (activeClient === 'nzbget' && !read(['nzbget', 'url'])) {
+      warnings.push('NZBGet is selected but URL is incomplete')
+    }
+    if (!read(['prowlarr', 'url']) && indexers.length === 0) {
+      warnings.push('No Prowlarr URL or direct indexers configured; searches will not return results')
+    }
+
+    return { errors, warnings }
+  }
 
   const formatBytes = (bytes: number) => {
     if (!Number.isFinite(bytes) || bytes <= 0) return '0 B'
@@ -79,6 +149,7 @@ export default function Settings() {
 
   useEffect(() => {
     api.getSettings().then((s) => { setSettings(s); setSavedSettings(s) }).catch(() => {})
+    api.downloadClientCapabilities().then((data) => setCapabilities(data as DownloadClientCapabilities)).catch(() => {})
     void loadRecyclingInfo(true)
   }, [])
 
@@ -91,6 +162,11 @@ export default function Settings() {
 
   const save = async () => {
     if (!settings) return
+    const validation = validateSettings()
+    if (validation.errors.length > 0) {
+      toast('Fix settings validation errors before saving', 'error')
+      return
+    }
     setSaving(true)
     try {
       await api.updateSettings(settings)
@@ -116,6 +192,16 @@ export default function Settings() {
   if (!settings) return <div className="text-gray-400">Loading settings…</div>
 
   const downloadClient = ((settings as DownloadClientConfig).download_client ?? 'sabnzbd')
+  const validation = validateSettings()
+  const capabilityLabels: Record<string, string> = {
+    submit_url: 'Submit URL',
+    queue_status: 'Queue status',
+    history_status: 'History status',
+    purge: 'Purge jobs',
+    categories: 'Categories',
+    pause_resume: 'Pause/resume',
+    storage_path_lookup: 'Storage paths',
+  }
 
   function field(label: string, path: string[], type: string = 'text') {
     const val = path.reduce((o: unknown, k) => (o as Record<string, unknown>)?.[k], settings) as string | number | undefined
@@ -135,7 +221,7 @@ export default function Settings() {
 
   return (
     <div className="space-y-6 max-w-2xl">
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <h1 className="text-2xl font-bold flex-1">Settings</h1>
         {hasUnsaved && (
           <span className="text-xs text-yellow-400 font-medium">Unsaved changes — save before testing connections</span>
@@ -143,14 +229,55 @@ export default function Settings() {
         <button
           onClick={save}
           disabled={saving}
-          className={`px-4 py-2 rounded-lg text-white text-sm disabled:opacity-50 ${hasUnsaved ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-brand-green'}`}
+          className={`px-4 py-2 rounded-lg text-white text-sm disabled:opacity-50 ${validation.errors.length ? 'bg-red-700' : hasUnsaved ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-brand-green'}`}
         >
           {saving ? 'Saving…' : hasUnsaved ? 'Save Changes' : 'Save'}
         </button>
       </div>
 
+      {(validation.errors.length > 0 || validation.warnings.length > 0) && (
+        <section className="bg-gray-900 rounded-xl p-4 border border-gray-800 space-y-3">
+          <h2 className="text-sm font-semibold">Settings Review</h2>
+          {validation.errors.length > 0 && (
+            <div className="space-y-1">
+              {validation.errors.map((item) => (
+                <p key={item} className="text-xs text-red-300 flex gap-2">
+                  <XCircle size={13} className="shrink-0 mt-0.5" />
+                  <span>{item}</span>
+                </p>
+              ))}
+            </div>
+          )}
+          {validation.warnings.length > 0 && (
+            <div className="space-y-1">
+              {validation.warnings.map((item) => (
+                <p key={item} className="text-xs text-yellow-300 flex gap-2">
+                  <XCircle size={13} className="shrink-0 mt-0.5" />
+                  <span>{item}</span>
+                </p>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+
+      <nav className="flex gap-2 overflow-x-auto pb-1 text-xs">
+        {[
+          ['#connections', 'Connections'],
+          ['#indexers', 'Indexers'],
+          ['#integrations', 'Integrations'],
+          ['#rules', 'Rules'],
+          ['#files', 'Files'],
+          ['#schedule', 'Schedule'],
+        ].map(([href, label]) => (
+          <a key={href} href={href} className="shrink-0 rounded-full bg-gray-900 px-3 py-1.5 text-gray-300 hover:bg-gray-800">
+            {label}
+          </a>
+        ))}
+      </nav>
+
       {/* Plex */}
-      <section className="bg-gray-900 rounded-xl p-5 space-y-3">
+      <section id="connections" className="bg-gray-900 rounded-xl p-5 space-y-3 scroll-mt-4">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">Plex</h2>
           <TestConnectionButton service="plex" />
@@ -195,6 +322,23 @@ export default function Settings() {
             <option value="nzbget">NZBGet</option>
           </select>
         </div>
+        {capabilities?.clients?.[downloadClient] && (
+          <div className="grid grid-cols-2 gap-2 rounded-lg bg-gray-800/70 p-3 sm:grid-cols-3">
+            {Object.entries(capabilityLabels).map(([key, label]) => {
+              const supported = !!capabilities.clients[downloadClient]?.[key]
+              return (
+                <div key={key} className="flex items-center gap-2 text-xs text-gray-300">
+                  {supported ? (
+                    <CheckCircle size={13} className="text-green-400 shrink-0" />
+                  ) : (
+                    <XCircle size={13} className="text-gray-500 shrink-0" />
+                  )}
+                  <span>{label}</span>
+                </div>
+              )
+            })}
+          </div>
+        )}
       </section>
 
       {/* NZBGet */}
@@ -222,7 +366,7 @@ export default function Settings() {
       </section>
 
       {/* Newznab Indexers */}
-      <section className="bg-gray-900 rounded-xl p-5 space-y-4">
+      <section id="indexers" className="bg-gray-900 rounded-xl p-5 space-y-4 scroll-mt-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="font-semibold">Newznab Indexers</h2>
@@ -327,7 +471,7 @@ export default function Settings() {
       </section>
 
       {/* Radarr */}
-      <section className="bg-gray-900 rounded-xl p-5 space-y-3">
+      <section id="integrations" className="bg-gray-900 rounded-xl p-5 space-y-3 scroll-mt-4">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">Radarr (optional)</h2>
           <TestConnectionButton
@@ -392,7 +536,7 @@ export default function Settings() {
       </section>
 
       {/* Comparison */}
-      <section className="bg-gray-900 rounded-xl p-5 space-y-3">
+      <section id="rules" className="bg-gray-900 rounded-xl p-5 space-y-3 scroll-mt-4">
         <h2 className="font-semibold">Comparison Rules</h2>
         {field('Min Savings %', ['comparison', 'min_savings_percent'], 'number')}
         {field('Downgrade Min Savings %', ['comparison', 'downgrade_min_savings_percent'], 'number')}
@@ -441,7 +585,7 @@ export default function Settings() {
       </section>
 
       {/* Files */}
-      <section className="bg-gray-900 rounded-xl p-5 space-y-3">
+      <section id="files" className="bg-gray-900 rounded-xl p-5 space-y-3 scroll-mt-4">
         <h2 className="font-semibold">Files</h2>
         {field('Recycling Bin Path', ['files', 'recycling_bin'])}
         {field('Recycling Bin Cleanup (days)', ['files', 'recycling_bin_cleanup_days'], 'number')}
@@ -545,7 +689,7 @@ export default function Settings() {
       </section>
 
       {/* Schedule */}
-      <section className="bg-gray-900 rounded-xl p-5 space-y-3">
+      <section id="schedule" className="bg-gray-900 rounded-xl p-5 space-y-3 scroll-mt-4">
         <h2 className="font-semibold">Schedule</h2>
         {field('Nightly Start Time (UTC, HH:MM)', ['schedule', 'start_time'])}
         {field('Nightly End Time (UTC, HH:MM)', ['schedule', 'end_time'])}

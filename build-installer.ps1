@@ -25,6 +25,28 @@ function Write-Step($n, $msg) {
 }
 function Write-Ok($msg)  { Write-Host "      OK: $msg" -ForegroundColor Green }
 function Write-Err($msg) { Write-Host "      ERROR: $msg" -ForegroundColor Red; exit 1 }
+function Test-FrontendManifest() {
+    $indexPath = "$Root\frontend\dist\index.html"
+    if (-not (Test-Path $indexPath)) {
+        Write-Err "frontend/dist/index.html not found"
+    }
+
+    $html = Get-Content $indexPath -Raw
+    $matches = [regex]::Matches($html, '(?:src|href)="(/assets/[^"]+)"')
+    $missing = @()
+    foreach ($match in $matches) {
+        $asset = $match.Groups[1].Value.TrimStart("/")
+        $assetPath = Join-Path "$Root\frontend\dist" $asset
+        if (-not (Test-Path $assetPath)) {
+            $missing += $asset
+        }
+    }
+
+    if ($missing.Count -gt 0) {
+        Write-Err "frontend/dist references missing asset(s): $($missing -join ', ')"
+    }
+    Write-Ok "frontend/dist asset manifest verified ($($matches.Count) asset reference(s))"
+}
 
 Write-Host ""
 Write-Host "  +-------------------------------------+" -ForegroundColor Green
@@ -130,6 +152,7 @@ if (-not $SkipFrontend) {
 } else {
     Write-Step "3" "Skipping frontend build (-SkipFrontend)"
 }
+Test-FrontendManifest
 
 # ---- 4. PyInstaller ---------------------------------------------------------
 if (-not $SkipPyInstaller) {
