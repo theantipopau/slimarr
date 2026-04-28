@@ -66,13 +66,15 @@ async def retry_failed_download_endpoint(
     user=Depends(get_current_user),
 ):
     """Retry a failed download with the next best candidate."""
+    from backend.core.downloader import cleanup_failed_download
+    from backend.core.download_workflow import finish_download_with_retries
     from backend.core.retry_ladder import retry_failed_download
-    from backend.core.downloader import monitor_download
-    
+
+    await cleanup_failed_download(download_id)
     success, message, retried_download_id = await retry_failed_download(download_id)
 
     if success and retried_download_id:
-        background.add_task(monitor_download, retried_download_id)
+        background.add_task(finish_download_with_retries, retried_download_id)
     
     return {
         "success": success,

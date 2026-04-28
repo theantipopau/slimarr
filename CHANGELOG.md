@@ -34,6 +34,21 @@ Usability polish, ecosystem expansion, and higher-confidence automation workflow
 - Added a download-client capability matrix and API so future clients can declare support for submit, queue/history status, purge, categories, pause/resume, and storage-path lookup
 - Added active-downloader capability checks to automation preflight
 - Added installer frontend asset-manifest smoke test so packaging fails early if `frontend/dist/index.html` references missing built assets
+- Added additive SQLite startup migrations for existing installs so failed-download retry/cleanup metadata columns are created without resetting user data
+- Hardened SABnzbd failure recovery:
+  * Capture SAB failure messages and storage paths for incomplete/aborted jobs
+  * Purge failed jobs from both SAB queue and history
+  * Clean failed download folders automatically before retrying alternatives
+  * Route manual and scheduled downloads through a shared monitor/replace/cleanup/retry workflow
+- Improved retry behavior:
+  * Retry only accepted replacement candidates
+  * Skip every release already attempted for the movie
+  * Avoid retrying generic blacklisted releases even if they came from a different indexer
+  * Mark movies as failed when all retry/replacement paths are exhausted instead of leaving them stuck as downloading
+- Improved orphan cleanup:
+  * Match downloader jobs against both raw and client-prefixed Slimarr job IDs
+  * Capture SAB orphan storage paths correctly
+  * Make the Orphaned Downloads cleanup action purge downloader history and delete orphaned files/folders immediately
 
 **UI and usability (planned)**
 - Sidebar resilience on smaller windows:

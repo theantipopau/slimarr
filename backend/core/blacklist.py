@@ -63,14 +63,17 @@ async def is_blacklisted(
     Check if a release is blacklisted.
     Returns blacklist reason if found and not expired, None otherwise.
     """
-    hash_input = f"{release_title.lower()}:{uploader or ''}:{indexer_name or ''}"
-    release_hash = hashlib.md5(hash_input.encode()).hexdigest()
+    hash_inputs = [
+        f"{release_title.lower()}:{uploader or ''}:{indexer_name or ''}",
+        f"{release_title.lower()}:{uploader or ''}:",
+    ]
+    release_hashes = [hashlib.md5(value.encode()).hexdigest() for value in hash_inputs]
     now = datetime.now(timezone.utc)
     
     async with async_session() as session:
         result = await session.execute(
             select(DownloadBlacklist).where(
-                DownloadBlacklist.release_hash == release_hash
+                DownloadBlacklist.release_hash.in_(release_hashes)
             )
         )
         entry = result.scalars().first()

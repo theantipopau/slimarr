@@ -229,6 +229,47 @@ async def init_db() -> None:
     os.makedirs(os.path.dirname(os.path.abspath(_DB_PATH)), exist_ok=True)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        await _run_lightweight_migrations(conn)
+
+
+async def _table_columns(conn, table_name: str) -> set[str]:
+    rows = await conn.exec_driver_sql(f"PRAGMA table_info({table_name})")
+    return {row[1] for row in rows.fetchall()}
+
+
+async def _add_column_if_missing(
+    conn,
+    table_name: str,
+    existing_columns: set[str],
+    column_name: str,
+    column_definition: str,
+) -> None:
+    if column_name in existing_columns:
+        return
+
+    await conn.exec_driver_sql(
+        f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_definition}"
+    )
+    existing_columns.add(column_name)
+
+
+async def _run_lightweight_migrations(conn) -> None:
+    """Apply additive SQLite migrations for existing installs.
+
+    SQLAlchemy's create_all creates missing tables, but it intentionally does
+    not alter existing tables. Keep these migrations additive so upgrades do
+    not risk user data.
+    """
+    download_columns = await _table_columns(conn, "downloads")
+    await _add_column_if_missing(
+        conn, "downloads", download_columns, "cleanup_status", "VARCHAR DEFAULT 'pending'"
+    )
+    await _add_column_if_missing(
+        conn, "downloads", download_columns, "retry_count", "INTEGER DEFAULT 0"
+    )
+    await _add_column_if_missing(conn, "downloads", download_columns, "grabbed_at", "DATETIME")
+    await _add_column_if_missing(conn, "downloads", download_columns, "last_error_at", "DATETIME")
+    await _add_column_if_missing(conn, "downloads", download_columns, "blacklist_reason", "VARCHAR")
 
 
 async def get_db() -> AsyncSession:  # type: ignore[return]

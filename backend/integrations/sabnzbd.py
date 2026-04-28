@@ -72,6 +72,7 @@ class SABnzbdClient:
                 "size": s.get("bytes", 0),
                 "completed": s.get("completed", 0),
                 "category": s.get("category", ""),
+                "fail_message": s.get("fail_message", ""),
             }
             for s in slots
         ]
@@ -98,12 +99,21 @@ class SABnzbdClient:
 
     async def purge_job(self, nzo_id: str) -> bool:
         """Remove job from SABnzbd queue/history. Returns True if successful."""
+        purged = False
         try:
-            result = await self._api("queue", {"name": "delete", "value": nzo_id})
-            success = result.get("status", False)
-            if success:
+            queue_result = await self._api("queue", {"name": "delete", "value": nzo_id})
+            if queue_result.get("status", False):
+                purged = True
                 logger.info(f"SABnzbd purged job {nzo_id}")
-            return bool(success)
         except Exception as e:
-            logger.warning(f"SABnzbd purge failed for {nzo_id}: {e}")
-            return False
+            logger.debug(f"SABnzbd queue purge skipped/failed for {nzo_id}: {e}")
+
+        try:
+            history_result = await self._api("history", {"name": "delete", "value": nzo_id})
+            if history_result.get("status", False):
+                purged = True
+                logger.info(f"SABnzbd purged history job {nzo_id}")
+        except Exception as e:
+            logger.warning(f"SABnzbd history purge failed for {nzo_id}: {e}")
+
+        return purged

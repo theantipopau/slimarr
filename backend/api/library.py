@@ -99,16 +99,12 @@ async def download_result(
         raise HTTPException(status_code=404, detail="Search result not found")
 
     async def _do_download(sr_id: int) -> None:
-        from backend.core.downloader import start_download, monitor_download
-        from backend.core.replacer import replace_file
+        from backend.core.download_workflow import process_search_result_download
         from loguru import logger
         try:
-            dl = await start_download(sr_id)
-            final_status = await monitor_download(dl.id)
-            if final_status == "completed":
-                replaced = await replace_file(dl.id)
-                if not replaced:
-                    logger.error(f"Replace step failed after completed download: download_id={dl.id}")
+            result = await process_search_result_download(sr_id)
+            if result.get("status") != "replaced":
+                logger.error(f"Download workflow ended without replacement: {result}")
         except Exception as e:
             logger.error(f"Download failed for search result {sr_id}: {e}")
 

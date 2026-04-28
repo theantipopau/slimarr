@@ -57,18 +57,26 @@ async def get_next_candidate(
         if not download or not download.movie_id:
             return None
         
-        # Get all search results for this movie, excluding the current release
+        attempted_result = await session.execute(
+            select(Download.release_title).where(Download.movie_id == download.movie_id)
+        )
+        attempted_titles = {
+            title for title in attempted_result.scalars().all() if title
+        }
+
+        # Get accepted search results for this movie, excluding attempted releases.
         candidates_result = await session.execute(
             select(SearchResult).where(
-                SearchResult.movie_id == download.movie_id
+                SearchResult.movie_id == download.movie_id,
+                SearchResult.decision == "accept",
             ).order_by(SearchResult.score.desc())
         )
         candidates = candidates_result.scalars().all()
         
         # Filter out already-attempted release and check blacklist
         for candidate in candidates:
-            if candidate.release_title == download.release_title:
-                continue  # Skip the one that failed
+            if candidate.release_title in attempted_titles:
+                continue
             
             # Check if blacklisted
             parsed = parse_release_title(candidate.release_title)

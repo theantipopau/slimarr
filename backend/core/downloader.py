@@ -15,6 +15,20 @@ from backend.core.parser import parse_release_title
 from backend.realtime.events import emit_event
 
 
+def _mark_download_failed(
+    dl: Download,
+    message: str,
+    *,
+    storage_path: str | None = None,
+) -> None:
+    dl.status = "failed"
+    dl.error_message = message
+    dl.last_error_at = datetime.now(timezone.utc)
+    dl.completed_at = datetime.now(timezone.utc)
+    if storage_path is not None:
+        dl.storage_path = storage_path
+
+
 async def _update_uploader_stats(release_title: str | None, success: bool) -> None:
     if not release_title:
         return
@@ -131,8 +145,7 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
                     f"Download {download_id}: marking as failed — job not found in {client_name} "
                     f"after {MAX_NONE_RETRIES} retries (progress was {dl.progress_pct or 0:.0f}%)"
                 )
-                dl.status = "failed"
-                dl.error_message = f"Job not found in {client_name} history/queue"
+                _mark_download_failed(dl, f"Job not found in {client_name} history/queue")
                 await db.commit()
                 await _update_uploader_stats(dl.release_title, success=False)
                 await emit_event("download:failed", {
@@ -172,8 +185,7 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
                 is_success = normalized_status in ("completed", "repaired") or normalized_status.startswith("success") or normalized_status.startswith("warning")
                 if is_success:
                     if not dl.storage_path:
-                        dl.status = "failed"
-                        dl.error_message = f"{client_name} completed job has no storage path"
+                        _mark_download_failed(dl, f"{client_name} completed job has no storage path")
                         await db.commit()
                         await _update_uploader_stats(dl.release_title, success=False)
                         await emit_event("download:failed", {
@@ -194,8 +206,12 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
                     })
                     return "completed"
                 else:
-                    dl.status = "failed"
-                    dl.error_message = f"{client_name} status: {raw_status}"
+                    fail_message = status.get("fail_message") or raw_status
+                    _mark_download_failed(
+                        dl,
+                        f"{client_name} status: {fail_message}",
+                        storage_path=status.get("storage", ""),
+                    )
                     await db.commit()
                     await _update_uploader_stats(dl.release_title, success=False)
                     await emit_event("download:failed", {
@@ -232,7 +248,9 @@ async def cleanup_failed_download(download_id: int) -> dict:
         client = get_download_client(client_name)
 
         # Step 1: Try to remove from downloader
-        downloader_purged = await client.purge_job(external_job_id)
+        downloader_purged = False
+        if external_job_id:
+            downloader_purged = await client.purge_job(external_job_id)
 
         # Step 2: Try to delete storage folder
         folder_deleted = False
@@ -250,7 +268,8 @@ async def cleanup_failed_download(download_id: int) -> dict:
                 logger.warning(f"Failed to delete {dl.storage_path}: {e}")
 
         # Mark cleanup attempt
-        dl.cleanup_status = "cleaned" if (folder_deleted or downloader_purged) else "error"
+        cleanup_status = "cleaned" if (folder_deleted or downloader_purged) else "error"
+        dl.cleanup_status = cleanup_status
         await db.commit()
 
         await emit_event("download:cleanup", {
@@ -260,7 +279,7 @@ async def cleanup_failed_download(download_id: int) -> dict:
         })
 
         return {
-            "status": "cleaned",
+            "status": cleanup_status,
             "folder_deleted": folder_deleted,
             "downloader_purged": downloader_purged,
         }

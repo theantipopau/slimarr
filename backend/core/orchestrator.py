@@ -9,11 +9,10 @@ from datetime import datetime, timezone
 from loguru import logger
 from sqlalchemy import select
 
-from backend.core.downloader import monitor_download, start_download
-from backend.core.replacer import replace_file
+from backend.core.download_workflow import process_search_result_download
 from backend.core.scanner import scan_library
 from backend.core.searcher import search_for_movie
-from backend.database import Download, Movie, SearchResult, async_session
+from backend.database import Movie, async_session
 from backend.realtime.events import emit_event
 
 _running = False
@@ -48,14 +47,8 @@ async def process_single_movie(movie_id: int) -> dict:
     # Best candidate (highest score)
     best = max(accepted, key=lambda x: x["score"])
 
-    dl = await start_download(best["id"])
-    final_status = await monitor_download(dl.id)
-
-    if final_status == "completed":
-        replaced = await replace_file(dl.id)
-        return {"movie_id": movie_id, "status": "replaced" if replaced else "replace_failed"}
-    else:
-        return {"movie_id": movie_id, "status": f"download_{final_status}"}
+    result = await process_search_result_download(best["id"])
+    return {"movie_id": movie_id, "status": result.get("status", "unknown"), **result}
 
 
 async def run_full_cycle() -> dict:

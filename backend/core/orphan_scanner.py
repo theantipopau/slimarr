@@ -7,6 +7,7 @@ from typing import Optional
 from sqlalchemy import select
 from backend.database import async_session, Download, OrphanedDownload
 from backend.config import get_config
+from backend.integrations.download_client import encode_job_id, get_download_client
 from loguru import logger
 
 
@@ -50,9 +51,12 @@ async def _scan_sabnzbd_orphans() -> int:
                 if not job_id:
                     continue
                 
-                # Check if this job is in our DB
+                # Check if this job is in our DB. New rows store client-prefixed
+                # IDs (sabnzbd:<id>), while older rows may contain the raw ID.
                 result = await session.execute(
-                    select(Download).where(Download.nzo_id == job_id)
+                    select(Download).where(
+                        Download.nzo_id.in_([job_id, encode_job_id("sabnzbd", job_id)])
+                    )
                 )
                 existing = result.scalars().first()
                 
@@ -85,7 +89,7 @@ async def _scan_sabnzbd_orphans() -> int:
                     downloader_name="sabnzbd",
                     downloader_job_id=job_id,
                     release_name=job.get('name'),
-                    storage_path=job.get('storage_path'),
+                    storage_path=job.get('storage'),
                     found_at=now,
                     age_hours=age_hours,
                 )
@@ -120,9 +124,12 @@ async def _scan_nzbget_orphans() -> int:
                 if not job_id:
                     continue
                 
-                # Check if in our DB
+                # Check if in our DB. New rows store client-prefixed IDs
+                # (nzbget:<id>), while older rows may contain the raw ID.
                 result = await session.execute(
-                    select(Download).where(Download.nzo_id == job_id)
+                    select(Download).where(
+                        Download.nzo_id.in_([job_id, encode_job_id("nzbget", job_id)])
+                    )
                 )
                 existing = result.scalars().first()
                 
@@ -185,14 +192,46 @@ async def cleanup_orphaned_download(orphan_id: int) -> tuple[bool, Optional[str]
         
         if not orphan:
             return False, "Orphan not found"
-        
-        # Mark as scheduled for cleanup
+
+        downloader_name = orphan.downloader_name
+        job_id = orphan.downloader_job_id
+        storage_path = orphan.storage_path
+        release_name = orphan.release_name
+
+        downloader_purged = False
+        folder_deleted = False
+
+        if job_id:
+            try:
+                client = get_download_client(downloader_name)
+                downloader_purged = await client.purge_job(job_id)
+            except Exception as e:
+                logger.warning(f"Failed to purge orphan job {job_id} from {downloader_name}: {e}")
+
+        if storage_path:
+            try:
+                if os.path.isdir(storage_path):
+                    shutil.rmtree(storage_path, ignore_errors=False)
+                    folder_deleted = True
+                elif os.path.isfile(storage_path):
+                    os.remove(storage_path)
+                    folder_deleted = True
+            except Exception as e:
+                logger.warning(f"Failed to delete orphan path '{storage_path}': {e}")
+
+        if downloader_purged or folder_deleted or not storage_path:
+            await session.delete(orphan)
+            await session.commit()
+            logger.info(
+                f"Cleaned orphaned download: {release_name} "
+                f"(folder_deleted={folder_deleted}, downloader_purged={downloader_purged})"
+            )
+            return True, "Orphan cleaned up"
+
         orphan.cleanup_scheduled = True
         orphan.cleanup_at = datetime.now(timezone.utc)
         await session.commit()
-        
-        logger.info(f"Marked orphan for cleanup: {orphan.release_name}")
-        return True, "Orphan marked for cleanup"
+        return False, "Cleanup attempted, but no downloader job or folder could be removed"
 
 
 async def auto_cleanup_old_orphans(days_old: int = 7) -> int:
