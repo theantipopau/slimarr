@@ -100,6 +100,7 @@ class ScheduleConfig(BaseModel):
     days: list[str] = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
     max_downloads_per_night: int = 10
     throttle_seconds: int = 30
+    max_active_download_hours: int = 24
 
 
 class BlacklistConfig(BaseModel):

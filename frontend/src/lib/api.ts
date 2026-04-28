@@ -64,6 +64,7 @@ export const api = {
     client.post(`/queue/${downloadId}/cleanup`).then((r) => r.data),
   retryFailedDownload: (downloadId: number) =>
     client.post(`/queue/${downloadId}/retry`).then((r) => r.data),
+  resumeDownloads: () => client.post('/queue/resume').then((r) => r.data),
   orphanedDownloads: (limit = 100) =>
     client.get(`/queue/orphaned?limit=${limit}`).then((r) => r.data),
   cleanupOrphanedDownload: (orphanId: number) =>

@@ -4,6 +4,7 @@ Usenet release searcher — queries indexers for a specific movie.
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 
 from loguru import logger
 from sqlalchemy import select
@@ -12,6 +13,25 @@ from backend.core.comparer import compare_release
 from backend.core.parser import parse_release_title
 from backend.database import DecisionAuditLog, Movie, SearchResult, async_session
 from backend.realtime.events import emit_event
+
+
+def _nzb_age_days(raw_pub_date: str | None) -> int | None:
+    if not raw_pub_date:
+        return None
+
+    parsed: datetime | None = None
+    try:
+        parsed = parsedate_to_datetime(raw_pub_date)
+    except Exception:
+        try:
+            parsed = datetime.fromisoformat(raw_pub_date.replace("Z", "+00:00"))
+        except Exception:
+            return None
+
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    age = datetime.now(timezone.utc) - parsed.astimezone(timezone.utc)
+    return max(0, int(age.total_seconds() // 86400))
 
 
 async def search_for_movie(movie_id: int) -> list[dict]:
@@ -84,12 +104,14 @@ async def search_for_movie(movie_id: int) -> list[dict]:
         audit_logs = []
         for r in unique_raw:
             parsed = parse_release_title(r["release_title"])
+            age_days = r.get("age_days") if r.get("age_days") is not None else _nzb_age_days(r.get("pub_date"))
             cmp = compare_release(
                 local_size=movie.file_size or 0,
                 local_resolution=movie.resolution or "",
                 local_codec=movie.video_codec or "",
                 candidate_size=r["size"],
                 candidate_title=r["release_title"],
+                candidate_age_days=age_days,
             )
             sr = SearchResult(
                 movie_id=movie.id,
@@ -101,6 +123,7 @@ async def search_for_movie(movie_id: int) -> list[dict]:
                 video_codec=parsed.video_codec,
                 audio_codec=parsed.audio_codec,
                 source=parsed.source,
+                age_days=age_days,
                 savings_bytes=cmp.savings_bytes,
                 savings_pct=cmp.savings_pct,
                 score=cmp.score,
@@ -157,6 +180,9 @@ async def search_for_movie(movie_id: int) -> list[dict]:
                 "id": s.id,
                 "release_title": s.release_title,
                 "size": s.size,
+                "resolution": s.resolution,
+                "video_codec": s.video_codec,
+                "age_days": s.age_days,
                 "decision": s.decision,
                 "score": s.score,
                 "savings_pct": s.savings_pct,

@@ -4,6 +4,7 @@ FastAPI application entry point.
 from __future__ import annotations
 
 import os
+import asyncio
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -55,6 +56,7 @@ async def lifespan(app: FastAPI):
         logger.critical(f"Database init failed: {exc}")
         raise
     start_scheduler()
+    asyncio.create_task(_resume_downloads_after_startup())
 
     yield
     # ── Shutdown ─────────────────────────────────────────────────────
@@ -64,9 +66,23 @@ async def lifespan(app: FastAPI):
         await _http_client.aclose()
 
 
+async def _resume_downloads_after_startup() -> None:
+    from loguru import logger
+
+    await asyncio.sleep(2)
+    try:
+        from backend.core.download_workflow import resume_downloading_downloads
+
+        resumed = await resume_downloading_downloads()
+        if resumed:
+            logger.info(f"Resumed {resumed} stuck downloading workflow(s)")
+    except Exception as exc:
+        logger.warning(f"Stuck download resume failed: {exc}")
+
+
 app = FastAPI(
     title="Slimarr",
-    version="1.0.0.4",
+    version="1.0.0.5",
     description="Smart Usenet replacement manager for Plex movie libraries",
     lifespan=lifespan,
 )

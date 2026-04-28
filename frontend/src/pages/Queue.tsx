@@ -3,6 +3,7 @@ import { api } from '@/lib/api'
 import { useSocket } from '@/hooks/useSocket'
 import type { Download } from '@/lib/types'
 import { Clock, RefreshCw } from 'lucide-react'
+import { useToast } from '@/components/Toast'
 
 function fmt(bytes?: number) {
   if (!bytes) return '-'
@@ -38,8 +39,10 @@ export default function Queue() {
   const [recent, setRecent] = useState<Download[]>([])
   const [progress, setProgress] = useState<Record<number, ProgressData>>({})
   const [loading, setLoading] = useState(true)
+  const [resuming, setResuming] = useState(false)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+  const { toast } = useToast()
 
   const loadQueue = async () => {
     try {
@@ -52,6 +55,19 @@ export default function Queue() {
       setLastUpdated(new Date())
     } finally {
       setLoading(false)
+    }
+  }
+
+  const resumeStuckDownloads = async () => {
+    setResuming(true)
+    try {
+      const result = await api.resumeDownloads()
+      toast(`Resumed ${result.resumed ?? 0} download monitor(s)`, 'success')
+      await loadQueue()
+    } catch {
+      toast('Failed to resume stuck downloads', 'error')
+    } finally {
+      setResuming(false)
     }
   }
 
@@ -98,14 +114,24 @@ export default function Queue() {
             {lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString()}` : loading ? 'Loading queue...' : 'Queue not refreshed yet'}
           </p>
         </div>
-        <button
-          onClick={() => { void loadQueue() }}
-          disabled={loading}
-          className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-gray-800 text-sm hover:bg-gray-700 disabled:opacity-50"
-        >
-          <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
-          Refresh
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => { void resumeStuckDownloads() }}
+            disabled={resuming}
+            className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-gray-800 text-sm hover:bg-gray-700 disabled:opacity-50"
+          >
+            <RefreshCw size={14} className={resuming ? 'animate-spin' : ''} />
+            Resume Stuck
+          </button>
+          <button
+            onClick={() => { void loadQueue() }}
+            disabled={loading}
+            className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-gray-800 text-sm hover:bg-gray-700 disabled:opacity-50"
+          >
+            <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
+            Refresh
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-3 gap-3">

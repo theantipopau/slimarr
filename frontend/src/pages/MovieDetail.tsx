@@ -7,8 +7,16 @@ import QualityBadge from '@/components/QualityBadge'
 import { ArrowLeft, Search, Zap, Download } from 'lucide-react'
 
 function fmt(bytes?: number) {
-  if (!bytes) return '—'
+  if (!bytes) return '-'
   return (bytes / 1e9).toFixed(2) + ' GB'
+}
+
+function fmtAge(days?: number) {
+  if (days === undefined || days === null) return 'Unknown'
+  if (days === 0) return 'Today'
+  if (days < 30) return `${days}d`
+  if (days < 365) return `${Math.floor(days / 30)}mo`
+  return `${(days / 365).toFixed(1)}y`
 }
 
 export default function MovieDetail() {
@@ -33,7 +41,7 @@ export default function MovieDetail() {
     setSearching(true)
     try {
       await api.triggerSearch(movieId)
-      toast('Search started — results will appear shortly', 'info')
+      toast('Search started - results will appear shortly', 'info')
       setTimeout(() => {
         api.searchResults(movieId).then(setResults).finally(() => setSearching(false))
       }, 3000)
@@ -47,7 +55,7 @@ export default function MovieDetail() {
     setProcessing(true)
     try {
       await api.triggerProcess(movieId)
-      toast('Processing best match…', 'info')
+      toast('Processing best match...', 'info')
       setTimeout(() => api.movie(movieId).then(setMovie), 5000)
     } catch {
       toast('Process failed', 'error')
@@ -60,7 +68,7 @@ export default function MovieDetail() {
     setDownloadingId(resultId)
     try {
       await api.downloadResult(movieId, resultId)
-      toast('Download queued — check Queue page for progress', 'success')
+      toast('Download queued - check Queue page for progress', 'success')
       setTimeout(() => api.movie(movieId).then(setMovie), 3000)
     } catch {
       toast('Failed to queue download', 'error')
@@ -69,7 +77,7 @@ export default function MovieDetail() {
     }
   }
 
-  if (!movie) return <div className="text-gray-400">Loading…</div>
+  if (!movie) return <div className="text-gray-400">Loading...</div>
 
   const posterUrl = movie.poster_path ? `/api/v1/images/${movie.id}/poster` : null
   const accepted = results.filter((r) => r.decision === 'accept')
@@ -110,14 +118,14 @@ export default function MovieDetail() {
               disabled={searching}
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800 text-sm hover:bg-gray-700 disabled:opacity-50"
             >
-              <Search size={16} /> {searching ? 'Searching…' : 'Search'}
+              <Search size={16} /> {searching ? 'Searching...' : 'Search'}
             </button>
             <button
               onClick={doProcess}
               disabled={processing || accepted.length === 0}
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-green text-white text-sm disabled:opacity-50"
             >
-              <Zap size={16} /> {processing ? 'Processing…' : 'Download Best'}
+              <Zap size={16} /> {processing ? 'Processing...' : 'Download Best'}
             </button>
           </div>
         </div>
@@ -126,23 +134,39 @@ export default function MovieDetail() {
       {results.length > 0 && (
         <div className="bg-gray-900 rounded-xl overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-800 text-sm font-semibold">
-            Search Results ({results.length} — {accepted.length} accepted)
+            Search Results ({results.length} - {accepted.length} accepted)
+          </div>
+          <div className="hidden md:grid grid-cols-[minmax(0,1fr)_5rem_5rem_6rem_4rem_5rem] gap-4 px-4 py-2 border-b border-gray-800 text-xs uppercase text-gray-500">
+            <span>Release</span>
+            <span>Res</span>
+            <span>Age</span>
+            <span className="text-right">Size</span>
+            <span>Score</span>
+            <span />
           </div>
           <div className="divide-y divide-gray-800">
             {results.map((r) => (
-              <div key={r.id} className="px-4 py-3 flex items-center gap-4 text-sm">
+              <div key={r.id} className="px-4 py-3 grid grid-cols-[auto_minmax(0,1fr)_auto] md:grid-cols-[auto_minmax(0,1fr)_5rem_5rem_6rem_4rem_5rem] items-center gap-3 md:gap-4 text-sm">
                 <div className={`w-2 h-2 rounded-full shrink-0 ${r.decision === 'accept' ? 'bg-green-500' : 'bg-red-500'}`} />
                 <div className="flex-1 min-w-0">
                   <p className="truncate">{r.release_title}</p>
+                  <div className="mt-1 flex flex-wrap gap-2 text-xs text-gray-500 md:hidden">
+                    <span>{r.resolution || 'Unknown res'}</span>
+                    <span>{fmtAge(r.age_days)}</span>
+                    <span>{fmt(r.size)}</span>
+                    <span>score {r.score.toFixed(1)}</span>
+                  </div>
                   {r.reject_reason && <p className="text-xs text-red-400">{r.reject_reason}</p>}
                 </div>
-                <div className="text-right shrink-0">
+                <div className="hidden md:block text-gray-300">{r.resolution || '-'}</div>
+                <div className="hidden md:block text-gray-400">{fmtAge(r.age_days)}</div>
+                <div className="hidden md:block text-right shrink-0">
                   <p>{fmt(r.size)}</p>
                   {r.savings_pct > 0 && (
-                    <p className="text-green-400 text-xs">−{r.savings_pct.toFixed(1)}%</p>
+                    <p className="text-green-400 text-xs">-{r.savings_pct.toFixed(1)}%</p>
                   )}
                 </div>
-                <div className="text-xs text-gray-500 shrink-0">score {r.score.toFixed(1)}</div>
+                <div className="hidden md:block text-xs text-gray-500 shrink-0">{r.score.toFixed(1)}</div>
                 {r.decision === 'accept' && (
                   <button
                     onClick={() => doDownloadResult(r.id)}
@@ -150,7 +174,7 @@ export default function MovieDetail() {
                     className="flex items-center gap-1 px-2.5 py-1 rounded bg-brand-green text-white text-xs disabled:opacity-50 hover:bg-green-600 shrink-0"
                   >
                     <Download size={12} />
-                    {downloadingId === r.id ? '…' : 'Download'}
+                    {downloadingId === r.id ? '...' : 'Download'}
                   </button>
                 )}
               </div>

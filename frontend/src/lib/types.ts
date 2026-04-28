@@ -24,6 +24,7 @@ export interface SearchResultItem {
   size: number
   resolution?: string
   video_codec?: string
+  age_days?: number
   score: number
   savings_bytes: number
   savings_pct: number

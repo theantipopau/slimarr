@@ -271,6 +271,9 @@ async def _run_lightweight_migrations(conn) -> None:
     await _add_column_if_missing(conn, "downloads", download_columns, "last_error_at", "DATETIME")
     await _add_column_if_missing(conn, "downloads", download_columns, "blacklist_reason", "VARCHAR")
 
+    search_result_columns = await _table_columns(conn, "search_results")
+    await _add_column_if_missing(conn, "search_results", search_result_columns, "age_days", "INTEGER")
+
 
 async def get_db() -> AsyncSession:  # type: ignore[return]
     """FastAPI dependency that yields an async session."""

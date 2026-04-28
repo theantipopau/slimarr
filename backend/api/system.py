@@ -23,7 +23,7 @@ router = APIRouter(prefix="/system", tags=["system"])
 _start_time = datetime.now(timezone.utc)
 
 
-CURRENT_VERSION = "1.0.0.4"
+CURRENT_VERSION = "1.0.0.5"
 GITHUB_REPO = "theantipopau/slimarr"
 
 _SERVICES_HEALTH_TTL_SECONDS = 20.0

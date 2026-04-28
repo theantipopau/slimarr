@@ -171,6 +171,7 @@ def _sr_dict(s: SearchResult) -> dict:
         "size": s.size,
         "resolution": s.resolution,
         "video_codec": s.video_codec,
+        "age_days": s.age_days,
         "score": s.score,
         "savings_bytes": s.savings_bytes,
         "savings_pct": s.savings_pct,

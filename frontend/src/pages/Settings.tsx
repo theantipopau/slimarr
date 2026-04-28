@@ -85,6 +85,7 @@ export default function Settings() {
       ['Recycling cleanup days', ['files', 'recycling_bin_cleanup_days'], 1, 3650],
       ['Max downloads per night', ['schedule', 'max_downloads_per_night'], 1, 1000],
       ['Throttle seconds', ['schedule', 'throttle_seconds'], 0, 86400],
+      ['Max active download hours', ['schedule', 'max_active_download_hours'], 1, 168],
     ]
     numericChecks.forEach(([label, path, min, max]) => {
       const raw = Number(read(path))
@@ -695,6 +696,7 @@ export default function Settings() {
         {field('Nightly End Time (UTC, HH:MM)', ['schedule', 'end_time'])}
         {field('Max Downloads per Night', ['schedule', 'max_downloads_per_night'], 'number')}
         {field('Throttle between downloads (seconds)', ['schedule', 'throttle_seconds'], 'number')}
+        {field('Max Active Download Hours', ['schedule', 'max_active_download_hours'], 'number')}
       </section>
     </div>
   )

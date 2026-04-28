@@ -4,6 +4,37 @@ All notable changes to Slimarr are documented here.
 
 ---
 
+## [1.0.0.5] - 2026-04-28
+
+### Release focus
+
+Manual download recovery, stale NZB visibility, and stuck queue repair.
+
+**Search and candidate quality**
+- Added resolution and NZB age columns to manual movie search results so old/stale posts are visible before downloading
+- Persisted NZB age from indexer publish dates into search results and API responses
+- Added age-aware comparison scoring and max-age rejection using `comparison.max_candidate_age_days`
+- Penalized stale candidates using `quality.stale_release_days` while lightly favoring fresh posts
+
+**Download recovery**
+- Added a safer downloader submission handoff that creates a Slimarr tracking row before submitting to SABnzbd/NZBGet
+- Added startup resume for downloads left in `downloading` after restarts or crashed background tasks
+- Added `POST /queue/resume` and a Queue page "Resume Stuck" action to manually restart stuck monitor tasks
+- Added a configurable active-download timeout (`schedule.max_active_download_hours`, default 24h) so old `downloading`/`submitting` rows fail cleanly and can retry
+- Added an hourly stale-download recovery scheduler to catch silent stuck rows while Slimarr is still running
+- Treated SABnzbd post-processing states such as `extracting`, `verifying`, `repairing`, and `queued` as in-progress instead of terminal failures
+- Hardened SABnzbd queue parsing when progress percentage is missing or null
+
+**Replacement reliability**
+- Added fallback same-folder backup handling when recycling-bin moves fail, so replacements can proceed safely when the recycle disk is full
+- Restores the backed-up original file if moving the completed download into place fails
+- Added preflight free-space checks for recycle-bin and target-drive moves before replacement
+
+**Upgrade safety**
+- Added an additive SQLite migration for `search_results.age_days` so upgraded installs can use NZB age columns without resetting data
+
+---
+
 ## [1.0.0.4] — 2026-04-28
 
 ### Planned focus

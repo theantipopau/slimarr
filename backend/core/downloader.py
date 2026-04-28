@@ -9,10 +9,47 @@ from datetime import datetime, timezone
 from loguru import logger
 from sqlalchemy import select
 
+from backend.config import get_config
 from backend.database import Download, Movie, SearchResult, UploaderStats, async_session
 from backend.integrations.download_client import decode_job_id, encode_job_id, get_active_download_client_name, get_download_client
 from backend.core.parser import parse_release_title
 from backend.realtime.events import emit_event
+
+TRANSIENT_HISTORY_STATUSES = {
+    "checking",
+    "downloading",
+    "extracting",
+    "fetching",
+    "queued",
+    "quickcheck",
+    "repairing",
+    "running",
+    "verifying",
+}
+
+
+def _utc_now() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def _as_utc(value: datetime | None) -> datetime | None:
+    if value is None:
+        return None
+    if value.tzinfo is None:
+        return value.replace(tzinfo=timezone.utc)
+    return value.astimezone(timezone.utc)
+
+
+def _active_download_age_hours(dl: Download) -> float | None:
+    started_at = _as_utc(dl.started_at)
+    if not started_at:
+        return None
+    return (_utc_now() - started_at).total_seconds() / 3600
+
+
+def _max_active_download_hours() -> int:
+    config = get_config()
+    return max(1, int(getattr(config.schedule, "max_active_download_hours", 24) or 24))
 
 
 def _mark_download_failed(
@@ -23,8 +60,8 @@ def _mark_download_failed(
 ) -> None:
     dl.status = "failed"
     dl.error_message = message
-    dl.last_error_at = datetime.now(timezone.utc)
-    dl.completed_at = datetime.now(timezone.utc)
+    dl.last_error_at = _utc_now()
+    dl.completed_at = _utc_now()
     if storage_path is not None:
         dl.storage_path = storage_path
 
@@ -53,7 +90,7 @@ async def _update_uploader_stats(release_title: str | None, success: bool) -> No
         total = int(stats.success_count or 0) + int(stats.failure_count or 0) + int(stats.corruption_count or 0)
         if total > 0:
             stats.health_score = max(0.0, min(1.0, float(stats.success_count) / float(total)))
-        stats.last_seen = datetime.now(timezone.utc)
+        stats.last_seen = _utc_now()
         await db.commit()
 
 
@@ -75,24 +112,41 @@ async def start_download(search_result_id: int) -> Download:
         if not movie:
             raise ValueError(f"Movie {sr.movie_id} not found")
 
-        external_job_id = await client.submit_url(sr.nzb_url, sr.release_title)
+        dl = Download(
+            movie_id=movie.id,
+            search_result_id=sr.id,
+            nzo_id=None,
+            release_title=sr.release_title,
+            expected_size=sr.size,
+            status="submitting",
+            progress_pct=0.0,
+            started_at=_utc_now(),
+        )
+        db.add(dl)
+        movie.status = "downloading"
+        await db.commit()
+        await db.refresh(dl)
+
+        try:
+            external_job_id = await client.submit_url(sr.nzb_url, sr.release_title)
+        except Exception as exc:
+            _mark_download_failed(dl, f"{client_name} submit failed: {exc}")
+            movie.status = "failed"
+            movie.error_message = dl.error_message
+            await db.commit()
+            await emit_event("download:failed", {
+                "download_id": dl.id,
+                "movie_id": movie.id,
+                "reason": dl.error_message,
+            })
+            raise
         stored_job_id = encode_job_id(client_name, external_job_id)
         logger.info(
             f"Submitted to {client_name}: {sr.release_title} → job_id={external_job_id}"
         )
 
-        dl = Download(
-            movie_id=movie.id,
-            search_result_id=sr.id,
-            nzo_id=stored_job_id,
-            release_title=sr.release_title,
-            expected_size=sr.size,
-            status="downloading",
-            progress_pct=0.0,
-            started_at=datetime.now(timezone.utc),
-        )
-        db.add(dl)
-        movie.status = "downloading"
+        dl.nzo_id = stored_job_id
+        dl.status = "downloading"
         await db.commit()
         await db.refresh(dl)
 
@@ -113,6 +167,7 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
     """
     consecutive_none = 0  # count polls where job is not found at all
     MAX_NONE_RETRIES = 6  # ~30s of grace before giving up
+    max_active_hours = _max_active_download_hours()
 
     while True:
         await asyncio.sleep(poll_interval)
@@ -122,6 +177,23 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
             dl = dl_result.scalar_one_or_none()
             if not dl:
                 return "missing"
+
+            age_hours = _active_download_age_hours(dl)
+            if age_hours is not None and age_hours >= max_active_hours:
+                reason = (
+                    f"Download exceeded active timeout "
+                    f"({age_hours:.1f}h >= {max_active_hours}h)"
+                )
+                logger.warning(f"Download {download_id}: {reason}")
+                _mark_download_failed(dl, reason)
+                await db.commit()
+                await _update_uploader_stats(dl.release_title, success=False)
+                await emit_event("download:failed", {
+                    "download_id": dl.id,
+                    "movie_id": dl.movie_id,
+                    "reason": dl.error_message,
+                })
+                return "failed"
 
             client_name, external_job_id = decode_job_id(dl.nzo_id)
             client = get_download_client(client_name)
@@ -183,6 +255,14 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
                 )
 
                 is_success = normalized_status in ("completed", "repaired") or normalized_status.startswith("success") or normalized_status.startswith("warning")
+                if normalized_status in TRANSIENT_HISTORY_STATUSES:
+                    await db.commit()
+                    logger.info(
+                        f"Download {download_id}: {client_name} history status "
+                        f"{normalized_status!r} is still post-processing; continuing monitor"
+                    )
+                    continue
+
                 if is_success:
                     if not dl.storage_path:
                         _mark_download_failed(dl, f"{client_name} completed job has no storage path")
@@ -196,7 +276,7 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
                         return "failed"
                     dl.status = "completed"
                     dl.progress_pct = 100.0
-                    dl.completed_at = datetime.now(timezone.utc)
+                    dl.completed_at = _utc_now()
                     await db.commit()
                     await _update_uploader_stats(dl.release_title, success=True)
                     await emit_event("download:completed", {

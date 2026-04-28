@@ -15,7 +15,7 @@ async def get_active_downloads(user=Depends(get_current_user)):
     async with async_session() as db:
         result = await db.execute(
             select(Download)
-            .where(Download.status == "downloading")
+            .where(Download.status.in_(["submitting", "downloading"]))
             .order_by(Download.started_at.desc())
         )
         downloads = result.scalars().all()
@@ -46,6 +46,15 @@ async def get_failed_downloads(limit: int = 50, user=Depends(get_current_user)):
         )
         downloads = result.scalars().all()
     return [_dl_dict(d) for d in downloads]
+
+
+@router.post("/resume")
+async def resume_stuck_downloads_endpoint(user=Depends(get_current_user)):
+    """Resume monitor workflows for downloads left in downloading state."""
+    from backend.core.download_workflow import resume_downloading_downloads
+
+    resumed = await resume_downloading_downloads(limit=100)
+    return {"status": "ok", "resumed": resumed}
 
 
 @router.post("/{download_id}/cleanup")

@@ -9,6 +9,15 @@ from loguru import logger
 from backend.config import get_config
 
 
+def _safe_float(value, default: float = 0.0) -> float:
+    try:
+        if value is None or value == "":
+            return default
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
 class SABnzbdClient:
     name = "sabnzbd"
 
@@ -50,7 +59,7 @@ class SABnzbdClient:
                 "nzo_id": s["nzo_id"],
                 "filename": s.get("filename", ""),
                 "status": s.get("status", ""),
-                "percentage": float(s.get("percentage", 0)),
+                "percentage": _safe_float(s.get("percentage")),
                 "size": s.get("size", ""),
                 "sizeleft": s.get("sizeleft", ""),
                 "speed": s.get("speed", ""),

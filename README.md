@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>Automatically shrink your Plex library — find smaller, better-compressed releases on Usenet and replace bloated files overnight.</strong>
+  <strong>Automatically shrink your Plex library - find smaller, better-compressed releases on Usenet and replace bloated files overnight.</strong>
 </p>
 
 <p align="center">
@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/react-18-61DAFB?logo=react&logoColor=black" />
   <img src="https://img.shields.io/badge/license-MIT-green" />
   <img src="https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white" />
-  <img src="https://img.shields.io/badge/release-1.0.0.4-success" />
+  <img src="https://img.shields.io/badge/release-1.0.0.5-success" />
 </p>
 
 <p align="center">
@@ -23,28 +23,28 @@
 
 ## What is Slimarr?
 
-Plex libraries accumulate large files over time — bloated remuxes, old h264 Blu-ray rips, and poorly compressed encodes. Modern codecs like **h265/HEVC** and **AV1** deliver equivalent or better visual quality at a fraction of the file size.
+Plex libraries accumulate large files over time - bloated remuxes, old h264 Blu-ray rips, and poorly compressed encodes. Modern codecs like **h265/HEVC** and **AV1** deliver equivalent or better visual quality at a fraction of the file size.
 
 **Slimarr automates the entire replacement workflow:**
 
 ```
-Scan Plex library → Search Usenet indexers → Compare releases
-→ Queue download via SABnzbd or NZBGet → Replace file → Refresh Plex → Log savings
+Scan Plex library -> Search Usenet indexers -> Compare releases
+-> Queue download via SABnzbd or NZBGet -> Replace file -> Refresh Plex -> Log savings
 ```
 
 **Core rule: never increase file size.** A release is only accepted if it is strictly smaller than your existing copy.
 
 Slimarr is designed to look and feel like a native member of the **\*arr ecosystem** (Radarr, Sonarr, Prowlarr). If you're familiar with those tools, you'll feel right at home.
 
-Current stable release: **1.0.0.4**.
+Current stable release: **1.0.0.5**.
 
-### What's New in 1.0.0.4
+### What's New in 1.0.0.5
 
-- Faster System health checks with cached, parallel integration probes
-- Route-level frontend lazy loading and production chunk splitting
-- Automation preflight checks before full-cycle start
-- Queue page summary counters, status filters, timestamps, and responsive rows
-- Installer packaging target: `SlimarrSetup-1.0.0.4.exe`
+- NZB age and resolution columns in manual movie search results
+- Age-aware scoring/rejection to avoid stale Usenet candidates
+- Safer SABnzbd post-processing monitoring for extracting/verifying/repairing jobs
+- Startup and manual Queue recovery for downloads stuck as `downloading`
+- Installer packaging target: `SlimarrSetup-1.0.0.5.exe`
 
 ---
 
@@ -62,25 +62,25 @@ Current stable release: **1.0.0.4**.
 
 ## Features
 
-- **Nightly automation** — scheduled cycle searches, downloads and replaces movies while you sleep
-- **Usenet search** — supports Prowlarr (recommended) or direct Newznab/NZBGeek indexers
-- **Download client integration** — supports SABnzbd by default, with NZBGet support on the current `main` branch
-- **Plex sync** — reads your library via PlexAPI, refreshes Plex after each replacement
-- **TMDB enrichment** — posters, backdrops, and metadata fetched and cached locally
-- **Smart comparison engine** — configurable minimum savings %, resolution downgrade protection, codec preferences, language filtering
-- **Path mappings** — translate Plex-reported file paths to locally accessible paths when Plex and Slimarr run on different machines or use different mount points
-- **Language filtering** — reject candidates in unwanted languages; prefer English (or any configured language)
-- **AV1/h265 preference** — codec scoring bonus for modern efficient codecs
-- **Minimum file size floor** — skip tiny low-quality candidates regardless of savings %
-- **Real-time UI** — Socket.IO pushes scan progress, download progress, and replacement events to the browser instantly
-- **Toast notifications** — non-intrusive feedback for every action
-- **Recycling bin controls** — optionally move originals to a configured directory, monitor live usage in Settings, and empty it on demand
-- **Duplicate file cleanup** — detect and remove inferior duplicate copies within your Plex library
-- **TV Show Stale Media Sweeper** — Slimarr surfaces never-watched or long-unwatched TV shows with their disk footprint so *you* can decide what to delete; optionally unmonitors in Sonarr to prevent re-download
-- **System tray** — runs as a Windows tray app with one-click open browser
-- **Activity log** — full history of every replacement with old/new size and savings %
-- **Update checker** — System page shows a badge when a newer version is available on GitHub
-- **Radarr-compatible feel** — sidebar nav, poster grid, quality badges, test connection buttons
+- **Nightly automation** - scheduled cycle searches, downloads and replaces movies while you sleep
+- **Usenet search** - supports Prowlarr (recommended) or direct Newznab/NZBGeek indexers
+- **Download client integration** - supports SABnzbd by default, with NZBGet support on the current `main` branch
+- **Plex sync** - reads your library via PlexAPI, refreshes Plex after each replacement
+- **TMDB enrichment** - posters, backdrops, and metadata fetched and cached locally
+- **Smart comparison engine** - configurable minimum savings %, resolution downgrade protection, codec preferences, language filtering
+- **Path mappings** - translate Plex-reported file paths to locally accessible paths when Plex and Slimarr run on different machines or use different mount points
+- **Language filtering** - reject candidates in unwanted languages; prefer English (or any configured language)
+- **AV1/h265 preference** - codec scoring bonus for modern efficient codecs
+- **Minimum file size floor** - skip tiny low-quality candidates regardless of savings %
+- **Real-time UI** - Socket.IO pushes scan progress, download progress, and replacement events to the browser instantly
+- **Toast notifications** - non-intrusive feedback for every action
+- **Recycling bin controls** - optionally move originals to a configured directory, monitor live usage in Settings, and empty it on demand
+- **Duplicate file cleanup** - detect and remove inferior duplicate copies within your Plex library
+- **TV Show Stale Media Sweeper** - Slimarr surfaces never-watched or long-unwatched TV shows with their disk footprint so *you* can decide what to delete; optionally unmonitors in Sonarr to prevent re-download
+- **System tray** - runs as a Windows tray app with one-click open browser
+- **Activity log** - full history of every replacement with old/new size and savings %
+- **Update checker** - System page shows a badge when a newer version is available on GitHub
+- **Radarr-compatible feel** - sidebar nav, poster grid, quality badges, test connection buttons
 
 ---
 
@@ -99,13 +99,13 @@ Current stable release: **1.0.0.4**.
 
 ## Installation (Windows)
 
-### Option A — Installer (recommended for sharing)
+### Option A - Installer (recommended for sharing)
 
-Download `SlimarrSetup-1.0.0.4.exe` (or the latest `SlimarrSetup-*.exe`) from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies — no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
+Download `SlimarrSetup-1.0.0.5.exe` (or the latest `SlimarrSetup-*.exe`) from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies - no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
 
-`1.0.0.4` is the latest published installer release. Newer `main` branch changes may land before the next installer is cut; if you want those immediately, run Slimarr from source or build a fresh installer from `main`.
+`1.0.0.5` is the current installer target. Newer `main` branch changes may land before the next installer is cut; if you want those immediately, run Slimarr from source or build a fresh installer from `main`.
 
-### Option B — From source
+### Option B - From source
 
 **1. Clone the repository:**
 ```powershell
@@ -134,7 +134,7 @@ python run.py --headless
 
 **4. Open your browser to `http://localhost:9494`** and complete the one-time registration.
 
-**5. Configure** your services in Settings — Plex, SABnzbd, TMDB, and at least one indexer are required.
+**5. Configure** your services in Settings - Plex, SABnzbd, TMDB, and at least one indexer are required.
 
 ### Keeping up to date
 
@@ -145,7 +145,7 @@ On machines that pull from git, run `update.bat` (or `git pull`). The System pag
 Slimarr includes a simple project website in `docs/` for GitHub Pages.
 
 1. Push this repository to GitHub.
-2. Open **Settings → Pages** in your GitHub repo.
+2. Open **Settings -> Pages** in your GitHub repo.
 3. Under **Build and deployment**, set:
   - **Source**: Deploy from a branch
   - **Branch**: `main`
@@ -192,7 +192,7 @@ tmdb:
 
 comparison:
   min_savings_percent: 10.0          # Reject candidates saving less than this
-  allow_resolution_downgrade: false   # e.g. block 1080p → 720p replacements
+  allow_resolution_downgrade: false   # e.g. block 1080p -> 720p replacements
   preferred_codecs: ["av1", "h265"]
   preferred_language: "english"       # Reject foreign-language releases
   minimum_file_size_mb: 500           # Ignore candidates below this size
@@ -214,7 +214,7 @@ files:
 
   # Path mappings: use when Plex reports file paths that Slimarr can't
   # access directly (different machine, different drive letter/mount point).
-  # plex_path: what Plex says  →  local_path: what Slimarr can write to
+  # plex_path: what Plex says  ->  local_path: what Slimarr can write to
   plex_path_mappings: []
   # Example:
   # plex_path_mappings:
@@ -226,9 +226,10 @@ schedule:
   end_time: "07:00"
   max_downloads_per_night: 10
   throttle_seconds: 30
+  max_active_download_hours: 24
 ```
 
-> **Note on disk space:** By default `recycling_bin` is empty, meaning old files are deleted immediately when a replacement succeeds. If you configure a recycling bin path, be aware that replaced movie files (typically 10–50 GB each) accumulate there until the nightly cleanup runs. Use a path on a drive with plenty of headroom, or leave the setting empty.
+> **Note on disk space:** By default `recycling_bin` is empty, meaning old files are deleted immediately when a replacement succeeds. If you configure a recycling bin path, be aware that replaced movie files (typically 10-50 GB each) accumulate there until the nightly cleanup runs. Use a path on a drive with plenty of headroom, or leave the setting empty.
 
 ---
 
@@ -253,26 +254,26 @@ schedule:
 
 ```
 C:\Slimarr\
-├── backend/
-│   ├── api/          # FastAPI routers (library, queue, activity, settings, system, dashboard, tv)
-│   ├── auth/         # JWT authentication
-│   ├── core/         # Business logic (scanner, searcher, comparer, downloader, replacer, cleanup)
-│   ├── integrations/ # Plex, SABnzbd, TMDB, Prowlarr, Newznab, Radarr, Sonarr clients
-│   ├── realtime/     # Socket.IO instance and event emitter
-│   ├── scheduler/    # APScheduler nightly job
-│   └── main.py       # App entry point, static file serving
-├── frontend/
-│   └── src/
-│       ├── pages/    # Dashboard, Library, MovieDetail, Queue, Activity, Settings, System, TVShows
-│       ├── components/ # PosterCard, StatCard, QualityBadge, Toast, Sidebar, Layout
-│       ├── hooks/    # useSocket, useAuth
-│       └── lib/      # api.ts, socket.ts, types.ts
-├── data/             # SQLite DB, MediaCover image cache, recycling bin
-├── images/           # Brand assets
-├── run.py            # Entry point (tray or headless)
-├── tray.py           # pystray system tray
-├── install.ps1       # One-click installer
-└── config.yaml       # User configuration
+|-- backend/
+|   |-- api/          # FastAPI routers (library, queue, activity, settings, system, dashboard, tv)
+|   |-- auth/         # JWT authentication
+|   |-- core/         # Business logic (scanner, searcher, comparer, downloader, replacer, cleanup)
+|   |-- integrations/ # Plex, SABnzbd, TMDB, Prowlarr, Newznab, Radarr, Sonarr clients
+|   |-- realtime/     # Socket.IO instance and event emitter
+|   |-- scheduler/    # APScheduler nightly job
+|   `-- main.py       # App entry point, static file serving
+|-- frontend/
+|   `-- src/
+|       |-- pages/    # Dashboard, Library, MovieDetail, Queue, Activity, Settings, System, TVShows
+|       |-- components/ # PosterCard, StatCard, QualityBadge, Toast, Sidebar, Layout
+|       |-- hooks/    # useSocket, useAuth
+|       `-- lib/      # api.ts, socket.ts, types.ts
+|-- data/             # SQLite DB, MediaCover image cache, recycling bin
+|-- images/           # Brand assets
+|-- run.py            # Entry point (tray or headless)
+|-- tray.py           # pystray system tray
+|-- install.ps1       # One-click installer
+`-- config.yaml       # User configuration
 ```
 
 ---
@@ -303,12 +304,12 @@ Once complete, the new file is moved into the exact location of the original in 
 > **Tip:** If your Plex server and Slimarr run on different machines (or see the same storage under different paths), configure **Path Mappings** in Settings so Slimarr can translate Plex-reported paths to locally accessible ones.
 
 ### 6. TV Show Stale Media Sweeper
-The **TV Shows** page lets you explore your Plex TV library by disk usage and watch history. Slimarr surfaces shows that have never been watched (or not watched within your chosen time window) alongside their total size on disk. Nothing is automatic — you review the suggestions and choose what to delete. Deleting a show:
+The **TV Shows** page lets you explore your Plex TV library by disk usage and watch history. Slimarr surfaces shows that have never been watched (or not watched within your chosen time window) alongside their total size on disk. Nothing is automatic - you review the suggestions and choose what to delete. Deleting a show:
 1. Optionally unmonitors the series in Sonarr (so it won't be automatically re-downloaded)
 2. Instructs Plex to delete all associated files from disk
 
 ### 7. Duplicate File Cleanup
-The System page includes a one-click **Find Duplicates** tool. Slimarr scans Plex for movies that have multiple file copies, scores them by resolution and codec quality, and deletes the inferior copies — keeping the best version.
+The System page includes a one-click **Find Duplicates** tool. Slimarr scans Plex for movies that have multiple file copies, scores them by resolution and codec quality, and deletes the inferior copies - keeping the best version.
 
 ---
 
@@ -329,8 +330,8 @@ The Vite dev server proxies `/api` and `/socket.io` to `localhost:9494` automati
 
 ## License
 
-MIT — see [LICENSE](LICENSE) for details.
+MIT - see [LICENSE](LICENSE) for details.
 
 ---
 
-<p align="center">Built for the *arr ecosystem &nbsp;·&nbsp; Dark UI, real-time updates, one-click installs</p>
+<p align="center">Built for the *arr ecosystem &nbsp;-&nbsp; Dark UI, real-time updates, one-click installs</p>

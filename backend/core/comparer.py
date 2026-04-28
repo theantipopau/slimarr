@@ -55,6 +55,7 @@ def compare_release(
     local_codec: str,
     candidate_size: int,
     candidate_title: str,
+    candidate_age_days: int | None = None,
 ) -> ComparisonResult:
     config = get_config()
     parsed = parse_release_title(candidate_title)
@@ -89,6 +90,12 @@ def compare_release(
 
     savings_bytes = local_size - candidate_size
     savings_pct = (savings_bytes / max(local_size, 1)) * 100
+
+    if candidate_age_days is not None and config.comparison.max_candidate_age_days > 0:
+        if candidate_age_days > config.comparison.max_candidate_age_days:
+            return _reject(
+                f"NZB age {candidate_age_days}d exceeds max {config.comparison.max_candidate_age_days}d"
+            )
 
     # Minimum savings threshold
     if savings_pct < config.comparison.min_savings_percent:
@@ -150,12 +157,14 @@ def compare_release(
         score += 10.0
 
     # Release freshness: stale releases get penalized.
-    if parsed.release_age_days is not None:
-        if parsed.release_age_days > 30:
-            staleness_penalty = min(20.0, parsed.release_age_days / 5)
+    age_days = candidate_age_days if candidate_age_days is not None else parsed.release_age_days
+    stale_days = int(getattr(config.quality, "stale_release_days", 30) or 30)
+    if age_days is not None:
+        if age_days > stale_days:
+            staleness_penalty = min(35.0, (age_days - stale_days) / 10)
             score -= staleness_penalty
-        elif parsed.release_age_days > 7:
-            staleness_penalty = (parsed.release_age_days - 7) * 0.3
+        elif age_days > 7:
+            staleness_penalty = (age_days - 7) * 0.3
             score -= staleness_penalty
         else:
             score += 2.0
@@ -171,8 +180,8 @@ def compare_release(
         notes.append(f"Resolution upgrade: {local_resolution}→{cand_res}")
     if codec_delta > 0:
         notes.append(f"Codec upgrade: {local_codec}→{cand_codec}")
-    if parsed.release_age_days is not None:
-        notes.append(f"Release age: {parsed.release_age_days} days")
+    if age_days is not None:
+        notes.append(f"NZB age: {age_days} days")
     if parsed.uploader or parsed.group:
         notes.append(f"Uploader score: {uploader_health:.2f}")
 
@@ -194,7 +203,7 @@ def rank_candidates(
     """Return accepted candidates sorted by score descending."""
     results = [
         (c, compare_release(local_size, local_resolution, local_codec,
-                             c["size"], c["release_title"]))
+                             c["size"], c["release_title"], c.get("age_days")))
         for c in candidates
     ]
     accepted = [(c, r) for c, r in results if r.decision == "accept"]

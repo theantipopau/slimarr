@@ -78,6 +78,14 @@ async def _downloader_health_pulse() -> None:
         logger.warning(f"Downloader health pulse exception for {client_name}: {exc}")
 
 
+async def _stale_download_recovery() -> None:
+    from backend.core.download_workflow import resume_downloading_downloads
+
+    resumed = await resume_downloading_downloads(limit=100)
+    if resumed:
+        logger.info(f"Stale download recovery resumed {resumed} workflow(s)")
+
+
 def start_scheduler() -> None:
     from backend.config import get_config
     config = get_config()
@@ -120,6 +128,14 @@ def start_scheduler() -> None:
         _downloader_health_pulse,
         IntervalTrigger(minutes=30),
         id="downloader_health_pulse",
+        replace_existing=True,
+    )
+
+    # Stale download recovery - expires old stuck jobs and restarts missing monitor tasks.
+    scheduler.add_job(
+        _stale_download_recovery,
+        IntervalTrigger(hours=1),
+        id="stale_download_recovery",
         replace_existing=True,
     )
 
