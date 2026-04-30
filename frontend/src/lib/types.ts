@@ -21,15 +21,15 @@ export interface SearchResultItem {
   id: number
   indexer_name: string
   release_title: string
-  size: number
+  size?: number | null
   resolution?: string
   video_codec?: string
   age_days?: number
-  score: number
-  confidence_score?: number
-  confidence_breakdown?: Record<string, number>
-  savings_bytes: number
-  savings_pct: number
+  score?: number | null
+  confidence_score?: number | null
+  confidence_breakdown?: Record<string, number | null>
+  savings_bytes?: number | null
+  savings_pct?: number | null
   decision: 'accept' | 'reject'
   reject_reason?: string
 }

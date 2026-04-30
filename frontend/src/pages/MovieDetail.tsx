@@ -6,17 +6,25 @@ import type { Movie, SearchResultItem } from '@/lib/types'
 import QualityBadge from '@/components/QualityBadge'
 import { ArrowLeft, Search, Zap, Download, Info, X } from 'lucide-react'
 
-function fmt(bytes?: number) {
+function fmt(bytes?: number | null) {
   if (!bytes) return '-'
   return (bytes / 1e9).toFixed(2) + ' GB'
 }
 
-function fmtAge(days?: number) {
+function fmtAge(days?: number | null) {
   if (days === undefined || days === null) return 'Unknown'
   if (days === 0) return 'Today'
   if (days < 30) return `${days}d`
   if (days < 365) return `${Math.floor(days / 30)}mo`
   return `${(days / 365).toFixed(1)}y`
+}
+
+function fmtFixed(value?: number | null, digits = 1) {
+  return typeof value === 'number' && Number.isFinite(value) ? value.toFixed(digits) : '-'
+}
+
+function pctWidth(value?: number | null) {
+  return `${Math.max(0, Math.min(100, value ?? 0))}%`
 }
 
 export default function MovieDetail() {
@@ -158,8 +166,8 @@ export default function MovieDetail() {
                     <span>{r.resolution || 'Unknown res'}</span>
                     <span>{fmtAge(r.age_days)}</span>
                     <span>{fmt(r.size)}</span>
-                    <span>score {r.score.toFixed(1)}</span>
-                    {r.confidence_score !== undefined && <span>confidence {r.confidence_score.toFixed(0)}</span>}
+                    <span>score {fmtFixed(r.score)}</span>
+                    {r.confidence_score !== undefined && r.confidence_score !== null && <span>confidence {fmtFixed(r.confidence_score, 0)}</span>}
                   </div>
                   {r.reject_reason && <p className="text-xs text-red-400">{r.reject_reason}</p>}
                 </div>
@@ -167,12 +175,12 @@ export default function MovieDetail() {
                 <div className="hidden md:block text-gray-400">{fmtAge(r.age_days)}</div>
                 <div className="hidden md:block text-right shrink-0">
                   <p>{fmt(r.size)}</p>
-                  {r.savings_pct > 0 && (
-                    <p className="text-green-400 text-xs">-{r.savings_pct.toFixed(1)}%</p>
+                  {(r.savings_pct ?? 0) > 0 && (
+                    <p className="text-green-400 text-xs">-{fmtFixed(r.savings_pct)}%</p>
                   )}
                 </div>
-                <div className="hidden md:block text-xs text-gray-500 shrink-0">{r.score.toFixed(1)}</div>
-                <div className="hidden md:block text-xs text-gray-500 shrink-0">{r.confidence_score !== undefined ? r.confidence_score.toFixed(0) : '-'}</div>
+                <div className="hidden md:block text-xs text-gray-500 shrink-0">{fmtFixed(r.score)}</div>
+                <div className="hidden md:block text-xs text-gray-500 shrink-0">{fmtFixed(r.confidence_score, 0)}</div>
                 <div className="flex items-center gap-2 justify-end">
                   <button
                     onClick={() => setSelectedResult(r)}
@@ -218,7 +226,7 @@ export default function MovieDetail() {
               </div>
               <div className="rounded-lg bg-gray-900 p-3">
                 <p className="text-xs uppercase text-gray-500">Savings</p>
-                <p className="font-semibold">{fmt(selectedResult.savings_bytes)} ({selectedResult.savings_pct.toFixed(1)}%)</p>
+                <p className="font-semibold">{fmt(selectedResult.savings_bytes)} ({fmtFixed(selectedResult.savings_pct)}%)</p>
               </div>
               <div className="rounded-lg bg-gray-900 p-3">
                 <p className="text-xs uppercase text-gray-500">Release</p>
@@ -226,7 +234,7 @@ export default function MovieDetail() {
               </div>
               <div className="rounded-lg bg-gray-900 p-3">
                 <p className="text-xs uppercase text-gray-500">Confidence</p>
-                <p className="font-semibold">{selectedResult.confidence_score !== undefined ? `${selectedResult.confidence_score.toFixed(0)} / 100` : 'Not scored'}</p>
+                <p className="font-semibold">{typeof selectedResult.confidence_score === 'number' ? `${fmtFixed(selectedResult.confidence_score, 0)} / 100` : 'Not scored'}</p>
               </div>
             </div>
             {selectedResult.confidence_breakdown && Object.keys(selectedResult.confidence_breakdown).length > 0 && (
@@ -235,10 +243,10 @@ export default function MovieDetail() {
                   <div key={key}>
                     <div className="mb-1 flex justify-between text-xs text-gray-400">
                       <span className="capitalize">{key.replace(/_/g, ' ')}</span>
-                      <span>{value.toFixed(0)}</span>
+                      <span>{fmtFixed(value, 0)}</span>
                     </div>
                     <div className="h-2 rounded bg-gray-800">
-                      <div className="h-2 rounded bg-brand-green" style={{ width: `${Math.max(0, Math.min(100, value))}%` }} />
+                      <div className="h-2 rounded bg-brand-green" style={{ width: pctWidth(value) }} />
                     </div>
                   </div>
                 ))}
