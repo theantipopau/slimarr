@@ -1,1 +1,0 @@
-import{r as s}from"./vendor-Bc4NOs7s.js";import{l as u}from"./socket-BwmHV2_y.js";let t=null;function i(){return t||(t=u(window.location.origin,{transports:["websocket","polling"]})),t}function a(o,r){const n=s.useRef(r);n.current=r,s.useEffect(()=>{const e=i(),c=f=>n.current(f);return e.on(o,c),()=>{e.off(o,c)}},[o])}export{a as u};

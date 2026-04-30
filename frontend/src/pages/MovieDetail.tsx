@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { api } from '@/lib/api'
 import { useToast } from '@/components/Toast'
 import type { Movie, SearchResultItem } from '@/lib/types'
 import QualityBadge from '@/components/QualityBadge'
-import { ArrowLeft, Search, Zap, Download } from 'lucide-react'
+import { ArrowLeft, Search, Zap, Download, Info, X } from 'lucide-react'
 
 function fmt(bytes?: number) {
   if (!bytes) return '-'
@@ -22,6 +22,8 @@ function fmtAge(days?: number) {
 export default function MovieDetail() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const location = useLocation()
+  const fromLibrary = (location.state as { fromLibrary?: string } | null)?.fromLibrary || '/library'
   const movieId = Number(id)
 
   const [movie, setMovie] = useState<Movie | null>(null)
@@ -29,6 +31,7 @@ export default function MovieDetail() {
   const [searching, setSearching] = useState(false)
   const [processing, setProcessing] = useState(false)
   const [downloadingId, setDownloadingId] = useState<number | null>(null)
+  const [selectedResult, setSelectedResult] = useState<SearchResultItem | null>(null)
 
   useEffect(() => {
     api.movie(movieId).then(setMovie).catch(() => {})
@@ -84,7 +87,7 @@ export default function MovieDetail() {
 
   return (
     <div className="space-y-6">
-      <button onClick={() => navigate('/library')} className="flex items-center gap-2 text-gray-400 hover:text-white text-sm">
+      <button onClick={() => navigate(fromLibrary)} className="flex items-center gap-2 text-gray-400 hover:text-white text-sm">
         <ArrowLeft size={16} /> Back to Library
       </button>
 
@@ -136,17 +139,18 @@ export default function MovieDetail() {
           <div className="px-4 py-3 border-b border-gray-800 text-sm font-semibold">
             Search Results ({results.length} - {accepted.length} accepted)
           </div>
-          <div className="hidden md:grid grid-cols-[minmax(0,1fr)_5rem_5rem_6rem_4rem_5rem] gap-4 px-4 py-2 border-b border-gray-800 text-xs uppercase text-gray-500">
+          <div className="hidden md:grid grid-cols-[minmax(0,1fr)_5rem_5rem_6rem_5rem_5rem_7rem] gap-4 px-4 py-2 border-b border-gray-800 text-xs uppercase text-gray-500">
             <span>Release</span>
             <span>Res</span>
             <span>Age</span>
             <span className="text-right">Size</span>
             <span>Score</span>
+            <span>Confidence</span>
             <span />
           </div>
           <div className="divide-y divide-gray-800">
             {results.map((r) => (
-              <div key={r.id} className="px-4 py-3 grid grid-cols-[auto_minmax(0,1fr)_auto] md:grid-cols-[auto_minmax(0,1fr)_5rem_5rem_6rem_4rem_5rem] items-center gap-3 md:gap-4 text-sm">
+              <div key={r.id} className="px-4 py-3 grid grid-cols-[auto_minmax(0,1fr)_auto] md:grid-cols-[auto_minmax(0,1fr)_5rem_5rem_6rem_5rem_5rem_7rem] items-center gap-3 md:gap-4 text-sm">
                 <div className={`w-2 h-2 rounded-full shrink-0 ${r.decision === 'accept' ? 'bg-green-500' : 'bg-red-500'}`} />
                 <div className="flex-1 min-w-0">
                   <p className="truncate">{r.release_title}</p>
@@ -155,6 +159,7 @@ export default function MovieDetail() {
                     <span>{fmtAge(r.age_days)}</span>
                     <span>{fmt(r.size)}</span>
                     <span>score {r.score.toFixed(1)}</span>
+                    {r.confidence_score !== undefined && <span>confidence {r.confidence_score.toFixed(0)}</span>}
                   </div>
                   {r.reject_reason && <p className="text-xs text-red-400">{r.reject_reason}</p>}
                 </div>
@@ -167,7 +172,16 @@ export default function MovieDetail() {
                   )}
                 </div>
                 <div className="hidden md:block text-xs text-gray-500 shrink-0">{r.score.toFixed(1)}</div>
-                {r.decision === 'accept' && (
+                <div className="hidden md:block text-xs text-gray-500 shrink-0">{r.confidence_score !== undefined ? r.confidence_score.toFixed(0) : '-'}</div>
+                <div className="flex items-center gap-2 justify-end">
+                  <button
+                    onClick={() => setSelectedResult(r)}
+                    className="p-1.5 rounded bg-gray-800 text-gray-300 hover:bg-gray-700"
+                    title="Show candidate details"
+                  >
+                    <Info size={13} />
+                  </button>
+                  {r.decision === 'accept' && (
                   <button
                     onClick={() => doDownloadResult(r.id)}
                     disabled={downloadingId === r.id}
@@ -176,9 +190,60 @@ export default function MovieDetail() {
                     <Download size={12} />
                     {downloadingId === r.id ? '...' : 'Download'}
                   </button>
-                )}
+                  )}
+                </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {selectedResult && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={() => setSelectedResult(null)}>
+          <div className="w-full max-w-2xl rounded-xl border border-gray-800 bg-gray-950 p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-4 flex items-start gap-3">
+              <div className="flex-1 min-w-0">
+                <h2 className="text-lg font-semibold">Candidate Details</h2>
+                <p className="mt-1 break-words text-sm text-gray-400">{selectedResult.release_title}</p>
+              </div>
+              <button onClick={() => setSelectedResult(null)} className="rounded p-1 text-gray-400 hover:bg-gray-800 hover:text-white">
+                <X size={18} />
+              </button>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-lg bg-gray-900 p-3">
+                <p className="text-xs uppercase text-gray-500">Decision</p>
+                <p className={selectedResult.decision === 'accept' ? 'text-green-400 font-semibold' : 'text-red-400 font-semibold'}>{selectedResult.decision}</p>
+                {selectedResult.reject_reason && <p className="mt-2 text-sm text-red-300">{selectedResult.reject_reason}</p>}
+              </div>
+              <div className="rounded-lg bg-gray-900 p-3">
+                <p className="text-xs uppercase text-gray-500">Savings</p>
+                <p className="font-semibold">{fmt(selectedResult.savings_bytes)} ({selectedResult.savings_pct.toFixed(1)}%)</p>
+              </div>
+              <div className="rounded-lg bg-gray-900 p-3">
+                <p className="text-xs uppercase text-gray-500">Release</p>
+                <p className="text-sm">{selectedResult.resolution || 'Unknown resolution'} / {selectedResult.video_codec || 'Unknown codec'} / {fmtAge(selectedResult.age_days)}</p>
+              </div>
+              <div className="rounded-lg bg-gray-900 p-3">
+                <p className="text-xs uppercase text-gray-500">Confidence</p>
+                <p className="font-semibold">{selectedResult.confidence_score !== undefined ? `${selectedResult.confidence_score.toFixed(0)} / 100` : 'Not scored'}</p>
+              </div>
+            </div>
+            {selectedResult.confidence_breakdown && Object.keys(selectedResult.confidence_breakdown).length > 0 && (
+              <div className="mt-4 space-y-2">
+                {Object.entries(selectedResult.confidence_breakdown).map(([key, value]) => (
+                  <div key={key}>
+                    <div className="mb-1 flex justify-between text-xs text-gray-400">
+                      <span className="capitalize">{key.replace(/_/g, ' ')}</span>
+                      <span>{value.toFixed(0)}</span>
+                    </div>
+                    <div className="h-2 rounded bg-gray-800">
+                      <div className="h-2 rounded bg-brand-green" style={{ width: `${Math.max(0, Math.min(100, value))}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}

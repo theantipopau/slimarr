@@ -96,6 +96,10 @@ async def _update_uploader_stats(release_title: str | None, success: bool) -> No
 
 async def start_download(search_result_id: int) -> Download:
     """Submit a search result to the active downloader. Returns the Download row."""
+    config = get_config()
+    if config.automation.dry_run:
+        raise RuntimeError("Dry-run mode is enabled; downloads are disabled")
+
     client_name = get_active_download_client_name()
     client = get_download_client(client_name)
 

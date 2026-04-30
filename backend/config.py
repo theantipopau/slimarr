@@ -79,6 +79,9 @@ class ComparisonConfig(BaseModel):
     preferred_language: str = "english"
     max_candidate_age_days: int = 3650
     minimum_file_size_mb: int = 500
+    reject_upscaled: bool = True
+    minimum_confidence_score: float = 55.0
+    require_year_match: bool = True
 
 
 class PathMapping(BaseModel):
@@ -101,6 +104,21 @@ class ScheduleConfig(BaseModel):
     max_downloads_per_night: int = 10
     throttle_seconds: int = 30
     max_active_download_hours: int = 24
+
+
+class AutomationConfig(BaseModel):
+    dry_run: bool = False
+    review_required: bool = False
+
+
+class ExclusionConfig(BaseModel):
+    movie_ids: list[int] = []
+    title_keywords: list[str] = []
+    folders: list[str] = []
+    codecs: list[str] = []
+    resolutions: list[str] = []
+    minimum_file_size_mb: int = 0
+    maximum_age_days: int = 0
 
 
 class BlacklistConfig(BaseModel):
@@ -128,6 +146,8 @@ class SlimarrConfig(BaseModel):
     comparison: ComparisonConfig = ComparisonConfig()
     files: FilesConfig = FilesConfig()
     schedule: ScheduleConfig = ScheduleConfig()
+    automation: AutomationConfig = AutomationConfig()
+    exclusions: ExclusionConfig = ExclusionConfig()
     blacklist: BlacklistConfig = BlacklistConfig()
     quality: QualityConfig = QualityConfig()
 

@@ -38,6 +38,9 @@ async def process_single_movie(movie_id: int) -> dict:
     Run full pipeline for one movie: search → pick best → download → replace.
     Returns a summary dict.
     """
+    from backend.config import get_config
+
+    config = get_config()
     results = await search_for_movie(movie_id)
     accepted = [r for r in results if r["decision"] == "accept"]
 
@@ -46,6 +49,35 @@ async def process_single_movie(movie_id: int) -> dict:
 
     # Best candidate (highest score)
     best = max(accepted, key=lambda x: x["score"])
+
+    if config.automation.dry_run:
+        logger.info(
+            f"Dry-run: selected {best['release_title']} for movie {movie_id} "
+            "without queueing a download"
+        )
+        return {
+            "movie_id": movie_id,
+            "status": "dry_run_candidate",
+            "search_result_id": best["id"],
+            "results": len(results),
+            "accepted": len(accepted),
+        }
+
+    if config.automation.review_required:
+        async with async_session() as db:
+            movie = await db.get(Movie, movie_id)
+            if movie:
+                movie.status = "review_required"
+                movie.error_message = f"{len(accepted)} accepted candidate(s) awaiting approval"
+                await db.commit()
+        logger.info(f"Review required: movie {movie_id} has {len(accepted)} accepted candidate(s)")
+        return {
+            "movie_id": movie_id,
+            "status": "review_required",
+            "search_result_id": best["id"],
+            "results": len(results),
+            "accepted": len(accepted),
+        }
 
     result = await process_search_result_download(best["id"])
     return {"movie_id": movie_id, "status": result.get("status", "unknown"), **result}

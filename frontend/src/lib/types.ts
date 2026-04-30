@@ -26,6 +26,8 @@ export interface SearchResultItem {
   video_codec?: string
   age_days?: number
   score: number
+  confidence_score?: number
+  confidence_breakdown?: Record<string, number>
   savings_bytes: number
   savings_pct: number
   decision: 'accept' | 'reject'
@@ -90,8 +92,28 @@ export interface DashboardStats {
   total_movies: number
   improved: number
   pending: number
+  failed_items: number
+  library_size_bytes: number
   total_savings_bytes: number
   active_downloads: number
+  last_successful_scan?: string
+}
+
+export interface IntegrationMatrixService {
+  key: string
+  name: string
+  required: boolean
+  active: boolean
+  purpose: string
+  status: 'connected' | 'degraded' | 'disabled' | 'unavailable'
+  detail?: Record<string, unknown>
+}
+
+export interface IntegrationMatrix {
+  status: 'connected' | 'degraded' | 'unavailable'
+  active_download_client: string
+  checked_at: string
+  services: IntegrationMatrixService[]
 }
 
 export interface HealthMatrixComponent {
@@ -129,6 +151,8 @@ export interface DecisionAuditEntry {
   local_size?: number
   decision: 'accept' | 'reject'
   score?: number
+  confidence_score?: number
+  confidence_breakdown?: Record<string, number>
   savings_bytes?: number
   savings_pct?: number
   reject_reason?: string

@@ -1,0 +1,1 @@
+import{r as s}from"./vendor-DFhXeATI.js";import{l as u}from"./socket-BZfhFvdD.js";let t=null;function i(){return t||(t=u(window.location.origin,{transports:["websocket","polling"]})),t}function a(o,r){const n=s.useRef(r);n.current=r,s.useEffect(()=>{const e=i(),c=f=>n.current(f);return e.on(o,c),()=>{e.off(o,c)}},[o])}export{a as u};

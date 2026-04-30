@@ -5,6 +5,7 @@ Core rule: NEVER increase file size.
 from __future__ import annotations
 
 import os
+import re
 import sqlite3
 from dataclasses import dataclass
 from typing import Optional
@@ -25,6 +26,8 @@ class ComparisonResult:
     savings_pct: float
     reject_reason: Optional[str] = None
     notes: str = ""
+    confidence_score: float = 0.0
+    confidence_breakdown: dict[str, float] | None = None
 
 
 
@@ -49,6 +52,43 @@ def _uploader_health_score(uploader: Optional[str]) -> float:
     except Exception:
         return 0.5
 
+
+def _normalize_title(value: str) -> str:
+    value = re.sub(r"[\._\-]+", " ", value.lower())
+    value = re.sub(r"\b(19|20)\d{2}\b.*$", "", value)
+    value = re.sub(r"[^a-z0-9 ]+", "", value)
+    value = re.sub(r"\s+", " ", value).strip()
+    return value
+
+
+def _title_match_score(movie_title: str, release_title: str) -> float:
+    expected = _normalize_title(movie_title)
+    candidate = _normalize_title(release_title)
+    if not expected or not candidate:
+        return 35.0
+    if expected == candidate or candidate.startswith(expected):
+        return 100.0
+
+    expected_tokens = {t for t in expected.split() if len(t) > 1}
+    candidate_tokens = {t for t in candidate.split() if len(t) > 1}
+    if not expected_tokens:
+        return 35.0
+    overlap = len(expected_tokens & candidate_tokens) / len(expected_tokens)
+    return round(overlap * 100, 2)
+
+
+def _source_quality_score(source: str | None) -> float:
+    source = (source or "").lower()
+    scores = {
+        "remux": 100.0,
+        "bluray": 88.0,
+        "web-dl": 78.0,
+        "webrip": 64.0,
+        "hdtv": 45.0,
+        "dvdrip": 30.0,
+    }
+    return scores.get(source, 55.0)
+
 def compare_release(
     local_size: int,
     local_resolution: str,
@@ -56,6 +96,9 @@ def compare_release(
     candidate_size: int,
     candidate_title: str,
     candidate_age_days: int | None = None,
+    movie_title: str = "",
+    movie_year: int | None = None,
+    indexer_reliability: float | None = None,
 ) -> ComparisonResult:
     config = get_config()
     parsed = parse_release_title(candidate_title)
@@ -69,6 +112,8 @@ def compare_release(
             savings_bytes=savings,
             savings_pct=round(pct, 2),
             reject_reason=reason,
+            confidence_score=0.0,
+            confidence_breakdown={},
         )
 
     # Hard rule: candidate must be smaller
@@ -97,6 +142,14 @@ def compare_release(
                 f"NZB age {candidate_age_days}d exceeds max {config.comparison.max_candidate_age_days}d"
             )
 
+    if movie_year and parsed.year and config.comparison.require_year_match:
+        if abs(int(parsed.year) - int(movie_year)) > 1:
+            return _reject(f"Release year {parsed.year} does not match movie year {movie_year}")
+
+    match_score = _title_match_score(movie_title, candidate_title) if movie_title else 75.0
+    if movie_title and match_score < 70.0:
+        return _reject(f"Title match confidence too low ({match_score:.0f}%)")
+
     # Minimum savings threshold
     if savings_pct < config.comparison.min_savings_percent:
         return _reject(
@@ -118,6 +171,9 @@ def compare_release(
                 f"Resolution downgrade requires {config.comparison.downgrade_min_savings_percent}% savings, "
                 f"got {savings_pct:.1f}%"
             )
+    if config.comparison.reject_upscaled and re.search(r"\b(upscaled|upscale|ds4k)\b", candidate_title, re.IGNORECASE):
+        if cand_res_rank >= local_res_rank:
+            return _reject("Upscaled release rejected by safety rules")
 
     # Score calculation
     score = savings_pct
@@ -175,6 +231,44 @@ def compare_release(
         return _reject(f"Uploader quality too low ({uploader_health:.2f})")
     score += uploader_health * 10.0
 
+    size_score = max(0.0, min(100.0, savings_pct * 2.0))
+    codec_score = max(0.0, min(100.0, 55.0 + codec_delta * 12.0))
+    if cand_res_rank == local_res_rank:
+        resolution_score = 100.0
+    elif cand_res_rank > local_res_rank:
+        resolution_score = 92.0
+    else:
+        resolution_score = 30.0
+    language_score = 100.0 if not parsed.languages else (95.0 if config.comparison.preferred_language.lower() in parsed.languages else 75.0 if "multi" in parsed.languages else 20.0)
+    source_score = _source_quality_score(parsed.source)
+    reliability_score = max(0.0, min(100.0, (indexer_reliability if indexer_reliability is not None else uploader_health) * 100.0))
+    confidence_breakdown = {
+        "size_reduction": round(size_score, 2),
+        "codec": round(codec_score, 2),
+        "resolution": round(resolution_score, 2),
+        "source": round(source_score, 2),
+        "language": round(language_score, 2),
+        "match_certainty": round(match_score, 2),
+        "indexer_reliability": round(reliability_score, 2),
+    }
+    confidence_score = round(
+        size_score * 0.22
+        + codec_score * 0.12
+        + resolution_score * 0.16
+        + source_score * 0.12
+        + language_score * 0.12
+        + match_score * 0.18
+        + reliability_score * 0.08,
+        2,
+    )
+    if confidence_score < config.comparison.minimum_confidence_score:
+        result = _reject(
+            f"Confidence {confidence_score:.0f} < minimum {config.comparison.minimum_confidence_score:.0f}"
+        )
+        result.confidence_score = confidence_score
+        result.confidence_breakdown = confidence_breakdown
+        return result
+
     notes = []
     if cand_res_rank > local_res_rank:
         notes.append(f"Resolution upgrade: {local_resolution}→{cand_res}")
@@ -184,6 +278,7 @@ def compare_release(
         notes.append(f"NZB age: {age_days} days")
     if parsed.uploader or parsed.group:
         notes.append(f"Uploader score: {uploader_health:.2f}")
+    notes.append(f"Confidence: {confidence_score:.0f}")
 
     return ComparisonResult(
         decision="accept",
@@ -191,6 +286,8 @@ def compare_release(
         savings_bytes=savings_bytes,
         savings_pct=round(savings_pct, 2),
         notes="; ".join(notes),
+        confidence_score=confidence_score,
+        confidence_breakdown=confidence_breakdown,
     )
 
 

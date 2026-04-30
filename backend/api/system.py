@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import os
 import platform
 import shutil
@@ -23,7 +24,7 @@ router = APIRouter(prefix="/system", tags=["system"])
 _start_time = datetime.now(timezone.utc)
 
 
-CURRENT_VERSION = "1.0.0.5"
+CURRENT_VERSION = "1.1.0.0"
 GITHUB_REPO = "theantipopau/slimarr"
 
 _SERVICES_HEALTH_TTL_SECONDS = 20.0
@@ -573,6 +574,151 @@ async def services_health(user=Depends(get_current_user)):
     return await _build_services_health()
 
 
+def _integration_status(raw: dict[str, Any], *, enabled: bool, configured: bool) -> str:
+    if raw.get("success"):
+        return "connected"
+    if not enabled:
+        return "disabled"
+    if not configured:
+        return "unavailable"
+    return "degraded"
+
+
+@router.get("/integrations/matrix")
+async def integration_matrix(user=Depends(get_current_user)):
+    """Return user-facing integration state, purpose, and dependency hints."""
+    from backend.config import get_config
+    from backend.integrations.download_client import get_active_download_client_name
+
+    config = get_config()
+    health = await _build_services_health()
+    active_client = get_active_download_client_name()
+    indexers = health.get("indexers", [])
+    healthy_indexers = [
+        idx for idx in indexers
+        if isinstance(idx, dict) and idx.get("success")
+    ] if isinstance(indexers, list) else []
+
+    services = [
+        {
+            "key": "plex",
+            "name": "Plex",
+            "required": True,
+            "active": True,
+            "purpose": "Source of library items, file paths, sizes, and refresh after replacement.",
+            "status": _integration_status(
+                health.get("plex", {}),
+                enabled=True,
+                configured=bool(config.plex.url and config.plex.token),
+            ),
+            "detail": health.get("plex", {}),
+        },
+        {
+            "key": "radarr",
+            "name": "Radarr",
+            "required": False,
+            "active": bool(config.radarr.enabled),
+            "purpose": "Keeps movie metadata in sync after Slimarr replaces a file.",
+            "status": _integration_status(
+                health.get("radarr", {}),
+                enabled=bool(config.radarr.enabled),
+                configured=bool(config.radarr.url and config.radarr.api_key),
+            ),
+            "detail": health.get("radarr", {}),
+        },
+        {
+            "key": "sonarr",
+            "name": "Sonarr",
+            "required": False,
+            "active": bool(config.sonarr.enabled),
+            "purpose": "Prevents deleted TV shows from being re-downloaded when unmonitoring is requested.",
+            "status": _integration_status(
+                health.get("sonarr", {}),
+                enabled=bool(config.sonarr.enabled),
+                configured=bool(config.sonarr.url and config.sonarr.api_key),
+            ),
+            "detail": health.get("sonarr", {}),
+        },
+        {
+            "key": "prowlarr",
+            "name": "Prowlarr",
+            "required": False,
+            "active": bool(config.prowlarr.enabled),
+            "purpose": "Preferred search bridge across all configured Usenet indexers.",
+            "status": _integration_status(
+                health.get("prowlarr", {}),
+                enabled=bool(config.prowlarr.enabled),
+                configured=bool(config.prowlarr.url and config.prowlarr.api_key),
+            ),
+            "detail": health.get("prowlarr", {}),
+        },
+        {
+            "key": "sabnzbd",
+            "name": "SABnzbd",
+            "required": active_client == "sabnzbd",
+            "active": active_client == "sabnzbd",
+            "purpose": "Downloads accepted replacement NZBs and reports completion storage paths.",
+            "status": _integration_status(
+                health.get("sabnzbd", {}),
+                enabled=active_client == "sabnzbd",
+                configured=bool(config.sabnzbd.url and config.sabnzbd.api_key),
+            ),
+            "detail": health.get("sabnzbd", {}),
+        },
+        {
+            "key": "nzbget",
+            "name": "NZBGet",
+            "required": active_client == "nzbget",
+            "active": active_client == "nzbget",
+            "purpose": "Alternative Usenet downloader for accepted replacement NZBs.",
+            "status": _integration_status(
+                health.get("nzbget", {}),
+                enabled=active_client == "nzbget",
+                configured=bool(config.nzbget.url),
+            ),
+            "detail": health.get("nzbget", {}),
+        },
+        {
+            "key": "tmdb",
+            "name": "TMDB",
+            "required": True,
+            "active": True,
+            "purpose": "Enriches library records with posters, backdrops, IDs, and metadata.",
+            "status": _integration_status(
+                health.get("tmdb", {}),
+                enabled=True,
+                configured=bool(config.tmdb.api_key),
+            ),
+            "detail": health.get("tmdb", {}),
+        },
+        {
+            "key": "indexers",
+            "name": "Direct Indexers",
+            "required": not config.prowlarr.enabled,
+            "active": bool(config.indexers),
+            "purpose": "Direct Newznab search fallback when Prowlarr is disabled or returns no results.",
+            "status": "connected" if healthy_indexers else ("disabled" if not config.indexers else "degraded"),
+            "detail": {"configured": len(config.indexers), "healthy": len(healthy_indexers), "indexers": indexers},
+        },
+    ]
+
+    active_services = [item for item in services if item["active"] or item["required"]]
+    unavailable = [item for item in active_services if item["status"] in {"degraded", "unavailable"}]
+    if any(item["required"] and item["status"] != "connected" for item in active_services):
+        overall = "unavailable"
+    elif unavailable:
+        overall = "degraded"
+    else:
+        overall = "connected"
+
+    return {
+        "status": overall,
+        "active_download_client": active_client,
+        "checked_at": datetime.now(timezone.utc).isoformat(),
+        "services": services,
+    }
+
+
 @router.get("/health/matrix")
 async def health_matrix(user=Depends(get_current_user)):
     """Return end-to-end health for app, DB, scheduler, queue, and integrations."""
@@ -706,6 +852,8 @@ async def decision_audit(limit: int = 50, decision: str = "", user=Depends(get_c
             "local_size": row.local_size,
             "decision": row.decision,
             "score": row.score,
+            "confidence_score": row.confidence_score,
+            "confidence_breakdown": json.loads(row.confidence_breakdown or "{}"),
             "savings_bytes": row.savings_bytes,
             "savings_pct": row.savings_pct,
             "reject_reason": row.reject_reason,

@@ -57,6 +57,10 @@ class IndexerTestBody(BaseModel):
     name: Optional[str] = ""
     url: Optional[str] = ""
     api_key: Optional[str] = ""
+    token: Optional[str] = ""
+    username: Optional[str] = ""
+    password: Optional[str] = ""
+    category: Optional[str] = ""
     categories: Optional[list[int]] = []
 
 
@@ -66,25 +70,57 @@ async def test_connection(service: str, body: Optional[IndexerTestBody] = None, 
 
     if service == "plex":
         from backend.integrations.plex import PlexClient
-        return PlexClient().test_connection()
+        client = PlexClient()
+        if body:
+            client.url = body.url or config.plex.url
+            client.token = body.token or body.api_key or config.plex.token
+        if not client.url or not client.token:
+            return {"success": False, "error": "Enter a Plex URL and token before testing."}
+        return client.test_connection()
 
     if service == "tmdb":
         from backend.integrations.tmdb import TMDBClient
-        return await TMDBClient().test_connection()
+        client = TMDBClient()
+        if body:
+            client.api_key = body.api_key or config.tmdb.api_key
+        if not client.api_key:
+            return {"success": False, "error": "Enter a TMDB API key before testing."}
+        return await client.test_connection()
 
     if service == "sabnzbd":
         from backend.integrations.sabnzbd import SABnzbdClient
-        return await SABnzbdClient().test_connection()
+        client = SABnzbdClient()
+        if body:
+            client.url = (body.url or config.sabnzbd.url).rstrip("/")
+            client.api_key = body.api_key or config.sabnzbd.api_key
+            client.category = body.category or config.sabnzbd.category
+        if not client.url or not client.api_key:
+            return {"success": False, "error": "Enter a SABnzbd URL and API key before testing."}
+        return await client.test_connection()
 
     if service == "nzbget":
         from backend.integrations.nzbget import NZBGetClient
-        return await NZBGetClient().test_connection()
+        client = NZBGetClient()
+        if body:
+            client.url = (body.url or config.nzbget.url).rstrip("/")
+            client.username = body.username or config.nzbget.username
+            client.password = body.password or config.nzbget.password
+            client.category = body.category or config.nzbget.category
+        if not client.url:
+            return {"success": False, "error": "Enter an NZBGet URL before testing."}
+        return await client.test_connection()
 
     if service == "prowlarr":
-        if not config.prowlarr.url or not config.prowlarr.url.startswith(("http://", "https://")):
-            return {"success": False, "error": "Prowlarr URL is not configured. Enter a valid URL and save first."}
         from backend.integrations.prowlarr import ProwlarrClient
-        return await ProwlarrClient().test_connection()
+        client = ProwlarrClient()
+        if body:
+            client.url = (body.url or config.prowlarr.url).rstrip("/")
+            client.api_key = body.api_key or config.prowlarr.api_key
+        if not client.url or not client.url.startswith(("http://", "https://")):
+            return {"success": False, "error": "Enter a valid Prowlarr URL (including http:// or https://) and try again."}
+        if not client.api_key:
+            return {"success": False, "error": "Enter a Prowlarr API key before testing."}
+        return await client.test_connection()
 
     if service == "radarr":
         from backend.integrations.radarr import RadarrClient

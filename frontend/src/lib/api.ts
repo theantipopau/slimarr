@@ -92,6 +92,7 @@ export const api = {
   systemStatus: () => client.get('/system/status').then((r) => r.data),
   systemInfo: () => client.get('/system/info').then((r) => r.data),
   servicesHealth: () => client.get('/system/health/services').then((r) => r.data),
+  integrationMatrix: () => client.get('/system/integrations/matrix').then((r) => r.data),
   healthMatrix: () => client.get('/system/health/matrix').then((r) => r.data),
   preflight: () => client.get('/system/preflight').then((r) => r.data),
   decisionAudit: (params?: { limit?: number; decision?: 'accept' | 'reject' }) =>

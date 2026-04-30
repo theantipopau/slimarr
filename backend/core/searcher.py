@@ -3,6 +3,7 @@ Usenet release searcher — queries indexers for a specific movie.
 """
 from __future__ import annotations
 
+import json
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 
@@ -112,6 +113,8 @@ async def search_for_movie(movie_id: int) -> list[dict]:
                 candidate_size=r["size"],
                 candidate_title=r["release_title"],
                 candidate_age_days=age_days,
+                movie_title=movie.title,
+                movie_year=movie.year,
             )
             sr = SearchResult(
                 movie_id=movie.id,
@@ -127,6 +130,8 @@ async def search_for_movie(movie_id: int) -> list[dict]:
                 savings_bytes=cmp.savings_bytes,
                 savings_pct=cmp.savings_pct,
                 score=cmp.score,
+                confidence_score=cmp.confidence_score,
+                confidence_breakdown=json.dumps(cmp.confidence_breakdown or {}),
                 decision=cmp.decision,
                 reject_reason=cmp.reject_reason,
             )
@@ -143,6 +148,8 @@ async def search_for_movie(movie_id: int) -> list[dict]:
                     local_size=movie.file_size,
                     decision=cmp.decision,
                     score=cmp.score,
+                    confidence_score=cmp.confidence_score,
+                    confidence_breakdown=json.dumps(cmp.confidence_breakdown or {}),
                     savings_bytes=cmp.savings_bytes,
                     savings_pct=cmp.savings_pct,
                     reject_reason=cmp.reject_reason,
@@ -185,8 +192,11 @@ async def search_for_movie(movie_id: int) -> list[dict]:
                 "age_days": s.age_days,
                 "decision": s.decision,
                 "score": s.score,
+                "confidence_score": s.confidence_score,
+                "confidence_breakdown": s.confidence_breakdown,
                 "savings_pct": s.savings_pct,
                 "savings_bytes": s.savings_bytes,
+                "reject_reason": s.reject_reason,
             }
             for s in stored
         ]

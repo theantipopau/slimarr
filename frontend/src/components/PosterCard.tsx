@@ -1,6 +1,6 @@
 ﻿import type { Movie } from '@/lib/types'
 import QualityBadge from './QualityBadge'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { CheckCircle, Loader } from 'lucide-react'
 
 interface Props {
@@ -21,14 +21,15 @@ const statusBorder: Record<string, string> = {
 
 export default function PosterCard({ movie }: Props) {
   const navigate = useNavigate()
+  const location = useLocation()
   const posterUrl = movie.poster_path
     ? `/api/v1/images/${movie.id}/poster`
     : null
 
   return (
     <div
-      className={`bg-gray-900 rounded-lg overflow-hidden cursor-pointer border-2 ${statusBorder[movie.status] ?? 'border-gray-700'} hover:scale-105 transition-transform relative group`}
-      onClick={() => navigate(`/library/${movie.id}`)}
+      className={`bg-gray-900 rounded-lg overflow-hidden cursor-pointer border ${statusBorder[movie.status] ?? 'border-gray-700'} hover:-translate-y-1 hover:border-gray-500 hover:shadow-2xl hover:shadow-black/30 transition-all relative group`}
+      onClick={() => navigate(`/library/${movie.id}`, { state: { fromLibrary: `${location.pathname}${location.search}` } })}
     >
       {posterUrl ? (
         <img src={posterUrl} alt={movie.title} className="w-full aspect-[2/3] object-cover" loading="lazy" />

@@ -71,6 +71,9 @@ async def replace_file(download_id: int) -> bool:
 
     config = get_config()
     storage_path: str = ""
+    if config.automation.dry_run:
+        logger.info(f"Dry-run: replacement skipped for download {download_id}")
+        return False
 
     async with async_session() as db:
         dl_result = await db.execute(select(Download).where(Download.id == download_id))

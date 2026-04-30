@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/react-18-61DAFB?logo=react&logoColor=black" />
   <img src="https://img.shields.io/badge/license-MIT-green" />
   <img src="https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white" />
-  <img src="https://img.shields.io/badge/release-1.0.0.5-success" />
+  <img src="https://img.shields.io/badge/release-1.1.0.0-success" />
 </p>
 
 <p align="center">
@@ -36,15 +36,16 @@ Scan Plex library -> Search Usenet indexers -> Compare releases
 
 Slimarr is designed to look and feel like a native member of the **\*arr ecosystem** (Radarr, Sonarr, Prowlarr). If you're familiar with those tools, you'll feel right at home.
 
-Current stable release: **1.0.0.5**.
+Current stable release: **1.1.0.0**.
 
-### What's New in 1.0.0.5
+### What's New in 1.1.0.0
 
-- NZB age and resolution columns in manual movie search results
-- Age-aware scoring/rejection to avoid stale Usenet candidates
-- Safer SABnzbd post-processing monitoring for extracting/verifying/repairing jobs
-- Startup and manual Queue recovery for downloads stuck as `downloading`
-- Installer packaging target: `SlimarrSetup-1.0.0.5.exe`
+- Dashboard command-center stats for library size, total savings, pending candidates, active downloads, failed items, last scan, and integration health
+- Integration Matrix covering Plex, Radarr, Sonarr, Prowlarr, SABnzbd, NZBGet, TMDB, and direct indexers
+- Candidate confidence scoring with component breakdowns and clearer rejection reasons
+- Dry-run and review-required safety modes for inspecting accepted candidates before downloading/replacing
+- Candidate details drawer on Movie Detail search results
+- Settings connection tests now use unsaved form values for every major integration
 
 ---
 
@@ -101,9 +102,9 @@ Current stable release: **1.0.0.5**.
 
 ### Option A - Installer (recommended for sharing)
 
-Download `SlimarrSetup-1.0.0.5.exe` (or the latest `SlimarrSetup-*.exe`) from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies - no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
+Download `SlimarrSetup-1.1.0.0.exe` (or the latest `SlimarrSetup-*.exe`) from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies - no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
 
-`1.0.0.5` is the current installer target. Newer `main` branch changes may land before the next installer is cut; if you want those immediately, run Slimarr from source or build a fresh installer from `main`.
+`1.1.0.0` is the current installer target. Newer `main` branch changes may land before the next installer is cut; if you want those immediately, run Slimarr from source or build a fresh installer from `main`.
 
 ### Option B - From source
 

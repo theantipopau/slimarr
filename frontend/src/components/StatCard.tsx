@@ -10,8 +10,8 @@ interface Props {
 
 export default function StatCard({ label, value, icon: Icon, sub, color = 'text-brand-green' }: Props) {
   return (
-    <div className="bg-gray-900 rounded-xl p-5 flex items-center gap-4">
-      <div className={`p-3 rounded-lg bg-gray-800 ${color}`}>
+    <div className="group flex items-center gap-4 rounded-xl border border-white/5 bg-gray-900/80 p-5 shadow-lg shadow-black/20 backdrop-blur transition-colors hover:border-white/10 hover:bg-gray-900">
+      <div className={`rounded-lg border border-white/5 bg-gray-800/90 p-3 shadow-inner ${color}`}>
         <Icon size={24} />
       </div>
       <div>

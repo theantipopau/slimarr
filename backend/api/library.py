@@ -1,6 +1,8 @@
 """Library (movies) API routes."""
 from __future__ import annotations
 
+import json
+
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from sqlalchemy import or_, select
 
@@ -87,6 +89,12 @@ async def download_result(
     user=Depends(get_current_user),
 ):
     """Queue a specific search result for download."""
+    from backend.config import get_config
+
+    config = get_config()
+    if config.automation.dry_run:
+        return {"status": "dry_run_blocked", "search_result_id": result_id}
+
     async with async_session() as db:
         result = await db.execute(
             select(SearchResult).where(
@@ -164,6 +172,11 @@ def _movie_dict(m: Movie) -> dict:
 
 
 def _sr_dict(s: SearchResult) -> dict:
+    try:
+        confidence_breakdown = json.loads(s.confidence_breakdown or "{}")
+    except json.JSONDecodeError:
+        confidence_breakdown = {}
+
     return {
         "id": s.id,
         "indexer_name": s.indexer_name,
@@ -173,6 +186,8 @@ def _sr_dict(s: SearchResult) -> dict:
         "video_codec": s.video_codec,
         "age_days": s.age_days,
         "score": s.score,
+        "confidence_score": s.confidence_score,
+        "confidence_breakdown": confidence_breakdown,
         "savings_bytes": s.savings_bytes,
         "savings_pct": s.savings_pct,
         "decision": s.decision,

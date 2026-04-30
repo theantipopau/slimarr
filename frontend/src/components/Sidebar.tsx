@@ -30,7 +30,7 @@ const links = [
 
 export default function Sidebar() {
   return (
-    <aside className="w-56 bg-brand-blue flex h-full min-h-0 flex-col py-6 gap-1">
+    <aside className="flex h-full min-h-0 w-56 flex-col gap-1 border-r border-white/10 bg-[#10263d] py-6 shadow-2xl shadow-black/30">
       {/* Logo */}
       <div className="px-4 mb-6 flex items-center gap-2">
         <img src={logoSrc} alt="Slimarr" className="h-8 w-auto" />
@@ -50,7 +50,7 @@ export default function Sidebar() {
               clsx(
                 'flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-colors',
                 isActive
-                  ? 'bg-brand-green text-white'
+                  ? 'bg-brand-green text-white shadow-lg shadow-green-950/30'
                   : 'text-gray-300 hover:bg-white/10'
               )
             }
@@ -78,7 +78,7 @@ export default function Sidebar() {
           href="https://www.paypal.com/donate/?business=XH8CKYF8T7EBU&no_recurring=0&item_name=Thank+you+for+your+generous+donation%2C+this+will+allow+me+to+continue+developing+my+programs.&currency_code=AUD"
           target="_blank"
           rel="noreferrer"
-          className="flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-lg text-xs text-yellow-400 hover:bg-white/10 w-full transition-colors"
+          className="flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-lg text-xs text-yellow-300 hover:bg-white/10 w-full transition-colors"
         >
           ☕ Donate
         </a>

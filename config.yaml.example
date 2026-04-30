@@ -25,6 +25,33 @@ nzbget:
 tmdb:
   api_key: ""
 
+automation:
+  dry_run: false
+  review_required: false
+
+comparison:
+  min_savings_percent: 10.0
+  allow_resolution_downgrade: false
+  downgrade_min_savings_percent: 40.0
+  preferred_codecs:
+    - av1
+    - h265
+  preferred_language: english
+  max_candidate_age_days: 3650
+  minimum_file_size_mb: 500
+  reject_upscaled: true
+  minimum_confidence_score: 55.0
+  require_year_match: true
+
+exclusions:
+  movie_ids: []
+  title_keywords: []
+  folders: []
+  codecs: []
+  resolutions: []
+  minimum_file_size_mb: 0
+  maximum_age_days: 0
+
 radarr:
   enabled: false
   url: ""
@@ -42,5 +69,8 @@ prowlarr:
 
 files:
   recycling_bin: ""
+  recycling_bin_cleanup_days: 30
+  verify_after_download: true
+  plex_path_mappings: []
 
 indexers: []

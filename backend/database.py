@@ -98,6 +98,8 @@ class SearchResult(Base):
     savings_bytes: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     savings_pct: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    confidence_score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    confidence_breakdown: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     decision: Mapped[str] = mapped_column(String, default="pending")
     reject_reason: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     searched_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
@@ -217,6 +219,8 @@ class DecisionAuditLog(Base):
     local_size: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     decision: Mapped[str] = mapped_column(String, nullable=False, index=True)
     score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    confidence_score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    confidence_breakdown: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     savings_bytes: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     savings_pct: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     reject_reason: Mapped[Optional[str]] = mapped_column(String, nullable=True)
@@ -273,6 +277,12 @@ async def _run_lightweight_migrations(conn) -> None:
 
     search_result_columns = await _table_columns(conn, "search_results")
     await _add_column_if_missing(conn, "search_results", search_result_columns, "age_days", "INTEGER")
+    await _add_column_if_missing(conn, "search_results", search_result_columns, "confidence_score", "FLOAT")
+    await _add_column_if_missing(conn, "search_results", search_result_columns, "confidence_breakdown", "TEXT")
+
+    decision_columns = await _table_columns(conn, "decision_audit_log")
+    await _add_column_if_missing(conn, "decision_audit_log", decision_columns, "confidence_score", "FLOAT")
+    await _add_column_if_missing(conn, "decision_audit_log", decision_columns, "confidence_breakdown", "TEXT")
 
 
 async def get_db() -> AsyncSession:  # type: ignore[return]

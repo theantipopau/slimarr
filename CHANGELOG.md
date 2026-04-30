@@ -4,6 +4,26 @@ All notable changes to Slimarr are documented here.
 
 ---
 
+## [1.1.0.0] - 2026-04-30
+
+### Release focus
+
+Dashboard command-center polish, safer replacement decisions, and clearer integration state.
+
+**Implemented so far**
+- Added `docs/VERSION_1_1_PLAN.md` with the v1.1 implementation audit and phased plan
+- Added confidence scoring metadata for replacement candidates, including size, codec, resolution, source, language, title/year certainty, and reliability components
+- Persisted confidence scores and breakdowns on search results and decision audit logs with additive SQLite migrations
+- Strengthened candidate matching with title/year certainty checks and upscaled-release rejection
+- Added dry-run and review-required automation gates so accepted candidates can be inspected without automatic downloads/replacements
+- Expanded Dashboard stats with library size, pending candidates, failed items, last successful scan, and active download counts
+- Added a user-facing Integration Matrix for Plex, Radarr, Sonarr, Prowlarr, SABnzbd, NZBGet, TMDB, and direct indexers
+- Added a Movie Detail candidate drawer showing confidence breakdowns and rejection reasons
+- Made Settings connection tests use unsaved form values for Plex, TMDB, SABnzbd, NZBGet, and Prowlarr
+- Updated config examples with v1.1 safety and automation settings
+
+---
+
 ## [1.0.0.5] - 2026-04-28
 
 ### Release focus

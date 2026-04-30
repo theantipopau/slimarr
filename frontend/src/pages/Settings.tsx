@@ -281,7 +281,10 @@ export default function Settings() {
       <section id="connections" className="bg-gray-900 rounded-xl p-5 space-y-3 scroll-mt-4">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">Plex</h2>
-          <TestConnectionButton service="plex" />
+          <TestConnectionButton
+            service="plex"
+            body={{ url: (settings?.plex as Record<string,unknown>)?.url, token: (settings?.plex as Record<string,unknown>)?.token }}
+          />
         </div>
         {field('URL', ['plex', 'url'])}
         {field('Token', ['plex', 'token'], 'password')}
@@ -291,7 +294,7 @@ export default function Settings() {
       <section className="bg-gray-900 rounded-xl p-5 space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">TMDB</h2>
-          <TestConnectionButton service="tmdb" />
+          <TestConnectionButton service="tmdb" body={{ api_key: (settings?.tmdb as Record<string,unknown>)?.api_key }} />
         </div>
         {field('API Key', ['tmdb', 'api_key'], 'password')}
       </section>
@@ -300,7 +303,14 @@ export default function Settings() {
       <section className="bg-gray-900 rounded-xl p-5 space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">SABnzbd</h2>
-          <TestConnectionButton service="sabnzbd" />
+          <TestConnectionButton
+            service="sabnzbd"
+            body={{
+              url: (settings?.sabnzbd as Record<string,unknown>)?.url,
+              api_key: (settings?.sabnzbd as Record<string,unknown>)?.api_key,
+              category: (settings?.sabnzbd as Record<string,unknown>)?.category,
+            }}
+          />
         </div>
         <p className="text-xs text-gray-400">Default downloader. Best-supported path and current fallback default.</p>
         {field('URL', ['sabnzbd', 'url'])}
@@ -346,7 +356,15 @@ export default function Settings() {
       <section className="bg-gray-900 rounded-xl p-5 space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">NZBGet</h2>
-          <TestConnectionButton service="nzbget" />
+          <TestConnectionButton
+            service="nzbget"
+            body={{
+              url: (settings?.nzbget as Record<string,unknown>)?.url,
+              username: (settings?.nzbget as Record<string,unknown>)?.username,
+              password: (settings?.nzbget as Record<string,unknown>)?.password,
+              category: (settings?.nzbget as Record<string,unknown>)?.category,
+            }}
+          />
         </div>
         <p className="text-xs text-gray-400">Optional second Usenet downloader. Configure it fully before selecting it as the active client.</p>
         {field('URL', ['nzbget', 'url'])}
@@ -359,7 +377,10 @@ export default function Settings() {
       <section className="bg-gray-900 rounded-xl p-5 space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">Prowlarr (optional)</h2>
-          <TestConnectionButton service="prowlarr" />
+          <TestConnectionButton
+            service="prowlarr"
+            body={{ url: (settings?.prowlarr as Record<string,unknown>)?.url, api_key: (settings?.prowlarr as Record<string,unknown>)?.api_key }}
+          />
         </div>
         <p className="text-xs text-gray-400">If disabled, Slimarr will use the Newznab indexers configured below instead.</p>
         {field('URL', ['prowlarr', 'url'])}
