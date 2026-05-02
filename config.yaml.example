@@ -4,6 +4,7 @@ server:
 
 auth:
   secret_key: ""
+  api_key: ""
 
 plex:
   url: ""

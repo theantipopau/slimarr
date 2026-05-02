@@ -17,19 +17,22 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={autopf}\{#MyAppName}
+DefaultDirName={localappdata}\Programs\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
-; Require admin to install to Program Files
-PrivilegesRequired=admin
+; Per-user install avoids UAC and Program Files permission issues.
+PrivilegesRequired=lowest
 OutputDir=..\dist\installer
 OutputBaseFilename=SlimarrSetup-{#MyAppVersion}
 SetupIconFile=..\images\icon.ico
+UninstallDisplayName={#MyAppName}
 UninstallDisplayIcon={app}\{#MyAppExeName}
 Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern
 WizardResizable=no
+CloseApplications=yes
+RestartApplications=no
 ; Show license if present
 ; LicenseFile=..\LICENSE
 ; Minimum Windows version: Windows 10
@@ -45,11 +48,19 @@ Name: "startup"; Description: "Start Slimarr automatically when Windows starts";
 
 [Files]
 ; Main application (PyInstaller output)
-Source: "..\dist\Slimarr\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\dist\Slimarr\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs restartreplace
+
+[Dirs]
+Name: "{userappdata}\Slimarr"
+Name: "{userappdata}\Slimarr\data"
+Name: "{userappdata}\Slimarr\data\logs"
+Name: "{userappdata}\Slimarr\data\MediaCover"
 
 [Icons]
 ; Start Menu
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"
+Name: "{group}\Slimarr Data Folder"; Filename: "{win}\explorer.exe"; Parameters: """{userappdata}\Slimarr"""
+Name: "{group}\Slimarr Startup Log"; Filename: "{userappdata}\Slimarr\data\logs\startup.log"; Check: FileExists(ExpandConstant('{userappdata}\Slimarr\data\logs\startup.log'))
 Name: "{group}\Uninstall {#MyAppName}"; Filename: "{uninstallexe}"
 ; Desktop (optional)
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; Tasks: desktopicon
@@ -60,11 +71,11 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: 
 
 [Run]
 ; Launch Slimarr after install (skippable)
-Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
 [UninstallRun]
 ; Kill any running instance before uninstall
-Filename: "taskkill.exe"; Parameters: "/f /im {#MyAppExeName}"; Flags: runhidden; RunOnceId: "KillSlimarr"
+Filename: "{sys}\taskkill.exe"; Parameters: "/f /im {#MyAppExeName}"; Flags: runhidden skipifdoesntexist; RunOnceId: "KillSlimarr"
 
 [Code]
 // Optional: warn user that config/data in AppData won't be removed

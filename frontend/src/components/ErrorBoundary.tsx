@@ -24,15 +24,25 @@ export default class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return this.props.fallback ?? (
-        <div className="flex flex-col items-center justify-center h-64 gap-4 text-center p-8">
-          <p className="text-red-400 font-semibold">Something went wrong</p>
-          <p className="text-zinc-400 text-sm">{this.state.error?.message}</p>
-          <button
-            className="text-sm text-zinc-300 underline"
-            onClick={() => this.setState({ hasError: false, error: null })}
-          >
-            Try again
-          </button>
+        <div className="flex min-h-screen items-center justify-center bg-gray-950 px-4 text-center">
+          <div className="w-full max-w-md rounded-lg border border-red-500/30 bg-gray-900 p-6 shadow-2xl shadow-black/40">
+            <p className="text-red-300 font-semibold">Slimarr could not render this screen</p>
+            <p className="mt-2 text-zinc-400 text-sm">{this.state.error?.message}</p>
+            <div className="mt-5 flex justify-center gap-3">
+              <button
+                className="rounded bg-gray-700 px-3 py-2 text-sm text-zinc-100 hover:bg-gray-600"
+                onClick={() => window.location.reload()}
+              >
+                Reload
+              </button>
+              <button
+                className="rounded bg-brand-green px-3 py-2 text-sm font-medium text-white hover:brightness-110"
+                onClick={() => this.setState({ hasError: false, error: null })}
+              >
+                Try again
+              </button>
+            </div>
+          </div>
         </div>
       )
     }

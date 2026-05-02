@@ -47,6 +47,33 @@ function Test-FrontendManifest() {
     }
     Write-Ok "frontend/dist asset manifest verified ($($matches.Count) asset reference(s))"
 }
+function Test-BundleManifest() {
+    $bundleRoot = "$Root\dist\Slimarr"
+    $resourceRoot = "$bundleRoot"
+    if (Test-Path "$bundleRoot\_internal") {
+        $resourceRoot = "$bundleRoot\_internal"
+    }
+
+    $required = @(
+        "$bundleRoot\Slimarr.exe",
+        "$resourceRoot\frontend\dist\index.html",
+        "$resourceRoot\frontend\dist\assets",
+        "$resourceRoot\images\icon.PNG",
+        "$resourceRoot\config.yaml.example"
+    )
+
+    $missing = @()
+    foreach ($path in $required) {
+        if (-not (Test-Path $path)) {
+            $missing += $path.Replace("$Root\", "")
+        }
+    }
+
+    if ($missing.Count -gt 0) {
+        Write-Err "PyInstaller bundle is missing required file(s): $($missing -join ', ')"
+    }
+    Write-Ok "PyInstaller bundle resources verified"
+}
 
 Write-Host ""
 Write-Host "  +-------------------------------------+" -ForegroundColor Green
@@ -97,6 +124,7 @@ $cfgLines = @(
     '',
     'auth:',
     '  secret_key: ""',
+    '  api_key: ""',
     '',
     'plex:',
     '  url: ""',
@@ -118,6 +146,33 @@ $cfgLines = @(
     'tmdb:',
     '  api_key: ""',
     '',
+    'automation:',
+    '  dry_run: false',
+    '  review_required: false',
+    '',
+    'comparison:',
+    '  min_savings_percent: 10.0',
+    '  allow_resolution_downgrade: false',
+    '  downgrade_min_savings_percent: 40.0',
+    '  preferred_codecs:',
+    '    - av1',
+    '    - h265',
+    '  preferred_language: english',
+    '  max_candidate_age_days: 3650',
+    '  minimum_file_size_mb: 500',
+    '  reject_upscaled: true',
+    '  minimum_confidence_score: 55.0',
+    '  require_year_match: true',
+    '',
+    'exclusions:',
+    '  movie_ids: []',
+    '  title_keywords: []',
+    '  folders: []',
+    '  codecs: []',
+    '  resolutions: []',
+    '  minimum_file_size_mb: 0',
+    '  maximum_age_days: 0',
+    '',
     'radarr:',
     '  enabled: false',
     '  url: ""',
@@ -135,6 +190,9 @@ $cfgLines = @(
     '',
     'files:',
     '  recycling_bin: ""',
+    '  recycling_bin_cleanup_days: 30',
+    '  verify_after_download: true',
+    '  plex_path_mappings: []',
     '',
     'indexers: []'
 )
@@ -167,6 +225,7 @@ if (-not $SkipPyInstaller) {
         Write-Err "dist/Slimarr/Slimarr.exe not found - build with PyInstaller first"
     }
 }
+Test-BundleManifest
 
 # ---- 5. Inno Setup ----------------------------------------------------------
 Write-Step "5" "Building installer with Inno Setup"

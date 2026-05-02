@@ -11,6 +11,7 @@ import {
   Settings,
   Server,
   LogOut,
+  Coffee,
 } from 'lucide-react'
 import { auth } from '@/lib/auth'
 import clsx from 'clsx'
@@ -80,7 +81,8 @@ export default function Sidebar() {
           rel="noreferrer"
           className="flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-lg text-xs text-yellow-300 hover:bg-white/10 w-full transition-colors"
         >
-          ☕ Donate
+          <Coffee size={14} />
+          Donate
         </a>
 
         {/* Creator credit */}
