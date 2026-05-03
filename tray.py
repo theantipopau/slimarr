@@ -167,6 +167,11 @@ def run_tray() -> None:
     _server_thread = threading.Thread(target=_start_server, daemon=True)
     _server_thread.start()
 
+    # Open browser after a brief delay unless a launcher script handles it.
+    if os.environ.get("SLIMARR_NO_AUTO_BROWSER", "").lower() in {"1", "true", "yes"}:
+        icon.run()
+        return
+
     # Open browser after a brief delay
     def _delayed_open():
         from backend.config import load_config

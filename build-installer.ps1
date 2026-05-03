@@ -75,6 +75,31 @@ function Test-BundleManifest() {
     Write-Ok "PyInstaller bundle resources verified"
 }
 
+function New-InstallerStartScript() {
+    $startBatPath = "$Root\dist\Slimarr\start.bat"
+    @"
+@echo off
+setlocal
+
+cd /d "%~dp0"
+
+if not exist "Slimarr.exe" (
+  echo.
+  echo [ERROR] Slimarr.exe was not found in this folder.
+  echo.
+  pause
+  exit /b 1
+)
+
+set "SLIMARR_NO_AUTO_BROWSER=1"
+start "Slimarr" /min "Slimarr.exe"
+
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$deadline=(Get-Date).AddSeconds(60); while ((Get-Date) -lt $deadline) { try { $resp = Invoke-WebRequest -UseBasicParsing 'http://127.0.0.1:9494/api/v1/system/health' -TimeoutSec 2; if ($resp.StatusCode -ge 200) { Start-Process 'http://localhost:9494'; exit 0 } } catch {} ; Start-Sleep -Milliseconds 500 }; Start-Process 'http://localhost:9494'"
+exit /b 0
+"@ | Set-Content -Path $startBatPath -Encoding ASCII
+    Write-Ok "Installer launcher created (dist/Slimarr/start.bat)"
+}
+
 Write-Host ""
 Write-Host "  +-------------------------------------+" -ForegroundColor Green
 Write-Host "  |   Slimarr Installer Builder v1.0   |" -ForegroundColor Green
@@ -225,6 +250,7 @@ if (-not $SkipPyInstaller) {
         Write-Err "dist/Slimarr/Slimarr.exe not found - build with PyInstaller first"
     }
 }
+New-InstallerStartScript
 Test-BundleManifest
 
 # ---- 5. Inno Setup ----------------------------------------------------------

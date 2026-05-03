@@ -58,20 +58,21 @@ Name: "{userappdata}\Slimarr\data\MediaCover"
 
 [Icons]
 ; Start Menu
-Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"
+Name: "{group}\Open {#MyAppName}"; Filename: "{app}\start.bat"; WorkingDir: "{app}"
+Name: "{group}\{#MyAppName} (Tray Only)"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"
 Name: "{group}\Slimarr Data Folder"; Filename: "{win}\explorer.exe"; Parameters: """{userappdata}\Slimarr"""
 Name: "{group}\Slimarr Startup Log"; Filename: "{userappdata}\Slimarr\data\logs\startup.log"; Check: FileExists(ExpandConstant('{userappdata}\Slimarr\data\logs\startup.log'))
 Name: "{group}\Uninstall {#MyAppName}"; Filename: "{uninstallexe}"
 ; Desktop (optional)
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; Tasks: desktopicon
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\start.bat"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Registry]
 ; Windows startup (optional task)
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "{#MyAppName}"; ValueData: """{app}\{#MyAppExeName}"""; Tasks: startup; Flags: uninsdeletevalue
 
 [Run]
-; Launch Slimarr after install (skippable)
-Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+; Launch Slimarr after install (checkbox is checked by default)
+Filename: "{app}\start.bat"; WorkingDir: "{app}"; Description: "Do you want to open Slimarr?"; Flags: nowait postinstall skipifsilent shellexec runminimized
 
 [UninstallRun]
 ; Kill any running instance before uninstall

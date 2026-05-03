@@ -112,6 +112,14 @@ files:
     }
 }
 
+function Start-SlimarrUi([string]$PythonExePath) {
+    Write-Step "Starting Slimarr"
+    Start-Process -FilePath $PythonExePath -ArgumentList @("run.py", "--headless") -WorkingDirectory $Root | Out-Null
+    Start-Process "http://localhost:9494" | Out-Null
+    Write-Ok "Slimarr started (background)"
+    Write-Host "    Browser opened: http://localhost:9494" -ForegroundColor DarkGray
+}
+
 if ($Uninstall) {
     Write-Step "Removing Windows service"
     if (Get-Service -Name $ServiceName -ErrorAction SilentlyContinue) {
@@ -221,10 +229,10 @@ Write-Host "  Web UI: http://localhost:9494" -ForegroundColor White
 Write-Host "  Logs:   $Root\data\logs" -ForegroundColor DarkGray
 
 if ($Start) {
-    Write-Step "Starting Slimarr"
-    & $VenvPython (Join-Path $Root "run.py") --headless
+    Start-SlimarrUi -PythonExePath $VenvPython
 } else {
     Write-Host ""
     Write-Host "  Start now with:" -ForegroundColor White
-    Write-Host "    .\venv\Scripts\python.exe run.py --headless" -ForegroundColor DarkGray
+    Write-Host "    start.bat" -ForegroundColor DarkGray
+    Write-Host "    # or: .\venv\Scripts\python.exe run.py --headless" -ForegroundColor DarkGray
 }

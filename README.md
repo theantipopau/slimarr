@@ -104,6 +104,8 @@ Current stable release: **1.1.0.0**.
 
 Download `SlimarrSetup-1.1.0.0.exe` (or the latest `SlimarrSetup-*.exe`) from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies - no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
 
+At the end of setup, the installer shows `Do you want to open Slimarr?` (checked by default). If selected, Slimarr starts minimized and your browser opens automatically to `http://localhost:9494` when the backend is ready.
+
 `1.1.0.0` is the current installer target. Newer `main` branch changes may land before the next installer is cut; if you want those immediately, run Slimarr from source or build a fresh installer from `main`.
 
 ### Option B - From source
@@ -126,10 +128,10 @@ The installer will:
 
 **3. Start Slimarr:**
 ```powershell
-# With system tray (Windows default):
-python run.py
+# Simplest (starts backend + opens browser):
+start.bat
 
-# Headless (no tray):
+# Alternative headless command:
 python run.py --headless
 ```
 
