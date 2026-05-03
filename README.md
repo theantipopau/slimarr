@@ -89,7 +89,7 @@ Current stable release: **1.1.0.0**.
 
 | Dependency | Version | Notes |
 |------------|---------|-------|
-| Python | 3.12+ | |
+| Python | 3.11 – 3.13 | **3.14 is not yet supported** — use 3.12 or 3.13 |
 | Node.js | 18+ | For building the frontend |
 | Plex Media Server | Any | PlexAPI token required |
 | SABnzbd or NZBGet | Any | Configure at least one download client |
@@ -142,6 +142,43 @@ python run.py --headless
 ### Keeping up to date
 
 On machines that pull from git, run `update.bat` (or `git pull`). The System page shows a badge when a newer release is available.
+
+---
+
+## Troubleshooting
+
+### "Building wheel for lxml failed" / "Building wheel for pydantic-core failed"
+
+**Symptoms in `startup-error.log`:**
+```
+error: Microsoft Visual C++ 14.0 or greater is required
+```
+or
+```
+error: linker link.exe not found
+```
+
+**Cause:** You have Python 3.14 installed. `lxml` and `pydantic-core` do not yet publish prebuilt Windows packages (wheels) for Python 3.14, so pip tries to compile them from source — which requires Visual C++ Build Tools and Rust. Most users don't have these.
+
+**Fix:**
+1. Install Python **3.12** or **3.13** from https://python.org (tick *Add Python to PATH*).
+2. Delete the `venv` folder in your Slimarr directory.
+3. Rerun `install.ps1`.
+
+The installer will automatically prefer 3.13 → 3.12 → 3.11 and skip 3.14.
+
+### "Failed to establish a new connection" / WinError 10013
+
+**Cause:** A firewall, VPN, or endpoint-security policy is blocking outbound HTTPS to `pypi.org`.
+
+**Fix:**
+- Allow outbound port 443 for `python.exe` and `venv\Scripts\python.exe` in your firewall or AV.
+- On a corporate proxy, set before running the installer:
+  ```powershell
+  $env:HTTPS_PROXY = "http://user:pass@proxy:port"
+  $env:HTTP_PROXY  = "http://user:pass@proxy:port"
+  ```
+- Test connectivity: `Test-NetConnection pypi.org -Port 443`
 
 ## GitHub Pages Website
 

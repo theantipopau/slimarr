@@ -38,30 +38,49 @@ function Fail($Message) {
 }
 
 function Resolve-Python {
+    # Supported range: 3.11 <= version < 3.14
+    # Python 3.14 is NOT supported: lxml and pydantic-core have no prebuilt wheels yet
+    # and require Visual C++ Build Tools / Rust to compile from source.
+    $MIN_VER = [version]"3.11"
+    $MAX_VER = [version]"3.14"  # exclusive upper bound
+
     $candidates = @(
-        "$env:LOCALAPPDATA\Programs\Python\Python313\python.exe",
-        "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe",
-        "$env:LOCALAPPDATA\Programs\Python\Python311\python.exe",
-        "py",
-        "python3",
-        "python"
+        @{ Path = "$env:LOCALAPPDATA\Programs\Python\Python313\python.exe"; Args = @() },
+        @{ Path = "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe"; Args = @() },
+        @{ Path = "$env:LOCALAPPDATA\Programs\Python\Python311\python.exe"; Args = @() },
+        @{ Path = "py"; Args = @("-3.13") },
+        @{ Path = "py"; Args = @("-3.12") },
+        @{ Path = "py"; Args = @("-3.11") },
+        @{ Path = "python3"; Args = @() },
+        @{ Path = "python"; Args = @() }
     )
 
-    foreach ($candidate in $candidates) {
+    $foundUnsupported = $null
+
+    foreach ($c in $candidates) {
         try {
-            $cmd = Get-Command $candidate -ErrorAction Stop
-            if ($candidate -eq "py") {
-                $version = & $cmd.Source -3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>$null
-                if ($LASTEXITCODE -eq 0 -and [version]$version -ge [version]"3.11") {
-                    return [pscustomobject]@{ File = $cmd.Source; Args = @("-3") }
-                }
-            } else {
-                $version = & $cmd.Source -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>$null
-                if ($LASTEXITCODE -eq 0 -and [version]$version -ge [version]"3.11") {
-                    return [pscustomobject]@{ File = $cmd.Source; Args = @() }
+            $cmd = Get-Command $c.Path -ErrorAction Stop
+            $version = & $cmd.Source @($c.Args) -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>$null
+            if ($LASTEXITCODE -eq 0 -and $version) {
+                $v = [version]$version
+                if ($v -ge $MIN_VER -and $v -lt $MAX_VER) {
+                    return [pscustomobject]@{ File = $cmd.Source; Args = $c.Args; Version = $version }
+                } elseif ($v -ge $MAX_VER -and -not $foundUnsupported) {
+                    $foundUnsupported = $version
                 }
             }
         } catch {}
+    }
+
+    if ($foundUnsupported) {
+        Write-Host ""
+        Write-Host "  Python $foundUnsupported detected but is NOT supported by Slimarr." -ForegroundColor Yellow
+        Write-Host "  Python 3.14 does not yet have prebuilt binary packages (wheels) for" -ForegroundColor Yellow
+        Write-Host "  lxml and pydantic-core. Installing them requires Visual C++ Build Tools" -ForegroundColor Yellow
+        Write-Host "  and Rust, which most users do not have." -ForegroundColor Yellow
+        Write-Host ""
+        Write-Host "  Fix: Install Python 3.12 or 3.13 from https://python.org" -ForegroundColor Cyan
+        Write-Host "       Tick 'Add Python to PATH' during install, then rerun install.ps1" -ForegroundColor Cyan
     }
 
     return $null
@@ -139,17 +158,24 @@ Write-Host "  =================" -ForegroundColor DarkGreen
 Write-Step "Checking Python"
 $Python = Resolve-Python
 if (-not $Python) {
-    Fail "Python 3.11 or newer was not found. Install it from https://python.org and tick 'Add Python to PATH'."
+    Fail "Python 3.12 or 3.13 was not found. Install from https://python.org and tick 'Add Python to PATH'. Python 3.14 is not yet supported."
 }
-Write-Ok "Using $($Python.File) $($Python.Args -join ' ')"
+Write-Ok "Using Python $($Python.Version) at $($Python.File)"
 
 Write-Step "Preparing virtual environment"
 $VenvPython = Join-Path $Root "venv\Scripts\python.exe"
 if (Test-Path $VenvPython) {
-    & $VenvPython -m pip --version *> $null
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "    Removing broken virtual environment..." -ForegroundColor Yellow
+    # Check if existing venv is on an unsupported Python version and remove it
+    $venvVer = & $VenvPython -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>$null
+    if ($LASTEXITCODE -eq 0 -and $venvVer -and [version]$venvVer -ge [version]"3.14") {
+        Write-Host "    Removing venv built on Python $venvVer (unsupported)..." -ForegroundColor Yellow
         Remove-Item -LiteralPath (Join-Path $Root "venv") -Recurse -Force
+    } else {
+        & $VenvPython -m pip --version *> $null
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "    Removing broken virtual environment..." -ForegroundColor Yellow
+            Remove-Item -LiteralPath (Join-Path $Root "venv") -Recurse -Force
+        }
     }
 }
 
@@ -157,6 +183,10 @@ if (-not (Test-Path $VenvPython)) {
     Invoke-Python $Python @("-m", "venv", (Join-Path $Root "venv"))
     if ($LASTEXITCODE -ne 0) { Fail "Could not create Python virtual environment." }
 }
+
+# Print the exact Python version used in the venv
+$venvActualVer = & $VenvPython -c "import sys; print(sys.version)" 2>$null
+Write-Ok "Venv Python: $venvActualVer"
 
 & $VenvPython -m pip --version *> $null
 if ($LASTEXITCODE -ne 0) {
@@ -172,7 +202,15 @@ Write-Ok "Virtual environment ready"
 Write-Step "Installing Python dependencies"
 $requirements = Join-Path $Root "requirements.txt"
 $code = Invoke-LoggedNative { & $VenvPython -m pip install -r $requirements -q }
-if ($code -ne 0) { Fail "Dependency install failed." }
+if ($code -ne 0) {
+    Write-Host ""
+    Write-Host "  Dependency install failed. Common causes:" -ForegroundColor Yellow
+    Write-Host "    - Python 3.14 was used (not yet supported — use 3.12 or 3.13)" -ForegroundColor Yellow
+    Write-Host "    - No internet access or firewall blocked PyPI (pypi.org:443)" -ForegroundColor Yellow
+    Write-Host "    - Missing Visual C++ Build Tools (only needed if wheels are missing)" -ForegroundColor Yellow
+    Write-Host "  See $LogFile for the full error." -ForegroundColor DarkGray
+    Fail "Dependency install failed. See above for details."
+}
 Write-Ok "Python dependencies installed"
 
 if (-not $SkipFrontend) {

@@ -1,3 +1,7 @@
+# Python 3.11, 3.12, or 3.13 required.
+# Python 3.14 is NOT supported: lxml and pydantic-core lack prebuilt wheels
+# and require Visual C++ Build Tools / Rust to compile, which most users won't have.
+
 # Web framework
 fastapi==0.115.6
 uvicorn[standard]==0.34.0
