@@ -134,9 +134,23 @@ files:
 function Start-SlimarrUi([string]$PythonExePath) {
     Write-Step "Starting Slimarr"
     Start-Process -FilePath $PythonExePath -ArgumentList @("run.py", "--headless") -WorkingDirectory $Root | Out-Null
+    Write-Ok "Slimarr started in background"
+    Write-Host "    Waiting for backend to be ready..." -ForegroundColor DarkGray
+    $deadline = (Get-Date).AddSeconds(60)
+    $ready = $false
+    while ((Get-Date) -lt $deadline) {
+        try {
+            $r = Invoke-WebRequest -UseBasicParsing 'http://127.0.0.1:9494/api/v1/system/health' -TimeoutSec 2 -ErrorAction Stop
+            if ($r.StatusCode -ge 200) { $ready = $true; break }
+        } catch {}
+        Start-Sleep -Milliseconds 500
+    }
     Start-Process "http://localhost:9494" | Out-Null
-    Write-Ok "Slimarr started (background)"
-    Write-Host "    Browser opened: http://localhost:9494" -ForegroundColor DarkGray
+    if ($ready) {
+        Write-Ok "Browser opened: http://localhost:9494"
+    } else {
+        Write-Host "    Backend not ready after 60s — browser opened anyway." -ForegroundColor Yellow
+    }
 }
 
 if ($Uninstall) {

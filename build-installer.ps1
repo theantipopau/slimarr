@@ -1,5 +1,5 @@
 # build-installer.ps1 - Build the Slimarr Windows installer
-# Output: dist/installer/SlimarrSetup-1.1.0.0.exe
+# Output: dist/installer/SlimarrSetup-1.1.2.0.exe
 #
 # Prerequisites (install once):
 #   pip install pyinstaller          (in your venv)
@@ -77,7 +77,10 @@ function Test-BundleManifest() {
 
 function New-InstallerStartScript() {
     $startBatPath = "$Root\dist\Slimarr\start.bat"
-    @"
+    # IMPORTANT: Use single-quote here-string @'...'@ so that PowerShell does NOT
+    # interpolate $deadline, $resp, etc. — those are PowerShell variables INSIDE the
+    # bat file that must remain literal and be evaluated by the child powershell.exe.
+    @'
 @echo off
 setlocal
 
@@ -94,15 +97,25 @@ if not exist "Slimarr.exe" (
 set "SLIMARR_NO_AUTO_BROWSER=1"
 start "Slimarr" /min "Slimarr.exe"
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$deadline=(Get-Date).AddSeconds(60); while ((Get-Date) -lt $deadline) { try { $resp = Invoke-WebRequest -UseBasicParsing 'http://127.0.0.1:9494/api/v1/system/health' -TimeoutSec 2; if ($resp.StatusCode -ge 200) { Start-Process 'http://localhost:9494'; exit 0 } } catch {} ; Start-Sleep -Milliseconds 500 }; Start-Process 'http://localhost:9494'"
+echo Waiting for Slimarr to start (up to 60 seconds)...
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "$deadline=(Get-Date).AddSeconds(60);" ^
+  "while ((Get-Date) -lt $deadline) {" ^
+  "  try {" ^
+  "    $r=Invoke-WebRequest -UseBasicParsing 'http://127.0.0.1:9494/api/v1/system/health' -TimeoutSec 2;" ^
+  "    if ($r.StatusCode -ge 200) { Start-Process 'http://localhost:9494'; exit 0 }" ^
+  "  } catch {}" ^
+  "  Start-Sleep -Milliseconds 500" ^
+  "};" ^
+  "Start-Process 'http://localhost:9494'"
 exit /b 0
-"@ | Set-Content -Path $startBatPath -Encoding ASCII
+'@ | Set-Content -Path $startBatPath -Encoding ASCII
     Write-Ok "Installer launcher created (dist/Slimarr/start.bat)"
 }
 
 Write-Host ""
 Write-Host "  +-------------------------------------+" -ForegroundColor Green
-Write-Host "  |   Slimarr Installer Builder v1.0   |" -ForegroundColor Green
+Write-Host "  |   Slimarr Installer Builder v1.1   |" -ForegroundColor Green
 Write-Host "  +-------------------------------------+" -ForegroundColor Green
 
 # ---- 0. Sanity checks -------------------------------------------------------

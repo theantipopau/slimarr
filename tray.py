@@ -178,7 +178,7 @@ def run_tray() -> None:
 
         port = load_config(_ensure_data_dir()).server.port
         health_url = f'http://127.0.0.1:{port}/api/v1/system/health'
-        deadline = time.time() + 30
+        deadline = time.time() + 60
         while time.time() < deadline:
             try:
                 with urllib.request.urlopen(health_url, timeout=1):

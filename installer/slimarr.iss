@@ -3,7 +3,7 @@
 ; Run build-installer.ps1 to generate this automatically.
 
 #define MyAppName "Slimarr"
-#define MyAppVersion "1.1.0.0"
+#define MyAppVersion "1.1.2.0"
 #define MyAppPublisher "Slimarr"
 #define MyAppURL "https://github.com/theantipopau/slimarr"
 #define MyAppExeName "Slimarr.exe"
@@ -55,6 +55,7 @@ Name: "{userappdata}\Slimarr"
 Name: "{userappdata}\Slimarr\data"
 Name: "{userappdata}\Slimarr\data\logs"
 Name: "{userappdata}\Slimarr\data\MediaCover"
+Name: "{userappdata}\Slimarr\data\recycling"
 
 [Icons]
 ; Start Menu

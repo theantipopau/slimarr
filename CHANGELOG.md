@@ -4,6 +4,49 @@ All notable changes to Slimarr are documented here.
 
 ---
 
+## [1.1.2.0] - 2026-05-04
+
+### Release focus
+
+Installer reliability, Python version guardrails, and one-click launcher improvements.
+
+**Critical installer fix**
+- Fixed a silent bug in `build-installer.ps1` where the generated `dist/Slimarr/start.bat` had
+  a broken health-check loop — PowerShell variables (`$deadline`, `$resp`) were being expanded
+  to empty strings by the double-quoted here-string, causing the health-check to silently fail
+  and the browser to open before the backend was ready. Changed to single-quote here-string
+  (`@'...'@`) so the embedded PowerShell script is written literally and evaluated correctly.
+
+**Python 3.14 guardrails**
+- `install.ps1` now rejects Python 3.14 with a clear explanation: `lxml` and `pydantic-core`
+  have no prebuilt wheels for 3.14 yet and require Visual C++ Build Tools / Rust to compile
+- Candidate order is now explicit: 3.13 → 3.12 → 3.11; uses `py -3.13`, `py -3.12`, `py -3.11`
+  launcher args instead of `py -3` (which would resolve to 3.14 if installed)
+- Existing venv is deleted and recreated if it was built on Python 3.14
+- Python version is printed after venv creation to make diagnostics easier
+- `requirements.txt` has a comment block explaining the 3.11–3.13 constraint
+
+**Launcher improvements**
+- `start.bat` (source install) now polls `/api/v1/system/health` for up to 60 seconds before
+  opening the browser — prevents opening to a blank page while the backend is still starting
+- `install.ps1 -Start` (`Start-SlimarrUi`) does the same health-check polling before browser open
+- `tray.py` health-check deadline extended from 30 seconds to 60 seconds (consistent with launchers)
+
+**Updater improvements**
+- `update.bat` now rebuilds the React frontend after `git pull` so UI changes are reflected
+  immediately without a separate `npm run build` step; skips gracefully if node_modules is absent
+
+**Installer data directories**
+- `installer/slimarr.iss` now pre-creates `{userappdata}\Slimarr\data\recycling` at install time
+  so recycling-bin moves succeed on first replacement without requiring a manual folder creation
+
+**README / documentation**
+- Requirements table updated: Python 3.11–3.13 only (3.14 not yet supported)
+- New Troubleshooting section covering lxml/pydantic-core build failures and WinError 10013
+  (firewall blocking PyPI) with step-by-step fixes
+
+---
+
 ## [1.1.0.0] - 2026-04-30
 
 ### Release focus
