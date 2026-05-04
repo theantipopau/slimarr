@@ -42,6 +42,17 @@ guards to make source installs seamless on any supported Python version.
   - `tests/backend/test_radarr_policy.py`
   - `tests/backend/test_replacer_policy_bridge.py`
 
+**Audit and observability improvements**
+- Added system audit events for auth and settings actions:
+  - login success/failure
+  - active lockout checks
+  - first-user registration
+  - settings update writes and integration enabled/disabled toggles
+- Extended `activity_log` with `actor` and `details` fields (additive migration) and exposed
+  them in the Activity API output.
+- Added correlation-id-enriched logging format and request lifecycle logs with method, path,
+  response status, and latency.
+
 ---
 
 ## [1.1.2.0] - 2026-05-04

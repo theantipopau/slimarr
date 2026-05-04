@@ -8,6 +8,7 @@ from pydantic import BaseModel
 
 from backend.auth.dependencies import get_current_user
 from backend.config import IndexerConfig, get_config, reload_config, save_config
+from backend.core.audit import log_audit_event
 from backend.utils.responses import validation_error, get_correlation_id
 
 router = APIRouter(prefix="/settings", tags=["settings"])
@@ -39,6 +40,7 @@ async def download_client_capabilities(user=Depends(get_current_user)):
 @router.put("")
 async def update_settings(body: dict, user=Depends(get_current_user)):
     config = get_config()
+    before = config.model_dump()
     d = config.model_dump()
     _deep_merge(d, body)
     # Preserve redacted secret_key
@@ -51,6 +53,22 @@ async def update_settings(body: dict, user=Depends(get_current_user)):
     reload_config()
     from backend.api.system import invalidate_services_health_cache
     invalidate_services_health_cache()
+
+    toggles: list[dict[str, object]] = []
+    for key in ["prowlarr", "radarr", "sonarr"]:
+        old_enabled = bool(before.get(key, {}).get("enabled", False))
+        new_enabled = bool(d.get(key, {}).get("enabled", False))
+        if old_enabled != new_enabled:
+            toggles.append({"service": key, "enabled": new_enabled})
+
+    await log_audit_event(
+        "settings:updated",
+        actor=str(user),
+        details={
+            "top_level_keys": sorted(list(body.keys())),
+            "integration_toggles": toggles,
+        },
+    )
     return {"status": "saved"}
 
 

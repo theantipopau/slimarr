@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import os
 import asyncio
+import time
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
@@ -129,9 +130,16 @@ async def general_exception_handler(request: Request, exc: Exception):
 @app.middleware("http")
 async def correlation_id_middleware(request: Request, call_next):
     """Attach correlation ID to every request."""
+    from loguru import logger
+
     correlation_id = request.headers.get("X-Correlation-ID", generate_correlation_id())
     set_correlation_id(correlation_id)
+    start = time.perf_counter()
     response = await call_next(request)
+    elapsed_ms = (time.perf_counter() - start) * 1000
+    logger.info(
+        f"request {request.method} {request.url.path} -> {response.status_code} ({elapsed_ms:.1f} ms)"
+    )
     response.headers["X-Correlation-ID"] = correlation_id
     return response
 

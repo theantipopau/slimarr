@@ -7,6 +7,7 @@ from sqlalchemy import select
 
 from backend.auth.jwt import create_access_token
 from backend.config import get_config
+from backend.core.audit import log_audit_event
 from backend.database import AsyncSession, User, get_db
 from backend.utils.responses import APIException, rate_limited, get_correlation_id
 
@@ -31,6 +32,18 @@ def _check_rate_limit(ip: str) -> None:
     until = _login_lockout_until.get(ip, 0)
     if now < until:
         remaining = int(until - now)
+        # Fire-and-forget audit note for lockout checks.
+        import asyncio
+        try:
+            asyncio.create_task(
+                log_audit_event(
+                    "auth:lockout_active",
+                    actor=ip,
+                    details={"remaining_seconds": remaining},
+                )
+            )
+        except Exception:
+            pass
         raise rate_limited(
             message=f"Too many failed login attempts. Try again in {remaining} seconds.",
             details={"remaining_seconds": remaining},
@@ -85,16 +98,26 @@ async def check_auth_status(db: AsyncSession = Depends(get_db)):
 @router.post("/login", response_model=LoginResponse)
 async def login(body: LoginRequest, request: Request, db: AsyncSession = Depends(get_db)):
     from passlib.hash import bcrypt
-    _check_rate_limit(request.client.host if request.client else "unknown")
+    ip = request.client.host if request.client else "unknown"
+    _check_rate_limit(ip)
 
     result = await db.execute(select(User).where(User.username == body.username))
     user = result.scalar_one_or_none()
-    ip = request.client.host if request.client else "unknown"
     if not user or not bcrypt.verify(body.password, user.password_hash):
         _record_login_failure(ip)
+        await log_audit_event(
+            "auth:login_failed",
+            actor=ip,
+            details={"username": body.username},
+        )
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     _record_login_success(ip)
+    await log_audit_event(
+        "auth:login_success",
+        actor=user.username,
+        details={"ip": ip},
+    )
     config = get_config()
     token = create_access_token(
         user.username,
@@ -122,6 +145,12 @@ async def register(body: RegisterRequest, db: AsyncSession = Depends(get_db)):
     user = User(username=body.username, password_hash=hashed)
     db.add(user)
     await db.commit()
+
+    await log_audit_event(
+        "auth:user_registered",
+        actor=user.username,
+        details={"is_first_user": True},
+    )
 
     config = get_config()
     token = create_access_token(

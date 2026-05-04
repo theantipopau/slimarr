@@ -47,6 +47,8 @@ async def list_activity(
                 "new_size": log.new_size,
                 "savings_bytes": log.savings_bytes,
                 "savings_pct": log.savings_pct,
+                "actor": log.actor,
+                "details": log.details,
                 "created_at": log.created_at.isoformat(),
             }
             for log in logs

@@ -149,6 +149,8 @@ class ActivityLog(Base):
     new_size: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     savings_bytes: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     savings_pct: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    actor: Mapped[Optional[str]] = mapped_column(String, nullable=True, index=True)
+    details: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), index=True
     )
@@ -287,6 +289,10 @@ async def _run_lightweight_migrations(conn) -> None:
 
     movie_columns = await _table_columns(conn, "movies")
     await _add_column_if_missing(conn, "movies", movie_columns, "slimarr_locked", "INTEGER DEFAULT 0")
+
+    activity_columns = await _table_columns(conn, "activity_log")
+    await _add_column_if_missing(conn, "activity_log", activity_columns, "actor", "VARCHAR")
+    await _add_column_if_missing(conn, "activity_log", activity_columns, "details", "TEXT")
 
 
 async def get_db() -> AsyncSession:  # type: ignore[return]
