@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import inspect
 import json
 import os
 import platform
@@ -21,6 +22,29 @@ from backend.scheduler.scheduler import get_scheduler, list_jobs
 from backend.utils.responses import not_found, get_correlation_id
 
 router = APIRouter(prefix="/system", tags=["system"])
+
+_active_manual_tasks: set[str] = set()
+_active_manual_tasks_lock = asyncio.Lock()
+
+
+async def _start_guarded_background_task(task_key: str, background: BackgroundTasks, task_func) -> bool:
+    """Start a background task once per key until completion."""
+    async with _active_manual_tasks_lock:
+        if task_key in _active_manual_tasks:
+            return False
+        _active_manual_tasks.add(task_key)
+
+    async def _runner() -> None:
+        try:
+            result = task_func()
+            if inspect.isawaitable(result):
+                await result
+        finally:
+            async with _active_manual_tasks_lock:
+                _active_manual_tasks.discard(task_key)
+
+    background.add_task(_runner)
+    return True
 
 _start_time = datetime.now(timezone.utc)
 
@@ -250,7 +274,9 @@ async def run_task(task_id: str, background: BackgroundTasks, user=Depends(get_c
     job = scheduler.get_job(task_id)
     if not job:
         raise not_found(f"Task '{task_id}'", correlation_id=get_correlation_id())
-    background.add_task(job.func)
+    started = await _start_guarded_background_task(f"scheduler:{task_id}", background, job.func)
+    if not started:
+        return {"status": "already_running", "task_id": task_id}
     return {"status": "triggered", "task_id": task_id}
 
 
@@ -261,7 +287,9 @@ async def trigger_scan(background: BackgroundTasks, user=Depends(get_current_use
     from backend.core.orchestrator import is_running as is_cycle_running
     if is_scan_running() or is_cycle_running():
         return {"status": "already_running"}
-    background.add_task(scan_library)
+    started = await _start_guarded_background_task("scan_library", background, scan_library)
+    if not started:
+        return {"status": "already_running"}
     return {"status": "scan_started"}
 
 
@@ -269,7 +297,9 @@ async def trigger_scan(background: BackgroundTasks, user=Depends(get_current_use
 async def trigger_cleanup(background: BackgroundTasks, user=Depends(get_current_user)):
     """Trigger a duplicate file cleanup in the library."""
     from backend.core.cleanup import scan_and_clean_duplicates
-    background.add_task(scan_and_clean_duplicates)
+    started = await _start_guarded_background_task("cleanup_duplicates", background, scan_and_clean_duplicates)
+    if not started:
+        return {"status": "already_running"}
     return {"status": "cleanup_started"}
 
 
@@ -278,7 +308,9 @@ async def start_cycle(background: BackgroundTasks, user=Depends(get_current_user
     if is_running():
         return {"status": "already_running"}
     from backend.core.orchestrator import run_full_cycle
-    background.add_task(run_full_cycle)
+    started = await _start_guarded_background_task("full_cycle", background, run_full_cycle)
+    if not started:
+        return {"status": "already_running"}
     return {"status": "started"}
 
 

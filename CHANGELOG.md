@@ -53,6 +53,11 @@ guards to make source installs seamless on any supported Python version.
 - Added correlation-id-enriched logging format and request lifecycle logs with method, path,
   response status, and latency.
 
+**Task idempotency safeguards**
+- Added guarded background-task start logic for manual task triggers to prevent duplicate starts
+  while a matching task key is already running.
+- Applied guards to scheduler task runs, full scan trigger, cleanup trigger, and full cycle start.
+
 ---
 
 ## [1.1.2.0] - 2026-05-04
