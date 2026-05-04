@@ -73,6 +73,17 @@ class RadarrClient:
         """Trigger Radarr to rescan a movie folder (so it picks up the new file)."""
         await self._post("/command", {"name": "RescanMovie", "movieId": radarr_id})
 
+    async def unmonitor_movie(self, radarr_id: int, movie_payload: dict) -> None:
+        """Set a movie to unmonitored in Radarr so it won't be re-upgraded."""
+        movie_payload["monitored"] = False
+        async with self._http() as client:
+            resp = await client.put(
+                f"{self.url}/api/v3/movie/{radarr_id}",
+                json=movie_payload,
+                headers=self._headers(),
+            )
+            resp.raise_for_status()
+
     async def rescan_by_imdb(self, imdb_id: str) -> bool:
         """Find movie in Radarr by IMDb ID and trigger a rescan. Returns True if found."""
         try:
@@ -80,6 +91,27 @@ class RadarrClient:
             if movie:
                 await self.rescan_movie(movie["id"])
                 return True
+        except Exception:
+            pass
+        return False
+
+    async def post_replace_action(self, imdb_id: str, action: str) -> bool:
+        """
+        Perform the configured post-replace action for a movie.
+        action: "rescan" | "rescan_unmonitor" | "none"
+        Returns True if the movie was found in Radarr.
+        """
+        if action == "none":
+            return False
+        try:
+            movie = await self.find_movie_by_imdb(imdb_id)
+            if not movie:
+                return False
+            if action in ("rescan", "rescan_unmonitor"):
+                await self.rescan_movie(movie["id"])
+            if action == "rescan_unmonitor":
+                await self.unmonitor_movie(movie["id"], dict(movie))
+            return True
         except Exception:
             pass
         return False

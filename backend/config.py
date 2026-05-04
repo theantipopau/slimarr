@@ -58,6 +58,7 @@ class RadarrConfig(BaseModel):
     enabled: bool = False
     url: str = ""
     api_key: str = ""
+    post_replace_action: str = "rescan"  # "rescan" | "rescan_unmonitor" | "none"
 
 
 class SonarrConfig(BaseModel):

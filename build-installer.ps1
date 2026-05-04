@@ -1,4 +1,4 @@
-# build-installer.ps1 - Build the Slimarr Windows installer
+﻿# build-installer.ps1 - Build the Slimarr Windows installer
 # Output: dist/installer/SlimarrSetup-1.1.2.0.exe
 #
 # Prerequisites (install once):
@@ -215,6 +215,11 @@ $cfgLines = @(
     '  enabled: false',
     '  url: ""',
     '  api_key: ""',
+    '  # Action to take in Radarr after Slimarr replaces a file:',
+    '  #   rescan           - notify Radarr to rescan (default)',
+    '  #   rescan_unmonitor - rescan + unmonitor the movie (prevents Radarr re-downloading)',
+    '  #   none             - do nothing',
+    '  post_replace_action: "rescan"',
     '',
     'sonarr:',
     '  enabled: false',
@@ -254,8 +259,11 @@ Test-FrontendManifest
 if (-not $SkipPyInstaller) {
     Write-Step "4" "Running PyInstaller (this takes 2-5 minutes)"
     if (Test-Path "$Root\dist\Slimarr") { Remove-Item "$Root\dist\Slimarr" -Recurse -Force }
-    & $PyInstaller "$Root\slimarr.spec" --distpath "$Root\dist" --workpath "$Root\build\pyinstaller" --noconfirm
-    if ($LASTEXITCODE -ne 0) { Write-Err "PyInstaller failed" }
+    $saveEAP = $ErrorActionPreference; $ErrorActionPreference = "Continue"
+    & $PyInstaller "$Root\slimarr.spec" --distpath "$Root\dist" --workpath "$Root\build\pyinstaller" --noconfirm 2>&1 | Out-Host
+    $ErrorActionPreference = $saveEAP
+    # PyInstaller may exit non-zero due to warnings even on a successful build; verify output instead.
+    if (-not (Test-Path "$Root\dist\Slimarr\Slimarr.exe")) { Write-Err "PyInstaller failed - Slimarr.exe not produced" }
     Write-Ok "dist/Slimarr/ created"
 } else {
     Write-Step "4" "Skipping PyInstaller (-SkipPyInstaller)"

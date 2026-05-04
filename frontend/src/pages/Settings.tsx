@@ -509,10 +509,25 @@ export default function Settings() {
             onChange={(e) => set(['radarr', 'enabled'], e.target.checked)}
             className="w-4 h-4 accent-brand-green"
           />
-          <label htmlFor="radarr_enabled" className="text-sm">Enable Radarr integration (triggers rescan after file replacement)</label>
+          <label htmlFor="radarr_enabled" className="text-sm">Enable Radarr integration</label>
         </div>
         {field('URL', ['radarr', 'url'])}
         {field('API Key', ['radarr', 'api_key'], 'password')}
+        <div className="space-y-1">
+          <label className="text-xs text-gray-400">Action after file replacement</label>
+          <select
+            value={String((settings?.radarr as Record<string,unknown>)?.post_replace_action ?? 'rescan')}
+            onChange={(e) => set(['radarr', 'post_replace_action'], e.target.value)}
+            className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-brand-green"
+          >
+            <option value="rescan">Rescan only (Radarr picks up new file)</option>
+            <option value="rescan_unmonitor">Rescan + Unmonitor (prevents Radarr re-upgrading)</option>
+            <option value="none">None (no Radarr notification)</option>
+          </select>
+          <p className="text-xs text-gray-500">
+            "Rescan + Unmonitor" stops Radarr from downloading a larger version after Slimarr replaces the file.
+          </p>
+        </div>
       </section>
 
       {/* Sonarr */}
