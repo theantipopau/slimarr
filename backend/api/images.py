@@ -3,11 +3,12 @@ from __future__ import annotations
 
 import os
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
 from backend.core.image_cache import get_or_cache_image
 from backend.database import Movie, async_session
+from backend.utils.responses import not_found, validation_error, internal_error, get_correlation_id
 from sqlalchemy import select
 
 router = APIRouter(prefix="/images", tags=["images"])
@@ -24,7 +25,7 @@ async def get_image(movie_id: int, image_type: str):
         movie = result.scalar_one_or_none()
 
     if not movie:
-        raise HTTPException(status_code=404, detail="Movie not found")
+        raise not_found("Movie", correlation_id=get_correlation_id())
 
     tmdb_path_map = {
         "poster": movie.poster_path,
@@ -33,18 +34,24 @@ async def get_image(movie_id: int, image_type: str):
     }
 
     if image_type not in tmdb_path_map:
-        raise HTTPException(status_code=400, detail=f"Unknown image type: {image_type}")
+        raise validation_error(
+            f"Unknown image type: {image_type}",
+            correlation_id=get_correlation_id(),
+        )
 
     tmdb_path = tmdb_path_map[image_type]
     if not tmdb_path:
-        raise HTTPException(status_code=404, detail="No image available")
+        raise not_found("Image", correlation_id=get_correlation_id())
 
     try:
         file_path = await get_or_cache_image(movie_id, image_type, tmdb_path)
     except Exception as e:
-        raise HTTPException(status_code=502, detail=f"Image fetch failed: {e}")
+        raise internal_error(
+            f"Image fetch failed: {e}",
+            correlation_id=get_correlation_id(),
+        )
 
     if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="Cached image not found")
+        raise not_found("Cached image", correlation_id=get_correlation_id())
 
     return FileResponse(file_path, media_type="image/jpeg")

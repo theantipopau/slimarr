@@ -8,6 +8,7 @@ from sqlalchemy import select
 from backend.auth.jwt import create_access_token
 from backend.config import get_config
 from backend.database import AsyncSession, User, get_db
+from backend.utils.responses import APIException, rate_limited, get_correlation_id
 
 router = APIRouter()
 
@@ -30,9 +31,10 @@ def _check_rate_limit(ip: str) -> None:
     until = _login_lockout_until.get(ip, 0)
     if now < until:
         remaining = int(until - now)
-        raise HTTPException(
-            status_code=429,
-            detail=f"Too many failed login attempts. Try again in {remaining} seconds.",
+        raise rate_limited(
+            message=f"Too many failed login attempts. Try again in {remaining} seconds.",
+            details={"remaining_seconds": remaining},
+            correlation_id=get_correlation_id(),
         )
 
 

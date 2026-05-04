@@ -18,6 +18,7 @@ from backend.auth.dependencies import get_current_user
 from backend.core.orchestrator import get_status, is_running, request_stop
 from backend.database import DecisionAuditLog, Download, Movie, async_session
 from backend.scheduler.scheduler import get_scheduler, list_jobs
+from backend.utils.responses import not_found, get_correlation_id
 
 router = APIRouter(prefix="/system", tags=["system"])
 
@@ -248,8 +249,7 @@ async def run_task(task_id: str, background: BackgroundTasks, user=Depends(get_c
     scheduler = get_scheduler()
     job = scheduler.get_job(task_id)
     if not job:
-        from fastapi import HTTPException
-        raise HTTPException(status_code=404, detail=f"Task '{task_id}' not found")
+        raise not_found(f"Task '{task_id}'", correlation_id=get_correlation_id())
     background.add_task(job.func)
     return {"status": "triggered", "task_id": task_id}
 

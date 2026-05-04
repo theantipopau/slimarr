@@ -7,9 +7,9 @@ import os
 import asyncio
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from backend.config import ensure_secrets, get_config, load_config
@@ -17,6 +17,13 @@ from backend.database import init_db
 from backend.realtime.sio_instance import sio
 from backend.scheduler.scheduler import start_scheduler
 from backend.utils.logger import setup_logger
+from backend.utils.responses import (
+    APIException,
+    ErrorResponse,
+    generate_correlation_id,
+    get_correlation_id,
+    set_correlation_id,
+)
 
 import socketio
 import httpx
@@ -86,6 +93,48 @@ app = FastAPI(
     description="Smart Usenet replacement manager for Plex movie libraries",
     lifespan=lifespan,
 )
+
+# ── Exception Handlers ─────────────────────────────────────────────────
+
+
+@app.exception_handler(APIException)
+async def api_exception_handler(request: Request, exc: APIException):
+    """Handle custom API exceptions with consistent error envelope."""
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=exc.to_response().model_dump(),
+    )
+
+
+@app.exception_handler(Exception)
+async def general_exception_handler(request: Request, exc: Exception):
+    """Catch unhandled exceptions and return consistent error envelope."""
+    from loguru import logger
+
+    correlation_id = get_correlation_id()
+    logger.error(f"[{correlation_id}] Unhandled exception: {exc}", exc_info=True)
+
+    error = ErrorResponse(
+        code="INTERNAL_ERROR",
+        message="An unexpected error occurred",
+        details={"error_type": exc.__class__.__name__},
+        correlation_id=correlation_id,
+    )
+    return JSONResponse(status_code=500, content=error.model_dump())
+
+
+# ── Correlation ID Middleware ─────────────────────────────────────────
+
+
+@app.middleware("http")
+async def correlation_id_middleware(request: Request, call_next):
+    """Attach correlation ID to every request."""
+    correlation_id = request.headers.get("X-Correlation-ID", generate_correlation_id())
+    set_correlation_id(correlation_id)
+    response = await call_next(request)
+    response.headers["X-Correlation-ID"] = correlation_id
+    return response
+
 
 app.add_middleware(
     CORSMiddleware,

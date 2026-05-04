@@ -3,11 +3,12 @@ from __future__ import annotations
 
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from backend.auth.dependencies import get_current_user
 from backend.config import IndexerConfig, get_config, reload_config, save_config
+from backend.utils.responses import validation_error, get_correlation_id
 
 router = APIRouter(prefix="/settings", tags=["settings"])
 
@@ -158,7 +159,10 @@ async def test_connection(service: str, body: Optional[IndexerTestBody] = None, 
         from backend.integrations.newznab import NewznabClient
         return await NewznabClient(indexer_cfg).test_connection()
 
-    raise HTTPException(status_code=400, detail=f"Unknown service: {service}")
+    raise validation_error(
+        f"Unknown service: {service}",
+        correlation_id=get_correlation_id(),
+    )
 
 
 def _deep_merge(base: dict, override: dict) -> None:

@@ -3,11 +3,12 @@ from __future__ import annotations
 
 import json
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends
 from sqlalchemy import or_, select
 
 from backend.auth.dependencies import get_current_user
 from backend.database import Movie, SearchResult, async_session
+from backend.utils.responses import not_found, get_correlation_id
 
 router = APIRouter(prefix="/library", tags=["library"])
 
@@ -65,7 +66,7 @@ async def get_movie(movie_id: int, user=Depends(get_current_user)):
         result = await db.execute(select(Movie).where(Movie.id == movie_id))
         movie = result.scalar_one_or_none()
     if not movie:
-        raise HTTPException(status_code=404, detail="Movie not found")
+        raise not_found("Movie", correlation_id=get_correlation_id())
     return _movie_dict(movie)
 
 
@@ -104,7 +105,7 @@ async def download_result(
         )
         sr = result.scalar_one_or_none()
     if not sr:
-        raise HTTPException(status_code=404, detail="Search result not found")
+        raise not_found("Search result", correlation_id=get_correlation_id())
 
     async def _do_download(sr_id: int) -> None:
         from backend.core.download_workflow import process_search_result_download
@@ -139,7 +140,7 @@ async def lock_movie(movie_id: int, user=Depends(get_current_user)):
         result = await db.execute(select(Movie).where(Movie.id == movie_id))
         movie = result.scalar_one_or_none()
         if not movie:
-            raise HTTPException(status_code=404, detail="Movie not found")
+            raise not_found("Movie", correlation_id=get_correlation_id())
         movie.slimarr_locked = True
         await db.commit()
     return {"status": "locked", "movie_id": movie_id}
@@ -152,7 +153,7 @@ async def unlock_movie(movie_id: int, user=Depends(get_current_user)):
         result = await db.execute(select(Movie).where(Movie.id == movie_id))
         movie = result.scalar_one_or_none()
         if not movie:
-            raise HTTPException(status_code=404, detail="Movie not found")
+            raise not_found("Movie", correlation_id=get_correlation_id())
         movie.slimarr_locked = False
         await db.commit()
     return {"status": "unlocked", "movie_id": movie_id}

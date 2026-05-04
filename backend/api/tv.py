@@ -10,12 +10,18 @@ from __future__ import annotations
 import asyncio
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from backend.auth.dependencies import get_current_user
 from backend.config import get_config
 from backend.realtime.events import emit_event
+from backend.utils.responses import (
+    service_unavailable,
+    validation_error,
+    internal_error,
+    get_correlation_id,
+)
 from loguru import logger
 
 router = APIRouter(prefix="/tv", tags=["tv"])
@@ -59,7 +65,7 @@ async def list_shows(
     """
     config = get_config()
     if not config.plex.url or not config.plex.token:
-        raise HTTPException(status_code=503, detail="Plex is not configured")
+        raise service_unavailable("Plex", correlation_id=get_correlation_id())
 
     from backend.integrations.plex import PlexClient
     plex = PlexClient()
@@ -68,7 +74,7 @@ async def list_shows(
         loop = asyncio.get_event_loop()
         shows = await loop.run_in_executor(None, plex.get_all_shows)
     except Exception as e:
-        raise HTTPException(status_code=502, detail=f"Plex connection failed: {e}")
+        raise service_unavailable("Plex", correlation_id=get_correlation_id())
 
     # Apply stale filter
     if stale_days > 0:
@@ -115,11 +121,14 @@ async def delete_show(
     confirm the title and options before we touch anything.
     """
     if body.plex_rating_key != plex_rating_key:
-        raise HTTPException(status_code=400, detail="Rating key mismatch")
+        raise validation_error(
+            "Rating key mismatch",
+            correlation_id=get_correlation_id(),
+        )
 
     config = get_config()
     if not config.plex.url or not config.plex.token:
-        raise HTTPException(status_code=503, detail="Plex is not configured")
+        raise service_unavailable("Plex", correlation_id=get_correlation_id())
 
     from backend.integrations.plex import PlexClient
     plex = PlexClient()
@@ -172,6 +181,9 @@ async def delete_show(
     })
 
     if result["errors"] and not result["plex_deleted"]:
-        raise HTTPException(status_code=500, detail="; ".join(result["errors"]))
+        raise internal_error(
+            "; ".join(result["errors"]),
+            correlation_id=get_correlation_id(),
+        )
 
     return result
