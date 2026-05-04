@@ -132,6 +132,32 @@ async def trigger_process(movie_id: int, background: BackgroundTasks, user=Depen
     return {"status": "process_started", "movie_id": movie_id}
 
 
+@router.post("/movies/{movie_id}/lock")
+async def lock_movie(movie_id: int, user=Depends(get_current_user)):
+    """Lock a movie so Slimarr will not attempt to replace it."""
+    async with async_session() as db:
+        result = await db.execute(select(Movie).where(Movie.id == movie_id))
+        movie = result.scalar_one_or_none()
+        if not movie:
+            raise HTTPException(status_code=404, detail="Movie not found")
+        movie.slimarr_locked = True
+        await db.commit()
+    return {"status": "locked", "movie_id": movie_id}
+
+
+@router.post("/movies/{movie_id}/unlock")
+async def unlock_movie(movie_id: int, user=Depends(get_current_user)):
+    """Unlock a movie so Slimarr can attempt to replace it again."""
+    async with async_session() as db:
+        result = await db.execute(select(Movie).where(Movie.id == movie_id))
+        movie = result.scalar_one_or_none()
+        if not movie:
+            raise HTTPException(status_code=404, detail="Movie not found")
+        movie.slimarr_locked = False
+        await db.commit()
+    return {"status": "unlocked", "movie_id": movie_id}
+
+
 async def _run_search(movie_id: int) -> None:
     from backend.core.searcher import search_for_movie
     try:
@@ -166,6 +192,7 @@ def _movie_dict(m: Movie) -> dict:
         "video_codec": m.video_codec,
         "audio_codec": m.audio_codec,
         "status": m.status,
+        "slimarr_locked": bool(m.slimarr_locked),
         "last_scanned": m.last_scanned.isoformat() if m.last_scanned else None,
         "last_searched": m.last_searched.isoformat() if m.last_searched else None,
     }

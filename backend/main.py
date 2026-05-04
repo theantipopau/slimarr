@@ -37,7 +37,7 @@ async def lifespan(app: FastAPI):
     global _http_client
     config = get_config()
     setup_logger(config.server.log_level.upper())
-    _http_client = httpx.AsyncClient(timeout=15.0, verify=False)
+    _http_client = httpx.AsyncClient(timeout=15.0, verify=True)
 
     # Ensure directories exist (also done in run.py before import, belt-and-suspenders)
     for directory in [
@@ -89,7 +89,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=get_config().server.allowed_origins,
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -11,13 +11,14 @@ class RadarrClient:
         config = get_config()
         self.url = (url or config.radarr.url).rstrip("/")
         self.api_key = api_key or config.radarr.api_key
+        self.tls_verify = config.radarr.tls_verify
 
     def _headers(self) -> dict:
         return {"X-Api-Key": self.api_key}
 
     def _http(self) -> httpx.AsyncClient:
-        """Return an httpx client with SSL verification disabled for private IPs."""
-        return httpx.AsyncClient(timeout=15.0, verify=False)
+        """Return an httpx client. TLS verification is configurable via radarr.tls_verify."""
+        return httpx.AsyncClient(timeout=15.0, verify=self.tls_verify)
 
     async def _get(self, endpoint: str, params: dict | None = None) -> dict | list:
         async with self._http() as client:

@@ -513,6 +513,16 @@ export default function Settings() {
         </div>
         {field('URL', ['radarr', 'url'])}
         {field('API Key', ['radarr', 'api_key'], 'password')}
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="radarr_tls_verify"
+            checked={(settings?.radarr as Record<string,unknown>)?.tls_verify !== false}
+            onChange={(e) => set(['radarr', 'tls_verify'], e.target.checked)}
+            className="w-4 h-4 accent-brand-green"
+          />
+          <label htmlFor="radarr_tls_verify" className="text-sm">Verify TLS certificate <span className="text-gray-500 text-xs">(uncheck for self-signed certs)</span></label>
+        </div>
         <div className="space-y-1">
           <label className="text-xs text-gray-400">Action after file replacement</label>
           <select
@@ -551,6 +561,16 @@ export default function Settings() {
         </div>
         {field('URL', ['sonarr', 'url'])}
         {field('API Key', ['sonarr', 'api_key'], 'password')}
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="sonarr_tls_verify"
+            checked={(settings?.sonarr as Record<string,unknown>)?.tls_verify !== false}
+            onChange={(e) => set(['sonarr', 'tls_verify'], e.target.checked)}
+            className="w-4 h-4 accent-brand-green"
+          />
+          <label htmlFor="sonarr_tls_verify" className="text-sm">Verify TLS certificate <span className="text-gray-500 text-xs">(uncheck for self-signed certs)</span></label>
+        </div>
       </section>
 
       {/* Plex library sections */}

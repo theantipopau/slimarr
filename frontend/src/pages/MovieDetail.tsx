@@ -4,7 +4,7 @@ import { api } from '@/lib/api'
 import { useToast } from '@/components/Toast'
 import type { Movie, SearchResultItem } from '@/lib/types'
 import QualityBadge from '@/components/QualityBadge'
-import { ArrowLeft, Search, Zap, Download, Info, X } from 'lucide-react'
+import { ArrowLeft, Search, Zap, Download, Info, X, Lock, Unlock } from 'lucide-react'
 
 function fmt(bytes?: number | null) {
   if (!bytes) return '-'
@@ -40,6 +40,7 @@ export default function MovieDetail() {
   const [processing, setProcessing] = useState(false)
   const [downloadingId, setDownloadingId] = useState<number | null>(null)
   const [selectedResult, setSelectedResult] = useState<SearchResultItem | null>(null)
+  const [locking, setLocking] = useState(false)
 
   useEffect(() => {
     api.movie(movieId).then(setMovie).catch(() => {})
@@ -85,6 +86,25 @@ export default function MovieDetail() {
       toast('Failed to queue download', 'error')
     } finally {
       setDownloadingId(null)
+    }
+  }
+
+  const doToggleLock = async () => {
+    if (!movie) return
+    setLocking(true)
+    try {
+      if (movie.slimarr_locked) {
+        await api.unlockMovie(movieId)
+        toast('Movie unlocked — Slimarr will include it in future cycles', 'success')
+      } else {
+        await api.lockMovie(movieId)
+        toast('Movie locked — Slimarr will skip it in future cycles', 'info')
+      }
+      api.movie(movieId).then(setMovie)
+    } catch {
+      toast('Failed to update lock', 'error')
+    } finally {
+      setLocking(false)
     }
   }
 
@@ -137,6 +157,19 @@ export default function MovieDetail() {
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-green text-white text-sm disabled:opacity-50"
             >
               <Zap size={16} /> {processing ? 'Processing...' : 'Download Best'}
+            </button>
+            <button
+              onClick={doToggleLock}
+              disabled={locking}
+              title={movie.slimarr_locked ? 'Unlock: allow Slimarr to replace this movie' : 'Lock: prevent Slimarr from replacing this movie'}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm disabled:opacity-50 ${
+                movie.slimarr_locked
+                  ? 'bg-yellow-600 hover:bg-yellow-500 text-white'
+                  : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+              }`}
+            >
+              {movie.slimarr_locked ? <Lock size={16} /> : <Unlock size={16} />}
+              {movie.slimarr_locked ? 'Locked' : 'Lock'}
             </button>
           </div>
         </div>

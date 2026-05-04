@@ -105,7 +105,10 @@ async def run_full_cycle() -> dict:
 
         async with async_session() as db:
             result = await db.execute(
-                select(Movie).where(Movie.status.in_(["pending", "failed"]))
+                select(Movie).where(
+                    Movie.status.in_(["pending", "failed"]),
+                    Movie.slimarr_locked == False,  # noqa: E712
+                )
             )
             movies = result.scalars().all()
 

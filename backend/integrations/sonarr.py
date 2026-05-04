@@ -11,13 +11,14 @@ class SonarrClient:
         config = get_config()
         self.url = (url or config.sonarr.url).rstrip("/")
         self.api_key = api_key or config.sonarr.api_key
+        self.tls_verify = config.sonarr.tls_verify
 
     def _headers(self) -> dict:
         return {"X-Api-Key": self.api_key, "Content-Type": "application/json"}
 
     def _http(self) -> httpx.AsyncClient:
-        """SSL verification disabled — Sonarr on local network often uses self-signed certs."""
-        return httpx.AsyncClient(timeout=15.0, verify=False)
+        """TLS verification is configurable via sonarr.tls_verify."""
+        return httpx.AsyncClient(timeout=15.0, verify=self.tls_verify)
 
     async def get_all_series(self) -> list[dict]:
         async with self._http() as client:

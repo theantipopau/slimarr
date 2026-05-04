@@ -14,6 +14,12 @@ class ServerConfig(BaseModel):
     host: str = "0.0.0.0"
     port: int = 9494
     log_level: str = "info"
+    # CORS allowed origins. Defaults to localhost only.
+    # Add your LAN IP (e.g. 'http://192.168.1.10:9494') if accessing from another machine.
+    allowed_origins: list[str] = [
+        "http://localhost:9494",
+        "http://127.0.0.1:9494",
+    ]
 
 
 class AuthConfig(BaseModel):
@@ -58,6 +64,7 @@ class RadarrConfig(BaseModel):
     enabled: bool = False
     url: str = ""
     api_key: str = ""
+    tls_verify: bool = True
     post_replace_action: str = "rescan"  # "rescan" | "rescan_unmonitor" | "none"
 
 
@@ -65,6 +72,7 @@ class SonarrConfig(BaseModel):
     enabled: bool = False
     url: str = ""
     api_key: str = ""
+    tls_verify: bool = True
 
 
 class TmdbConfig(BaseModel):

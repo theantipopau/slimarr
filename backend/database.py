@@ -64,6 +64,7 @@ class Movie(Base):
     last_scanned: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     last_searched: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     status: Mapped[str] = mapped_column(String, default="pending", index=True)
+    slimarr_locked: Mapped[bool] = mapped_column(Integer, default=0)  # 0=False, 1=True (SQLite bool)
     error_message: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
@@ -283,6 +284,9 @@ async def _run_lightweight_migrations(conn) -> None:
     decision_columns = await _table_columns(conn, "decision_audit_log")
     await _add_column_if_missing(conn, "decision_audit_log", decision_columns, "confidence_score", "FLOAT")
     await _add_column_if_missing(conn, "decision_audit_log", decision_columns, "confidence_breakdown", "TEXT")
+
+    movie_columns = await _table_columns(conn, "movies")
+    await _add_column_if_missing(conn, "movies", movie_columns, "slimarr_locked", "INTEGER DEFAULT 0")
 
 
 async def get_db() -> AsyncSession:  # type: ignore[return]

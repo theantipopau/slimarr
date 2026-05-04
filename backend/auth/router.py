@@ -11,20 +11,46 @@ from backend.database import AsyncSession, User, get_db
 
 router = APIRouter()
 
-# Simple in-memory rate limiter: {ip: [timestamps]}
-_login_attempts: dict[str, list[float]] = defaultdict(list)
-_RATE_WINDOW = 60   # seconds
-_RATE_MAX    = 10   # attempts per window
+# ── Progressive login lockout ─────────────────────────────────────────────────
+# Tracks per-IP failure counts and optional lockout expiry.
+_login_failures: dict[str, int] = defaultdict(int)
+_login_lockout_until: dict[str, float] = {}
+
+_LOCKOUT_POLICY = [
+    # (failures_threshold, lockout_seconds)
+    (10, 30 * 60),   # 10+ failures  → 30 min lockout
+    (5,   5 * 60),   # 5–9 failures  →  5 min lockout
+]
 
 
 def _check_rate_limit(ip: str) -> None:
     now = time.monotonic()
-    attempts = _login_attempts[ip]
-    # Purge old entries
-    _login_attempts[ip] = [t for t in attempts if now - t < _RATE_WINDOW]
-    if len(_login_attempts[ip]) >= _RATE_MAX:
-        raise HTTPException(status_code=429, detail="Too many login attempts. Try again later.")
-    _login_attempts[ip].append(now)
+
+    # Check if currently locked out
+    until = _login_lockout_until.get(ip, 0)
+    if now < until:
+        remaining = int(until - now)
+        raise HTTPException(
+            status_code=429,
+            detail=f"Too many failed login attempts. Try again in {remaining} seconds.",
+        )
+
+
+def _record_login_failure(ip: str) -> None:
+    now = time.monotonic()
+    _login_failures[ip] += 1
+    failures = _login_failures[ip]
+
+    for threshold, duration in _LOCKOUT_POLICY:
+        if failures >= threshold:
+            _login_lockout_until[ip] = now + duration
+            break
+
+
+def _record_login_success(ip: str) -> None:
+    """Reset failure count on successful login."""
+    _login_failures.pop(ip, None)
+    _login_lockout_until.pop(ip, None)
 
 
 class LoginRequest(BaseModel):
@@ -61,9 +87,12 @@ async def login(body: LoginRequest, request: Request, db: AsyncSession = Depends
 
     result = await db.execute(select(User).where(User.username == body.username))
     user = result.scalar_one_or_none()
+    ip = request.client.host if request.client else "unknown"
     if not user or not bcrypt.verify(body.password, user.password_hash):
+        _record_login_failure(ip)
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
+    _record_login_success(ip)
     config = get_config()
     token = create_access_token(
         user.username,
@@ -84,8 +113,8 @@ async def register(body: RegisterRequest, db: AsyncSession = Depends(get_db)):
     if result.scalars().first() is not None:
         raise HTTPException(status_code=403, detail="Registration is disabled after first user is created.")
 
-    if len(body.password) < 6:
-        raise HTTPException(status_code=400, detail="Password must be at least 6 characters.")
+    if len(body.password) < 8:
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters.")
 
     hashed = bcrypt.hash(body.password)
     user = User(username=body.username, password_hash=hashed)

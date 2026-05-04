@@ -13,6 +13,7 @@ export interface Movie {
   video_codec?: string
   audio_codec?: string
   status: string
+  slimarr_locked?: boolean
   last_scanned?: string
   last_searched?: string
 }

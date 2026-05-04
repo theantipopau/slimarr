@@ -49,6 +49,10 @@ export const api = {
     client.post(`/library/movies/${id}/process`).then((r) => r.data),
   downloadResult: (movieId: number, resultId: number) =>
     client.post(`/library/movies/${movieId}/search-results/${resultId}/download`).then((r) => r.data),
+  lockMovie: (id: number) =>
+    client.post(`/library/movies/${id}/lock`).then((r) => r.data),
+  unlockMovie: (id: number) =>
+    client.post(`/library/movies/${id}/unlock`).then((r) => r.data),
 
   // Activity
   activity: (params?: Record<string, unknown>) =>
