@@ -82,7 +82,7 @@ async def _resume_downloads_after_startup() -> None:
 
 app = FastAPI(
     title="Slimarr",
-    version="1.1.0.0",
+    version="1.2.0.0",
     description="Smart Usenet replacement manager for Plex movie libraries",
     lifespan=lifespan,
 )

@@ -1,10 +1,10 @@
 """Newznab protocol indexer client."""
 from __future__ import annotations
 
+import xml.etree.ElementTree as ET
 from typing import Optional
 
 import httpx
-from lxml import etree
 
 from backend.config import IndexerConfig
 
@@ -48,7 +48,7 @@ class NewznabClient:
 
         results = []
         try:
-            root = etree.fromstring(resp.content)
+            root = ET.fromstring(resp.content)
         except Exception:
             return results
 
@@ -97,7 +97,7 @@ class NewznabClient:
                     params={"t": "caps", "apikey": self.api_key},
                 )
                 resp.raise_for_status()
-            root = etree.fromstring(resp.content)
+            root = ET.fromstring(resp.content)
             server_el = root.find(".//server")
             title = server_el.get("title", "Connected") if server_el is not None else "Connected"
             return {"success": True, "indexer": self.name, "server": title}

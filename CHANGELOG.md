@@ -4,6 +4,30 @@ All notable changes to Slimarr are documented here.
 
 ---
 
+## [1.2.0.0] - 2026-05-04
+
+### Release focus
+
+Eliminated the only C-compiled Python dependency (`lxml`) and tightened Python version
+guards to make source installs seamless on any supported Python version.
+
+**lxml dependency removed**
+- `backend/integrations/newznab.py` now uses `xml.etree.ElementTree` (Python stdlib) instead
+  of `lxml` to parse Newznab RSS/Atom responses. The API is identical, so behaviour is
+  unchanged. This removes the last dependency that required a C++ compiler or prebuilt wheel.
+- `lxml==5.3.0` removed from `requirements.txt`.
+- Source installs now require **zero** native compilers — all remaining packages have
+  prebuilt wheels for Python 3.11, 3.12, and 3.13 on Windows.
+
+**Tightened Python 3.14 guard in install.ps1**
+- Added a post-venv-creation version check: even if the venv somehow ends up on Python 3.14
+  (e.g. leftover venv from an old install), the script now aborts with a clear error message
+  before attempting `pip install`, rather than letting pip fail with cryptic build errors.
+- Updated pip-failure message to reflect that pydantic-core (not lxml) is the remaining
+  reason Python 3.14 is unsupported.
+
+---
+
 ## [1.1.2.0] - 2026-05-04
 
 ### Release focus

@@ -198,8 +198,16 @@ if (-not (Test-Path $VenvPython)) {
     if ($LASTEXITCODE -ne 0) { Fail "Could not create Python virtual environment." }
 }
 
-# Print the exact Python version used in the venv
+# Print the exact Python version used in the venv and hard-block 3.14
 $venvActualVer = & $VenvPython -c "import sys; print(sys.version)" 2>$null
+$venvMinorCheck = & $VenvPython -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>$null
+if ($LASTEXITCODE -eq 0 -and $venvMinorCheck -and [version]$venvMinorCheck -ge [version]"3.14") {
+    Write-Host ""
+    Write-Host "  ERROR: The virtual environment is using Python $venvMinorCheck which is not supported." -ForegroundColor Red
+    Write-Host "  Please install Python 3.12 or 3.13 from https://python.org (tick 'Add Python to PATH')" -ForegroundColor Yellow
+    Write-Host "  Then delete the 'venv' folder and rerun install.ps1" -ForegroundColor Yellow
+    exit 1
+}
 Write-Ok "Venv Python: $venvActualVer"
 
 & $VenvPython -m pip --version *> $null
@@ -221,7 +229,7 @@ if ($code -ne 0) {
     Write-Host "  Dependency install failed. Common causes:" -ForegroundColor Yellow
     Write-Host "    - Python 3.14 was used (not yet supported — use 3.12 or 3.13)" -ForegroundColor Yellow
     Write-Host "    - No internet access or firewall blocked PyPI (pypi.org:443)" -ForegroundColor Yellow
-    Write-Host "    - Missing Visual C++ Build Tools (only needed if wheels are missing)" -ForegroundColor Yellow
+    Write-Host "    - Missing Visual C++ Build Tools (required by pydantic-core on 3.14)" -ForegroundColor Yellow
     Write-Host "  See $LogFile for the full error." -ForegroundColor DarkGray
     Fail "Dependency install failed. See above for details."
 }
