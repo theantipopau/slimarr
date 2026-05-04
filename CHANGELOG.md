@@ -26,6 +26,22 @@ guards to make source installs seamless on any supported Python version.
 - Updated pip-failure message to reflect that pydantic-core (not lxml) is the remaining
   reason Python 3.14 is unsupported.
 
+**Milestone A safety hardening**
+- Added centralized API error envelopes with `code`, `message`, `details`, and
+  `correlation_id` fields, plus global exception mapping in `backend/main.py`.
+- Added correlation ID middleware (`X-Correlation-ID`) so API errors and server logs can be
+  traced per request.
+- Updated core API routes to use shared error helpers instead of mixed ad-hoc `HTTPException`
+  responses.
+
+**Milestone A backend tests**
+- Added focused backend unit tests for comparison decisions, Radarr post-replace policy
+  behavior, and replacer-to-Radarr policy bridge dispatch.
+- New test files:
+  - `tests/backend/test_comparer.py`
+  - `tests/backend/test_radarr_policy.py`
+  - `tests/backend/test_replacer_policy_bridge.py`
+
 ---
 
 ## [1.1.2.0] - 2026-05-04

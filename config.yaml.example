@@ -57,6 +57,11 @@ radarr:
   enabled: false
   url: ""
   api_key: ""
+  # Action to take in Radarr after Slimarr replaces a file:
+  #   rescan           - notify Radarr to rescan (default)
+  #   rescan_unmonitor - rescan + unmonitor the movie (prevents Radarr re-downloading)
+  #   none             - do nothing
+  post_replace_action: "rescan"
 
 sonarr:
   enabled: false

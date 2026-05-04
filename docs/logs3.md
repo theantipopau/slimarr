@@ -23698,3 +23698,3765 @@ WHERE downloads.nzo_id = ?]
 2026-04-30 20:17:28 | INFO     | backend.core.searcher - Found 70 raw results for The Virtuoso
 2026-04-30 20:17:28 | INFO     | backend.core.searcher - Analyzed 70 results: 12 accepted, 58 rejected (10 due to resolution downgrade limit, 42 due to larger size limit).
 2026-04-30 20:17:29 | INFO     | backend.core.downloader - Submitted to sabnzbd: (The Virtuoso) [00/37] - "The Virtuoso 2021 1080p h265.nzb" → job_id=SABnzbd_nzo_tc17kzq2
+2026-04-30 21:12:49 | INFO     | backend.core.downloader - Download 1494: found in sabnzbd history — status='failed' storage=''
+2026-04-30 21:12:50 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_tc17kzq2
+2026-04-30 21:12:50 | INFO     | backend.core.download_workflow - Failed download cleanup for 1494: cleaned folder_deleted=False downloader_purged=True
+2026-04-30 21:12:50 | INFO     | backend.core.blacklist - Added to blacklist: (The Virtuoso) [00/37] - "The Virtuoso 2021 1080p h265.nzb" (reason=retry_failed_release, expires=2026-05-30 11:12:50.760436+00:00)
+2026-04-30 21:12:51 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Virtuoso.2021.1080p.BluRay.x265 → job_id=SABnzbd_nzo_vacf484v
+2026-04-30 21:12:51 | INFO     | backend.core.retry_ladder - Retrying download 1494 with candidate 263646: The.Virtuoso.2021.1080p.BluRay.x265
+2026-04-30 21:12:51 | INFO     | backend.core.download_workflow - Retrying failed download 1494 as download 1495: Retry #1 started: The.Virtuoso.2021.1080p.BluRay.x265
+2026-04-30 21:15:10 | INFO     | backend.core.downloader - Download 1495: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\The.Virtuoso.2021.1080p.BluRay.x265\\The.Virtuoso.2021.1080p.BluRay.x265.mp4'
+2026-04-30 21:15:10 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\The.Virtuoso.2021.1080p.BluRay.x265\\The.Virtuoso.2021.1080p.BluRay.x265.mp4'
+2026-04-30 21:15:10 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\The.Virtuoso.2021.1080p.BluRay.x265\\The.Virtuoso.2021.1080p.BluRay.x265.mp4'
+2026-04-30 21:15:10 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\The.Virtuoso.2021.1080p.Bluray.DTS-HD.MA.5.1.X264-EVO\\The.Virtuoso.2021.1080p.BluRay.x264-nikt0.mkv'
+2026-04-30 21:15:10 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\The.Virtuoso.2021.1080p.Bluray.DTS-HD.MA.5.1.X264-EVO' — target path: 'Z:\\MEDIA\\MOVIES\\The.Virtuoso.2021.1080p.Bluray.DTS-HD.MA.5.1.X264-EVO\\The.Virtuoso.2021.1080p.BluRay.x264-nikt0.mp4'
+2026-04-30 21:15:10 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,275,905,536 free, 5,247,837,063 needed); using local backup fallback
+2026-04-30 21:15:10 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\The.Virtuoso.2021.1080p.BluRay.x265\\The.Virtuoso.2021.1080p.BluRay.x265.mp4' → 'Z:\\MEDIA\\MOVIES\\The.Virtuoso.2021.1080p.Bluray.DTS-HD.MA.5.1.X264-EVO\\The.Virtuoso.2021.1080p.BluRay.x264-nikt0.mp4'
+2026-04-30 21:15:26 | INFO     | backend.core.replacer - File move succeeded. New size: 1,834,431,053 bytes
+2026-04-30 21:15:26 | INFO     | backend.core.replacer - Deleted old file: Z:\MEDIA\MOVIES\The.Virtuoso.2021.1080p.Bluray.DTS-HD.MA.5.1.X264-EVO\The.Virtuoso.2021.1080p.BluRay.x264-nikt0.mkv
+2026-04-30 21:15:27 | INFO     | backend.core.replacer - Radarr rescan triggered for The Virtuoso
+2026-04-30 21:15:27 | INFO     | backend.core.searcher - Searching for: Wake Up Dead Man (2025)
+2026-04-30 21:15:29 | INFO     | backend.core.searcher - Found 110 raw results for Wake Up Dead Man
+2026-04-30 21:15:29 | INFO     | backend.core.searcher - Analyzed 110 results: 36 accepted, 74 rejected (62 due to resolution downgrade limit, 4 due to larger size limit).
+2026-04-30 21:15:30 | INFO     | backend.core.downloader - Submitted to sabnzbd: wake.up.dead.man.a.knives.out.mystery.2025.1080p.nf.webrip.ds4k.opus.5.1.av1-whiskeyjack → job_id=SABnzbd_nzo_0g1nb6_d
+2026-04-30 21:24:44 | INFO     | backend.utils.logger - Logger initialised — level=INFO
+2026-04-30 21:24:44 | INFO     | backend.scheduler.scheduler - Scheduled nightly cycle at 01:00 UTC
+2026-04-30 21:24:44 | INFO     | backend.scheduler.scheduler - Scheduler started
+2026-04-30 21:24:46 | INFO     | backend.core.download_workflow - Resuming monitor workflow for download 1496
+2026-04-30 21:24:46 | INFO     | backend.main - Resumed 1 stuck downloading workflow(s)
+2026-04-30 21:24:52 | INFO     | backend.core.downloader - Download 1496: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\wake.up.dead.man.a.knives.out.mystery.2025.1080p.nf.webrip.ds4k.opus.5.1.av1-whiskeyjack'
+2026-04-30 21:28:15 | INFO     | backend.utils.logger - Logger initialised — level=INFO
+2026-04-30 21:28:15 | INFO     | backend.scheduler.scheduler - Scheduled nightly cycle at 01:00 UTC
+2026-04-30 21:28:15 | INFO     | backend.scheduler.scheduler - Scheduler started
+2026-04-30 21:29:18 | INFO     | backend.core.scanner - Scan started: 1691 movies in Plex
+2026-04-30 21:32:44 | INFO     | backend.utils.logger - Logger initialised — level=INFO
+2026-04-30 21:32:44 | INFO     | backend.scheduler.scheduler - Scheduled nightly cycle at 01:00 UTC
+2026-04-30 21:32:44 | INFO     | backend.scheduler.scheduler - Scheduler started
+2026-04-30 21:32:59 | INFO     | backend.core.scanner - Scan started: 1691 movies in Plex
+2026-04-30 21:37:26 | WARNING  | backend.core.scanner - TMDB lookup failed for Ricky Gervais Meets... Larry David: Client error '404 Not Found' for url 'https://api.themoviedb.org/3/movie/264152?api_key=b4476886334d94febf78d6460d852813&language=en-US'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404
+2026-04-30 21:37:31 | INFO     | backend.core.scanner - Scan completed: 1691 movies processed
+2026-05-01 01:00:00 | INFO     | backend.scheduler.scheduler - Nightly cycle triggered
+2026-05-01 01:00:04 | INFO     | backend.core.scanner - Scan started: 1691 movies in Plex
+2026-05-01 01:01:04 | WARNING  | backend.core.scanner - TMDB lookup failed for Ricky Gervais Meets... Larry David: Client error '404 Not Found' for url 'https://api.themoviedb.org/3/movie/264152?api_key=b4476886334d94febf78d6460d852813&language=en-US'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404
+2026-05-01 01:01:05 | INFO     | backend.core.scanner - Scan completed: 1691 movies processed
+2026-05-01 01:01:05 | INFO     | backend.core.orchestrator - Cycle: 318 movies to process
+2026-05-01 01:01:05 | INFO     | backend.core.searcher - Searching for: Extraction II (2023)
+2026-05-01 01:01:07 | INFO     | backend.core.searcher - Found 5 raw results for Extraction II
+2026-05-01 01:01:07 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (2 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-01 01:01:07 | INFO     | backend.core.searcher - Searching for: Homestead (2024)
+2026-05-01 01:01:08 | INFO     | backend.core.searcher - Found 64 raw results for Homestead
+2026-05-01 01:01:08 | INFO     | backend.core.searcher - Analyzed 64 results: 1 accepted, 63 rejected (1 due to resolution downgrade limit, 61 due to larger size limit).
+2026-05-01 01:01:09 | INFO     | backend.core.downloader - Submitted to sabnzbd: Homestead.2024.[V2].[720p].[WEBRip].[YTS.MX] → job_id=SABnzbd_nzo_hfoife1k
+2026-05-01 01:02:32 | INFO     | backend.core.downloader - Download 1497: found in sabnzbd history — status='verifying' storage=''
+2026-05-01 01:02:32 | INFO     | backend.core.downloader - Download 1497: sabnzbd history status 'verifying' is still post-processing; continuing monitor
+2026-05-01 01:02:38 | INFO     | backend.core.downloader - Download 1497: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 01:02:38 | INFO     | backend.core.downloader - Download 1497: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 01:02:45 | INFO     | backend.core.downloader - Download 1497: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 01:02:45 | INFO     | backend.core.downloader - Download 1497: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 01:02:51 | INFO     | backend.core.downloader - Download 1497: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 01:02:51 | INFO     | backend.core.downloader - Download 1497: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 01:02:57 | INFO     | backend.core.downloader - Download 1497: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 01:02:57 | INFO     | backend.core.downloader - Download 1497: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 01:03:03 | INFO     | backend.core.downloader - Download 1497: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 01:03:03 | INFO     | backend.core.downloader - Download 1497: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 01:03:09 | INFO     | backend.core.downloader - Download 1497: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Homestead.2024.[V2].[720p].[WEBRip].[YTS.MX]\\Homestead.2024.[V2].[720p].[WEBRip].[YTS.MX].mp4'
+2026-05-01 01:03:09 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Homestead.2024.[V2].[720p].[WEBRip].[YTS.MX]\\Homestead.2024.[V2].[720p].[WEBRip].[YTS.MX].mp4'
+2026-05-01 01:03:09 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Homestead.2024.[V2].[720p].[WEBRip].[YTS.MX]\\Homestead.2024.[V2].[720p].[WEBRip].[YTS.MX].mp4'
+2026-05-01 01:03:09 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\Homestead (2024)\\Homestead.2024.V2.720p.WEB-DL.H264.XoXo.mp4'
+2026-05-01 01:03:10 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\Homestead (2024)' — target path: 'E:\\MOVIES\\Homestead (2024)\\Homestead.2024.V2.720p.WEB-DL.H264.XoXo.mp4'
+2026-05-01 01:03:18 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\Homestead (2024)_Homestead.2024.V2.720p.WEB-DL.H264.XoXo.mp4
+2026-05-01 01:03:18 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Homestead.2024.[V2].[720p].[WEBRip].[YTS.MX]\\Homestead.2024.[V2].[720p].[WEBRip].[YTS.MX].mp4' → 'E:\\MOVIES\\Homestead (2024)\\Homestead.2024.V2.720p.WEB-DL.H264.XoXo.mp4'
+2026-05-01 01:03:18 | INFO     | backend.core.replacer - File move succeeded. New size: 1,074,386,693 bytes
+2026-05-01 01:03:19 | INFO     | backend.core.replacer - Radarr rescan triggered for Homestead
+2026-05-01 01:03:19 | INFO     | backend.core.searcher - Searching for: Major Payne (1995)
+2026-05-01 01:03:21 | INFO     | backend.core.searcher - Found 65 raw results for Major Payne
+2026-05-01 01:03:21 | INFO     | backend.core.searcher - Analyzed 65 results: 9 accepted, 56 rejected (14 due to resolution downgrade limit, 31 due to larger size limit).
+2026-05-01 01:03:22 | INFO     | backend.core.downloader - Submitted to sabnzbd: (Major Payne) [55/60] - "Major Payne 1995 1080p h265.vol015+016.par2" → job_id=SABnzbd_nzo_syp1o4ff
+2026-05-01 01:18:56 | INFO     | backend.core.downloader - Download 1498: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\(Major Payne) [55_60] - _Major Payne 1995 1080p h265.vol015+016.par2_'
+2026-05-01 01:18:56 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\(Major Payne) [55_60] - _Major Payne 1995 1080p h265.vol015+016.par2_'
+2026-05-01 01:18:56 | ERROR    | backend.core.replacer - No video file found in 'H:\\DOWNLOADS\\USENET\\complete\\(Major Payne) [55_60] - _Major Payne 1995 1080p h265.vol015+016.par2_'
+2026-05-01 01:18:56 | INFO     | backend.core.replacer - Cleaned up download folder: 'H:\\DOWNLOADS\\USENET\\complete\\(Major Payne) [55_60] - _Major Payne 1995 1080p h265.vol015+016.par2_'
+2026-05-01 01:18:56 | INFO     | backend.core.searcher - Searching for: Monkey Man (2024)
+2026-05-01 01:18:57 | INFO     | backend.core.searcher - Found 200 raw results for Monkey Man
+2026-05-01 01:18:57 | INFO     | backend.core.searcher - Analyzed 200 results: 7 accepted, 193 rejected (9 due to resolution downgrade limit, 171 due to larger size limit).
+2026-05-01 01:18:57 | INFO     | backend.core.downloader - Submitted to sabnzbd: Monkey.Man.2024.bluray.sdr.1080p.av1.vmaf96-Rosy → job_id=SABnzbd_nzo_b6_a4ikh
+2026-05-01 01:21:22 | INFO     | backend.core.downloader - Download 1499: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 01:21:22 | INFO     | backend.core.downloader - Download 1499: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 01:21:28 | INFO     | backend.core.downloader - Download 1499: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 01:21:28 | INFO     | backend.core.downloader - Download 1499: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 01:21:34 | INFO     | backend.core.downloader - Download 1499: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 01:21:34 | INFO     | backend.core.downloader - Download 1499: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 01:21:40 | INFO     | backend.core.downloader - Download 1499: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 01:21:40 | INFO     | backend.core.downloader - Download 1499: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 01:21:47 | INFO     | backend.core.downloader - Download 1499: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 01:21:47 | INFO     | backend.core.downloader - Download 1499: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 01:21:53 | INFO     | backend.core.downloader - Download 1499: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Monkey.Man.2024.bluray.sdr.1080p.av1.vmaf96-Rosy\\Monkey.Man.2024.bluray.sdr.1080p.av1.vmaf96-Rosy.mkv'
+2026-05-01 01:21:53 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Monkey.Man.2024.bluray.sdr.1080p.av1.vmaf96-Rosy\\Monkey.Man.2024.bluray.sdr.1080p.av1.vmaf96-Rosy.mkv'
+2026-05-01 01:21:53 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Monkey.Man.2024.bluray.sdr.1080p.av1.vmaf96-Rosy\\Monkey.Man.2024.bluray.sdr.1080p.av1.vmaf96-Rosy.mkv'
+2026-05-01 01:21:53 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Monkey Man (2024)\\Monkey.Man.2024.2160p.WebRip.Atmos.EAC3.5.1.HDR.DV.x265-Groupless.mkv'
+2026-05-01 01:21:53 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\Monkey Man (2024)' — target path: 'Z:\\MEDIA\\MOVIES\\Monkey Man (2024)\\Monkey.Man.2024.2160p.WebRip.Atmos.EAC3.5.1.HDR.DV.x265-Groupless.mkv'
+2026-05-01 01:22:19 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\Monkey Man (2024)_Monkey.Man.2024.2160p.WebRip.Atmos.EAC3.5.1.HDR.DV.x265-Groupless.mkv
+2026-05-01 01:22:19 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Monkey.Man.2024.bluray.sdr.1080p.av1.vmaf96-Rosy\\Monkey.Man.2024.bluray.sdr.1080p.av1.vmaf96-Rosy.mkv' → 'Z:\\MEDIA\\MOVIES\\Monkey Man (2024)\\Monkey.Man.2024.2160p.WebRip.Atmos.EAC3.5.1.HDR.DV.x265-Groupless.mkv'
+2026-05-01 01:22:36 | INFO     | backend.core.replacer - File move succeeded. New size: 1,927,217,158 bytes
+2026-05-01 01:22:37 | INFO     | backend.core.replacer - Radarr rescan triggered for Monkey Man
+2026-05-01 01:22:37 | INFO     | backend.core.searcher - Searching for: My Old Ass (2024)
+2026-05-01 01:22:45 | INFO     | backend.core.searcher - Found 82 raw results for My Old Ass
+2026-05-01 01:22:45 | INFO     | backend.core.searcher - Analyzed 82 results: 11 accepted, 71 rejected (4 due to resolution downgrade limit, 65 due to larger size limit).
+2026-05-01 01:22:45 | INFO     | backend.core.downloader - Submitted to sabnzbd: My.Old.Ass.2024.1080p.BluRay.AV1.AAC.DD5.1-LUCY → job_id=SABnzbd_nzo_7bxb2aqh
+2026-05-01 01:23:52 | INFO     | backend.core.downloader - Download 1500: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\My.Old.Ass.2024.1080p.BluRay.AV1.AAC.DD5.1-LUCY\\My.Old.Ass.2024.1080p.BluRay.AV1.AAC.DD5.1-LUCY.mkv'
+2026-05-01 01:23:52 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\My.Old.Ass.2024.1080p.BluRay.AV1.AAC.DD5.1-LUCY\\My.Old.Ass.2024.1080p.BluRay.AV1.AAC.DD5.1-LUCY.mkv'
+2026-05-01 01:23:52 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\My.Old.Ass.2024.1080p.BluRay.AV1.AAC.DD5.1-LUCY\\My.Old.Ass.2024.1080p.BluRay.AV1.AAC.DD5.1-LUCY.mkv'
+2026-05-01 01:23:52 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\My Old Ass (2024)\\My.Old.Ass.2024.1080p.WEB.H264-AccomplishedYak.mkv'
+2026-05-01 01:23:52 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\My Old Ass (2024)' — target path: 'E:\\MOVIES\\My Old Ass (2024)\\My.Old.Ass.2024.1080p.WEB.H264-AccomplishedYak.mkv'
+2026-05-01 01:24:02 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\My Old Ass (2024)_My.Old.Ass.2024.1080p.WEB.H264-AccomplishedYak.mkv
+2026-05-01 01:24:02 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\My.Old.Ass.2024.1080p.BluRay.AV1.AAC.DD5.1-LUCY\\My.Old.Ass.2024.1080p.BluRay.AV1.AAC.DD5.1-LUCY.mkv' → 'E:\\MOVIES\\My Old Ass (2024)\\My.Old.Ass.2024.1080p.WEB.H264-AccomplishedYak.mkv'
+2026-05-01 01:24:02 | INFO     | backend.core.replacer - File move succeeded. New size: 1,131,027,458 bytes
+2026-05-01 01:24:03 | INFO     | backend.core.replacer - Radarr rescan triggered for My Old Ass
+2026-05-01 01:24:03 | INFO     | backend.core.searcher - Searching for: Now You See Me (2013)
+2026-05-01 01:24:04 | INFO     | backend.core.searcher - Found 200 raw results for Now You See Me
+2026-05-01 01:24:04 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (7 due to resolution downgrade limit, 171 due to larger size limit).
+2026-05-01 01:24:04 | INFO     | backend.core.searcher - Searching for: Poker Face (2022)
+2026-05-01 01:24:05 | INFO     | backend.core.searcher - Found 76 raw results for Poker Face
+2026-05-01 01:24:05 | INFO     | backend.core.searcher - Analyzed 76 results: 25 accepted, 51 rejected (8 due to resolution downgrade limit, 37 due to larger size limit).
+2026-05-01 01:24:06 | INFO     | backend.core.downloader - Submitted to sabnzbd: (Poker Face (2022)) [00/37] - "Poker Face (2022) 2022 1080p h265.nzb" → job_id=SABnzbd_nzo_7ktjigr9
+2026-05-01 01:39:12 | WARNING  | backend.core.downloader - Download 1501: job not found in sabnzbd queue or history (attempt 1/6)
+2026-05-01 01:39:40 | INFO     | backend.core.downloader - Download 1501: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\(Poker Face (2022)) [00_37] - _Poker Face (2022) 2022 1080p h265.nzb_'
+2026-05-01 01:39:42 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_7ktjigr9
+2026-05-01 01:39:42 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\(Poker Face (2022)) [00_37] - _Poker Face (2022) 2022 1080p h265.nzb_
+2026-05-01 01:39:42 | INFO     | backend.core.download_workflow - Failed download cleanup for 1501: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 01:39:42 | INFO     | backend.core.downloader - Submitted to sabnzbd: Poker.Face.2022.1080p.WEBRip.x265-LAMA → job_id=SABnzbd_nzo_2uh_9pr2
+2026-05-01 01:39:42 | INFO     | backend.core.retry_ladder - Retrying download 1501 with candidate 264461: Poker.Face.2022.1080p.WEBRip.x265-LAMA
+2026-05-01 01:39:42 | INFO     | backend.core.download_workflow - Retrying failed download 1501 as download 1502: Retry #1 started: Poker.Face.2022.1080p.WEBRip.x265-LAMA
+2026-05-01 01:41:22 | INFO     | backend.core.downloader - Download 1502: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Poker.Face.2022.1080p.WEBRip.x265-LAMA\\Poker.Face.2022.1080p.WEBRip.x265-LAMA.mp4'
+2026-05-01 01:41:22 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Poker.Face.2022.1080p.WEBRip.x265-LAMA\\Poker.Face.2022.1080p.WEBRip.x265-LAMA.mp4'
+2026-05-01 01:41:22 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Poker.Face.2022.1080p.WEBRip.x265-LAMA\\Poker.Face.2022.1080p.WEBRip.x265-LAMA.mp4'
+2026-05-01 01:41:22 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Poker Face (2022)\\Poker.Face.2022.1080p.WEB-DL.DDP5.1.H.264-EVO.mkv'
+2026-05-01 01:41:22 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\Poker Face (2022)' — target path: 'Z:\\MEDIA\\MOVIES\\Poker Face (2022)\\Poker.Face.2022.1080p.WEB-DL.DDP5.1.H.264-EVO.mp4'
+2026-05-01 01:42:09 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\Poker Face (2022)_Poker.Face.2022.1080p.WEB-DL.DDP5.1.H.264-EVO.mkv
+2026-05-01 01:42:09 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Poker.Face.2022.1080p.WEBRip.x265-LAMA\\Poker.Face.2022.1080p.WEBRip.x265-LAMA.mp4' → 'Z:\\MEDIA\\MOVIES\\Poker Face (2022)\\Poker.Face.2022.1080p.WEB-DL.DDP5.1.H.264-EVO.mp4'
+2026-05-01 01:42:22 | INFO     | backend.core.replacer - File move succeeded. New size: 1,516,686,590 bytes
+2026-05-01 01:42:23 | INFO     | backend.core.replacer - Radarr rescan triggered for Poker Face
+2026-05-01 01:42:23 | INFO     | backend.core.searcher - Searching for: The Portable Door (2023)
+2026-05-01 01:42:24 | INFO     | backend.core.searcher - Found 86 raw results for The Portable Door
+2026-05-01 01:42:24 | INFO     | backend.core.searcher - Analyzed 86 results: 2 accepted, 84 rejected (56 due to resolution downgrade limit, 22 due to larger size limit).
+2026-05-01 01:42:25 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Portable.Door.2023.2160p.4K.WEB.X265.10bit.AAC5.1-LAMA → job_id=SABnzbd_nzo_2xy4m0rm
+2026-05-01 01:47:57 | INFO     | backend.core.downloader - Download 1503: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 01:47:57 | INFO     | backend.core.downloader - Download 1503: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 01:48:03 | INFO     | backend.core.downloader - Download 1503: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\The.Portable.Door.2023.2160p.4K.WEB.X265.10bit.AAC5.1-LAMA'
+2026-05-01 01:48:03 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\The.Portable.Door.2023.2160p.4K.WEB.X265.10bit.AAC5.1-LAMA'
+2026-05-01 01:48:03 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\The.Portable.Door.2023.2160p.4K.WEB.X265.10bit.AAC5.1-LAMA\\The.Portable.Door.2023.2160p.4K.WEB.5.1-LAMA.mkv'
+2026-05-01 01:48:03 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\The Portable Door (2023)\\The.Portable.Door.2023.2160p.NORDiC.WEB.H.265-NorTekst.mkv'
+2026-05-01 01:48:03 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\The Portable Door (2023)' — target path: 'Z:\\MEDIA\\MOVIES\\The Portable Door (2023)\\The.Portable.Door.2023.2160p.NORDiC.WEB.H.265-NorTekst.mkv'
+2026-05-01 01:49:46 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\The Portable Door (2023)_The.Portable.Door.2023.2160p.NORDiC.WEB.H.265-NorTekst.mkv
+2026-05-01 01:49:46 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\The.Portable.Door.2023.2160p.4K.WEB.X265.10bit.AAC5.1-LAMA\\The.Portable.Door.2023.2160p.4K.WEB.5.1-LAMA.mkv' → 'Z:\\MEDIA\\MOVIES\\The Portable Door (2023)\\The.Portable.Door.2023.2160p.NORDiC.WEB.H.265-NorTekst.mkv'
+2026-05-01 01:50:38 | INFO     | backend.core.replacer - File move succeeded. New size: 5,556,279,707 bytes
+2026-05-01 01:50:38 | INFO     | backend.core.replacer - Radarr rescan triggered for The Portable Door
+2026-05-01 01:50:38 | INFO     | backend.core.replacer - Cleaned up download folder: 'H:\\DOWNLOADS\\USENET\\complete\\The.Portable.Door.2023.2160p.4K.WEB.X265.10bit.AAC5.1-LAMA'
+2026-05-01 01:50:38 | INFO     | backend.core.searcher - Searching for: Resident Evil: Retribution (2012)
+2026-05-01 01:50:40 | INFO     | backend.core.searcher - Found 183 raw results for Resident Evil: Retribution
+2026-05-01 01:50:40 | INFO     | backend.core.searcher - Analyzed 183 results: 1 accepted, 182 rejected (7 due to resolution downgrade limit, 169 due to larger size limit).
+2026-05-01 01:50:40 | INFO     | backend.core.downloader - Submitted to sabnzbd: Resident.Evil.Retribution.2012.m720p.AAC.x264-NoGroup → job_id=SABnzbd_nzo_fyuvqb4c
+2026-05-01 01:50:52 | INFO     | backend.core.downloader - Download 1504: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Resident.Evil.Retribution.2012.m720p.AAC.x264-NoGroup'
+2026-05-01 01:50:53 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_fyuvqb4c
+2026-05-01 01:50:53 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Resident.Evil.Retribution.2012.m720p.AAC.x264-NoGroup
+2026-05-01 01:50:53 | INFO     | backend.core.download_workflow - Failed download cleanup for 1504: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 01:50:53 | INFO     | backend.core.searcher - Searching for: Resident Evil: Welcome to Raccoon City (2021)
+2026-05-01 01:50:54 | INFO     | backend.core.searcher - Found 186 raw results for Resident Evil: Welcome to Raccoon City
+2026-05-01 01:50:54 | INFO     | backend.core.searcher - Analyzed 186 results: 25 accepted, 161 rejected (10 due to resolution downgrade limit, 138 due to larger size limit).
+2026-05-01 01:50:55 | INFO     | backend.core.downloader - Submitted to sabnzbd: Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.BRRip.DDP.5.1.H.265.-iVy → job_id=SABnzbd_nzo_gnmz0ya6
+2026-05-01 01:52:24 | INFO     | backend.core.downloader - Download 1505: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.BRRip.DDP.5.1.H.265.-iVy\\Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.BRRip.DDP.5.1.H.265.-iVy.mkv'
+2026-05-01 01:52:24 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.BRRip.DDP.5.1.H.265.-iVy\\Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.BRRip.DDP.5.1.H.265.-iVy.mkv'
+2026-05-01 01:52:24 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.BRRip.DDP.5.1.H.265.-iVy\\Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.BRRip.DDP.5.1.H.265.-iVy.mkv'
+2026-05-01 01:52:24 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.AMZN.WEB-DL.DDP5.1.H264-CMRG\\Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.AMZN.WEB-DL.DDP5.1.H264-CMRG.mkv'
+2026-05-01 01:52:24 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.AMZN.WEB-DL.DDP5.1.H264-CMRG' — target path: 'Z:\\MEDIA\\MOVIES\\Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.AMZN.WEB-DL.DDP5.1.H264-CMRG\\Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.AMZN.WEB-DL.DDP5.1.H264-CMRG.mkv'
+2026-05-01 01:53:15 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.AMZN.WEB-DL.DDP5.1.H264-CMRG_Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.AMZN.WEB-DL.DDP5.1.H264-CMRG.mkv
+2026-05-01 01:53:15 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.BRRip.DDP.5.1.H.265.-iVy\\Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.BRRip.DDP.5.1.H.265.-iVy.mkv' → 'Z:\\MEDIA\\MOVIES\\Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.AMZN.WEB-DL.DDP5.1.H264-CMRG\\Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.AMZN.WEB-DL.DDP5.1.H264-CMRG.mkv'
+2026-05-01 01:53:27 | INFO     | backend.core.replacer - File move succeeded. New size: 1,298,322,268 bytes
+2026-05-01 01:53:28 | INFO     | backend.core.replacer - Radarr rescan triggered for Resident Evil: Welcome to Raccoon City
+2026-05-01 01:53:28 | INFO     | backend.core.searcher - Searching for: The Room Next Door (2024)
+2026-05-01 01:53:32 | INFO     | backend.core.searcher - Found 57 raw results for The Room Next Door
+2026-05-01 01:53:32 | INFO     | backend.core.searcher - Analyzed 57 results: 21 accepted, 36 rejected (12 due to resolution downgrade limit, 19 due to larger size limit).
+2026-05-01 01:53:32 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Room.Next.Door.2024.1080p.10bit.WEBRip.6CH.x265.HEVC → job_id=SABnzbd_nzo_04b421dd
+2026-05-01 02:10:18 | INFO     | backend.core.downloader - Download 1506: found in sabnzbd history — status='verifying' storage=''
+2026-05-01 02:10:18 | INFO     | backend.core.downloader - Download 1506: sabnzbd history status 'verifying' is still post-processing; continuing monitor
+2026-05-01 02:10:24 | INFO     | backend.core.downloader - Download 1506: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\The.Room.Next.Door.2024.1080p.10bit.WEBRip.6CH.x265.HEVC'
+2026-05-01 02:10:25 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_04b421dd
+2026-05-01 02:10:25 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\The.Room.Next.Door.2024.1080p.10bit.WEBRip.6CH.x265.HEVC
+2026-05-01 02:10:25 | INFO     | backend.core.download_workflow - Failed download cleanup for 1506: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 02:10:26 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Room.Next.Door.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy → job_id=SABnzbd_nzo_posyy_nm
+2026-05-01 02:10:26 | INFO     | backend.core.retry_ladder - Retrying download 1506 with candidate 264976: The.Room.Next.Door.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy
+2026-05-01 02:10:26 | INFO     | backend.core.download_workflow - Retrying failed download 1506 as download 1507: Retry #1 started: The.Room.Next.Door.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy
+2026-05-01 02:12:51 | INFO     | backend.core.downloader - Download 1507: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 02:12:51 | INFO     | backend.core.downloader - Download 1507: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 02:12:57 | INFO     | backend.core.downloader - Download 1507: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\The.Room.Next.Door.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy\\The.Room.Next.Door.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy.mkv'
+2026-05-01 02:12:57 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\The.Room.Next.Door.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy\\The.Room.Next.Door.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy.mkv'
+2026-05-01 02:12:57 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\The.Room.Next.Door.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy\\The.Room.Next.Door.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy.mkv'
+2026-05-01 02:12:57 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\The Room Next Door (2024)\\The.Room.Next.Door.2024.NORDiC.REPACK.1080p.WEB-DL.DDP5.1.H.264-BANDOLEROS.mkv'
+2026-05-01 02:12:57 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\The Room Next Door (2024)' — target path: 'E:\\MOVIES\\The Room Next Door (2024)\\The.Room.Next.Door.2024.NORDiC.REPACK.1080p.WEB-DL.DDP5.1.H.264-BANDOLEROS.mkv'
+2026-05-01 02:13:48 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\The Room Next Door (2024)_The.Room.Next.Door.2024.NORDiC.REPACK.1080p.WEB-DL.DDP5.1.H.264-BANDOLEROS.mkv
+2026-05-01 02:13:48 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\The.Room.Next.Door.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy\\The.Room.Next.Door.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy.mkv' → 'E:\\MOVIES\\The Room Next Door (2024)\\The.Room.Next.Door.2024.NORDiC.REPACK.1080p.WEB-DL.DDP5.1.H.264-BANDOLEROS.mkv'
+2026-05-01 02:13:49 | INFO     | backend.core.replacer - File move succeeded. New size: 2,390,037,541 bytes
+2026-05-01 02:13:50 | INFO     | backend.core.replacer - Radarr rescan triggered for The Room Next Door
+2026-05-01 02:13:50 | INFO     | backend.core.searcher - Searching for: The Running Man (2025)
+2026-05-01 02:13:51 | INFO     | backend.core.searcher - Found 193 raw results for The Running Man
+2026-05-01 02:13:51 | INFO     | backend.core.searcher - Analyzed 193 results: 7 accepted, 186 rejected (67 due to resolution downgrade limit, 112 due to larger size limit).
+2026-05-01 02:13:52 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Running.Man.2025.2160p.HDR10Plus.DV.WEBRip.6CH.X265.HEVC-PSA → job_id=SABnzbd_nzo_2iy2naj5
+2026-05-01 02:14:04 | INFO     | backend.core.downloader - Download 1508: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\The.Running.Man.2025.2160p.HDR10Plus.DV.WEBRip.6CH.X265.HEVC-PSA'
+2026-05-01 02:14:05 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_2iy2naj5
+2026-05-01 02:14:05 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\The.Running.Man.2025.2160p.HDR10Plus.DV.WEBRip.6CH.X265.HEVC-PSA
+2026-05-01 02:14:05 | INFO     | backend.core.download_workflow - Failed download cleanup for 1508: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 02:14:05 | INFO     | backend.core.searcher - Searching for: Savoring Paris (2024)
+2026-05-01 02:14:06 | INFO     | backend.core.searcher - Found 29 raw results for Savoring Paris
+2026-05-01 02:14:06 | INFO     | backend.core.searcher - Analyzed 29 results: 13 accepted, 16 rejected (7 due to resolution downgrade limit, 9 due to larger size limit).
+2026-05-01 02:14:06 | INFO     | backend.core.downloader - Submitted to sabnzbd: Savoring.Paris.2024.1080p.WEBRip.DDP.2.0.10bit.H.265-iVy → job_id=SABnzbd_nzo_oa9gdklq
+2026-05-01 02:15:36 | INFO     | backend.core.downloader - Download 1509: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Savoring.Paris.2024.1080p.WEBRip.DDP.2.0.10bit.H.265-iVy\\Savoring.Paris.2024.1080p.WEBRip.DDP.2.0.10bit.H.265-iVy.mkv'
+2026-05-01 02:15:36 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Savoring.Paris.2024.1080p.WEBRip.DDP.2.0.10bit.H.265-iVy\\Savoring.Paris.2024.1080p.WEBRip.DDP.2.0.10bit.H.265-iVy.mkv'
+2026-05-01 02:15:36 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Savoring.Paris.2024.1080p.WEBRip.DDP.2.0.10bit.H.265-iVy\\Savoring.Paris.2024.1080p.WEBRip.DDP.2.0.10bit.H.265-iVy.mkv'
+2026-05-01 02:15:36 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\Savoring Paris (2024)\\Savoring.Paris.2024.1080p.WEB.H264-SKYFiRE.mkv'
+2026-05-01 02:15:36 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\Savoring Paris (2024)' — target path: 'E:\\MOVIES\\Savoring Paris (2024)\\Savoring.Paris.2024.1080p.WEB.H264-SKYFiRE.mkv'
+2026-05-01 02:16:00 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\Savoring Paris (2024)_Savoring.Paris.2024.1080p.WEB.H264-SKYFiRE.mkv
+2026-05-01 02:16:00 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Savoring.Paris.2024.1080p.WEBRip.DDP.2.0.10bit.H.265-iVy\\Savoring.Paris.2024.1080p.WEBRip.DDP.2.0.10bit.H.265-iVy.mkv' → 'E:\\MOVIES\\Savoring Paris (2024)\\Savoring.Paris.2024.1080p.WEB.H264-SKYFiRE.mkv'
+2026-05-01 02:16:19 | INFO     | backend.core.replacer - File move succeeded. New size: 1,398,948,581 bytes
+2026-05-01 02:16:20 | INFO     | backend.core.replacer - Radarr rescan triggered for Savoring Paris
+2026-05-01 02:16:20 | INFO     | backend.core.searcher - Searching for: Scream VI (2023)
+2026-05-01 02:16:21 | INFO     | backend.core.searcher - Found 200 raw results for Scream VI
+2026-05-01 02:16:22 | INFO     | backend.core.searcher - Analyzed 200 results: 2 accepted, 198 rejected (7 due to resolution downgrade limit, 190 due to larger size limit).
+2026-05-01 02:16:22 | INFO     | backend.core.downloader - Submitted to sabnzbd: Scream.VI.2023.720p.UHD.BluRay.x264.6CH-Pahe.in → job_id=SABnzbd_nzo_zb11nezp
+2026-05-01 02:16:28 | INFO     | backend.core.downloader - Download 1510: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Scream.VI.2023.720p.UHD.BluRay.x264.6CH-Pahe.in'
+2026-05-01 02:16:30 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_zb11nezp
+2026-05-01 02:16:30 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Scream.VI.2023.720p.UHD.BluRay.x264.6CH-Pahe.in
+2026-05-01 02:16:30 | INFO     | backend.core.download_workflow - Failed download cleanup for 1510: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 02:16:30 | INFO     | backend.core.downloader - Submitted to sabnzbd: Scream.VI.2023.1080p.WEB-DL.AV1.DD5.1-DKV → job_id=SABnzbd_nzo_3jahpdpx
+2026-05-01 02:16:30 | INFO     | backend.core.retry_ladder - Retrying download 1510 with candidate 265425: Scream.VI.2023.1080p.WEB-DL.AV1.DD5.1-DKV
+2026-05-01 02:16:30 | INFO     | backend.core.download_workflow - Retrying failed download 1510 as download 1511: Retry #1 started: Scream.VI.2023.1080p.WEB-DL.AV1.DD5.1-DKV
+2026-05-01 02:16:47 | INFO     | backend.core.downloader - Download 1511: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Scream.VI.2023.1080p.WEB-DL.AV1.DD5.1-DKV'
+2026-05-01 02:16:48 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_3jahpdpx
+2026-05-01 02:16:49 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Scream.VI.2023.1080p.WEB-DL.AV1.DD5.1-DKV
+2026-05-01 02:16:49 | INFO     | backend.core.download_workflow - Failed download cleanup for 1511: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 02:16:49 | INFO     | backend.core.searcher - Searching for: September 5 (2024)
+2026-05-01 02:16:50 | INFO     | backend.core.searcher - Found 93 raw results for September 5
+2026-05-01 02:16:50 | INFO     | backend.core.searcher - Analyzed 93 results: 4 accepted, 89 rejected (4 due to resolution downgrade limit, 83 due to larger size limit).
+2026-05-01 02:16:50 | INFO     | backend.core.downloader - Submitted to sabnzbd: September.5.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA → job_id=SABnzbd_nzo_w4l4fu5n
+2026-05-01 02:18:14 | INFO     | backend.core.downloader - Download 1512: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\September.5.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA'
+2026-05-01 02:18:14 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\September.5.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA'
+2026-05-01 02:18:14 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\September.5.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA\\September.5.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA.mkv'
+2026-05-01 02:18:14 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\September 5 (2024)\\September.5.2024.1080p.WEB-DL.x264.ESubs.[1.7GB].[MP4]-[y2flix].mp4'
+2026-05-01 02:18:14 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\September 5 (2024)' — target path: 'E:\\MOVIES\\September 5 (2024)\\September.5.2024.1080p.WEB-DL.x264.ESubs.[1.7GB].[MP4]-[y2flix].mkv'
+2026-05-01 02:18:25 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\September 5 (2024)_September.5.2024.1080p.WEB-DL.x264.ESubs.[1.7GB].[MP4]-[y2flix].mp4
+2026-05-01 02:18:25 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\September.5.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA\\September.5.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA.mkv' → 'E:\\MOVIES\\September 5 (2024)\\September.5.2024.1080p.WEB-DL.x264.ESubs.[1.7GB].[MP4]-[y2flix].mkv'
+2026-05-01 02:18:26 | INFO     | backend.core.replacer - File move succeeded. New size: 1,326,542,814 bytes
+2026-05-01 02:18:26 | INFO     | backend.core.replacer - Radarr rescan triggered for September 5
+2026-05-01 02:18:26 | INFO     | backend.core.replacer - Cleaned up download folder: 'H:\\DOWNLOADS\\USENET\\complete\\September.5.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA'
+2026-05-01 02:18:26 | INFO     | backend.core.searcher - Searching for: Silent Night (2023)
+2026-05-01 02:18:27 | INFO     | backend.core.searcher - Found 146 raw results for Silent Night
+2026-05-01 02:18:27 | INFO     | backend.core.searcher - Analyzed 146 results: 42 accepted, 104 rejected (16 due to resolution downgrade limit, 78 due to larger size limit).
+2026-05-01 02:18:28 | INFO     | backend.core.downloader - Submitted to sabnzbd: Silent.Night.2023.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA → job_id=SABnzbd_nzo_extrdvid
+2026-05-01 02:20:03 | INFO     | backend.core.downloader - Download 1513: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Silent.Night.2023.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA'
+2026-05-01 02:20:04 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_extrdvid
+2026-05-01 02:20:04 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Silent.Night.2023.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA
+2026-05-01 02:20:04 | INFO     | backend.core.download_workflow - Failed download cleanup for 1513: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 02:20:05 | INFO     | backend.core.downloader - Submitted to sabnzbd: Silent.Night.2023.1080p.BluRay.AV1.Opus.5.1.[981] → job_id=SABnzbd_nzo_u8r9pwt1
+2026-05-01 02:20:05 | INFO     | backend.core.retry_ladder - Retrying download 1513 with candidate 265571: Silent.Night.2023.1080p.BluRay.AV1.Opus.5.1.[981]
+2026-05-01 02:20:05 | INFO     | backend.core.download_workflow - Retrying failed download 1513 as download 1514: Retry #1 started: Silent.Night.2023.1080p.BluRay.AV1.Opus.5.1.[981]
+2026-05-01 02:21:45 | INFO     | backend.core.downloader - Download 1514: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Silent.Night.2023.1080p.BluRay.AV1.Opus.5.1.[981]\\Silent.Night.2023.1080p.BluRay.AV1.Opus.5.1.[981].mkv'
+2026-05-01 02:21:45 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Silent.Night.2023.1080p.BluRay.AV1.Opus.5.1.[981]\\Silent.Night.2023.1080p.BluRay.AV1.Opus.5.1.[981].mkv'
+2026-05-01 02:21:45 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Silent.Night.2023.1080p.BluRay.AV1.Opus.5.1.[981]\\Silent.Night.2023.1080p.BluRay.AV1.Opus.5.1.[981].mkv'
+2026-05-01 02:21:45 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\Silent Night (2023)\\Silent.Night.2023.1080p.WEB.H264-HolyNightAllIsCalmAllIsBrightRoundYonVirginMotherAndChildHolyInfantSoTenderAndMild.mkv'
+2026-05-01 02:21:45 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\Silent Night (2023)' — target path: 'E:\\MOVIES\\Silent Night (2023)\\Silent.Night.2023.1080p.WEB.H264-HolyNightAllIsCalmAllIsBrightRoundYonVirginMotherAndChildHolyInfantSoTenderAndMild.mkv'
+2026-05-01 02:22:20 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\Silent Night (2023)_Silent.Night.2023.1080p.WEB.H264-HolyNightAllIsCalmAllIsBrightRoundYonVirginMotherAndChildHolyInfantSoTenderAndMild.mkv
+2026-05-01 02:22:20 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Silent.Night.2023.1080p.BluRay.AV1.Opus.5.1.[981]\\Silent.Night.2023.1080p.BluRay.AV1.Opus.5.1.[981].mkv' → 'E:\\MOVIES\\Silent Night (2023)\\Silent.Night.2023.1080p.WEB.H264-HolyNightAllIsCalmAllIsBrightRoundYonVirginMotherAndChildHolyInfantSoTenderAndMild.mkv'
+2026-05-01 02:22:21 | INFO     | backend.core.replacer - File move succeeded. New size: 1,550,277,677 bytes
+2026-05-01 02:22:21 | INFO     | backend.core.replacer - Radarr rescan triggered for Silent Night
+2026-05-01 02:22:21 | INFO     | backend.core.searcher - Searching for: Sinners (2025)
+2026-05-01 02:22:22 | INFO     | backend.core.searcher - Found 190 raw results for Sinners
+2026-05-01 02:22:22 | INFO     | backend.core.searcher - Analyzed 190 results: 20 accepted, 170 rejected (8 due to resolution downgrade limit, 153 due to larger size limit).
+2026-05-01 02:22:23 | INFO     | backend.core.downloader - Submitted to sabnzbd: (Sinners) [05/48] - "Sinners 2025 1080p h265.vol001+002.par2" → job_id=SABnzbd_nzo_o504zrhq
+2026-05-01 02:22:35 | INFO     | backend.core.downloader - Download 1515: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\(Sinners) [05_48] - _Sinners 2025 1080p h265.vol001+002.par2_'
+2026-05-01 02:22:36 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_o504zrhq
+2026-05-01 02:22:36 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\(Sinners) [05_48] - _Sinners 2025 1080p h265.vol001+002.par2_
+2026-05-01 02:22:36 | INFO     | backend.core.download_workflow - Failed download cleanup for 1515: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 02:22:36 | INFO     | backend.core.downloader - Submitted to sabnzbd: Sinners.2025.1080p.WEBRip.x265.10bit.5.1-LAMA → job_id=SABnzbd_nzo_g79yrhsd
+2026-05-01 02:22:36 | INFO     | backend.core.retry_ladder - Retrying download 1515 with candidate 265758: Sinners.2025.1080p.WEBRip.x265.10bit.5.1-LAMA
+2026-05-01 02:22:36 | INFO     | backend.core.download_workflow - Retrying failed download 1515 as download 1516: Retry #1 started: Sinners.2025.1080p.WEBRip.x265.10bit.5.1-LAMA
+2026-05-01 02:22:43 | INFO     | backend.core.downloader - Download 1516: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Sinners.2025.1080p.WEBRip.x265.10bit.5.1-LAMA'
+2026-05-01 02:22:44 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_g79yrhsd
+2026-05-01 02:22:44 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Sinners.2025.1080p.WEBRip.x265.10bit.5.1-LAMA
+2026-05-01 02:22:44 | INFO     | backend.core.download_workflow - Failed download cleanup for 1516: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 02:22:44 | INFO     | backend.core.blacklist - Added to blacklist: Sinners.2025.1080p.WEBRip.x265.10bit.5.1-LAMA (reason=retry_failed_release, expires=2026-05-30 16:22:44.416766+00:00)
+2026-05-01 02:22:44 | INFO     | backend.core.downloader - Submitted to sabnzbd: Sinners.2025.1080p.WEBRip.x265-DH → job_id=SABnzbd_nzo_h005f0hk
+2026-05-01 02:22:45 | INFO     | backend.core.retry_ladder - Retrying download 1516 with candidate 265764: Sinners.2025.1080p.WEBRip.x265-DH
+2026-05-01 02:22:45 | INFO     | backend.core.download_workflow - Retrying failed download 1516 as download 1517: Retry #2 started: Sinners.2025.1080p.WEBRip.x265-DH
+2026-05-01 02:22:51 | INFO     | backend.core.downloader - Download 1517: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Sinners.2025.1080p.WEBRip.x265-DH'
+2026-05-01 02:22:51 | ERROR    | backend.core.orchestrator - Error processing Sinners: float() argument must be a string or a real number, not 'NoneType'
+2026-05-01 02:22:51 | INFO     | backend.core.searcher - Searching for: The Sisters Brothers (2018)
+2026-05-01 02:22:52 | INFO     | backend.core.searcher - Found 94 raw results for The Sisters Brothers
+2026-05-01 02:22:52 | INFO     | backend.core.searcher - Analyzed 94 results: 1 accepted, 93 rejected (40 due to resolution downgrade limit, 43 due to larger size limit).
+2026-05-01 02:22:52 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1-LAMA → job_id=SABnzbd_nzo_6vv9dkcn
+2026-05-01 02:31:01 | INFO     | backend.core.downloader - Download 1518: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 02:31:01 | INFO     | backend.core.downloader - Download 1518: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 02:31:07 | INFO     | backend.core.downloader - Download 1518: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1-LAMA\\The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1-LAMA.mkv'
+2026-05-01 02:31:07 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1-LAMA\\The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1-LAMA.mkv'
+2026-05-01 02:31:07 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1-LAMA\\The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1-LAMA.mkv'
+2026-05-01 02:31:07 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-LAMA\\The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-LAMA.mkv'
+2026-05-01 02:31:07 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-LAMA' — target path: 'Z:\\MEDIA\\MOVIES\\The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-LAMA\\The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-LAMA.mkv'
+2026-05-01 02:33:23 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-LAMA_The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-LAMA.mkv
+2026-05-01 02:33:23 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1-LAMA\\The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1-LAMA.mkv' → 'Z:\\MEDIA\\MOVIES\\The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-LAMA\\The.Sisters.Brothers.2018.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-LAMA.mkv'
+2026-05-01 02:34:53 | INFO     | backend.core.replacer - File move succeeded. New size: 7,929,672,539 bytes
+2026-05-01 02:34:54 | INFO     | backend.core.replacer - Radarr rescan triggered for The Sisters Brothers
+2026-05-01 02:34:54 | INFO     | backend.core.searcher - Searching for: The Smashing Machine (2025)
+2026-05-01 02:34:56 | INFO     | backend.core.searcher - Found 148 raw results for The Smashing Machine
+2026-05-01 02:34:56 | INFO     | backend.core.searcher - Analyzed 148 results: 1 accepted, 147 rejected (47 due to resolution downgrade limit, 93 due to larger size limit).
+2026-05-01 02:34:56 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Smashing.Machine.2025.2160p.4K.WEB.5.1-LAMA → job_id=SABnzbd_nzo_m5p6_my4
+2026-05-01 02:40:41 | INFO     | backend.core.downloader - Download 1519: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 02:40:41 | INFO     | backend.core.downloader - Download 1519: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 02:40:47 | INFO     | backend.core.downloader - Download 1519: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\The.Smashing.Machine.2025.2160p.4K.WEB.5.1-LAMA'
+2026-05-01 02:40:47 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\The.Smashing.Machine.2025.2160p.4K.WEB.5.1-LAMA'
+2026-05-01 02:40:47 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\The.Smashing.Machine.2025.2160p.4K.WEB.5.1-LAMA\\The.Smashing.Machine.2025.2160p.4K.WEB.5.1-LAMA.mkv'
+2026-05-01 02:40:47 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\The Smashing Machine (2025)\\The.Smashing.Machine.2025.2160p.WEB-DL.DDP5.1.Atmos.SDR.H265-AOC.mkv'
+2026-05-01 02:40:47 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\The Smashing Machine (2025)' — target path: 'Z:\\MEDIA\\MOVIES\\The Smashing Machine (2025)\\The.Smashing.Machine.2025.2160p.WEB-DL.DDP5.1.Atmos.SDR.H265-AOC.mkv'
+2026-05-01 02:43:45 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\The Smashing Machine (2025)_The.Smashing.Machine.2025.2160p.WEB-DL.DDP5.1.Atmos.SDR.H265-AOC.mkv
+2026-05-01 02:43:45 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\The.Smashing.Machine.2025.2160p.4K.WEB.5.1-LAMA\\The.Smashing.Machine.2025.2160p.4K.WEB.5.1-LAMA.mkv' → 'Z:\\MEDIA\\MOVIES\\The Smashing Machine (2025)\\The.Smashing.Machine.2025.2160p.WEB-DL.DDP5.1.Atmos.SDR.H265-AOC.mkv'
+2026-05-01 02:44:50 | INFO     | backend.core.replacer - File move succeeded. New size: 5,899,525,722 bytes
+2026-05-01 02:44:51 | INFO     | backend.core.replacer - Radarr rescan triggered for The Smashing Machine
+2026-05-01 02:44:51 | INFO     | backend.core.replacer - Cleaned up download folder: 'H:\\DOWNLOADS\\USENET\\complete\\The.Smashing.Machine.2025.2160p.4K.WEB.5.1-LAMA'
+2026-05-01 02:44:51 | INFO     | backend.core.searcher - Searching for: Smile 2 (2024)
+2026-05-01 02:44:53 | INFO     | backend.core.searcher - Found 200 raw results for Smile 2
+2026-05-01 02:44:53 | INFO     | backend.core.searcher - Analyzed 200 results: 52 accepted, 148 rejected (22 due to resolution downgrade limit, 115 due to larger size limit).
+2026-05-01 02:44:54 | INFO     | backend.core.downloader - Submitted to sabnzbd: Smile.2.2024.2160p.HDR10Plus.DV.WEBRip.6CH.X265.HEVC-PSA → job_id=SABnzbd_nzo_usho7hki
+2026-05-01 02:45:05 | INFO     | backend.core.downloader - Download 1520: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Smile.2.2024.2160p.HDR10Plus.DV.WEBRip.6CH.X265.HEVC-PSA'
+2026-05-01 02:45:07 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_usho7hki
+2026-05-01 02:45:07 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Smile.2.2024.2160p.HDR10Plus.DV.WEBRip.6CH.X265.HEVC-PSA
+2026-05-01 02:45:07 | INFO     | backend.core.download_workflow - Failed download cleanup for 1520: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 02:45:07 | INFO     | backend.core.downloader - Submitted to sabnzbd: Smile.2.2024.1080p.HEVC.EAC3.Atmos-LUCY → job_id=SABnzbd_nzo_2bo452bp
+2026-05-01 02:45:07 | INFO     | backend.core.retry_ladder - Retrying download 1520 with candidate 266164: Smile.2.2024.1080p.HEVC.EAC3.Atmos-LUCY
+2026-05-01 02:45:07 | INFO     | backend.core.download_workflow - Retrying failed download 1520 as download 1521: Retry #1 started: Smile.2.2024.1080p.HEVC.EAC3.Atmos-LUCY
+2026-05-01 02:45:13 | INFO     | backend.core.downloader - Download 1521: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Smile.2.2024.1080p.HEVC.EAC3.Atmos-LUCY'
+2026-05-01 02:45:15 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_2bo452bp
+2026-05-01 02:45:15 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Smile.2.2024.1080p.HEVC.EAC3.Atmos-LUCY
+2026-05-01 02:45:15 | INFO     | backend.core.download_workflow - Failed download cleanup for 1521: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 02:45:15 | INFO     | backend.core.blacklist - Added to blacklist: Smile.2.2024.1080p.HEVC.EAC3.Atmos-LUCY (reason=retry_failed_release, expires=2026-05-30 16:45:15.094283+00:00)
+2026-05-01 02:45:15 | INFO     | backend.core.downloader - Submitted to sabnzbd: Smile.2.2024.1080p.BluRay.AV1-SWAXXON → job_id=SABnzbd_nzo_6_hnwjbb
+2026-05-01 02:45:15 | INFO     | backend.core.retry_ladder - Retrying download 1521 with candidate 266144: Smile.2.2024.1080p.BluRay.AV1-SWAXXON
+2026-05-01 02:45:15 | INFO     | backend.core.download_workflow - Retrying failed download 1521 as download 1522: Retry #2 started: Smile.2.2024.1080p.BluRay.AV1-SWAXXON
+2026-05-01 02:45:21 | INFO     | backend.core.downloader - Download 1522: found in sabnzbd history — status='queued' storage=''
+2026-05-01 02:45:21 | INFO     | backend.core.downloader - Download 1522: sabnzbd history status 'queued' is still post-processing; continuing monitor
+2026-05-01 02:45:28 | INFO     | backend.core.downloader - Download 1522: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Smile.2.2024.1080p.BluRay.AV1-SWAXXON'
+2026-05-01 02:45:28 | ERROR    | backend.core.orchestrator - Error processing Smile 2: float() argument must be a string or a real number, not 'NoneType'
+2026-05-01 02:45:28 | INFO     | backend.core.searcher - Searching for: South Park: The Streaming Wars (2022)
+2026-05-01 02:45:32 | INFO     | backend.core.searcher - Found 17 raw results for South Park: The Streaming Wars
+2026-05-01 02:45:32 | INFO     | backend.core.searcher - Analyzed 17 results: 1 accepted, 16 rejected (1 due to resolution downgrade limit, 13 due to larger size limit).
+2026-05-01 02:45:32 | INFO     | backend.core.downloader - Submitted to sabnzbd: (South Park the Streaming Wars) [00/22] - "South Park the Streaming Wars 2022 1080p h265.nzb" → job_id=SABnzbd_nzo_l76qmv5j
+2026-05-01 02:45:39 | INFO     | backend.core.downloader - Download 1523: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\(South Park the Streaming Wars) [00_22] - _South Park the Streaming Wars 2022 1080p h265.nzb_'
+2026-05-01 02:45:40 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_l76qmv5j
+2026-05-01 02:45:40 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\(South Park the Streaming Wars) [00_22] - _South Park the Streaming Wars 2022 1080p h265.nzb_
+2026-05-01 02:45:40 | INFO     | backend.core.download_workflow - Failed download cleanup for 1523: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 02:45:40 | INFO     | backend.core.searcher - Searching for: Spiderhead (2022)
+2026-05-01 02:45:41 | INFO     | backend.core.searcher - Found 41 raw results for Spiderhead
+2026-05-01 02:45:41 | INFO     | backend.core.searcher - Analyzed 41 results: 1 accepted, 40 rejected (7 due to resolution downgrade limit, 30 due to larger size limit).
+2026-05-01 02:45:41 | INFO     | backend.core.downloader - Submitted to sabnzbd: Spiderhead.2022.1080p.WebRip.x265.10Bit.AC3.5.1-JATT → job_id=SABnzbd_nzo_akzxz4hp
+2026-05-01 02:47:11 | INFO     | backend.core.downloader - Download 1524: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 02:47:11 | INFO     | backend.core.downloader - Download 1524: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 02:47:17 | INFO     | backend.core.downloader - Download 1524: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Spiderhead.2022.1080p.WebRip.x265.10Bit.AC3.5.1-JATT\\Spiderhead.2022.1080p.WebRip.x265.10Bit.AC3.5.1-JATT.mkv'
+2026-05-01 02:47:17 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Spiderhead.2022.1080p.WebRip.x265.10Bit.AC3.5.1-JATT\\Spiderhead.2022.1080p.WebRip.x265.10Bit.AC3.5.1-JATT.mkv'
+2026-05-01 02:47:17 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Spiderhead.2022.1080p.WebRip.x265.10Bit.AC3.5.1-JATT\\Spiderhead.2022.1080p.WebRip.x265.10Bit.AC3.5.1-JATT.mkv'
+2026-05-01 02:47:17 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Spiderhead.2022.1080p.NF.WEBRip.DD5.1.X.264-EVO\\Spiderhead.2022.1080p.NF.WEBRip.DD5.1.X.264-EVO.mkv'
+2026-05-01 02:47:17 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\Spiderhead.2022.1080p.NF.WEBRip.DD5.1.X.264-EVO' — target path: 'Z:\\MEDIA\\MOVIES\\Spiderhead.2022.1080p.NF.WEBRip.DD5.1.X.264-EVO\\Spiderhead.2022.1080p.NF.WEBRip.DD5.1.X.264-EVO.mkv'
+2026-05-01 02:47:47 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\Spiderhead.2022.1080p.NF.WEBRip.DD5.1.X.264-EVO_Spiderhead.2022.1080p.NF.WEBRip.DD5.1.X.264-EVO.mkv
+2026-05-01 02:47:47 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Spiderhead.2022.1080p.WebRip.x265.10Bit.AC3.5.1-JATT\\Spiderhead.2022.1080p.WebRip.x265.10Bit.AC3.5.1-JATT.mkv' → 'Z:\\MEDIA\\MOVIES\\Spiderhead.2022.1080p.NF.WEBRip.DD5.1.X.264-EVO\\Spiderhead.2022.1080p.NF.WEBRip.DD5.1.X.264-EVO.mkv'
+2026-05-01 02:48:03 | INFO     | backend.core.replacer - File move succeeded. New size: 1,433,732,701 bytes
+2026-05-01 02:48:03 | INFO     | backend.core.replacer - Radarr rescan triggered for Spiderhead
+2026-05-01 02:48:03 | INFO     | backend.core.searcher - Searching for: Studio 666 (2022)
+2026-05-01 02:48:04 | INFO     | backend.core.searcher - Found 81 raw results for Studio 666
+2026-05-01 02:48:05 | INFO     | backend.core.searcher - Analyzed 81 results: 18 accepted, 63 rejected (14 due to resolution downgrade limit, 42 due to larger size limit).
+2026-05-01 02:48:05 | INFO     | backend.core.downloader - Submitted to sabnzbd: Studio.666.2022.1080p.HDWEB-DL.AV1.AAC.DD.5.1-LuCY → job_id=SABnzbd_nzo_74r7swqk
+2026-05-01 02:51:26 | INFO     | backend.core.downloader - Download 1525: found in sabnzbd history — status='verifying' storage=''
+2026-05-01 02:51:26 | INFO     | backend.core.downloader - Download 1525: sabnzbd history status 'verifying' is still post-processing; continuing monitor
+2026-05-01 02:51:32 | INFO     | backend.core.downloader - Download 1525: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Studio.666.2022.1080p.HDWEB-DL.AV1.AAC.DD.5.1-LuCY'
+2026-05-01 02:51:33 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_74r7swqk
+2026-05-01 02:51:33 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Studio.666.2022.1080p.HDWEB-DL.AV1.AAC.DD.5.1-LuCY
+2026-05-01 02:51:33 | INFO     | backend.core.download_workflow - Failed download cleanup for 1525: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 02:51:34 | INFO     | backend.core.downloader - Submitted to sabnzbd: Studio.666.2022.1080p.BluRay.H264.AAC → job_id=SABnzbd_nzo_f271my12
+2026-05-01 02:51:34 | INFO     | backend.core.retry_ladder - Retrying download 1525 with candidate 266393: Studio.666.2022.1080p.BluRay.H264.AAC
+2026-05-01 02:51:34 | INFO     | backend.core.download_workflow - Retrying failed download 1525 as download 1526: Retry #1 started: Studio.666.2022.1080p.BluRay.H264.AAC
+2026-05-01 02:53:53 | INFO     | backend.core.downloader - Download 1526: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Studio.666.2022.1080p.BluRay.H264.AAC\\Studio.666.2022.1080p.BluRay.H264.AAC.mp4'
+2026-05-01 02:53:53 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Studio.666.2022.1080p.BluRay.H264.AAC\\Studio.666.2022.1080p.BluRay.H264.AAC.mp4'
+2026-05-01 02:53:53 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Studio.666.2022.1080p.BluRay.H264.AAC\\Studio.666.2022.1080p.BluRay.H264.AAC.mp4'
+2026-05-01 02:53:53 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Studio.666.2022.1080p.WEB-DL.DDP5.1.H.264-EVO\\Studio.666.2022.1080p.WEB-DL.DDP5.1.H.264-EVO.mkv'
+2026-05-01 02:53:53 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\Studio.666.2022.1080p.WEB-DL.DDP5.1.H.264-EVO' — target path: 'Z:\\MEDIA\\MOVIES\\Studio.666.2022.1080p.WEB-DL.DDP5.1.H.264-EVO\\Studio.666.2022.1080p.WEB-DL.DDP5.1.H.264-EVO.mp4'
+2026-05-01 02:55:09 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\Studio.666.2022.1080p.WEB-DL.DDP5.1.H.264-EVO_Studio.666.2022.1080p.WEB-DL.DDP5.1.H.264-EVO.mkv
+2026-05-01 02:55:09 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Studio.666.2022.1080p.BluRay.H264.AAC\\Studio.666.2022.1080p.BluRay.H264.AAC.mp4' → 'Z:\\MEDIA\\MOVIES\\Studio.666.2022.1080p.WEB-DL.DDP5.1.H.264-EVO\\Studio.666.2022.1080p.WEB-DL.DDP5.1.H.264-EVO.mp4'
+2026-05-01 02:55:34 | INFO     | backend.core.replacer - File move succeeded. New size: 2,179,055,398 bytes
+2026-05-01 02:55:35 | INFO     | backend.core.replacer - Radarr rescan triggered for Studio 666
+2026-05-01 02:55:35 | INFO     | backend.core.searcher - Searching for: Superman (2025)
+2026-05-01 02:55:38 | INFO     | backend.core.searcher - Found 200 raw results for Superman
+2026-05-01 02:55:38 | INFO     | backend.core.searcher - Analyzed 200 results: 13 accepted, 187 rejected (94 due to resolution downgrade limit, 83 due to larger size limit).
+2026-05-01 02:55:39 | INFO     | backend.core.downloader - Submitted to sabnzbd: Superman.2025.2160p.BDRip.TrueHD.7.1.Atmos.DV.HDR10Plus.x265.10bit-MarkII → job_id=SABnzbd_nzo_mbesi9n6
+2026-05-01 02:55:51 | INFO     | backend.core.downloader - Download 1527: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Superman.2025.2160p.BDRip.TrueHD.7.1.Atmos.DV.HDR10Plus.x265.10bit-MarkII'
+2026-05-01 02:55:52 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_mbesi9n6
+2026-05-01 02:55:52 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Superman.2025.2160p.BDRip.TrueHD.7.1.Atmos.DV.HDR10Plus.x265.10bit-MarkII
+2026-05-01 02:55:52 | INFO     | backend.core.download_workflow - Failed download cleanup for 1527: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 02:55:53 | INFO     | backend.core.downloader - Submitted to sabnzbd: Superman.2025.2160p.HDR10Plus.DV.WEBRip.DDP5.1.Atmos.X265.HEVC-PSA → job_id=SABnzbd_nzo_8igpz60o
+2026-05-01 02:55:53 | INFO     | backend.core.retry_ladder - Retrying download 1527 with candidate 266535: Superman.2025.2160p.HDR10Plus.DV.WEBRip.DDP5.1.Atmos.X265.HEVC-PSA
+2026-05-01 02:55:53 | INFO     | backend.core.download_workflow - Retrying failed download 1527 as download 1528: Retry #1 started: Superman.2025.2160p.HDR10Plus.DV.WEBRip.DDP5.1.Atmos.X265.HEVC-PSA
+2026-05-01 02:56:10 | INFO     | backend.core.downloader - Download 1528: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Superman.2025.2160p.HDR10Plus.DV.WEBRip.DDP5.1.Atmos.X265.HEVC-PSA'
+2026-05-01 02:56:11 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_8igpz60o
+2026-05-01 02:56:11 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Superman.2025.2160p.HDR10Plus.DV.WEBRip.DDP5.1.Atmos.X265.HEVC-PSA
+2026-05-01 02:56:11 | INFO     | backend.core.download_workflow - Failed download cleanup for 1528: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 02:56:11 | INFO     | backend.core.blacklist - Added to blacklist: Superman.2025.2160p.HDR10Plus.DV.WEBRip.DDP5.1.Atmos.X265.HEVC-PSA (reason=retry_failed_release, expires=2026-05-30 16:56:11.761258+00:00)
+2026-05-01 02:56:12 | INFO     | backend.core.downloader - Submitted to sabnzbd: Superman.Legacy.2025.2160p.WEB-DL.H265.DTS-ADWeb → job_id=SABnzbd_nzo_4rza406f
+2026-05-01 02:56:12 | INFO     | backend.core.retry_ladder - Retrying download 1528 with candidate 266577: Superman.Legacy.2025.2160p.WEB-DL.H265.DTS-ADWeb
+2026-05-01 02:56:12 | INFO     | backend.core.download_workflow - Retrying failed download 1528 as download 1529: Retry #2 started: Superman.Legacy.2025.2160p.WEB-DL.H265.DTS-ADWeb
+2026-05-01 03:00:00 | INFO     | backend.scheduler.scheduler - Cleaned 13 file(s) from recycle bin
+2026-05-01 03:03:31 | INFO     | backend.core.downloader - Download 1529: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 03:03:31 | INFO     | backend.core.downloader - Download 1529: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 03:03:37 | INFO     | backend.core.downloader - Download 1529: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Superman.Legacy.2025.2160p.WEB-DL.H265.DTS-ADWeb'
+2026-05-01 03:03:37 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Superman.Legacy.2025.2160p.WEB-DL.H265.DTS-ADWeb'
+2026-05-01 03:03:37 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Superman.Legacy.2025.2160p.WEB-DL.H265.DTS-ADWeb\\Superman.Legacy.2025.2160p.WEB-DL.H265.DTS-ADWeb.mkv'
+2026-05-01 03:03:37 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Superman (2025)\\Superman.2025.2160p.WEB.h265-ETHEL.mkv'
+2026-05-01 03:03:37 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\Superman (2025)' — target path: 'Z:\\MEDIA\\MOVIES\\Superman (2025)\\Superman.2025.2160p.WEB.h265-ETHEL.mkv'
+2026-05-01 03:07:43 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\Superman (2025)_Superman.2025.2160p.WEB.h265-ETHEL.mkv
+2026-05-01 03:07:43 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Superman.Legacy.2025.2160p.WEB-DL.H265.DTS-ADWeb\\Superman.Legacy.2025.2160p.WEB-DL.H265.DTS-ADWeb.mkv' → 'Z:\\MEDIA\\MOVIES\\Superman (2025)\\Superman.2025.2160p.WEB.h265-ETHEL.mkv'
+2026-05-01 03:08:49 | INFO     | backend.core.replacer - File move succeeded. New size: 7,022,614,068 bytes
+2026-05-01 03:08:50 | INFO     | backend.core.replacer - Radarr rescan triggered for Superman
+2026-05-01 03:08:50 | INFO     | backend.core.replacer - Cleaned up download folder: 'H:\\DOWNLOADS\\USENET\\complete\\Superman.Legacy.2025.2160p.WEB-DL.H265.DTS-ADWeb'
+2026-05-01 03:08:50 | INFO     | backend.core.searcher - Searching for: Tag (2018)
+2026-05-01 03:08:51 | INFO     | backend.core.searcher - Found 84 raw results for Tag
+2026-05-01 03:08:52 | INFO     | backend.core.searcher - Analyzed 84 results: 1 accepted, 83 rejected (2 due to resolution downgrade limit, 74 due to larger size limit).
+2026-05-01 03:08:52 | INFO     | backend.core.downloader - Submitted to sabnzbd: Tag.2018.[BluRay].[720p].[YTS.AM] → job_id=SABnzbd_nzo_8cyltdd6
+2026-05-01 03:10:16 | INFO     | backend.core.downloader - Download 1530: found in sabnzbd history — status='queued' storage=''
+2026-05-01 03:10:16 | INFO     | backend.core.downloader - Download 1530: sabnzbd history status 'queued' is still post-processing; continuing monitor
+2026-05-01 03:10:22 | INFO     | backend.core.downloader - Download 1530: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Tag.2018.[BluRay].[720p].[YTS.AM]'
+2026-05-01 03:10:23 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_8cyltdd6
+2026-05-01 03:10:23 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Tag.2018.[BluRay].[720p].[YTS.AM]
+2026-05-01 03:10:23 | INFO     | backend.core.download_workflow - Failed download cleanup for 1530: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 03:10:23 | INFO     | backend.core.searcher - Searching for: Tenet (2020)
+2026-05-01 03:10:24 | INFO     | backend.core.searcher - Found 200 raw results for Tenet
+2026-05-01 03:10:24 | INFO     | backend.core.searcher - Analyzed 200 results: 2 accepted, 198 rejected (44 due to resolution downgrade limit, 140 due to larger size limit).
+2026-05-01 03:10:25 | INFO     | backend.core.downloader - Submitted to sabnzbd: Tenet.2020.bluray.hdr.Imax.2160p.av1.5.1.opus.vmaf97-Rosy → job_id=SABnzbd_nzo_3pwropx2
+2026-05-01 03:10:37 | INFO     | backend.core.downloader - Download 1531: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Tenet.2020.bluray.hdr.Imax.2160p.av1.5.1.opus.vmaf97-Rosy'
+2026-05-01 03:10:38 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_3pwropx2
+2026-05-01 03:10:38 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Tenet.2020.bluray.hdr.Imax.2160p.av1.5.1.opus.vmaf97-Rosy
+2026-05-01 03:10:38 | INFO     | backend.core.download_workflow - Failed download cleanup for 1531: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 03:10:38 | INFO     | backend.core.downloader - Submitted to sabnzbd: Tenet.2020.AC3.5.1.ITA.ENG.IMAX.2160p.H265.HDR10.sub.NUita.eng.Sp33dy94-MIRCrew → job_id=SABnzbd_nzo__6cef9pu
+2026-05-01 03:10:38 | INFO     | backend.core.retry_ladder - Retrying download 1531 with candidate 266793: Tenet.2020.AC3.5.1.ITA.ENG.IMAX.2160p.H265.HDR10.sub.NUita.eng.Sp33dy94-MIRCrew
+2026-05-01 03:10:38 | INFO     | backend.core.download_workflow - Retrying failed download 1531 as download 1532: Retry #1 started: Tenet.2020.AC3.5.1.ITA.ENG.IMAX.2160p.H265.HDR10.sub.NUita.eng.Sp33dy94-MIRCrew
+2026-05-01 03:10:56 | INFO     | backend.core.downloader - Download 1532: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Tenet.2020.AC3.5.1.ITA.ENG.IMAX.2160p.H265.HDR10.sub.NUita.eng.Sp33dy94-MIRCrew'
+2026-05-01 03:10:57 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo__6cef9pu
+2026-05-01 03:10:57 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Tenet.2020.AC3.5.1.ITA.ENG.IMAX.2160p.H265.HDR10.sub.NUita.eng.Sp33dy94-MIRCrew
+2026-05-01 03:10:57 | INFO     | backend.core.download_workflow - Failed download cleanup for 1532: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 03:10:57 | INFO     | backend.core.searcher - Searching for: Tetris (2023)
+2026-05-01 03:10:58 | INFO     | backend.core.searcher - Found 89 raw results for Tetris
+2026-05-01 03:10:58 | INFO     | backend.core.searcher - Analyzed 89 results: 2 accepted, 87 rejected (3 due to resolution downgrade limit, 80 due to larger size limit).
+2026-05-01 03:10:59 | INFO     | backend.core.downloader - Submitted to sabnzbd: (Tetris) [24/35] - "Tetris 2023 1080p h265.part23.rar" → job_id=SABnzbd_nzo_ms74ne5c
+2026-05-01 03:11:11 | INFO     | backend.core.downloader - Download 1533: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\(Tetris) [24_35] - _Tetris 2023 1080p h265.part23.rar_'
+2026-05-01 03:11:12 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_ms74ne5c
+2026-05-01 03:11:12 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\(Tetris) [24_35] - _Tetris 2023 1080p h265.part23.rar_
+2026-05-01 03:11:12 | INFO     | backend.core.download_workflow - Failed download cleanup for 1533: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 03:11:12 | INFO     | backend.core.searcher - Searching for: This Place Rules (2022)
+2026-05-01 03:11:13 | INFO     | backend.core.searcher - Found 27 raw results for This Place Rules
+2026-05-01 03:11:13 | INFO     | backend.core.searcher - Analyzed 27 results: 13 accepted, 14 rejected (4 due to resolution downgrade limit, 9 due to larger size limit).
+2026-05-01 03:11:14 | INFO     | backend.core.downloader - Submitted to sabnzbd: This.Place.Rules.2022.1080p.WEBRip.x265 → job_id=SABnzbd_nzo_9lfejvv4
+2026-05-01 03:12:43 | INFO     | backend.core.downloader - Download 1534: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\This.Place.Rules.2022.1080p.WEBRip.x265\\This.Place.Rules.2022.1080p.WEBRip.x265.mp4'
+2026-05-01 03:12:43 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\This.Place.Rules.2022.1080p.WEBRip.x265\\This.Place.Rules.2022.1080p.WEBRip.x265.mp4'
+2026-05-01 03:12:43 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\This.Place.Rules.2022.1080p.WEBRip.x265\\This.Place.Rules.2022.1080p.WEBRip.x265.mp4'
+2026-05-01 03:12:43 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\This.Place.Rules.2022.1080p.WEB.h264-TRUFFLE\\This.Place.Rules.2022.1080p.AMZN.WEB-DL.DDP5.1.H.264-FLUX.mkv'
+2026-05-01 03:12:43 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\This.Place.Rules.2022.1080p.WEB.h264-TRUFFLE' — target path: 'Z:\\MEDIA\\MOVIES\\This.Place.Rules.2022.1080p.WEB.h264-TRUFFLE\\This.Place.Rules.2022.1080p.AMZN.WEB-DL.DDP5.1.H.264-FLUX.mp4'
+2026-05-01 03:13:32 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\This.Place.Rules.2022.1080p.WEB.h264-TRUFFLE_This.Place.Rules.2022.1080p.AMZN.WEB-DL.DDP5.1.H.264-FLUX.mkv
+2026-05-01 03:13:32 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\This.Place.Rules.2022.1080p.WEBRip.x265\\This.Place.Rules.2022.1080p.WEBRip.x265.mp4' → 'Z:\\MEDIA\\MOVIES\\This.Place.Rules.2022.1080p.WEB.h264-TRUFFLE\\This.Place.Rules.2022.1080p.AMZN.WEB-DL.DDP5.1.H.264-FLUX.mp4'
+2026-05-01 03:13:44 | INFO     | backend.core.replacer - File move succeeded. New size: 1,374,002,526 bytes
+2026-05-01 03:13:44 | INFO     | backend.core.replacer - Radarr rescan triggered for This Place Rules
+2026-05-01 03:13:44 | INFO     | backend.core.searcher - Searching for: Caitlyn & Matt's Wedding Film (2018)
+2026-05-01 03:13:46 | INFO     | backend.core.searcher - Found 0 raw results for Caitlyn & Matt's Wedding Film
+2026-05-01 03:13:46 | INFO     | backend.core.searcher - Searching for: Caitlyn & Matt's Wedding Speeches (2018)
+2026-05-01 03:13:47 | INFO     | backend.core.searcher - Found 0 raw results for Caitlyn & Matt's Wedding Speeches
+2026-05-01 03:13:47 | INFO     | backend.core.searcher - Searching for: David White - Interview (2011)
+2026-05-01 03:13:50 | INFO     | backend.core.searcher - Found 0 raw results for David White - Interview
+2026-05-01 03:13:50 | INFO     | backend.core.searcher - Searching for: Matt - Skydiving (2009)
+2026-05-01 03:13:53 | INFO     | backend.core.searcher - Found 0 raw results for Matt - Skydiving
+2026-05-01 03:13:53 | INFO     | backend.core.searcher - Searching for: The Hurley Chronicles - Pt 1 - Canberra and Toowoomba (1996)
+2026-05-01 03:13:54 | INFO     | backend.core.searcher - Found 0 raw results for The Hurley Chronicles - Pt 1 - Canberra and Toowoomba
+2026-05-01 03:13:54 | INFO     | backend.core.searcher - Searching for: The Hurley Chronicles - Pt 2 - Jellicoe St (2000)
+2026-05-01 03:13:55 | INFO     | backend.core.searcher - Found 0 raw results for The Hurley Chronicles - Pt 2 - Jellicoe St
+2026-05-01 03:13:55 | INFO     | backend.core.searcher - Searching for: Hurley Family Stories Chapter 3 Lake Eyre Trip (2002)
+2026-05-01 03:13:56 | INFO     | backend.core.searcher - Found 0 raw results for Hurley Family Stories Chapter 3 Lake Eyre Trip
+2026-05-01 03:13:56 | INFO     | backend.core.searcher - Searching for: 01 BREATHING AND POSTURE (None)
+2026-05-01 03:13:58 | INFO     | backend.core.searcher - Found 0 raw results for 01 BREATHING AND POSTURE
+2026-05-01 03:13:58 | INFO     | backend.core.searcher - Searching for: 02 METHOD TONING (None)
+2026-05-01 03:13:59 | INFO     | backend.core.searcher - Found 0 raw results for 02 METHOD TONING
+2026-05-01 03:13:59 | INFO     | backend.core.searcher - Searching for: 10 Minute Abs After Baby 8 Diastasis Recti Safe Ab Exercises (None)
+2026-05-01 03:14:01 | INFO     | backend.core.searcher - Found 0 raw results for 10 Minute Abs After Baby 8 Diastasis Recti Safe Ab Exercises
+2026-05-01 03:14:01 | INFO     | backend.core.searcher - Searching for: 15 Minute Postpartum Workout Diastasis Recti Safe (None)
+2026-05-01 03:14:03 | INFO     | backend.core.searcher - Found 0 raw results for 15 Minute Postpartum Workout Diastasis Recti Safe
+2026-05-01 03:14:03 | INFO     | backend.core.searcher - Searching for: After C Section Exercise Postpartum Workout After C Section (None)
+2026-05-01 03:14:04 | INFO     | backend.core.searcher - Found 0 raw results for After C Section Exercise Postpartum Workout After C Section
+2026-05-01 03:14:04 | INFO     | backend.core.searcher - Searching for: Amira's Belly Dance & Yoga for Pregnancy (None)
+2026-05-01 03:14:05 | INFO     | backend.core.searcher - Found 0 raw results for Amira's Belly Dance & Yoga for Pregnancy
+2026-05-01 03:14:05 | INFO     | backend.core.searcher - Searching for: The Ballet Workout II (None)
+2026-05-01 03:14:06 | INFO     | backend.core.searcher - Found 0 raw results for The Ballet Workout II
+2026-05-01 03:14:06 | INFO     | backend.core.searcher - Searching for: BONUS 12 Minute Pilates Energy Boost (None)
+2026-05-01 03:14:07 | INFO     | backend.core.searcher - Found 0 raw results for BONUS 12 Minute Pilates Energy Boost
+2026-05-01 03:14:07 | INFO     | backend.core.searcher - Searching for: BONUS Pilates Energy Boost II Workout (None)
+2026-05-01 03:14:09 | INFO     | backend.core.searcher - Found 0 raw results for BONUS Pilates Energy Boost II Workout
+2026-05-01 03:14:09 | INFO     | backend.core.searcher - Searching for: Core Warm Up (None)
+2026-05-01 03:14:10 | INFO     | backend.core.searcher - Found 0 raw results for Core Warm Up
+2026-05-01 03:14:10 | INFO     | backend.core.searcher - Searching for: Element Pilates Basics (None)
+2026-05-01 03:14:12 | INFO     | backend.core.searcher - Found 0 raw results for Element Pilates Basics
+2026-05-01 03:14:12 | INFO     | backend.core.searcher - Searching for: Exhale: Core Fusion - Pilates Plus (2008)
+2026-05-01 03:14:15 | INFO     | backend.core.searcher - Found 3 raw results for Exhale: Core Fusion - Pilates Plus
+2026-05-01 03:14:15 | INFO     | backend.core.searcher - Analyzed 3 results: 0 accepted, 3 rejected (0 due to resolution downgrade limit, 3 due to larger size limit).
+2026-05-01 03:14:15 | INFO     | backend.core.searcher - Searching for: Foundation Work (None)
+2026-05-01 03:14:16 | INFO     | backend.core.searcher - Found 4 raw results for Foundation Work
+2026-05-01 03:14:16 | INFO     | backend.core.searcher - Analyzed 4 results: 0 accepted, 4 rejected (0 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-01 03:14:16 | INFO     | backend.core.searcher - Searching for: An Interview with Ana Caban (None)
+2026-05-01 03:14:18 | INFO     | backend.core.searcher - Found 0 raw results for An Interview with Ana Caban
+2026-05-01 03:14:18 | INFO     | backend.core.searcher - Searching for: Introduction (None)
+2026-05-01 03:14:20 | INFO     | backend.core.searcher - Found 109 raw results for Introduction
+2026-05-01 03:14:20 | INFO     | backend.core.searcher - Analyzed 109 results: 0 accepted, 109 rejected (0 due to resolution downgrade limit, 109 due to larger size limit).
+2026-05-01 03:14:20 | INFO     | backend.core.searcher - Searching for: Jillian Michaels Beginner Shred - Workout 1 (2014)
+2026-05-01 03:14:22 | INFO     | backend.core.searcher - Found 0 raw results for Jillian Michaels Beginner Shred - Workout 1
+2026-05-01 03:14:22 | INFO     | backend.core.searcher - Searching for: Jillian Michaels Beginner Shred - Workout 3 (2014)
+2026-05-01 03:14:23 | INFO     | backend.core.searcher - Found 0 raw results for Jillian Michaels Beginner Shred - Workout 3
+2026-05-01 03:14:23 | INFO     | backend.core.searcher - Searching for: Meet Ana Caban (None)
+2026-05-01 03:14:26 | INFO     | backend.core.searcher - Found 0 raw results for Meet Ana Caban
+2026-05-01 03:14:26 | INFO     | backend.core.searcher - Searching for: Pilates Intermediate Mat Workout (None)
+2026-05-01 03:14:29 | INFO     | backend.core.searcher - Found 0 raw results for Pilates Intermediate Mat Workout
+2026-05-01 03:14:29 | INFO     | backend.core.searcher - Searching for: Pilates Tutorial (None)
+2026-05-01 03:14:31 | INFO     | backend.core.searcher - Found 0 raw results for Pilates Tutorial
+2026-05-01 03:14:31 | INFO     | backend.core.searcher - Searching for: Pilates: Beginning Mat Workout (2000)
+2026-05-01 03:14:32 | INFO     | backend.core.searcher - Found 0 raw results for Pilates: Beginning Mat Workout
+2026-05-01 03:14:32 | INFO     | backend.core.searcher - Searching for: Postnatal Pilates ¦ 20 Minute Full Body Postpartum Pilates Workout (None)
+2026-05-01 03:14:34 | INFO     | backend.core.searcher - Found 0 raw results for Postnatal Pilates ¦ 20 Minute Full Body Postpartum Pilates Workout
+2026-05-01 03:14:34 | INFO     | backend.core.searcher - Searching for: Power 90 Master Series - Cardio Intervals (None)
+2026-05-01 03:14:35 | INFO     | backend.core.searcher - Found 0 raw results for Power 90 Master Series - Cardio Intervals
+2026-05-01 03:14:35 | INFO     | backend.core.searcher - Searching for: Power 90 Master Series Core Cardio 49 Min Fitness TG (None)
+2026-05-01 03:14:37 | INFO     | backend.core.searcher - Found 0 raw results for Power 90 Master Series Core Cardio 49 Min Fitness TG
+2026-05-01 03:14:37 | INFO     | backend.core.searcher - Searching for: Power 90 Master Series Plyo Legs 51 Min Fitness TG (None)
+2026-05-01 03:14:38 | INFO     | backend.core.searcher - Found 0 raw results for Power 90 Master Series Plyo Legs 51 Min Fitness TG
+2026-05-01 03:14:38 | INFO     | backend.core.searcher - Searching for: Power 90 Master Series UML Upper Middle Lower 39 Min Fitness TG (None)
+2026-05-01 03:14:40 | INFO     | backend.core.searcher - Found 0 raw results for Power 90 Master Series UML Upper Middle Lower 39 Min Fitness TG
+2026-05-01 03:14:41 | INFO     | backend.core.searcher - Searching for: Sidemen: Death Core Collection (None)
+2026-05-01 03:14:42 | INFO     | backend.core.searcher - Found 0 raw results for Sidemen: Death Core Collection
+2026-05-01 03:14:42 | INFO     | backend.core.searcher - Searching for: Strong Backside (None)
+2026-05-01 03:14:43 | INFO     | backend.core.searcher - Found 0 raw results for Strong Backside
+2026-05-01 03:14:43 | INFO     | backend.core.searcher - Searching for: Tae-Bo Workout: Basic (1999)
+2026-05-01 03:14:44 | INFO     | backend.core.searcher - Found 0 raw results for Tae-Bo Workout: Basic
+2026-05-01 03:14:44 | INFO     | backend.core.searcher - Searching for: Tony Horton 10 Minute Trainer D3 Total Body 2, Core Cardio, Upper Body 43 Min Fitness TG (None)
+2026-05-01 03:14:45 | INFO     | backend.core.searcher - Found 0 raw results for Tony Horton 10 Minute Trainer D3 Total Body 2, Core Cardio, Upper Body 43 Min Fitness TG
+2026-05-01 03:14:45 | INFO     | backend.core.searcher - Searching for: Weight Loss Pilates (None)
+2026-05-01 03:14:46 | INFO     | backend.core.searcher - Found 0 raw results for Weight Loss Pilates
+2026-05-01 03:14:46 | INFO     | backend.core.searcher - Searching for: Winsor Pilates: Ab Sculpting (2003)
+2026-05-01 03:14:47 | INFO     | backend.core.searcher - Found 0 raw results for Winsor Pilates: Ab Sculpting
+2026-05-01 03:14:47 | INFO     | backend.core.searcher - Searching for: The Adventures of Ichabod and Mr. Toad (1949)
+2026-05-01 03:14:48 | INFO     | backend.core.searcher - Found 52 raw results for The Adventures of Ichabod and Mr. Toad
+2026-05-01 03:14:48 | INFO     | backend.core.searcher - Analyzed 52 results: 0 accepted, 52 rejected (0 due to resolution downgrade limit, 51 due to larger size limit).
+2026-05-01 03:14:48 | INFO     | backend.core.searcher - Searching for: Alice in Wonderland (1999)
+2026-05-01 03:14:51 | INFO     | backend.core.searcher - Found 12 raw results for Alice in Wonderland
+2026-05-01 03:14:51 | INFO     | backend.core.searcher - Analyzed 12 results: 0 accepted, 12 rejected (0 due to resolution downgrade limit, 12 due to larger size limit).
+2026-05-01 03:14:51 | INFO     | backend.core.searcher - Searching for: The AristoCats (1970)
+2026-05-01 03:14:52 | INFO     | backend.core.searcher - Found 164 raw results for The AristoCats
+2026-05-01 03:14:52 | INFO     | backend.core.searcher - Analyzed 164 results: 0 accepted, 164 rejected (0 due to resolution downgrade limit, 162 due to larger size limit).
+2026-05-01 03:14:52 | INFO     | backend.core.searcher - Searching for: Babe (1995)
+2026-05-01 03:14:53 | INFO     | backend.core.searcher - Found 86 raw results for Babe
+2026-05-01 03:14:53 | INFO     | backend.core.searcher - Analyzed 86 results: 0 accepted, 86 rejected (32 due to resolution downgrade limit, 39 due to larger size limit).
+2026-05-01 03:14:53 | INFO     | backend.core.searcher - Searching for: Barbie as Rapunzel (2002)
+2026-05-01 03:14:54 | INFO     | backend.core.searcher - Found 15 raw results for Barbie as Rapunzel
+2026-05-01 03:14:54 | INFO     | backend.core.searcher - Analyzed 15 results: 0 accepted, 15 rejected (10 due to resolution downgrade limit, 2 due to larger size limit).
+2026-05-01 03:14:54 | INFO     | backend.core.searcher - Searching for: Barbie Fairytopia: Mermaidia (2006)
+2026-05-01 03:14:55 | INFO     | backend.core.searcher - Found 6 raw results for Barbie Fairytopia: Mermaidia
+2026-05-01 03:14:55 | INFO     | backend.core.searcher - Analyzed 6 results: 0 accepted, 6 rejected (0 due to resolution downgrade limit, 6 due to larger size limit).
+2026-05-01 03:14:55 | INFO     | backend.core.searcher - Searching for: Barbie of Swan Lake (2003)
+2026-05-01 03:14:56 | INFO     | backend.core.searcher - Found 4 raw results for Barbie of Swan Lake
+2026-05-01 03:14:57 | INFO     | backend.core.searcher - Analyzed 4 results: 0 accepted, 4 rejected (0 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-01 03:14:57 | INFO     | backend.core.searcher - Searching for: Because of Winn-Dixie (2005)
+2026-05-01 03:14:57 | INFO     | backend.core.searcher - Found 22 raw results for Because of Winn-Dixie
+2026-05-01 03:14:58 | INFO     | backend.core.searcher - Analyzed 22 results: 0 accepted, 22 rejected (1 due to resolution downgrade limit, 20 due to larger size limit).
+2026-05-01 03:14:58 | INFO     | backend.core.searcher - Searching for: The Black Cauldron (1985)
+2026-05-01 03:14:59 | INFO     | backend.core.searcher - Found 106 raw results for The Black Cauldron
+2026-05-01 03:14:59 | INFO     | backend.core.searcher - Analyzed 106 results: 0 accepted, 106 rejected (1 due to resolution downgrade limit, 103 due to larger size limit).
+2026-05-01 03:14:59 | INFO     | backend.core.searcher - Searching for: Brother Bear (2003)
+2026-05-01 03:15:00 | INFO     | backend.core.searcher - Found 141 raw results for Brother Bear
+2026-05-01 03:15:00 | INFO     | backend.core.searcher - Analyzed 141 results: 0 accepted, 141 rejected (1 due to resolution downgrade limit, 137 due to larger size limit).
+2026-05-01 03:15:00 | INFO     | backend.core.searcher - Searching for: A Bug's Life (1998)
+2026-05-01 03:15:01 | INFO     | backend.core.searcher - Found 190 raw results for A Bug's Life
+2026-05-01 03:15:02 | INFO     | backend.core.searcher - Analyzed 190 results: 0 accepted, 190 rejected (0 due to resolution downgrade limit, 189 due to larger size limit).
+2026-05-01 03:15:02 | INFO     | backend.core.searcher - Searching for: Cars (2006)
+2026-05-01 03:15:03 | INFO     | backend.core.searcher - Found 148 raw results for Cars
+2026-05-01 03:15:03 | INFO     | backend.core.searcher - Analyzed 148 results: 0 accepted, 148 rejected (1 due to resolution downgrade limit, 145 due to larger size limit).
+2026-05-01 03:15:03 | INFO     | backend.core.searcher - Searching for: Chicken Little (2005)
+2026-05-01 03:15:05 | INFO     | backend.core.searcher - Found 143 raw results for Chicken Little
+2026-05-01 03:15:06 | INFO     | backend.core.searcher - Analyzed 143 results: 0 accepted, 143 rejected (0 due to resolution downgrade limit, 143 due to larger size limit).
+2026-05-01 03:15:06 | INFO     | backend.core.searcher - Searching for: Dennis the Menace Strikes Again! (1998)
+2026-05-01 03:15:07 | INFO     | backend.core.searcher - Found 10 raw results for Dennis the Menace Strikes Again!
+2026-05-01 03:15:07 | INFO     | backend.core.searcher - Analyzed 10 results: 0 accepted, 10 rejected (0 due to resolution downgrade limit, 10 due to larger size limit).
+2026-05-01 03:15:07 | INFO     | backend.core.searcher - Searching for: Diary of a Wimpy Kid: Rodrick Rules (2022)
+2026-05-01 03:15:08 | INFO     | backend.core.searcher - Found 25 raw results for Diary of a Wimpy Kid: Rodrick Rules
+2026-05-01 03:15:08 | INFO     | backend.core.searcher - Analyzed 25 results: 0 accepted, 25 rejected (0 due to resolution downgrade limit, 20 due to larger size limit).
+2026-05-01 03:15:08 | INFO     | backend.core.searcher - Searching for: The Dog Who Saved Easter (2014)
+2026-05-01 03:15:09 | INFO     | backend.core.searcher - Found 6 raw results for The Dog Who Saved Easter
+2026-05-01 03:15:09 | INFO     | backend.core.searcher - Analyzed 6 results: 0 accepted, 6 rejected (2 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-01 03:15:09 | INFO     | backend.core.searcher - Searching for: Elio (2025)
+2026-05-01 03:15:11 | INFO     | backend.core.searcher - Found 78 raw results for Elio
+2026-05-01 03:15:11 | INFO     | backend.core.searcher - Analyzed 78 results: 0 accepted, 78 rejected (2 due to resolution downgrade limit, 76 due to larger size limit).
+2026-05-01 03:15:11 | INFO     | backend.core.searcher - Searching for: Fantasia 2000 (1999)
+2026-05-01 03:15:12 | INFO     | backend.core.searcher - Found 77 raw results for Fantasia 2000
+2026-05-01 03:15:12 | INFO     | backend.core.searcher - Analyzed 77 results: 0 accepted, 77 rejected (0 due to resolution downgrade limit, 75 due to larger size limit).
+2026-05-01 03:15:12 | INFO     | backend.core.searcher - Searching for: Fun and Fancy Free (1947)
+2026-05-01 03:15:15 | INFO     | backend.core.searcher - Found 46 raw results for Fun and Fancy Free
+2026-05-01 03:15:15 | INFO     | backend.core.searcher - Analyzed 46 results: 0 accepted, 46 rejected (0 due to resolution downgrade limit, 46 due to larger size limit).
+2026-05-01 03:15:15 | INFO     | backend.core.searcher - Searching for: Hayao Miyazaki and the Ghibli Museum (2005)
+2026-05-01 03:15:16 | INFO     | backend.core.searcher - Found 0 raw results for Hayao Miyazaki and the Ghibli Museum
+2026-05-01 03:15:16 | INFO     | backend.core.searcher - Searching for: Home on the Range (2004)
+2026-05-01 03:15:17 | INFO     | backend.core.searcher - Found 107 raw results for Home on the Range
+2026-05-01 03:15:17 | INFO     | backend.core.searcher - Analyzed 107 results: 0 accepted, 107 rejected (0 due to resolution downgrade limit, 107 due to larger size limit).
+2026-05-01 03:15:17 | INFO     | backend.core.searcher - Searching for: The Hunchback of Notre Dame (1996)
+2026-05-01 03:15:20 | INFO     | backend.core.searcher - Found 139 raw results for The Hunchback of Notre Dame
+2026-05-01 03:15:20 | INFO     | backend.core.searcher - Analyzed 139 results: 0 accepted, 139 rejected (0 due to resolution downgrade limit, 138 due to larger size limit).
+2026-05-01 03:15:20 | INFO     | backend.core.searcher - Searching for: Jack the Giant Slayer (2013)
+2026-05-01 03:15:23 | INFO     | backend.core.searcher - Found 157 raw results for Jack the Giant Slayer
+2026-05-01 03:15:23 | INFO     | backend.core.searcher - Analyzed 157 results: 0 accepted, 157 rejected (0 due to resolution downgrade limit, 155 due to larger size limit).
+2026-05-01 03:15:23 | INFO     | backend.core.searcher - Searching for: The Jungle Book (1967)
+2026-05-01 03:15:25 | INFO     | backend.core.searcher - Found 146 raw results for The Jungle Book
+2026-05-01 03:15:25 | INFO     | backend.core.searcher - Analyzed 146 results: 0 accepted, 146 rejected (0 due to resolution downgrade limit, 139 due to larger size limit).
+2026-05-01 03:15:25 | INFO     | backend.core.searcher - Searching for: Kung Fu Panda 4 (2024)
+2026-05-01 03:15:28 | INFO     | backend.core.searcher - Found 200 raw results for Kung Fu Panda 4
+2026-05-01 03:15:28 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (1 due to resolution downgrade limit, 199 due to larger size limit).
+2026-05-01 03:15:28 | INFO     | backend.core.searcher - Searching for: Lady and the Tramp (1955)
+2026-05-01 03:15:32 | INFO     | backend.core.searcher - Found 166 raw results for Lady and the Tramp
+2026-05-01 03:15:32 | INFO     | backend.core.searcher - Analyzed 166 results: 0 accepted, 166 rejected (1 due to resolution downgrade limit, 161 due to larger size limit).
+2026-05-01 03:15:32 | INFO     | backend.core.searcher - Searching for: The Land Before Time (1988)
+2026-05-01 03:15:35 | INFO     | backend.core.searcher - Found 94 raw results for The Land Before Time
+2026-05-01 03:15:35 | INFO     | backend.core.searcher - Analyzed 94 results: 0 accepted, 94 rejected (7 due to resolution downgrade limit, 50 due to larger size limit).
+2026-05-01 03:15:35 | INFO     | backend.core.searcher - Searching for: Light of the World (2025)
+2026-05-01 03:15:38 | INFO     | backend.core.searcher - Found 23 raw results for Light of the World
+2026-05-01 03:15:38 | INFO     | backend.core.searcher - Analyzed 23 results: 0 accepted, 23 rejected (5 due to resolution downgrade limit, 18 due to larger size limit).
+2026-05-01 03:15:38 | INFO     | backend.core.searcher - Searching for: Lilo & Stitch (2002)
+2026-05-01 03:15:40 | INFO     | backend.core.searcher - Found 98 raw results for Lilo & Stitch
+2026-05-01 03:15:40 | INFO     | backend.core.searcher - Analyzed 98 results: 0 accepted, 98 rejected (0 due to resolution downgrade limit, 82 due to larger size limit).
+2026-05-01 03:15:40 | INFO     | backend.core.searcher - Searching for: Make Mine Music (1946)
+2026-05-01 03:15:41 | INFO     | backend.core.searcher - Found 27 raw results for Make Mine Music
+2026-05-01 03:15:41 | INFO     | backend.core.searcher - Analyzed 27 results: 0 accepted, 27 rejected (0 due to resolution downgrade limit, 26 due to larger size limit).
+2026-05-01 03:15:41 | INFO     | backend.core.searcher - Searching for: Mummies (2023)
+2026-05-01 03:15:42 | INFO     | backend.core.searcher - Found 37 raw results for Mummies
+2026-05-01 03:15:42 | INFO     | backend.core.searcher - Analyzed 37 results: 0 accepted, 37 rejected (3 due to resolution downgrade limit, 34 due to larger size limit).
+2026-05-01 03:15:42 | INFO     | backend.core.searcher - Searching for: The New Adventures of Pippi Longstocking (1988)
+2026-05-01 03:15:43 | INFO     | backend.core.searcher - Found 15 raw results for The New Adventures of Pippi Longstocking
+2026-05-01 03:15:43 | INFO     | backend.core.searcher - Analyzed 15 results: 0 accepted, 15 rejected (0 due to resolution downgrade limit, 15 due to larger size limit).
+2026-05-01 03:15:43 | INFO     | backend.core.searcher - Searching for: One Hundred and One Dalmatians (1961)
+2026-05-01 03:15:44 | INFO     | backend.core.searcher - Found 136 raw results for One Hundred and One Dalmatians
+2026-05-01 03:15:44 | INFO     | backend.core.searcher - Analyzed 136 results: 0 accepted, 136 rejected (0 due to resolution downgrade limit, 132 due to larger size limit).
+2026-05-01 03:15:44 | INFO     | backend.core.searcher - Searching for: The Rescuers (1977)
+2026-05-01 03:15:46 | INFO     | backend.core.searcher - Found 128 raw results for The Rescuers
+2026-05-01 03:15:46 | INFO     | backend.core.searcher - Analyzed 128 results: 0 accepted, 128 rejected (0 due to resolution downgrade limit, 128 due to larger size limit).
+2026-05-01 03:15:46 | INFO     | backend.core.searcher - Searching for: Richie Rich (1994)
+2026-05-01 03:15:48 | INFO     | backend.core.searcher - Found 66 raw results for Richie Rich
+2026-05-01 03:15:48 | INFO     | backend.core.searcher - Analyzed 66 results: 0 accepted, 66 rejected (12 due to resolution downgrade limit, 49 due to larger size limit).
+2026-05-01 03:15:48 | INFO     | backend.core.searcher - Searching for: Robin Hood (1973)
+2026-05-01 03:15:51 | INFO     | backend.core.searcher - Found 153 raw results for Robin Hood
+2026-05-01 03:15:52 | INFO     | backend.core.searcher - Analyzed 153 results: 0 accepted, 153 rejected (0 due to resolution downgrade limit, 151 due to larger size limit).
+2026-05-01 03:15:52 | INFO     | backend.core.searcher - Searching for: Saludos Amigos (1942)
+2026-05-01 03:15:53 | INFO     | backend.core.searcher - Found 46 raw results for Saludos Amigos
+2026-05-01 03:15:53 | INFO     | backend.core.searcher - Analyzed 46 results: 0 accepted, 46 rejected (2 due to resolution downgrade limit, 42 due to larger size limit).
+2026-05-01 03:15:53 | INFO     | backend.core.searcher - Searching for: Scrooge: A Christmas Carol (2022)
+2026-05-01 03:15:54 | INFO     | backend.core.searcher - Found 23 raw results for Scrooge: A Christmas Carol
+2026-05-01 03:15:55 | INFO     | backend.core.searcher - Analyzed 23 results: 0 accepted, 23 rejected (1 due to resolution downgrade limit, 21 due to larger size limit).
+2026-05-01 03:15:55 | INFO     | backend.core.searcher - Searching for: Sleeping Beauty (1995)
+2026-05-01 03:15:56 | INFO     | backend.core.searcher - Found 0 raw results for Sleeping Beauty
+2026-05-01 03:15:56 | INFO     | backend.core.searcher - Searching for: The Snail and the Whale (2019)
+2026-05-01 03:15:57 | INFO     | backend.core.searcher - Found 9 raw results for The Snail and the Whale
+2026-05-01 03:15:57 | INFO     | backend.core.searcher - Analyzed 9 results: 0 accepted, 9 rejected (0 due to resolution downgrade limit, 9 due to larger size limit).
+2026-05-01 03:15:57 | INFO     | backend.core.searcher - Searching for: Snow White and the Seven Dwarfs (1937)
+2026-05-01 03:16:02 | INFO     | backend.core.searcher - Found 193 raw results for Snow White and the Seven Dwarfs
+2026-05-01 03:16:02 | INFO     | backend.core.searcher - Analyzed 193 results: 0 accepted, 193 rejected (1 due to resolution downgrade limit, 191 due to larger size limit).
+2026-05-01 03:16:02 | INFO     | backend.core.searcher - Searching for: Sonic the Hedgehog (2020)
+2026-05-01 03:16:06 | INFO     | backend.core.searcher - Found 200 raw results for Sonic the Hedgehog
+2026-05-01 03:16:06 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (0 due to resolution downgrade limit, 200 due to larger size limit).
+2026-05-01 03:16:06 | INFO     | backend.core.searcher - Searching for: Spellbound (2024)
+2026-05-01 03:16:08 | INFO     | backend.core.searcher - Found 41 raw results for Spellbound
+2026-05-01 03:16:08 | INFO     | backend.core.searcher - Analyzed 41 results: 0 accepted, 41 rejected (5 due to resolution downgrade limit, 36 due to larger size limit).
+2026-05-01 03:16:08 | INFO     | backend.core.searcher - Searching for: The Super Mario Bros. Movie (2023)
+2026-05-01 03:16:09 | INFO     | backend.core.searcher - Found 200 raw results for The Super Mario Bros. Movie
+2026-05-01 03:16:10 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (2 due to resolution downgrade limit, 197 due to larger size limit).
+2026-05-01 03:16:10 | INFO     | backend.core.searcher - Searching for: The Sword in the Stone (1963)
+2026-05-01 03:16:11 | INFO     | backend.core.searcher - Found 180 raw results for The Sword in the Stone
+2026-05-01 03:16:11 | INFO     | backend.core.searcher - Analyzed 180 results: 0 accepted, 180 rejected (0 due to resolution downgrade limit, 180 due to larger size limit).
+2026-05-01 03:16:11 | INFO     | backend.core.searcher - Searching for: Tangled (2010)
+2026-05-01 03:16:14 | INFO     | backend.core.searcher - Found 200 raw results for Tangled
+2026-05-01 03:16:14 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (2 due to resolution downgrade limit, 189 due to larger size limit).
+2026-05-01 03:16:14 | INFO     | backend.core.searcher - Searching for: Tarzan (1999)
+2026-05-01 03:16:15 | INFO     | backend.core.searcher - Found 153 raw results for Tarzan
+2026-05-01 03:16:15 | INFO     | backend.core.searcher - Analyzed 153 results: 0 accepted, 153 rejected (0 due to resolution downgrade limit, 146 due to larger size limit).
+2026-05-01 03:16:15 | INFO     | backend.core.searcher - Searching for: The Three Caballeros (1944)
+2026-05-01 03:16:16 | INFO     | backend.core.searcher - Found 58 raw results for The Three Caballeros
+2026-05-01 03:16:16 | INFO     | backend.core.searcher - Analyzed 58 results: 0 accepted, 58 rejected (0 due to resolution downgrade limit, 58 due to larger size limit).
+2026-05-01 03:16:16 | INFO     | backend.core.searcher - Searching for: To Grandmother's House We Go (1992)
+2026-05-01 03:16:18 | INFO     | backend.core.searcher - Found 5 raw results for To Grandmother's House We Go
+2026-05-01 03:16:18 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-01 03:16:18 | INFO     | backend.core.searcher - Searching for: Toy Story 2 (1999)
+2026-05-01 03:16:19 | INFO     | backend.core.searcher - Found 200 raw results for Toy Story 2
+2026-05-01 03:16:20 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (2 due to resolution downgrade limit, 195 due to larger size limit).
+2026-05-01 03:16:20 | INFO     | backend.core.searcher - Searching for: The Wild Robot (2024)
+2026-05-01 03:16:22 | INFO     | backend.core.searcher - Found 200 raw results for The Wild Robot
+2026-05-01 03:16:22 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (3 due to resolution downgrade limit, 196 due to larger size limit).
+2026-05-01 03:16:22 | INFO     | backend.core.searcher - Searching for: 28 Years Later (2025)
+2026-05-01 03:16:23 | INFO     | backend.core.searcher - Found 183 raw results for 28 Years Later
+2026-05-01 03:16:23 | INFO     | backend.core.searcher - Analyzed 183 results: 0 accepted, 183 rejected (5 due to resolution downgrade limit, 175 due to larger size limit).
+2026-05-01 03:16:23 | INFO     | backend.core.searcher - Searching for: A.I. Rising (2018)
+2026-05-01 03:16:24 | INFO     | backend.core.searcher - Found 48 raw results for A.I. Rising
+2026-05-01 03:16:24 | INFO     | backend.core.searcher - Analyzed 48 results: 0 accepted, 48 rejected (0 due to resolution downgrade limit, 46 due to larger size limit).
+2026-05-01 03:16:24 | INFO     | backend.core.searcher - Searching for: Addams Family Reunion (1998)
+2026-05-01 03:16:25 | INFO     | backend.core.searcher - Found 10 raw results for Addams Family Reunion
+2026-05-01 03:16:25 | INFO     | backend.core.searcher - Analyzed 10 results: 0 accepted, 10 rejected (0 due to resolution downgrade limit, 10 due to larger size limit).
+2026-05-01 03:16:25 | INFO     | backend.core.searcher - Searching for: After (2019)
+2026-05-01 03:16:26 | INFO     | backend.core.searcher - Found 57 raw results for After
+2026-05-01 03:16:26 | INFO     | backend.core.searcher - Analyzed 57 results: 0 accepted, 57 rejected (0 due to resolution downgrade limit, 56 due to larger size limit).
+2026-05-01 03:16:26 | INFO     | backend.core.searcher - Searching for: The Age of Disclosure (2025)
+2026-05-01 03:16:27 | INFO     | backend.core.searcher - Found 9 raw results for The Age of Disclosure
+2026-05-01 03:16:27 | INFO     | backend.core.searcher - Analyzed 9 results: 0 accepted, 9 rejected (6 due to resolution downgrade limit, 3 due to larger size limit).
+2026-05-01 03:16:27 | INFO     | backend.core.searcher - Searching for: American Reunion (2012)
+2026-05-01 03:16:28 | INFO     | backend.core.searcher - Found 160 raw results for American Reunion
+2026-05-01 03:16:29 | INFO     | backend.core.searcher - Analyzed 160 results: 0 accepted, 160 rejected (1 due to resolution downgrade limit, 150 due to larger size limit).
+2026-05-01 03:16:29 | INFO     | backend.core.searcher - Searching for: Angels & Demons (2009)
+2026-05-01 03:16:30 | INFO     | backend.core.searcher - Found 146 raw results for Angels & Demons
+2026-05-01 03:16:30 | INFO     | backend.core.searcher - Analyzed 146 results: 0 accepted, 146 rejected (0 due to resolution downgrade limit, 144 due to larger size limit).
+2026-05-01 03:16:30 | INFO     | backend.core.searcher - Searching for: Animal Kingdom (2010)
+2026-05-01 03:16:31 | INFO     | backend.core.searcher - Found 88 raw results for Animal Kingdom
+2026-05-01 03:16:31 | INFO     | backend.core.searcher - Analyzed 88 results: 0 accepted, 88 rejected (0 due to resolution downgrade limit, 87 due to larger size limit).
+2026-05-01 03:16:31 | INFO     | backend.core.searcher - Searching for: Ant-Man and the Wasp: Quantumania (2023)
+2026-05-01 03:16:32 | INFO     | backend.core.searcher - Found 200 raw results for Ant-Man and the Wasp: Quantumania
+2026-05-01 03:16:32 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (3 due to resolution downgrade limit, 195 due to larger size limit).
+2026-05-01 03:16:32 | INFO     | backend.core.searcher - Searching for: Avatar: The Way of Water (2022)
+2026-05-01 03:16:34 | INFO     | backend.core.searcher - Found 200 raw results for Avatar: The Way of Water
+2026-05-01 03:16:34 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (30 due to resolution downgrade limit, 157 due to larger size limit).
+2026-05-01 03:16:34 | INFO     | backend.core.searcher - Searching for: Battleship (2012)
+2026-05-01 03:16:35 | INFO     | backend.core.searcher - Found 179 raw results for Battleship
+2026-05-01 03:16:36 | INFO     | backend.core.searcher - Analyzed 179 results: 0 accepted, 179 rejected (0 due to resolution downgrade limit, 171 due to larger size limit).
+2026-05-01 03:16:36 | INFO     | backend.core.searcher - Searching for: Big Fish (2003)
+2026-05-01 03:16:37 | INFO     | backend.core.searcher - Found 143 raw results for Big Fish
+2026-05-01 03:16:37 | INFO     | backend.core.searcher - Analyzed 143 results: 0 accepted, 143 rejected (4 due to resolution downgrade limit, 129 due to larger size limit).
+2026-05-01 03:16:37 | INFO     | backend.core.searcher - Searching for: Blueback (2022)
+2026-05-01 03:16:39 | INFO     | backend.core.searcher - Found 25 raw results for Blueback
+2026-05-01 03:16:39 | INFO     | backend.core.searcher - Analyzed 25 results: 0 accepted, 25 rejected (3 due to resolution downgrade limit, 22 due to larger size limit).
+2026-05-01 03:16:39 | INFO     | backend.core.searcher - Searching for: Book Club: The Next Chapter (2023)
+2026-05-01 03:16:40 | INFO     | backend.core.searcher - Found 99 raw results for Book Club: The Next Chapter
+2026-05-01 03:16:40 | INFO     | backend.core.searcher - Analyzed 99 results: 0 accepted, 99 rejected (2 due to resolution downgrade limit, 97 due to larger size limit).
+2026-05-01 03:16:40 | INFO     | backend.core.searcher - Searching for: Can't Hardly Wait (1998)
+2026-05-01 03:16:41 | INFO     | backend.core.searcher - Found 81 raw results for Can't Hardly Wait
+2026-05-01 03:16:41 | INFO     | backend.core.searcher - Analyzed 81 results: 0 accepted, 81 rejected (0 due to resolution downgrade limit, 81 due to larger size limit).
+2026-05-01 03:16:41 | INFO     | backend.core.searcher - Searching for: Challengers (2024)
+2026-05-01 03:16:42 | INFO     | backend.core.searcher - Found 169 raw results for Challengers
+2026-05-01 03:16:43 | INFO     | backend.core.searcher - Analyzed 169 results: 0 accepted, 169 rejected (6 due to resolution downgrade limit, 163 due to larger size limit).
+2026-05-01 03:16:43 | INFO     | backend.core.searcher - Searching for: Christmas in Paradise (2022)
+2026-05-01 03:16:44 | INFO     | backend.core.searcher - Found 21 raw results for Christmas in Paradise
+2026-05-01 03:16:44 | INFO     | backend.core.searcher - Analyzed 21 results: 0 accepted, 21 rejected (1 due to resolution downgrade limit, 16 due to larger size limit).
+2026-05-01 03:16:44 | INFO     | backend.core.searcher - Searching for: The Chronicles of Riddick: Dark Fury (2004)
+2026-05-01 03:16:45 | INFO     | backend.core.searcher - Found 19 raw results for The Chronicles of Riddick: Dark Fury
+2026-05-01 03:16:45 | INFO     | backend.core.searcher - Analyzed 19 results: 0 accepted, 19 rejected (0 due to resolution downgrade limit, 17 due to larger size limit).
+2026-05-01 03:16:45 | INFO     | backend.core.searcher - Searching for: Contraband (2012)
+2026-05-01 03:16:47 | INFO     | backend.core.searcher - Found 151 raw results for Contraband
+2026-05-01 03:16:47 | INFO     | backend.core.searcher - Analyzed 151 results: 0 accepted, 151 rejected (1 due to resolution downgrade limit, 145 due to larger size limit).
+2026-05-01 03:16:47 | INFO     | backend.core.searcher - Searching for: Crazy, Stupid, Love. (2011)
+2026-05-01 03:16:48 | INFO     | backend.core.searcher - Found 155 raw results for Crazy, Stupid, Love.
+2026-05-01 03:16:48 | INFO     | backend.core.searcher - Analyzed 155 results: 0 accepted, 155 rejected (1 due to resolution downgrade limit, 151 due to larger size limit).
+2026-05-01 03:16:48 | INFO     | backend.core.searcher - Searching for: Destroyer (2018)
+2026-05-01 03:16:49 | INFO     | backend.core.searcher - Found 89 raw results for Destroyer
+2026-05-01 03:16:49 | INFO     | backend.core.searcher - Analyzed 89 results: 0 accepted, 89 rejected (4 due to resolution downgrade limit, 79 due to larger size limit).
+2026-05-01 03:16:49 | INFO     | backend.core.searcher - Searching for: Divine Secrets of the Ya-Ya Sisterhood (2002)
+2026-05-01 03:16:50 | INFO     | backend.core.searcher - Found 11 raw results for Divine Secrets of the Ya-Ya Sisterhood
+2026-05-01 03:16:50 | INFO     | backend.core.searcher - Analyzed 11 results: 0 accepted, 11 rejected (4 due to resolution downgrade limit, 6 due to larger size limit).
+2026-05-01 03:16:50 | INFO     | backend.core.searcher - Searching for: A Dog's Way Home (2019)
+2026-05-01 03:16:51 | INFO     | backend.core.searcher - Found 136 raw results for A Dog's Way Home
+2026-05-01 03:16:51 | INFO     | backend.core.searcher - Analyzed 136 results: 0 accepted, 136 rejected (75 due to resolution downgrade limit, 46 due to larger size limit).
+2026-05-01 03:16:51 | INFO     | backend.core.searcher - Searching for: Dune: Part Two (2024)
+2026-05-01 03:16:52 | INFO     | backend.core.searcher - Found 200 raw results for Dune: Part Two
+2026-05-01 03:16:52 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (2 due to resolution downgrade limit, 198 due to larger size limit).
+2026-05-01 03:16:52 | INFO     | backend.core.searcher - Searching for: Eenie Meanie (2025)
+2026-05-01 03:16:53 | INFO     | backend.core.searcher - Found 68 raw results for Eenie Meanie
+2026-05-01 03:16:53 | INFO     | backend.core.searcher - Analyzed 68 results: 0 accepted, 68 rejected (0 due to resolution downgrade limit, 68 due to larger size limit).
+2026-05-01 03:16:53 | INFO     | backend.core.searcher - Searching for: The Endless Summer 2 (1994)
+2026-05-01 03:16:55 | INFO     | backend.core.searcher - Found 2 raw results for The Endless Summer 2
+2026-05-01 03:16:55 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 2 due to larger size limit).
+2026-05-01 03:16:55 | INFO     | backend.core.searcher - Searching for: Enola Holmes 2 (2022)
+2026-05-01 03:16:56 | INFO     | backend.core.searcher - Found 63 raw results for Enola Holmes 2
+2026-05-01 03:16:56 | INFO     | backend.core.searcher - Analyzed 63 results: 0 accepted, 63 rejected (4 due to resolution downgrade limit, 57 due to larger size limit).
+2026-05-01 03:16:56 | INFO     | backend.core.searcher - Searching for: Fast and Furious Collection Extra (None)
+2026-05-01 03:16:58 | INFO     | backend.core.searcher - Found 0 raw results for Fast and Furious Collection Extra
+2026-05-01 03:16:58 | INFO     | backend.core.searcher - Searching for: Fast X (2023)
+2026-05-01 03:16:59 | INFO     | backend.core.searcher - Found 200 raw results for Fast X
+2026-05-01 03:16:59 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (8 due to resolution downgrade limit, 189 due to larger size limit).
+2026-05-01 03:16:59 | INFO     | backend.core.searcher - Searching for: Finding You (2020)
+2026-05-01 03:17:00 | INFO     | backend.core.searcher - Found 2 raw results for Finding You
+2026-05-01 03:17:00 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 2 due to larger size limit).
+2026-05-01 03:17:00 | INFO     | backend.core.searcher - Searching for: Five Feet Apart (2019)
+2026-05-01 03:17:02 | INFO     | backend.core.searcher - Found 86 raw results for Five Feet Apart
+2026-05-01 03:17:03 | INFO     | backend.core.searcher - Analyzed 86 results: 0 accepted, 86 rejected (2 due to resolution downgrade limit, 80 due to larger size limit).
+2026-05-01 03:17:03 | INFO     | backend.core.searcher - Searching for: The Flood (2019)
+2026-05-01 03:17:03 | INFO     | backend.core.searcher - Found 9 raw results for The Flood
+2026-05-01 03:17:03 | INFO     | backend.core.searcher - Analyzed 9 results: 0 accepted, 9 rejected (1 due to resolution downgrade limit, 6 due to larger size limit).
+2026-05-01 03:17:03 | INFO     | backend.core.searcher - Searching for: Forgiven (2011)
+2026-05-01 03:17:04 | INFO     | backend.core.searcher - Found 10 raw results for Forgiven
+2026-05-01 03:17:05 | INFO     | backend.core.searcher - Analyzed 10 results: 0 accepted, 10 rejected (7 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-01 03:17:05 | INFO     | backend.core.searcher - Searching for: G-Funk (2017)
+2026-05-01 03:17:05 | INFO     | backend.core.searcher - Found 0 raw results for G-Funk
+2026-05-01 03:17:05 | INFO     | backend.core.searcher - Searching for: The Giants (2023)
+2026-05-01 03:17:06 | INFO     | backend.core.searcher - Found 3 raw results for The Giants
+2026-05-01 03:17:06 | INFO     | backend.core.searcher - Analyzed 3 results: 0 accepted, 3 rejected (0 due to resolution downgrade limit, 3 due to larger size limit).
+2026-05-01 03:17:06 | INFO     | backend.core.searcher - Searching for: Godzilla X Kong: The New Empire (2024)
+2026-05-01 03:17:07 | INFO     | backend.core.searcher - Found 200 raw results for Godzilla X Kong: The New Empire
+2026-05-01 03:17:08 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (4 due to resolution downgrade limit, 196 due to larger size limit).
+2026-05-01 03:17:08 | INFO     | backend.core.searcher - Searching for: Gold (2022)
+2026-05-01 03:17:09 | INFO     | backend.core.searcher - Found 45 raw results for Gold
+2026-05-01 03:17:09 | INFO     | backend.core.searcher - Analyzed 45 results: 0 accepted, 45 rejected (28 due to resolution downgrade limit, 11 due to larger size limit).
+2026-05-01 03:17:09 | INFO     | backend.core.searcher - Searching for: Good Luck to You, Leo Grande (2022)
+2026-05-01 03:17:10 | INFO     | backend.core.searcher - Found 78 raw results for Good Luck to You, Leo Grande
+2026-05-01 03:17:10 | INFO     | backend.core.searcher - Analyzed 78 results: 0 accepted, 78 rejected (12 due to resolution downgrade limit, 54 due to larger size limit).
+2026-05-01 03:17:10 | INFO     | backend.core.searcher - Searching for: The Gorge (2025)
+2026-05-01 03:17:11 | INFO     | backend.core.searcher - Found 91 raw results for The Gorge
+2026-05-01 03:17:11 | INFO     | backend.core.searcher - Analyzed 91 results: 0 accepted, 91 rejected (3 due to resolution downgrade limit, 88 due to larger size limit).
+2026-05-01 03:17:11 | INFO     | backend.core.searcher - Searching for: Harold & Kumar Go to White Castle (2004)
+2026-05-01 03:17:12 | INFO     | backend.core.searcher - Found 91 raw results for Harold & Kumar Go to White Castle
+2026-05-01 03:17:12 | INFO     | backend.core.searcher - Analyzed 91 results: 0 accepted, 91 rejected (0 due to resolution downgrade limit, 90 due to larger size limit).
+2026-05-01 03:17:12 | INFO     | backend.core.searcher - Searching for: Hitler and I (2003)
+2026-05-01 03:17:14 | INFO     | backend.core.searcher - Found 0 raw results for Hitler and I
+2026-05-01 03:17:14 | INFO     | backend.core.searcher - Searching for: The Holiday (2006)
+2026-05-01 03:17:15 | INFO     | backend.core.searcher - Found 94 raw results for The Holiday
+2026-05-01 03:17:15 | INFO     | backend.core.searcher - Analyzed 94 results: 0 accepted, 94 rejected (32 due to resolution downgrade limit, 47 due to larger size limit).
+2026-05-01 03:17:15 | INFO     | backend.core.searcher - Searching for: Host (2020)
+2026-05-01 03:17:17 | INFO     | backend.core.searcher - Found 24 raw results for Host
+2026-05-01 03:17:17 | INFO     | backend.core.searcher - Analyzed 24 results: 0 accepted, 24 rejected (1 due to resolution downgrade limit, 23 due to larger size limit).
+2026-05-01 03:17:17 | INFO     | backend.core.searcher - Searching for: How Do You Know (2010)
+2026-05-01 03:17:18 | INFO     | backend.core.searcher - Found 92 raw results for How Do You Know
+2026-05-01 03:17:18 | INFO     | backend.core.searcher - Analyzed 92 results: 0 accepted, 92 rejected (0 due to resolution downgrade limit, 91 due to larger size limit).
+2026-05-01 03:17:18 | INFO     | backend.core.searcher - Searching for: The Hustle (2019)
+2026-05-01 03:17:19 | INFO     | backend.core.searcher - Found 91 raw results for The Hustle
+2026-05-01 03:17:19 | INFO     | backend.core.searcher - Analyzed 91 results: 0 accepted, 91 rejected (55 due to resolution downgrade limit, 32 due to larger size limit).
+2026-05-01 03:17:19 | INFO     | backend.core.searcher - Searching for: I Want You Back (2022)
+2026-05-01 03:17:20 | INFO     | backend.core.searcher - Found 41 raw results for I Want You Back
+2026-05-01 03:17:20 | INFO     | backend.core.searcher - Analyzed 41 results: 0 accepted, 41 rejected (0 due to resolution downgrade limit, 40 due to larger size limit).
+2026-05-01 03:17:20 | INFO     | backend.core.searcher - Searching for: I'm Still Here (2024)
+2026-05-01 03:17:21 | INFO     | backend.core.searcher - Found 46 raw results for I'm Still Here
+2026-05-01 03:17:21 | INFO     | backend.core.searcher - Analyzed 46 results: 0 accepted, 46 rejected (17 due to resolution downgrade limit, 28 due to larger size limit).
+2026-05-01 03:17:21 | INFO     | backend.core.searcher - Searching for: In Cold Blood (1967)
+2026-05-01 03:17:23 | INFO     | backend.core.searcher - Found 71 raw results for In Cold Blood
+2026-05-01 03:17:23 | INFO     | backend.core.searcher - Analyzed 71 results: 0 accepted, 71 rejected (5 due to resolution downgrade limit, 60 due to larger size limit).
+2026-05-01 03:17:23 | INFO     | backend.core.searcher - Searching for: It Ends with Us (2024)
+2026-05-01 03:17:24 | INFO     | backend.core.searcher - Found 147 raw results for It Ends with Us
+2026-05-01 03:17:24 | INFO     | backend.core.searcher - Analyzed 147 results: 0 accepted, 147 rejected (4 due to resolution downgrade limit, 143 due to larger size limit).
+2026-05-01 03:17:24 | INFO     | backend.core.searcher - Searching for: Kokoda: 39th Battalion (2006)
+2026-05-01 03:17:25 | INFO     | backend.core.searcher - Found 23 raw results for Kokoda: 39th Battalion
+2026-05-01 03:17:25 | INFO     | backend.core.searcher - Analyzed 23 results: 0 accepted, 23 rejected (0 due to resolution downgrade limit, 19 due to larger size limit).
+2026-05-01 03:17:25 | INFO     | backend.core.searcher - Searching for: Ladies in Black (2018)
+2026-05-01 03:17:26 | INFO     | backend.core.searcher - Found 45 raw results for Ladies in Black
+2026-05-01 03:17:26 | INFO     | backend.core.searcher - Analyzed 45 results: 0 accepted, 45 rejected (6 due to resolution downgrade limit, 37 due to larger size limit).
+2026-05-01 03:17:26 | INFO     | backend.core.searcher - Searching for: Last Sentinel (2023)
+2026-05-01 03:17:29 | INFO     | backend.core.searcher - Found 54 raw results for Last Sentinel
+2026-05-01 03:17:29 | INFO     | backend.core.searcher - Analyzed 54 results: 0 accepted, 54 rejected (1 due to resolution downgrade limit, 52 due to larger size limit).
+2026-05-01 03:17:29 | INFO     | backend.core.searcher - Searching for: Little (2019)
+2026-05-01 03:17:30 | INFO     | backend.core.searcher - Found 28 raw results for Little
+2026-05-01 03:17:30 | INFO     | backend.core.searcher - Analyzed 28 results: 0 accepted, 28 rejected (1 due to resolution downgrade limit, 27 due to larger size limit).
+2026-05-01 03:17:30 | INFO     | backend.core.searcher - Searching for: The Long Walk (2025)
+2026-05-01 03:17:31 | INFO     | backend.core.searcher - Found 150 raw results for The Long Walk
+2026-05-01 03:17:32 | INFO     | backend.core.searcher - Analyzed 150 results: 0 accepted, 150 rejected (4 due to resolution downgrade limit, 140 due to larger size limit).
+2026-05-01 03:17:32 | INFO     | backend.core.searcher - Searching for: The Lord of the Rings: The Return of the King (2003)
+2026-05-01 03:17:33 | INFO     | backend.core.searcher - Found 200 raw results for The Lord of the Rings: The Return of the King
+2026-05-01 03:17:34 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (30 due to resolution downgrade limit, 161 due to larger size limit).
+2026-05-01 03:17:34 | INFO     | backend.core.searcher - Searching for: M3GAN (2022)
+2026-05-01 03:17:36 | INFO     | backend.core.searcher - Found 200 raw results for M3GAN
+2026-05-01 03:17:36 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (0 due to resolution downgrade limit, 195 due to larger size limit).
+2026-05-01 03:17:36 | INFO     | backend.core.searcher - Searching for: Machine Gun Preacher (2011)
+2026-05-01 03:17:38 | INFO     | backend.core.searcher - Found 128 raw results for Machine Gun Preacher
+2026-05-01 03:17:38 | INFO     | backend.core.searcher - Analyzed 128 results: 0 accepted, 128 rejected (9 due to resolution downgrade limit, 107 due to larger size limit).
+2026-05-01 03:17:38 | INFO     | backend.core.searcher - Searching for: The Man from Toronto (2022)
+2026-05-01 03:17:41 | INFO     | backend.core.searcher - Found 101 raw results for The Man from Toronto
+2026-05-01 03:17:41 | INFO     | backend.core.searcher - Analyzed 101 results: 0 accepted, 101 rejected (5 due to resolution downgrade limit, 96 due to larger size limit).
+2026-05-01 03:17:41 | INFO     | backend.core.searcher - Searching for: Max Payne (2008)
+2026-05-01 03:17:42 | INFO     | backend.core.searcher - Found 145 raw results for Max Payne
+2026-05-01 03:17:42 | INFO     | backend.core.searcher - Analyzed 145 results: 0 accepted, 145 rejected (1 due to resolution downgrade limit, 140 due to larger size limit).
+2026-05-01 03:17:42 | INFO     | backend.core.searcher - Searching for: Me, Myself & Irene (2000)
+2026-05-01 03:17:44 | INFO     | backend.core.searcher - Found 99 raw results for Me, Myself & Irene
+2026-05-01 03:17:44 | INFO     | backend.core.searcher - Analyzed 99 results: 0 accepted, 99 rejected (3 due to resolution downgrade limit, 93 due to larger size limit).
+2026-05-01 03:17:44 | INFO     | backend.core.searcher - Searching for: Miss Congeniality 2: Armed and Fabulous (2005)
+2026-05-01 03:17:45 | INFO     | backend.core.searcher - Found 47 raw results for Miss Congeniality 2: Armed and Fabulous
+2026-05-01 03:17:45 | INFO     | backend.core.searcher - Analyzed 47 results: 0 accepted, 47 rejected (1 due to resolution downgrade limit, 42 due to larger size limit).
+2026-05-01 03:17:45 | INFO     | backend.core.searcher - Searching for: Moonrise Kingdom (2012)
+2026-05-01 03:17:46 | INFO     | backend.core.searcher - Found 141 raw results for Moonrise Kingdom
+2026-05-01 03:17:46 | INFO     | backend.core.searcher - Analyzed 141 results: 0 accepted, 141 rejected (8 due to resolution downgrade limit, 128 due to larger size limit).
+2026-05-01 03:17:46 | INFO     | backend.core.searcher - Searching for: Mrs. Harris Goes to Paris (2022)
+2026-05-01 03:17:47 | INFO     | backend.core.searcher - Found 83 raw results for Mrs. Harris Goes to Paris
+2026-05-01 03:17:47 | INFO     | backend.core.searcher - Analyzed 83 results: 0 accepted, 83 rejected (8 due to resolution downgrade limit, 69 due to larger size limit).
+2026-05-01 03:17:47 | INFO     | backend.core.searcher - Searching for: The Mule (2018)
+2026-05-01 03:17:48 | INFO     | backend.core.searcher - Found 180 raw results for The Mule
+2026-05-01 03:17:49 | INFO     | backend.core.searcher - Analyzed 180 results: 0 accepted, 180 rejected (54 due to resolution downgrade limit, 115 due to larger size limit).
+2026-05-01 03:17:49 | INFO     | backend.core.searcher - Searching for: My Dinner with Hervé (2018)
+2026-05-01 03:17:50 | INFO     | backend.core.searcher - Found 17 raw results for My Dinner with Hervé
+2026-05-01 03:17:50 | INFO     | backend.core.searcher - Analyzed 17 results: 0 accepted, 17 rejected (4 due to resolution downgrade limit, 13 due to larger size limit).
+2026-05-01 03:17:50 | INFO     | backend.core.searcher - Searching for: Nitram (2021)
+2026-05-01 03:17:51 | INFO     | backend.core.searcher - Found 63 raw results for Nitram
+2026-05-01 03:17:51 | INFO     | backend.core.searcher - Analyzed 63 results: 0 accepted, 63 rejected (6 due to resolution downgrade limit, 50 due to larger size limit).
+2026-05-01 03:17:51 | INFO     | backend.core.searcher - Searching for: Novocaine (2025)
+2026-05-01 03:17:52 | INFO     | backend.core.searcher - Found 175 raw results for Novocaine
+2026-05-01 03:17:52 | INFO     | backend.core.searcher - Analyzed 175 results: 0 accepted, 175 rejected (0 due to resolution downgrade limit, 173 due to larger size limit).
+2026-05-01 03:17:52 | INFO     | backend.core.searcher - Searching for: Papillon (None)
+2026-05-01 03:17:53 | INFO     | backend.core.searcher - Found 1 raw results for Papillon
+2026-05-01 03:17:53 | INFO     | backend.core.searcher - Analyzed 1 results: 0 accepted, 1 rejected (0 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-01 03:17:53 | INFO     | backend.core.searcher - Searching for: Perfect Days (2023)
+2026-05-01 03:17:54 | INFO     | backend.core.searcher - Found 105 raw results for Perfect Days
+2026-05-01 03:17:54 | INFO     | backend.core.searcher - Analyzed 105 results: 0 accepted, 105 rejected (2 due to resolution downgrade limit, 103 due to larger size limit).
+2026-05-01 03:17:54 | INFO     | backend.core.searcher - Searching for: Playing God (2021)
+2026-05-01 03:17:55 | INFO     | backend.core.searcher - Found 11 raw results for Playing God
+2026-05-01 03:17:55 | INFO     | backend.core.searcher - Analyzed 11 results: 0 accepted, 11 rejected (2 due to resolution downgrade limit, 8 due to larger size limit).
+2026-05-01 03:17:55 | INFO     | backend.core.searcher - Searching for: Prometheus (2012)
+2026-05-01 03:17:56 | INFO     | backend.core.searcher - Found 200 raw results for Prometheus
+2026-05-01 03:17:56 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (6 due to resolution downgrade limit, 190 due to larger size limit).
+2026-05-01 03:17:56 | INFO     | backend.core.searcher - Searching for: Pure Pwnage (2016)
+2026-05-01 03:17:57 | INFO     | backend.core.searcher - Found 10 raw results for Pure Pwnage
+2026-05-01 03:17:57 | INFO     | backend.core.searcher - Analyzed 10 results: 0 accepted, 10 rejected (0 due to resolution downgrade limit, 10 due to larger size limit).
+2026-05-01 03:17:57 | INFO     | backend.core.searcher - Searching for: Rabbit-Proof Fence (2002)
+2026-05-01 03:17:58 | INFO     | backend.core.searcher - Found 39 raw results for Rabbit-Proof Fence
+2026-05-01 03:17:58 | INFO     | backend.core.searcher - Analyzed 39 results: 0 accepted, 39 rejected (0 due to resolution downgrade limit, 39 due to larger size limit).
+2026-05-01 03:17:58 | INFO     | backend.core.searcher - Searching for: Red Joan (2018)
+2026-05-01 03:17:59 | INFO     | backend.core.searcher - Found 60 raw results for Red Joan
+2026-05-01 03:17:59 | INFO     | backend.core.searcher - Analyzed 60 results: 0 accepted, 60 rejected (0 due to resolution downgrade limit, 60 due to larger size limit).
+2026-05-01 03:17:59 | INFO     | backend.core.searcher - Searching for: Red Tails (2012)
+2026-05-01 03:18:00 | INFO     | backend.core.searcher - Found 61 raw results for Red Tails
+2026-05-01 03:18:00 | INFO     | backend.core.searcher - Analyzed 61 results: 0 accepted, 61 rejected (0 due to resolution downgrade limit, 60 due to larger size limit).
+2026-05-01 03:18:00 | INFO     | backend.core.searcher - Searching for: Reminders of Him (2026)
+2026-05-01 03:18:02 | INFO     | backend.core.searcher - Found 40 raw results for Reminders of Him
+2026-05-01 03:18:02 | INFO     | backend.core.searcher - Analyzed 40 results: 0 accepted, 40 rejected (29 due to resolution downgrade limit, 11 due to larger size limit).
+2026-05-01 03:18:02 | INFO     | backend.core.searcher - Searching for: Resident Evil: Degeneration (2008)
+2026-05-01 03:18:03 | INFO     | backend.core.searcher - Found 80 raw results for Resident Evil: Degeneration
+2026-05-01 03:18:03 | INFO     | backend.core.searcher - Analyzed 80 results: 0 accepted, 80 rejected (0 due to resolution downgrade limit, 79 due to larger size limit).
+2026-05-01 03:18:03 | INFO     | backend.core.searcher - Searching for: Revealed - Craig Bellamy: Inside the Storm (2025)
+2026-05-01 03:18:04 | INFO     | backend.core.searcher - Found 0 raw results for Revealed - Craig Bellamy: Inside the Storm
+2026-05-01 03:18:04 | INFO     | backend.core.searcher - Searching for: Road Diary: Bruce Springsteen and the E Street Band (2024)
+2026-05-01 03:18:05 | INFO     | backend.core.searcher - Found 28 raw results for Road Diary: Bruce Springsteen and the E Street Band
+2026-05-01 03:18:05 | INFO     | backend.core.searcher - Analyzed 28 results: 0 accepted, 28 rejected (0 due to resolution downgrade limit, 28 due to larger size limit).
+2026-05-01 03:18:05 | INFO     | backend.core.searcher - Searching for: Roadrunner: A Film About Anthony Bourdain (2021)
+2026-05-01 03:18:06 | INFO     | backend.core.searcher - Found 11 raw results for Roadrunner: A Film About Anthony Bourdain
+2026-05-01 03:18:06 | INFO     | backend.core.searcher - Analyzed 11 results: 0 accepted, 11 rejected (0 due to resolution downgrade limit, 11 due to larger size limit).
+2026-05-01 03:18:06 | INFO     | backend.core.searcher - Searching for: Scream 7 (2026)
+2026-05-01 03:18:07 | INFO     | backend.core.searcher - Found 82 raw results for Scream 7
+2026-05-01 03:18:07 | INFO     | backend.core.searcher - Analyzed 82 results: 0 accepted, 82 rejected (5 due to resolution downgrade limit, 75 due to larger size limit).
+2026-05-01 03:18:07 | INFO     | backend.core.searcher - Searching for: Sniper: The White Raven (2022)
+2026-05-01 03:18:08 | INFO     | backend.core.searcher - Found 52 raw results for Sniper: The White Raven
+2026-05-01 03:18:09 | INFO     | backend.core.searcher - Analyzed 52 results: 0 accepted, 52 rejected (5 due to resolution downgrade limit, 45 due to larger size limit).
+2026-05-01 03:18:09 | INFO     | backend.core.searcher - Searching for: Song Sung Blue (2025)
+2026-05-01 03:18:10 | INFO     | backend.core.searcher - Found 121 raw results for Song Sung Blue
+2026-05-01 03:18:10 | INFO     | backend.core.searcher - Analyzed 121 results: 0 accepted, 121 rejected (4 due to resolution downgrade limit, 116 due to larger size limit).
+2026-05-01 03:18:10 | INFO     | backend.core.searcher - Searching for: Soul (2020)
+2026-05-01 03:18:12 | INFO     | backend.core.searcher - Found 79 raw results for Soul
+2026-05-01 03:18:12 | INFO     | backend.core.searcher - Analyzed 79 results: 0 accepted, 79 rejected (5 due to resolution downgrade limit, 68 due to larger size limit).
+2026-05-01 03:18:12 | INFO     | backend.core.searcher - Searching for: South Park: Post COVID (2021)
+2026-05-01 03:18:15 | INFO     | backend.core.searcher - Found 59 raw results for South Park: Post COVID
+2026-05-01 03:18:15 | INFO     | backend.core.searcher - Analyzed 59 results: 0 accepted, 59 rejected (53 due to resolution downgrade limit, 6 due to larger size limit).
+2026-05-01 03:18:15 | INFO     | backend.core.searcher - Searching for: Sweet Country (2018)
+2026-05-01 03:18:16 | INFO     | backend.core.searcher - Found 25 raw results for Sweet Country
+2026-05-01 03:18:16 | INFO     | backend.core.searcher - Analyzed 25 results: 0 accepted, 25 rejected (0 due to resolution downgrade limit, 23 due to larger size limit).
+2026-05-01 03:18:16 | INFO     | backend.core.searcher - Searching for: T-34 (2018)
+2026-05-01 03:18:17 | INFO     | backend.core.searcher - Found 13 raw results for T-34
+2026-05-01 03:18:17 | INFO     | backend.core.searcher - Analyzed 13 results: 0 accepted, 13 rejected (1 due to resolution downgrade limit, 11 due to larger size limit).
+2026-05-01 03:18:17 | INFO     | backend.core.searcher - Searching for: Tiña (None)
+2026-05-01 03:18:17 | INFO     | backend.core.searcher - Found 0 raw results for Tiña
+2026-05-01 03:18:17 | INFO     | backend.core.searcher - Searching for: Transfusion (2023)
+2026-05-01 03:18:18 | INFO     | backend.core.searcher - Found 62 raw results for Transfusion
+2026-05-01 03:18:19 | INFO     | backend.core.searcher - Analyzed 62 results: 0 accepted, 62 rejected (34 due to resolution downgrade limit, 25 due to larger size limit).
+2026-05-01 03:18:19 | INFO     | backend.core.searcher - Searching for: Union (2024)
+2026-05-01 03:18:21 | INFO     | backend.core.searcher - Found 5 raw results for Union
+2026-05-01 03:18:21 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-01 03:18:21 | INFO     | backend.core.searcher - Searching for: The Upside (2019)
+2026-05-01 03:18:22 | INFO     | backend.core.searcher - Found 88 raw results for The Upside
+2026-05-01 03:18:22 | INFO     | backend.core.searcher - Analyzed 88 results: 0 accepted, 88 rejected (8 due to resolution downgrade limit, 23 due to larger size limit).
+2026-05-01 03:18:22 | INFO     | backend.core.searcher - Searching for: War Machine (2026)
+2026-05-01 03:18:23 | INFO     | backend.core.searcher - Found 115 raw results for War Machine
+2026-05-01 03:18:23 | INFO     | backend.core.searcher - Analyzed 115 results: 22 accepted, 93 rejected (65 due to resolution downgrade limit, 23 due to larger size limit).
+2026-05-01 03:18:23 | INFO     | backend.core.downloader - Submitted to sabnzbd: War.Machine.2026.2160p.NF.WEB-DL.Hybrid.H265.DV.HDR.DDP.Atmos.5.1.English-HONE → job_id=SABnzbd_nzo_a9ezxb1f
+2026-05-01 03:29:23 | INFO     | backend.core.downloader - Download 1535: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\War.Machine.2026.2160p.NF.WEB-DL.Hybrid.H265.DV.HDR.DDP.Atmos.5.1.English-HONE\\War.Machine.2026.2160p.NF.WEB-DL.Hybrid.H265.DV.HDR.DDP.Atmos.5.1.English-HONE.mkv'
+2026-05-01 03:29:23 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\War.Machine.2026.2160p.NF.WEB-DL.Hybrid.H265.DV.HDR.DDP.Atmos.5.1.English-HONE\\War.Machine.2026.2160p.NF.WEB-DL.Hybrid.H265.DV.HDR.DDP.Atmos.5.1.English-HONE.mkv'
+2026-05-01 03:29:23 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\War.Machine.2026.2160p.NF.WEB-DL.Hybrid.H265.DV.HDR.DDP.Atmos.5.1.English-HONE\\War.Machine.2026.2160p.NF.WEB-DL.Hybrid.H265.DV.HDR.DDP.Atmos.5.1.English-HONE.mkv'
+2026-05-01 03:29:23 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\War Machine (2026)\\War.Machine.2026.2160p.Netflix.WEB-DL.HEVC.10bit.DV.DDP5.1.Atmos.3Audios-QHstudIo.mp4'
+2026-05-01 03:29:23 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\War Machine (2026)' — target path: 'Z:\\MEDIA\\MOVIES\\War Machine (2026)\\War.Machine.2026.2160p.Netflix.WEB-DL.HEVC.10bit.DV.DDP5.1.Atmos.3Audios-QHstudIo.mkv'
+2026-05-01 03:31:42 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\War Machine (2026)_War.Machine.2026.2160p.Netflix.WEB-DL.HEVC.10bit.DV.DDP5.1.Atmos.3Audios-QHstudIo.mp4
+2026-05-01 03:31:42 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\War.Machine.2026.2160p.NF.WEB-DL.Hybrid.H265.DV.HDR.DDP.Atmos.5.1.English-HONE\\War.Machine.2026.2160p.NF.WEB-DL.Hybrid.H265.DV.HDR.DDP.Atmos.5.1.English-HONE.mkv' → 'Z:\\MEDIA\\MOVIES\\War Machine (2026)\\War.Machine.2026.2160p.Netflix.WEB-DL.HEVC.10bit.DV.DDP5.1.Atmos.3Audios-QHstudIo.mkv'
+2026-05-01 03:33:25 | INFO     | backend.core.replacer - File move succeeded. New size: 11,283,607,746 bytes
+2026-05-01 03:33:26 | INFO     | backend.core.replacer - Radarr rescan triggered for War Machine
+2026-05-01 03:33:26 | INFO     | backend.core.searcher - Searching for: War of the Worlds (2005)
+2026-05-01 03:33:27 | INFO     | backend.core.searcher - Found 185 raw results for War of the Worlds
+2026-05-01 03:33:27 | INFO     | backend.core.searcher - Analyzed 185 results: 36 accepted, 149 rejected (37 due to resolution downgrade limit, 57 due to larger size limit).
+2026-05-01 03:33:28 | INFO     | backend.core.downloader - Submitted to sabnzbd: War.Of.The.Worlds.2005.2160p.4K.BluRay.HEVC.AC3.DD5.1.x265-PANAM → job_id=SABnzbd_nzo_s9a_4z3h
+2026-05-01 03:36:20 | INFO     | backend.core.downloader - Download 1536: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\War.Of.The.Worlds.2005.2160p.4K.BluRay.HEVC.AC3.DD5.1.x265-PANAM\\War.Of.The.Worlds.2005.2160p.4K.BluRay.HEVC.AC3.DD5.1.x265-PANAM.mkv'
+2026-05-01 03:36:20 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\War.Of.The.Worlds.2005.2160p.4K.BluRay.HEVC.AC3.DD5.1.x265-PANAM\\War.Of.The.Worlds.2005.2160p.4K.BluRay.HEVC.AC3.DD5.1.x265-PANAM.mkv'
+2026-05-01 03:36:20 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\War.Of.The.Worlds.2005.2160p.4K.BluRay.HEVC.AC3.DD5.1.x265-PANAM\\War.Of.The.Worlds.2005.2160p.4K.BluRay.HEVC.AC3.DD5.1.x265-PANAM.mkv'
+2026-05-01 03:36:20 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\War of the worlds 2005 BluRay 1080p AVC DTS-HD MA5.1-CHDBits\\war.of.the.worlds.2005.bluray.1080p.dts.2audio.x264-chd.mkv'
+2026-05-01 03:36:20 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\War of the worlds 2005 BluRay 1080p AVC DTS-HD MA5.1-CHDBits' — target path: 'E:\\MOVIES\\War of the worlds 2005 BluRay 1080p AVC DTS-HD MA5.1-CHDBits\\war.of.the.worlds.2005.bluray.1080p.dts.2audio.x264-chd.mkv'
+2026-05-01 03:37:27 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\War of the worlds 2005 BluRay 1080p AVC DTS-HD MA5.1-CHDBits_war.of.the.worlds.2005.bluray.1080p.dts.2audio.x264-chd.mkv
+2026-05-01 03:37:27 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\War.Of.The.Worlds.2005.2160p.4K.BluRay.HEVC.AC3.DD5.1.x265-PANAM\\War.Of.The.Worlds.2005.2160p.4K.BluRay.HEVC.AC3.DD5.1.x265-PANAM.mkv' → 'E:\\MOVIES\\War of the worlds 2005 BluRay 1080p AVC DTS-HD MA5.1-CHDBits\\war.of.the.worlds.2005.bluray.1080p.dts.2audio.x264-chd.mkv'
+2026-05-01 03:37:28 | INFO     | backend.core.replacer - File move succeeded. New size: 2,742,553,804 bytes
+2026-05-01 03:37:29 | INFO     | backend.core.replacer - Radarr rescan triggered for War of the Worlds
+2026-05-01 03:37:29 | INFO     | backend.core.searcher - Searching for: War of the Worlds (2025)
+2026-05-01 03:37:30 | INFO     | backend.core.searcher - Found 34 raw results for War of the Worlds
+2026-05-01 03:37:30 | INFO     | backend.core.searcher - Analyzed 34 results: 0 accepted, 34 rejected (21 due to resolution downgrade limit, 12 due to larger size limit).
+2026-05-01 03:37:30 | INFO     | backend.core.searcher - Searching for: Warcraft (2016)
+2026-05-01 03:37:31 | INFO     | backend.core.searcher - Found 200 raw results for Warcraft
+2026-05-01 03:37:32 | INFO     | backend.core.searcher - Analyzed 200 results: 23 accepted, 177 rejected (25 due to resolution downgrade limit, 139 due to larger size limit).
+2026-05-01 03:37:32 | INFO     | backend.core.downloader - Submitted to sabnzbd: Warcraft.2016.1080p.UHD.BluRay.DD+7.1.HDR.X265-CtrlHD → job_id=SABnzbd_nzo_o2asc8ex
+2026-05-01 03:38:45 | INFO     | backend.core.downloader - Download 1537: found in sabnzbd history — status='queued' storage=''
+2026-05-01 03:38:45 | INFO     | backend.core.downloader - Download 1537: sabnzbd history status 'queued' is still post-processing; continuing monitor
+2026-05-01 03:38:51 | INFO     | backend.core.downloader - Download 1537: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Warcraft.2016.1080p.UHD.BluRay.DD+7.1.HDR.X265-CtrlHD'
+2026-05-01 03:38:51 | ERROR    | backend.core.orchestrator - Error processing Warcraft: float() argument must be a string or a real number, not 'NoneType'
+2026-05-01 03:38:51 | INFO     | backend.core.searcher - Searching for: Warfare (2025)
+2026-05-01 03:38:52 | INFO     | backend.core.searcher - Found 158 raw results for Warfare
+2026-05-01 03:38:53 | INFO     | backend.core.searcher - Analyzed 158 results: 20 accepted, 138 rejected (60 due to resolution downgrade limit, 57 due to larger size limit).
+2026-05-01 03:38:53 | INFO     | backend.core.downloader - Submitted to sabnzbd: Warfare.2025.2160p.BluRay.TrueHD.Atmos.7.1.DV.HDR.AV1-RandH → job_id=SABnzbd_nzo_99ywrfmi
+2026-05-01 03:47:45 | INFO     | backend.core.downloader - Download 1538: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 03:47:45 | INFO     | backend.core.downloader - Download 1538: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 03:47:51 | INFO     | backend.core.downloader - Download 1538: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Warfare.2025.2160p.BluRay.TrueHD.Atmos.7.1.DV.HDR.AV1-RandH'
+2026-05-01 03:47:51 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Warfare.2025.2160p.BluRay.TrueHD.Atmos.7.1.DV.HDR.AV1-RandH'
+2026-05-01 03:47:51 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Warfare.2025.2160p.BluRay.TrueHD.Atmos.7.1.DV.HDR.AV1-RandH\\Warfare.2025.2160p.BluRay.TrueHD.Atmos.7.1.DV.HDR.AV1-RandH.mkv'
+2026-05-01 03:47:51 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Warfare (2025)\\Warfare.2025.HDR.2160p.WEB.h265-ETHEL.mkv'
+2026-05-01 03:47:51 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\Warfare (2025)' — target path: 'Z:\\MEDIA\\MOVIES\\Warfare (2025)\\Warfare.2025.HDR.2160p.WEB.h265-ETHEL.mkv'
+2026-05-01 03:50:21 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\Warfare (2025)_Warfare.2025.HDR.2160p.WEB.h265-ETHEL.mkv
+2026-05-01 03:50:21 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Warfare.2025.2160p.BluRay.TrueHD.Atmos.7.1.DV.HDR.AV1-RandH\\Warfare.2025.2160p.BluRay.TrueHD.Atmos.7.1.DV.HDR.AV1-RandH.mkv' → 'Z:\\MEDIA\\MOVIES\\Warfare (2025)\\Warfare.2025.HDR.2160p.WEB.h265-ETHEL.mkv'
+2026-05-01 03:51:40 | INFO     | backend.core.replacer - File move succeeded. New size: 8,768,563,425 bytes
+2026-05-01 03:51:40 | INFO     | backend.core.replacer - Radarr rescan triggered for Warfare
+2026-05-01 03:51:40 | INFO     | backend.core.replacer - Cleaned up download folder: 'H:\\DOWNLOADS\\USENET\\complete\\Warfare.2025.2160p.BluRay.TrueHD.Atmos.7.1.DV.HDR.AV1-RandH'
+2026-05-01 03:51:40 | INFO     | backend.core.searcher - Searching for: The Watchers (2024)
+2026-05-01 03:51:42 | INFO     | backend.core.searcher - Found 172 raw results for The Watchers
+2026-05-01 03:51:42 | INFO     | backend.core.searcher - Analyzed 172 results: 66 accepted, 106 rejected (14 due to resolution downgrade limit, 79 due to larger size limit).
+2026-05-01 03:51:42 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Watchers.2024.2160p.AV1 → job_id=SABnzbd_nzo_d_jeulpx
+2026-05-01 03:51:54 | INFO     | backend.core.downloader - Download 1539: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\The.Watchers.2024.2160p.AV1'
+2026-05-01 03:51:55 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_d_jeulpx
+2026-05-01 03:51:55 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\The.Watchers.2024.2160p.AV1
+2026-05-01 03:51:55 | INFO     | backend.core.download_workflow - Failed download cleanup for 1539: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 03:51:55 | INFO     | backend.core.blacklist - Added to blacklist: The.Watchers.2024.2160p.AV1 (reason=retry_failed_release, expires=2026-05-30 17:51:55.815613+00:00)
+2026-05-01 03:51:56 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Watchers.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA → job_id=SABnzbd_nzo_czrcd5p0
+2026-05-01 03:51:56 | INFO     | backend.core.retry_ladder - Retrying download 1539 with candidate 279844: The.Watchers.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA
+2026-05-01 03:51:56 | INFO     | backend.core.download_workflow - Retrying failed download 1539 as download 1540: Retry #1 started: The.Watchers.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA
+2026-05-01 03:53:31 | INFO     | backend.core.downloader - Download 1540: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\The.Watchers.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA\\The.Watchers.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA.mkv'
+2026-05-01 03:53:31 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\The.Watchers.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA\\The.Watchers.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA.mkv'
+2026-05-01 03:53:31 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\The.Watchers.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA\\The.Watchers.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA.mkv'
+2026-05-01 03:53:31 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\The Watchers (2024)\\The.Watchers.2024.1080p.WEB.H264-VoraciousFreshBustardOfEconomy.mkv'
+2026-05-01 03:53:31 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\The Watchers (2024)' — target path: 'E:\\MOVIES\\The Watchers (2024)\\The.Watchers.2024.1080p.WEB.H264-VoraciousFreshBustardOfEconomy.mkv'
+2026-05-01 03:53:57 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\The Watchers (2024)_The.Watchers.2024.1080p.WEB.H264-VoraciousFreshBustardOfEconomy.mkv
+2026-05-01 03:53:57 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\The.Watchers.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA\\The.Watchers.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA.mkv' → 'E:\\MOVIES\\The Watchers (2024)\\The.Watchers.2024.1080p.WEB.H264-VoraciousFreshBustardOfEconomy.mkv'
+2026-05-01 03:53:58 | INFO     | backend.core.replacer - File move succeeded. New size: 1,640,110,204 bytes
+2026-05-01 03:53:58 | INFO     | backend.core.replacer - Radarr rescan triggered for The Watchers
+2026-05-01 03:53:58 | INFO     | backend.core.searcher - Searching for: The Waterboy (1998)
+2026-05-01 03:54:00 | INFO     | backend.core.searcher - Found 92 raw results for The Waterboy
+2026-05-01 03:54:00 | INFO     | backend.core.searcher - Analyzed 92 results: 5 accepted, 87 rejected (12 due to resolution downgrade limit, 63 due to larger size limit).
+2026-05-01 03:54:01 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Waterboy.1998.1080p.BluRay.x265 → job_id=SABnzbd_nzo_y8rqxozz
+2026-05-01 03:55:41 | INFO     | backend.core.downloader - Download 1541: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\The.Waterboy.1998.1080p.BluRay.x265\\The.Waterboy.1998.1080p.BluRay.x265.mp4'
+2026-05-01 03:55:41 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\The.Waterboy.1998.1080p.BluRay.x265\\The.Waterboy.1998.1080p.BluRay.x265.mp4'
+2026-05-01 03:55:41 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\The.Waterboy.1998.1080p.BluRay.x265\\The.Waterboy.1998.1080p.BluRay.x265.mp4'
+2026-05-01 03:55:41 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\The Waterboy (1998)\\The.Waterboy.1998.1080p.WebDL.H265.EAC3-Doombeard.mp4'
+2026-05-01 03:55:41 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\The Waterboy (1998)' — target path: 'Z:\\MEDIA\\MOVIES\\The Waterboy (1998)\\The.Waterboy.1998.1080p.WebDL.H265.EAC3-Doombeard.mp4'
+2026-05-01 03:56:11 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\The Waterboy (1998)_The.Waterboy.1998.1080p.WebDL.H265.EAC3-Doombeard.mp4
+2026-05-01 03:56:11 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\The.Waterboy.1998.1080p.BluRay.x265\\The.Waterboy.1998.1080p.BluRay.x265.mp4' → 'Z:\\MEDIA\\MOVIES\\The Waterboy (1998)\\The.Waterboy.1998.1080p.WebDL.H265.EAC3-Doombeard.mp4'
+2026-05-01 03:56:24 | INFO     | backend.core.replacer - File move succeeded. New size: 1,500,161,958 bytes
+2026-05-01 03:56:24 | INFO     | backend.core.replacer - Radarr rescan triggered for The Waterboy
+2026-05-01 03:56:24 | INFO     | backend.core.searcher - Searching for: The Way, My Way (2024)
+2026-05-01 03:56:30 | INFO     | backend.core.searcher - Found 8 raw results for The Way, My Way
+2026-05-01 03:56:30 | INFO     | backend.core.searcher - Analyzed 8 results: 0 accepted, 8 rejected (1 due to resolution downgrade limit, 7 due to larger size limit).
+2026-05-01 03:56:30 | INFO     | backend.core.searcher - Searching for: We Live in Time (2024)
+2026-05-01 03:56:36 | INFO     | backend.core.searcher - Found 121 raw results for We Live in Time
+2026-05-01 03:56:36 | INFO     | backend.core.searcher - Analyzed 121 results: 37 accepted, 84 rejected (12 due to resolution downgrade limit, 60 due to larger size limit).
+2026-05-01 03:56:37 | INFO     | backend.core.downloader - Submitted to sabnzbd: We.Live.in.Time.2024.1080p.Blu-ray.Remux.AVC.TrueHD.Atmos.7.1-CiNEPHiLES → job_id=SABnzbd_nzo_xbb87it8
+2026-05-01 03:57:55 | INFO     | backend.core.downloader - Download 1542: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\We.Live.in.Time.2024.1080p.Blu-ray.Remux.AVC.TrueHD.Atmos.7.1-CiNEPHiLES\\We.Live.in.Time.2024.1080p.Blu-ray.Remux.AVC.TrueHD.Atmos.7.1-CiNEPHiLES.mkv'
+2026-05-01 03:57:55 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\We.Live.in.Time.2024.1080p.Blu-ray.Remux.AVC.TrueHD.Atmos.7.1-CiNEPHiLES\\We.Live.in.Time.2024.1080p.Blu-ray.Remux.AVC.TrueHD.Atmos.7.1-CiNEPHiLES.mkv'
+2026-05-01 03:57:55 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\We.Live.in.Time.2024.1080p.Blu-ray.Remux.AVC.TrueHD.Atmos.7.1-CiNEPHiLES\\We.Live.in.Time.2024.1080p.Blu-ray.Remux.AVC.TrueHD.Atmos.7.1-CiNEPHiLES.mkv'
+2026-05-01 03:57:55 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\We Live in Time (2024)\\We.Live.in.Time.2024.1080p.WEB.H264-AccomplishedYak.mkv'
+2026-05-01 03:57:55 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\We Live in Time (2024)' — target path: 'E:\\MOVIES\\We Live in Time (2024)\\We.Live.in.Time.2024.1080p.WEB.H264-AccomplishedYak.mkv'
+2026-05-01 03:58:46 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\We Live in Time (2024)_We.Live.in.Time.2024.1080p.WEB.H264-AccomplishedYak.mkv
+2026-05-01 03:58:46 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\We.Live.in.Time.2024.1080p.Blu-ray.Remux.AVC.TrueHD.Atmos.7.1-CiNEPHiLES\\We.Live.in.Time.2024.1080p.Blu-ray.Remux.AVC.TrueHD.Atmos.7.1-CiNEPHiLES.mkv' → 'E:\\MOVIES\\We Live in Time (2024)\\We.Live.in.Time.2024.1080p.WEB.H264-AccomplishedYak.mkv'
+2026-05-01 03:58:46 | INFO     | backend.core.replacer - File move succeeded. New size: 1,306,080,028 bytes
+2026-05-01 03:58:47 | INFO     | backend.core.replacer - Radarr rescan triggered for We Live in Time
+2026-05-01 03:58:47 | INFO     | backend.core.searcher - Searching for: We Were Soldiers (2002)
+2026-05-01 03:58:48 | INFO     | backend.core.searcher - Found 153 raw results for We Were Soldiers
+2026-05-01 03:58:48 | INFO     | backend.core.searcher - Analyzed 153 results: 5 accepted, 148 rejected (4 due to resolution downgrade limit, 132 due to larger size limit).
+2026-05-01 03:58:48 | INFO     | backend.core.downloader - Submitted to sabnzbd: We Were Soldiers (2002) BRRip 1080p HEVC x265-Netherworld → job_id=SABnzbd_nzo_ikaod36p
+2026-05-01 03:59:44 | INFO     | backend.core.downloader - Download 1543: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\We Were Soldiers (2002) BRRip 1080p HEVC x265-Netherworld'
+2026-05-01 03:59:44 | ERROR    | backend.core.orchestrator - Error processing We Were Soldiers: float() argument must be a string or a real number, not 'NoneType'
+2026-05-01 03:59:44 | INFO     | backend.core.searcher - Searching for: Weapons (2025)
+2026-05-01 03:59:46 | INFO     | backend.core.searcher - Found 189 raw results for Weapons
+2026-05-01 03:59:46 | INFO     | backend.core.searcher - Analyzed 189 results: 18 accepted, 171 rejected (96 due to resolution downgrade limit, 62 due to larger size limit).
+2026-05-01 03:59:46 | INFO     | backend.core.downloader - Submitted to sabnzbd: Weapons.2025.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH → job_id=SABnzbd_nzo_yuh74kb2
+2026-05-01 04:00:00 | INFO     | backend.scheduler.scheduler - Orphan scanner triggered
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Soldado-Sicario-Day.of.the.Soldado.2018.2160p.H265.10.bit.DV.HDR10ita.eng.AC3.5.1.sub.ita.eng.Licdom (60h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Shutter.Island.2010.MULTi.2160p.UHD.BluRay.x265-SESKAPiLE (60h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Shin.Ultraman.2022.JAPANESE.ENSUBBED.1080p.WEBRip.x265-VXT (60h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Shepherd.2023.1080p.WEBRip.DDP.Atmos.5.1.H.265.-iVy (60h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Shelter.2026.2160p.WEB-DL.60Fps.HDRVivid.H.265.10bit.DDP5.1.2Audios-UBWEB (60h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Shazam.2019.1080p.BluRay.AV1.Opus.5.1.[981] (60h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Shazam.Fury.of.the.Gods.2023.1080p.MA.UHD.WEB-DL.x265.10Bit.DD+5.1-Pahe.in (60h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Shang.Chi.and.the.Legend.of.the.Ten.Rings.2021.2160p.BDRip.HDR10.10bit.x265.AAC.7.1-PredikaT (60h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Shane.2022.1080p.BluRayRip.x265.10Bit.AC3.5.1-JATT (60h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Shadow.in.the.Cloud.2020.UHD.BluRay.1080p.DDP.5.1.DoVi.HDR10.x265-SM737 (60h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Seven-Se7en.1995.2160p.H265.10.bit.DV.ita.eng.AC3.5.1.sub.ita.eng.NUita.NUeng-Licdom (60h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Lemony.Snickets.A.Series.Of.Unfortunate.Events.2004.1080p.BluRay.DDP.5.1.H.265.-iVy (60h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: September.5.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA (60h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Send.Help.2026.2160p.iTunes.WEB-DL.DDP.7.1.Atmos.H.265-CHDWEB (60h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: See.How.They.Run.2022.2160p.WEBRip.DD5.1.HDR.X.265-EVO (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Secret.Headquarters.2022.1080p.BluRay.x265 (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Searching.for.Sugar.Man.2012.1080p.BluRay.x265.AAC.MVGroup.org (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Searching.2018.1080p.BluRay.x265 (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Scream.2022.2160p.BDRip.AAC.7.1.HDR10.x265.10bit-MarkII (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Scream.VI.2023.720p.UHD.BluRay.x264.6CH-Pahe.in (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Scoop.2024.1080p.WEBRip.x265.10bit.5.1-LAMA (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: School.of.Rock.2003.1080p.BluRay.x265 (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Saw.X.2023.1080p.DS4K.Webrip.x265.10bit.EAC3.5.1.DNU.TAoE (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Savoring.Paris.2024.1080p.WEBRip.DDP.2.0.10bit.H.265-iVy (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Salvate.il.soldato.Ryan-Saving.Private.Ryan.1998.AC3.5.1.ITA.ENG.2160p.H265.HDR10.sub.ita.eng.Sp33dy94-MIRCrew (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Santa.Clause.2.2002.HDR.2160p.WEB.H265-PETRiFiED (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Santa.Clause.1994.2160p.DSNP.WEB-DL.DDP.5.1.DV.HDR.H.265-PiRaTeS (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Joola.Africas.Titanic.2022.1080p.WEBRip.x264-CBFM (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Sam.and.Kate.2022.1080p.WEBRip.DD5.1.X.264-EVO (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Saltburn.2023.1080p.DS4K.AMZN.WEBRip.x265.HEVC.10bit.EAC3.5.1.Atmos.English.REX.PxL (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Running.Man.2025.2160p.HDR10Plus.DV.WEBRip.6CH.X265.HEVC-PSA (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Roses.2025.2160p.WEBRip.DD+5.1.Atmos.DV.HDR10+.AV1-RandH (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Room.Next.Door.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Roofman.2025.2160p.ATVP.PMTP.WEB-DL.DD.5.1.H.265-PiRaTeS (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Romeo.and.Juliet.2013.720p.BluRay.x264.YIFY (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Role.Models.2008.1080p.BluRay.x265 (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Rogue.One.A.Star.Wars.Story.2016.2160p.BDRip.HDR10.10bit.x265.AAC.7.1-PredikaT (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Rocketman.2019.2160p.BDRip.AAC.7.1.HDR10.x265.10bit-MarkII (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Robocop.2014.1080p.BluRay.DTS-HD.x264-BARC0DE-Obfuscated (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Roast.of.Tom.Brady.2024.1080p.WEBRip.DDP.5.1.H.265-iVy (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Robin.Hood.2018.2160p.UHD.BluRay.x265-WHITERHINO (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Road.House.2024.2160p.H265.HDR.iTA.EnG.EAC3.5.1.Sub.iTA.EnG.NUEnG.AsPiDe-MIRCrew (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Road.to.Perdition.2002.(116.58).Tom.Hanks.Tyler.Hoechlin.Rob.Maxey.1080p.Brip.W.Commentary.HEVC.x265-RG.mkv (61h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Risen.2016.1080p.BluRay.DTS.x264-HDMaNiAcS-Obfuscated (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Rip.2026.MULTi.VF2.AD.2160p.DV.HDR.WEBRip.10Bit.DDP5.1.ATMOS.AV1-SHADOW (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Rio.2011.2160p.2D.WEBRip.EAC3.5.1.x265-PoF (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Riddick.2013.Directors.Cut.UHD.BluRay.1080p.DDP.5.1.DoVi.HDR10.x265-SM737 (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Ricky.Stanicky.2024.2160p.4K.WEB.5.1-LAMA (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Revenant.2015.UHD.BluRay.2160p.DTS-HD.MA.7.1.HEVC.REMUX-FraMeSToR (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Return.2024.2160p.WEBRip.10Bit.DDP5.1.x265-Asiimov (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Retribution.2023.1080p.WEB-DL.DS4K.DDP5.1.Atmos.aom.AV1.ffmpeg-ayt36 (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Respect.2021.2160p.WEB.H265-RVKD (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Resident.Evil.Welcome.to.Raccoon.City.2021.1080p.BRRip.DDP.5.1.H.265.-iVy (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: (Reservoir Dogs) [00_36] - _Reservoir Dogs 1992 1080p h265.nzb_ (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Replicas.2018.MULTi.1080p.BluRay.x264-LOST (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Rental.Family.2025.1080p.DS4K.iT.Webrip.x265.10bit.DDP.Atmos.5.1.H4XO (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Resident.Evil.Retribution.2012.m720p.AAC.x264-NoGroup (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Renfield.2023.UHD.BluRay.1080p.DD.Atmos.5.1.DoVi.HDR10.x265-SM737 (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: (Reminiscence (2021)) [00_31] - _Reminiscence (2021) 2021 1080p h265.nzb_ (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Remember.The.Titans.2000.1080p.MA.UHD.WebRip.HDR.x265.AC3.5.1-SM737 (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Reign.Of.Fire.2002.1080p.BluRay.x265 (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Regretting.You.2025.1080p.10bit.WEBRip.6CH.X265.HEVC-PSA (62h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Red.Sonja.2025.1080p.10bit.WEBRip.6CH.X265.HEVC-PSA (63h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Red.Rocket.2021.1080p.WEBRip.x265 (63h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Uno.Rosso-Red.One.2024.WebDl.Rip.2160p.H265.10.bit.DV.HDR10+.ita.eng.AC3.5.1.sub.ita.eng.NUeng-Licdom (63h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Red.Notice.2021.1080p.NF.WEB-DL.DDP5.1.H.264-NINJACENTRAL (63h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Red.Dog.2011.BluRay.720p.H264 (63h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Rebel.Ridge.2024.1080p.Opus.AV1 (63h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Rebel.Moon.Part.Two.The.Scargiver.2024.1080p.ITA-ENG.MULTI.WEBRip.x265.AAC-V3SP4EV3R (63h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Rebel.Moon.Part.One-A.Child.Of.Fire.2023.[2160p].WEB.NF.AV1.Opus.10bit (63h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Real.Steel.2011.REMUX.1080p.Blu-ray.AVC.DTS-HD.MA.7.1-LEGi0N (63h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: A.Real.Pain.2024.1080p.WEB-DL.AV1.AAC.DD5.1-LUCY (63h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Reagan.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Ready.Player.One.2018.1080p.UHD.BluRay.DDP7.1.HDR.X265-NCmt (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Raya.and.the.Last.Dragon.2021.2160p.BDRip.AAC.7.1.HDR10.x265.10bit-MarkII (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Rat.Race.2001.1080P.Opus.AV1 (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Rampage.2018.MULTi.2160p.UHD.BluRay.x265-SESKAPiLE (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Ralph.Breaks.the.Internet.2018.MULTi.2160p.UHD.BluRay.x265-OohLaLa (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: A.Quiet.Place.Part.II.2020.2160p.10bit.HDR.WEBRip.6CH.x265.HEVC-PSA-xpost (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Quantum.of.Solace.2008.1080p.BluRay.DS4K.RIP.DD5.1.SVT-AV1-ayt36 (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: A.Quiet.Place.Day.One.2024.2160p.HDR10Plus.DV.WEBRip.6CH.x265.HEVC.EN.NL.Sub (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: A.Quiet.Place.2018.UHD.BluRay.1080p.DD.Atmos.5.1.DoVi.HDR.x265-SM737 (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Pulp.Fiction.1994.1080p.NF.WEB-DL.DDP5.1.H.264-NINJACENTRAL (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Prototype.2022.1080p.WEBRip.DD5.1.X.264-EVO (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Protege.2021.2160p.BDRip.AAC.7.1.HDR10.x265.10bit-MarkII (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Promising Young Woman 2020 2160p BDRip TrueHD 7 1 Atmos DV HDR10 x265 10bit-MarkII (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Project.Hail.Mary.2026.720p.TeleSync.AAC2.0.AV1-LuCY (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Project.A.1983.1080p.BluRay.x264.YIFY-Obfuscated (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: (The Professor and the Madman) [02_32] - _The Professor and the Madman 2019 1080p h265.part01.rar_ (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Professor.2018.1080p.BluRay.DDP.5.1.H.265-iVy (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Prisoners.2013.Upscale.2160p.BluRay.DTS-HD.MA.5.1.DV.HDR.AV1-RandH (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Priscilla.2023.UHD.BluRay.1080p.DDP.5.1.DoVi.HDR.x265-SM737 (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Prey.2022.1080p.UHD.WEB-DL.x264.DD.5.1-Pahe (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Present.2024.1080p.WEB-DL.HEVC.x265.5.1.BONE (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Predator.Badlands.2025.1080p.MA.DS4K.WEBRip.10bit.DDP5.1.x265-NeoNoir (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Power.Of.The.Dog.2021.2160p.HDR.WebRip.x265.10Bit.AC3.5.1-JATT (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Portable.Door.2023.2160p.4K.WEB.X265.10bit.AAC5.1-LAMA (67h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: L.Esorcista.del.Papa-The.Pope.s.Exorcist.2023.WebDl.Rip.2160p.H265.10.bit.DV.HDR10ita.eng.AC3.5.1.sub.ita.eng.Licdom (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Poor.Things.2023.[2160p].HDR10DV.WEB.[x265-10bit.Opus 5.1] (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Pokemon.Detective.Pikachu.2019.1080p.BluRay.AV1.Opus.5.1.[981] (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Poker.Face.2022.1080p.WEBRip.x265 (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Playdate.2025.2160p.AMZN.WEB-DL.DDP5.1.H.265-FLUX (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Play.Dirty.2025.2160p.WEBRip.DDP5.1.Atmos.DV.HDR.AV1-R&amp;H (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Platoon.1986.1080p.BluRay.x265-SM737 (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Plane.2023.2160p.HDR.Opus.AV1 (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Pitch.Black.2000.DC.4K.Remastered.1080p.10bit.BluRay.x265.HEVC.[Hindi.AMZN.DDP.5.1.+.English.DDP.5.1].ESubs.Pahe (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Pirates.of.the.Caribbean.The.Curse.of.the.Black.Pearl.2003.BD.Menu.2160p.REMUX.HEVC.HDR10.Dolby.Digital.Audio.English.DataLass (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Pirates.of.the.Caribbean.On.Stranger.Tides.2011.720p.UHD.BluRay.x264.6CH-Pahe.in (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Pirates.Of.The.Caribbean.Dead.Men.Tell.No.Tales.2017.MULTi.QC.1080p.BluRay.x264-PRiDEHD (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Pirates.of.the.Caribbean-Dead.Mans.Chest.[2006].2160p.10bit.{60FPS}.iTunes.WEBRIP.x265.Dual.Audio.[Hindi+English].DDP.Atmos.5.1.ESub.[-=BlacK PearL-] (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Pirates.of.the.Caribbean-At.Worlds.End.2007.BluRay.1080p.DtsHDMa.5.1.x264-D3G (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Piglet.2025.1080p.WEBRip.5.1-LAMA (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: (Pig (2021)) [02_26] - _Pig (2021) 2021 1080p h265.part01.rar_ (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Piano.Lesson.2024.[1080p].[WEBRip].[x265].[10bit].[5.1].[YTS.MX] (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Phoenician.Scheme.2025.1080p.WEBRIP.DDP5.1.x265-NeoNoir (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Peter.Rabbit.2.2021.2160p.WebDL.H264.AC3.Will1869 (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Pearl.2022.1080p.UHD.BluRay.DV.HDR.x265.DD.5.1-SM737 (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Patriot.2000.UHD.BluRay.1080p.DD.Atmos.5.1.DoVi.HDR.x265-SM737 (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: (SluweSjakie) [177_178] - _Pearl Harbor (2001) 1080p DTS-HD NL Subs x264 (68h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Past.Lives.2023-2160p.BluRay.HDR10.10.bit.Encode.AV1.DDP.5.1-RandH (69h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Passion.of.the.Christ.2004.ARAMAIC.1080p.BluRay.x265 (69h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Parasite.2019.bluray.hdr.2160p.av1.7.1.opus.subs-Dust (69h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Palmer.2021.UHD.ATVP.WebRip.1080p.DD.Atmos.5.1.DoVi.HDR10.x265-SM737 (69h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Palm.Springs.2020.1080p.Opus.AV1 (69h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Pain.and.Gain.2013.1080p.BluRay.x265-SM737 (69h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Pacific.Rim.2013.1080p.UHD.10bit.Bluray.x265.HEVC.[Org.NF.Hindi.DDP.5.1.640Kbps.+.AAC.7 (69h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Pacific.Rim.Uprising.2018.MULTi.2160p.UHD.BluRay.x265-SESKAPiLE (69h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Il.Grande.e.Potente.Oz-The.Great.and.Powerful.2013.UpScaled.2160p.H265.10.bit.DV.HDR10+.ita.eng.AC3.5.1.sub.ita.Licdom (69h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Overlord.2018.1080p.BluRay.x265-LAMA (69h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Out-Laws.2023.1080p.DS4K.NF.Webrip.x265.10bit.EAC3.5.1.Atmos.English.ANONAZ.TAoE (69h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Out.of.Darkness.2024.1080p.BluRay.DDP5.1.x265.10bit-GalaxyRG265 (69h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Origin.2023.1080p.AMZN.WEBRip.1600MB.DD5.1.x264-GalaxyRG (69h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Oppenheimer.2023.BluRay.1080p.5.1.AV1.Opus.CD700-CAV1aR (69h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Operation.Fortune.Ruse.de.Guerre.2023.1080p.WEB-DL.DS4K.RIP.DDP5.1.Atmos.aomenc.AV1-ayt36 (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: One.Life.2023.UHD.WEBRip.DDP5.1.DoVi.HDR.x265-SM737 (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Once.Upon.a.Time.in.Hollywood.2019.2160p.10bit.HDR.BluRay.8CH.x265.HEVC-PSA (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: One.Battle.After.Another.2025.1080p.WEB-DL.H.264.AAC-PTerWEB (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: (On the Line (2022)) [00_29] - _On the Line (2022) 2022 1080p h265.nzb_ (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: On.the.Basis.of.Sex.2018.MULTi.1080p.BluRay.x264-VENUE (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Omni.Loop.2024.1080P.Web.Opus.AV1 (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Oldboy 2003 1080p UHD 10bit BluRay x265 HEVC Org AMZ Hindi DDP 5 (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Old.Man.and.The.Gun.2018.2160p.MA.WEB-DL.DTS-HD.MA.5.1.H.265-FLUX (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Old.Henry.2021.1080p.BluRay.DDP.5.1.H.265-iVy (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Old.Guy.2024.1080p.BluRay.x264-JustWatch (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Old.Guard.2020.HDR.2160p.WEB.H265-DONUTS (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Old.Dads.2023.1080p.WEBRip.DDP.5.1.H.265.-iVy (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Office.Christmas.Party.2016.UNRATED.1080p.BluRay.x265 (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Oddity.2024.1080p.DS4K.AMZN.WEBRip.DD.5.1.X265-Ralphy (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Odd.Angry.Shot.1979.1080p.BluRay.x265 (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: (Ocean's Eight) [29_36] - _Ocean's Eight 2018 1080p h265.vol003+004.par2_ (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: (Oblivion (2013)) [37_43] - _Oblivion (2013) 2013 1080p h265.vol007+008.par2_ (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Nutcrackers.2024.1080p.WEB-DL.HEVC.x265.5.1.BONE (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Nuremberg.2025.2160p.HDR10Plus.DV.WEBRip.6CH.X265.HEVC-PSA (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Now.You.See.Me.Now.You.Dont.2025.2160p.iTunes.WEB-DL.DD.5.1.H.265-CHDWEB (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Now You See Me (2013) 2160p 4K UltraHD BluRay (x265 HEVC 10bit) 2CH AC3.HDL [1137 of 1256] _Now You See Me (2013) 2160p 4K UltraHD BluRay (x265 HEVC 10bit) 2CH AC3.par2_ (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Novice.2021.1080p.WEBRip.x265 (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Nosferatu.2024.1080p.WEB-DL.AV1.AAC.DD.5.1-LuCY (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Northman.2022.1080p.UHD.WEB-DL.x265.10Bit.DD.5.1-Pahe.in (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Nope.2022.2160p.2160p.WEB-DL.AAC.5.1.HDR10.x265.10bit-MarkII (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: (Nomadland) [01_29] - _Nomadland 2020 1080p h265.par2_ (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Nobody.2.2025.2160p.HDR10Plus.DV.WEBRip.6CH.X265.HEVC-PSA (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Nobody.2021.2160p.BDRip.AAC.7.1.HDR10.x265.10bit-MarkII (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Noah.2014.2160p.WEB.H265-HEATHEN (70h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: No.Time.to.Die.2021.2160p.BDRip.AAC.7.1.HDR10.x265.10bit-MarkII (71h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: No.Sudden.Move.2021.UHD.WebRip.1080p.DDP.5.1.DoVi.HDR10.x265-SM737 (71h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: No.Hard.Feelings.2023.1080p.WEBRip.1400MB.DD5.1.x264-GalaxyRG (71h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: No.Country.For.Old.Men.2007.bluray.sdr.movie.1080p.av1.2.0.opus.1900mb-Rosy (71h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Ninja.Scroll.1993.DUBBED.1080p.BluRay.x265 (71h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Nightmare.Alley.2021.2160p.HDR.WebRip.x265.10Bit.AC3.5.1-JATT (71h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: NightBitch.2024.2160p.WEB-DL.AV1.AAC.DD5.1-LUCY (71h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Night.Swim.2024.[2160p].[4K].[WEB].[5.1].[YTS.MX] (71h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Night.School.2018.EXTENDED.MULTi.2160p.UHD.BluRay.x265-SESKAPiLE (71h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Night.At.The.Museum.Secret.Of.The.Tomb.20142160P.H265-Zero00 (71h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: The.Night.Before.2015.1080p.BluRay.x265 (71h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Night.at.the.Museum.Kahmunrah.Rises.Again.2022.1080p.WEBRip.DDP.5.1.H.265.-iVy (71h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Night.at.the.Museum.Battle.of.the.Smithsonian.2009.HDR.2160p.WEB.h265-EDITH (71h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Night.At.The.Museum.2006.2160P.H265-Zero00 (71h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Nickel.Boys.2024.1080p.WEBRip.10Bit.DDP5.1.x265-Asiimov (71h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: Next.Goal.Wins.2023.1080p.WEBRip.AV1.Opus.5.1.[981] (71h old)
+2026-05-01 04:00:01 | INFO     | backend.core.orphan_scanner - Found orphaned download: News.of.the.World.2020.2160p.UHD.BluRay.REMUX.HDR.HEVC.Atmos-TRiToN (71h old)
+2026-05-01 04:00:02 | INFO     | backend.scheduler.scheduler - Orphan scanner found 180 new orphaned download(s)
+2026-05-01 04:08:16 | INFO     | backend.core.downloader - Download 1544: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Weapons.2025.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH'
+2026-05-01 04:08:16 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Weapons.2025.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH'
+2026-05-01 04:08:16 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Weapons.2025.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH\\Weapons.2025.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH.mkv'
+2026-05-01 04:08:16 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Weapons (2025)\\Weapons.2025.Hybrid.2160p.WEB-DL.DV.HDR.DDP5.1.Atmos.H265-AOC.mkv'
+2026-05-01 04:08:16 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\Weapons (2025)' — target path: 'Z:\\MEDIA\\MOVIES\\Weapons (2025)\\Weapons.2025.Hybrid.2160p.WEB-DL.DV.HDR.DDP5.1.Atmos.H265-AOC.mkv'
+2026-05-01 04:11:44 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\Weapons (2025)_Weapons.2025.Hybrid.2160p.WEB-DL.DV.HDR.DDP5.1.Atmos.H265-AOC.mkv
+2026-05-01 04:11:44 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Weapons.2025.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH\\Weapons.2025.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH.mkv' → 'Z:\\MEDIA\\MOVIES\\Weapons (2025)\\Weapons.2025.Hybrid.2160p.WEB-DL.DV.HDR.DDP5.1.Atmos.H265-AOC.mkv'
+2026-05-01 04:12:59 | INFO     | backend.core.replacer - File move succeeded. New size: 8,308,456,586 bytes
+2026-05-01 04:13:00 | INFO     | backend.core.replacer - Radarr rescan triggered for Weapons
+2026-05-01 04:13:00 | INFO     | backend.core.replacer - Cleaned up download folder: 'H:\\DOWNLOADS\\USENET\\complete\\Weapons.2025.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH'
+2026-05-01 04:13:00 | INFO     | backend.core.searcher - Searching for: Weekend in Taipei (2024)
+2026-05-01 04:13:01 | INFO     | backend.core.searcher - Found 113 raw results for Weekend in Taipei
+2026-05-01 04:13:01 | INFO     | backend.core.searcher - Analyzed 113 results: 25 accepted, 88 rejected (28 due to resolution downgrade limit, 39 due to larger size limit).
+2026-05-01 04:13:02 | INFO     | backend.core.downloader - Submitted to sabnzbd: Weekend.in.Taipei.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA → job_id=SABnzbd_nzo_8ezdyy_y
+2026-05-01 04:14:53 | INFO     | backend.core.downloader - Download 1545: found in sabnzbd history — status='queued' storage=''
+2026-05-01 04:14:53 | INFO     | backend.core.downloader - Download 1545: sabnzbd history status 'queued' is still post-processing; continuing monitor
+2026-05-01 04:14:59 | INFO     | backend.core.downloader - Download 1545: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Weekend.in.Taipei.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA\\Weekend.in.Taipei.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA.mkv'
+2026-05-01 04:14:59 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Weekend.in.Taipei.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA\\Weekend.in.Taipei.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA.mkv'
+2026-05-01 04:14:59 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Weekend.in.Taipei.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA\\Weekend.in.Taipei.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA.mkv'
+2026-05-01 04:14:59 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\Weekend in Taipei (2024)\\Weekend.in.Taipei.2024.1080p.WEB.H264-ValiantVisionaryMongrelOfPainting.mkv'
+2026-05-01 04:14:59 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\Weekend in Taipei (2024)' — target path: 'E:\\MOVIES\\Weekend in Taipei (2024)\\Weekend.in.Taipei.2024.1080p.WEB.H264-ValiantVisionaryMongrelOfPainting.mkv'
+2026-05-01 04:15:45 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\Weekend in Taipei (2024)_Weekend.in.Taipei.2024.1080p.WEB.H264-ValiantVisionaryMongrelOfPainting.mkv
+2026-05-01 04:15:45 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Weekend.in.Taipei.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA\\Weekend.in.Taipei.2024.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA.mkv' → 'E:\\MOVIES\\Weekend in Taipei (2024)\\Weekend.in.Taipei.2024.1080p.WEB.H264-ValiantVisionaryMongrelOfPainting.mkv'
+2026-05-01 04:15:46 | INFO     | backend.core.replacer - File move succeeded. New size: 1,823,321,516 bytes
+2026-05-01 04:15:46 | INFO     | backend.core.replacer - Radarr rescan triggered for Weekend in Taipei
+2026-05-01 04:15:46 | INFO     | backend.core.searcher - Searching for: Weird: The Al Yankovic Story (2022)
+2026-05-01 04:15:48 | INFO     | backend.core.searcher - Found 94 raw results for Weird: The Al Yankovic Story
+2026-05-01 04:15:48 | INFO     | backend.core.searcher - Analyzed 94 results: 19 accepted, 75 rejected (10 due to resolution downgrade limit, 61 due to larger size limit).
+2026-05-01 04:15:49 | INFO     | backend.core.downloader - Submitted to sabnzbd: Weird.The.Al.Yankovic.Story.2022.1080p.BluRay.x265 → job_id=SABnzbd_nzo_ekzxv0xv
+2026-05-01 04:17:40 | INFO     | backend.core.downloader - Download 1546: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 04:17:40 | INFO     | backend.core.downloader - Download 1546: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 04:17:46 | INFO     | backend.core.downloader - Download 1546: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Weird.The.Al.Yankovic.Story.2022.1080p.BluRay.x265\\Weird.The.Al.Yankovic.Story.2022.1080p.BluRay.x265.mp4'
+2026-05-01 04:17:46 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Weird.The.Al.Yankovic.Story.2022.1080p.BluRay.x265\\Weird.The.Al.Yankovic.Story.2022.1080p.BluRay.x265.mp4'
+2026-05-01 04:17:46 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Weird.The.Al.Yankovic.Story.2022.1080p.BluRay.x265\\Weird.The.Al.Yankovic.Story.2022.1080p.BluRay.x265.mp4'
+2026-05-01 04:17:46 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Weird The Al Yankovic Story (2022)\\Weird.The.Al.Yankovic.Story.2022.1080p.BluRay.DDP.5.1.H.265.-iVy.mkv'
+2026-05-01 04:17:46 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\Weird The Al Yankovic Story (2022)' — target path: 'Z:\\MEDIA\\MOVIES\\Weird The Al Yankovic Story (2022)\\Weird.The.Al.Yankovic.Story.2022.1080p.BluRay.DDP.5.1.H.265.-iVy.mp4'
+2026-05-01 04:18:13 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\Weird The Al Yankovic Story (2022)_Weird.The.Al.Yankovic.Story.2022.1080p.BluRay.DDP.5.1.H.265.-iVy.mkv
+2026-05-01 04:18:13 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Weird.The.Al.Yankovic.Story.2022.1080p.BluRay.x265\\Weird.The.Al.Yankovic.Story.2022.1080p.BluRay.x265.mp4' → 'Z:\\MEDIA\\MOVIES\\Weird The Al Yankovic Story (2022)\\Weird.The.Al.Yankovic.Story.2022.1080p.BluRay.DDP.5.1.H.265.-iVy.mp4'
+2026-05-01 04:18:29 | INFO     | backend.core.replacer - File move succeeded. New size: 1,796,151,397 bytes
+2026-05-01 04:18:30 | INFO     | backend.core.replacer - Radarr rescan triggered for Weird: The Al Yankovic Story
+2026-05-01 04:18:30 | INFO     | backend.core.searcher - Searching for: West Side Story (2021)
+2026-05-01 04:18:31 | INFO     | backend.core.searcher - Found 127 raw results for West Side Story
+2026-05-01 04:18:31 | INFO     | backend.core.searcher - Analyzed 127 results: 19 accepted, 108 rejected (11 due to resolution downgrade limit, 89 due to larger size limit).
+2026-05-01 04:18:31 | INFO     | backend.core.downloader - Submitted to sabnzbd: West.Side.Story.2021.720p.UHD.BluRay.x264.6CH-Pahe.in → job_id=SABnzbd_nzo__s_8l2ie
+2026-05-01 04:21:02 | INFO     | backend.core.downloader - Download 1547: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\West.Side.Story.2021.720p.UHD.BluRay.x264.6CH-Pahe.in'
+2026-05-01 04:21:02 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\West.Side.Story.2021.720p.UHD.BluRay.x264.6CH-Pahe.in'
+2026-05-01 04:21:02 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\West.Side.Story.2021.720p.UHD.BluRay.x264.6CH-Pahe.in\\West.Side.Story.2021.720p.UHD.BluRay.x264.6CH-Pahe.in.mkv'
+2026-05-01 04:21:02 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\West.Side.Story.2021.1080p.BRRip.X264.AC3-EVO\\West.Side.Story.2021.UHD.BluRay.1080p.DDP.7.1.DoVi.HDR.x265-SM737.mkv'
+2026-05-01 04:21:02 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\West.Side.Story.2021.1080p.BRRip.X264.AC3-EVO' — target path: 'Z:\\MEDIA\\MOVIES\\West.Side.Story.2021.1080p.BRRip.X264.AC3-EVO\\West.Side.Story.2021.UHD.BluRay.1080p.DDP.7.1.DoVi.HDR.x265-SM737.mkv'
+2026-05-01 04:21:02 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (4,223,909,888 free, 7,790,944,636 needed); using local backup fallback
+2026-05-01 04:21:02 | INFO     | backend.core.replacer - Moved existing target aside before replacement: Z:\MEDIA\MOVIES\West.Side.Story.2021.1080p.BRRip.X264.AC3-EVO\West.Side.Story.2021.UHD.BluRay.1080p.DDP.7.1.DoVi.HDR.x265-SM737.mkv.slimarr-old
+2026-05-01 04:21:02 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\West.Side.Story.2021.720p.UHD.BluRay.x264.6CH-Pahe.in\\West.Side.Story.2021.720p.UHD.BluRay.x264.6CH-Pahe.in.mkv' → 'Z:\\MEDIA\\MOVIES\\West.Side.Story.2021.1080p.BRRip.X264.AC3-EVO\\West.Side.Story.2021.UHD.BluRay.1080p.DDP.7.1.DoVi.HDR.x265-SM737.mkv'
+2026-05-01 04:21:16 | INFO     | backend.core.replacer - File move succeeded. New size: 1,673,389,430 bytes
+2026-05-01 04:21:16 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: Z:\MEDIA\MOVIES\West.Side.Story.2021.1080p.BRRip.X264.AC3-EVO\West.Side.Story.2021.UHD.BluRay.1080p.DDP.7.1.DoVi.HDR.x265-SM737.mkv.slimarr-old
+2026-05-01 04:21:17 | INFO     | backend.core.replacer - Radarr rescan triggered for West Side Story
+2026-05-01 04:21:17 | INFO     | backend.core.replacer - Cleaned up download folder: 'H:\\DOWNLOADS\\USENET\\complete\\West.Side.Story.2021.720p.UHD.BluRay.x264.6CH-Pahe.in'
+2026-05-01 04:21:17 | INFO     | backend.core.searcher - Searching for: The Whale (2022)
+2026-05-01 04:21:18 | INFO     | backend.core.searcher - Found 148 raw results for The Whale
+2026-05-01 04:21:18 | INFO     | backend.core.searcher - Analyzed 148 results: 2 accepted, 146 rejected (43 due to resolution downgrade limit, 100 due to larger size limit).
+2026-05-01 04:21:19 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Whale.2022.2160p.UHD.Bluray.REMUX.DV.HDR10.HEVC.DTS-HD.MA.7.1-GHD → job_id=SABnzbd_nzo_9exo28ls
+2026-05-01 04:25:50 | INFO     | backend.core.downloader - Download 1548: found in sabnzbd history — status='verifying' storage=''
+2026-05-01 04:25:50 | INFO     | backend.core.downloader - Download 1548: sabnzbd history status 'verifying' is still post-processing; continuing monitor
+2026-05-01 04:25:57 | INFO     | backend.core.downloader - Download 1548: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\The.Whale.2022.2160p.UHD.Bluray.REMUX.DV.HDR10.HEVC.DTS-HD.MA.7.1-GHD'
+2026-05-01 04:25:57 | ERROR    | backend.core.orchestrator - Error processing The Whale: float() argument must be a string or a real number, not 'NoneType'
+2026-05-01 04:25:57 | INFO     | backend.core.searcher - Searching for: What Men Want (2019)
+2026-05-01 04:25:57 | INFO     | backend.core.searcher - Found 94 raw results for What Men Want
+2026-05-01 04:25:58 | INFO     | backend.core.searcher - Analyzed 94 results: 36 accepted, 58 rejected (8 due to resolution downgrade limit, 43 due to larger size limit).
+2026-05-01 04:25:58 | INFO     | backend.core.downloader - Submitted to sabnzbd: What.Men.Want.2019.MULTi.FRENCH.1080p.NF.WEBRIP.H265.EAC3-DELiRiUS → job_id=SABnzbd_nzo_mwclvl36
+2026-05-01 04:26:37 | INFO     | backend.core.downloader - Download 1549: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\What.Men.Want.2019.MULTi.FRENCH.1080p.NF.WEBRIP.H265.EAC3-DELiRiUS'
+2026-05-01 04:26:38 | ERROR    | backend.core.orchestrator - Error processing What Men Want: float() argument must be a string or a real number, not 'NoneType'
+2026-05-01 04:26:38 | INFO     | backend.core.searcher - Searching for: What We Do in the Shadows (2014)
+2026-05-01 04:26:39 | INFO     | backend.core.searcher - Found 126 raw results for What We Do in the Shadows
+2026-05-01 04:26:39 | INFO     | backend.core.searcher - Analyzed 126 results: 4 accepted, 122 rejected (12 due to resolution downgrade limit, 92 due to larger size limit).
+2026-05-01 04:26:39 | INFO     | backend.core.downloader - Submitted to sabnzbd: What.We.Do.in.the.Shadows.2014.1080p.BluRay.x265 → job_id=SABnzbd_nzo_l8jnijlw
+2026-05-01 04:28:09 | INFO     | backend.core.downloader - Download 1550: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\What.We.Do.in.the.Shadows.2014.1080p.BluRay.x265\\What.We.Do.in.the.Shadows.2014.1080p.BluRay.x265.mp4'
+2026-05-01 04:28:09 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\What.We.Do.in.the.Shadows.2014.1080p.BluRay.x265\\What.We.Do.in.the.Shadows.2014.1080p.BluRay.x265.mp4'
+2026-05-01 04:28:09 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\What.We.Do.in.the.Shadows.2014.1080p.BluRay.x265\\What.We.Do.in.the.Shadows.2014.1080p.BluRay.x265.mp4'
+2026-05-01 04:28:09 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\What.We.Do.in.the.Shadows.2014.1080p.BluRay.x264.DTS-HD MA 5.1-NoHaTE\\What.We.Do.in.the.Shadows.2014.1080p.BluRay.DDP.5.1.8bit.H.265-iVy.mkv'
+2026-05-01 04:28:09 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\What.We.Do.in.the.Shadows.2014.1080p.BluRay.x264.DTS-HD MA 5.1-NoHaTE' — target path: 'Z:\\MEDIA\\MOVIES\\What.We.Do.in.the.Shadows.2014.1080p.BluRay.x264.DTS-HD MA 5.1-NoHaTE\\What.We.Do.in.the.Shadows.2014.1080p.BluRay.DDP.5.1.8bit.H.265-iVy.mp4'
+2026-05-01 04:28:25 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\What.We.Do.in.the.Shadows.2014.1080p.BluRay.x264.DTS-HD MA 5.1-NoHaTE_What.We.Do.in.the.Shadows.2014.1080p.BluRay.DDP.5.1.8bit.H.265-iVy.mkv
+2026-05-01 04:28:25 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\What.We.Do.in.the.Shadows.2014.1080p.BluRay.x265\\What.We.Do.in.the.Shadows.2014.1080p.BluRay.x265.mp4' → 'Z:\\MEDIA\\MOVIES\\What.We.Do.in.the.Shadows.2014.1080p.BluRay.x264.DTS-HD MA 5.1-NoHaTE\\What.We.Do.in.the.Shadows.2014.1080p.BluRay.DDP.5.1.8bit.H.265-iVy.mp4'
+2026-05-01 04:28:37 | INFO     | backend.core.replacer - File move succeeded. New size: 1,435,333,450 bytes
+2026-05-01 04:28:37 | INFO     | backend.core.replacer - Radarr rescan triggered for What We Do in the Shadows
+2026-05-01 04:28:37 | INFO     | backend.core.searcher - Searching for: Where the Crawdads Sing (2022)
+2026-05-01 04:28:39 | INFO     | backend.core.searcher - Found 109 raw results for Where the Crawdads Sing
+2026-05-01 04:28:40 | INFO     | backend.core.searcher - Analyzed 109 results: 28 accepted, 81 rejected (3 due to resolution downgrade limit, 66 due to larger size limit).
+2026-05-01 04:28:40 | INFO     | backend.core.downloader - Submitted to sabnzbd: Where.the.Crawdads.Sing.2022.MULTI.HDR.2160p.WEB.H265-LOST → job_id=SABnzbd_nzo_swkx1k2g
+2026-05-01 04:33:35 | INFO     | backend.core.downloader - Download 1551: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Where.the.Crawdads.Sing.2022.MULTI.HDR.2160p.WEB.H265-LOST\\where.the.crawdads.sing.2022.multi.hdr.2160p.web.h265-lost.mkv'
+2026-05-01 04:33:35 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Where.the.Crawdads.Sing.2022.MULTI.HDR.2160p.WEB.H265-LOST\\where.the.crawdads.sing.2022.multi.hdr.2160p.web.h265-lost.mkv'
+2026-05-01 04:33:35 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Where.the.Crawdads.Sing.2022.MULTI.HDR.2160p.WEB.H265-LOST\\where.the.crawdads.sing.2022.multi.hdr.2160p.web.h265-lost.mkv'
+2026-05-01 04:33:35 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Where the Crawdads Sing.2022.1080p.Bluray.DTS-HD.MA.5.1.X264-EVO\\Where.the.Crawdads.Sing.2022.720p.BluRay.DTS.x264-FuzerHD.mkv'
+2026-05-01 04:33:35 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\Where the Crawdads Sing.2022.1080p.Bluray.DTS-HD.MA.5.1.X264-EVO' — target path: 'Z:\\MEDIA\\MOVIES\\Where the Crawdads Sing.2022.1080p.Bluray.DTS-HD.MA.5.1.X264-EVO\\Where.the.Crawdads.Sing.2022.720p.BluRay.DTS.x264-FuzerHD.mkv'
+2026-05-01 04:33:35 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,368,909,312 free, 7,810,692,698 needed); using local backup fallback
+2026-05-01 04:33:35 | INFO     | backend.core.replacer - Moved existing target aside before replacement: Z:\MEDIA\MOVIES\Where the Crawdads Sing.2022.1080p.Bluray.DTS-HD.MA.5.1.X264-EVO\Where.the.Crawdads.Sing.2022.720p.BluRay.DTS.x264-FuzerHD.mkv.slimarr-old
+2026-05-01 04:33:35 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Where.the.Crawdads.Sing.2022.MULTI.HDR.2160p.WEB.H265-LOST\\where.the.crawdads.sing.2022.multi.hdr.2160p.web.h265-lost.mkv' → 'Z:\\MEDIA\\MOVIES\\Where the Crawdads Sing.2022.1080p.Bluray.DTS-HD.MA.5.1.X264-EVO\\Where.the.Crawdads.Sing.2022.720p.BluRay.DTS.x264-FuzerHD.mkv'
+2026-05-01 04:34:20 | INFO     | backend.core.replacer - File move succeeded. New size: 4,912,351,351 bytes
+2026-05-01 04:34:20 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: Z:\MEDIA\MOVIES\Where the Crawdads Sing.2022.1080p.Bluray.DTS-HD.MA.5.1.X264-EVO\Where.the.Crawdads.Sing.2022.720p.BluRay.DTS.x264-FuzerHD.mkv.slimarr-old
+2026-05-01 04:34:21 | INFO     | backend.core.replacer - Radarr rescan triggered for Where the Crawdads Sing
+2026-05-01 04:34:21 | INFO     | backend.core.searcher - Searching for: White Boy Rick (2018)
+2026-05-01 04:34:22 | INFO     | backend.core.searcher - Found 105 raw results for White Boy Rick
+2026-05-01 04:34:22 | INFO     | backend.core.searcher - Analyzed 105 results: 1 accepted, 104 rejected (49 due to resolution downgrade limit, 48 due to larger size limit).
+2026-05-01 04:34:22 | INFO     | backend.core.downloader - Submitted to sabnzbd: White.Boy.Rick.2018.2160p.HDR.WEBRip.DTS.x265-GASMASK → job_id=SABnzbd_nzo_8t5ju2zk
+2026-05-01 04:35:57 | INFO     | backend.core.downloader - Download 1552: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\White.Boy.Rick.2018.2160p.HDR.WEBRip.DTS.x265-GASMASK'
+2026-05-01 04:35:57 | ERROR    | backend.core.orchestrator - Error processing White Boy Rick: float() argument must be a string or a real number, not 'NoneType'
+2026-05-01 04:35:57 | INFO     | backend.core.searcher - Searching for: White Noise (2022)
+2026-05-01 04:35:59 | INFO     | backend.core.searcher - Found 45 raw results for White Noise
+2026-05-01 04:35:59 | INFO     | backend.core.searcher - Analyzed 45 results: 1 accepted, 44 rejected (2 due to resolution downgrade limit, 39 due to larger size limit).
+2026-05-01 04:35:59 | INFO     | backend.core.downloader - Submitted to sabnzbd: White.Noise.2023.1080p.AMZN.WEB.DL.DDP5.1.H.264.Kitsune → job_id=SABnzbd_nzo_jh65o6a6
+2026-05-01 04:36:44 | INFO     | backend.core.downloader - Download 1553: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\White.Noise.2023.1080p.AMZN.WEB.DL.DDP5.1.H.264.Kitsune'
+2026-05-01 04:36:44 | ERROR    | backend.core.orchestrator - Error processing White Noise: float() argument must be a string or a real number, not 'NoneType'
+2026-05-01 04:36:44 | INFO     | backend.core.searcher - Searching for: Whitney Houston: I Wanna Dance with Somebody (2022)
+2026-05-01 04:36:45 | INFO     | backend.core.searcher - Found 75 raw results for Whitney Houston: I Wanna Dance with Somebody
+2026-05-01 04:36:45 | INFO     | backend.core.searcher - Analyzed 75 results: 31 accepted, 44 rejected (3 due to resolution downgrade limit, 38 due to larger size limit).
+2026-05-01 04:36:46 | INFO     | backend.core.downloader - Submitted to sabnzbd: Whitney.Houston.I.Wanna.Dance.with.Somebody.2022.1080p.WEBRip.x265 → job_id=SABnzbd_nzo_17a3y6iy
+2026-05-01 04:39:22 | INFO     | backend.core.downloader - Download 1554: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Whitney.Houston.I.Wanna.Dance.with.Somebody.2022.1080p.WEBRip.x265\\Whitney.Houston.I.Wanna.Dance.with.Somebody.2022.1080p.WEBRip.x265.mp4'
+2026-05-01 04:39:22 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Whitney.Houston.I.Wanna.Dance.with.Somebody.2022.1080p.WEBRip.x265\\Whitney.Houston.I.Wanna.Dance.with.Somebody.2022.1080p.WEBRip.x265.mp4'
+2026-05-01 04:39:22 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Whitney.Houston.I.Wanna.Dance.with.Somebody.2022.1080p.WEBRip.x265\\Whitney.Houston.I.Wanna.Dance.with.Somebody.2022.1080p.WEBRip.x265.mp4'
+2026-05-01 04:39:22 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Whitney Houston I Wanna Dance with Somebody (2022)\\Whitney.Houston.I.Wanna.Dance.with.Somebody.2022.720p.BluRay.DTS.x264-FuzerHD.mkv'
+2026-05-01 04:39:22 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\Whitney Houston I Wanna Dance with Somebody (2022)' — target path: 'Z:\\MEDIA\\MOVIES\\Whitney Houston I Wanna Dance with Somebody (2022)\\Whitney.Houston.I.Wanna.Dance.with.Somebody.2022.720p.BluRay.DTS.x264-FuzerHD.mp4'
+2026-05-01 04:39:22 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,383,798,272 free, 9,006,064,195 needed); using local backup fallback
+2026-05-01 04:39:22 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Whitney.Houston.I.Wanna.Dance.with.Somebody.2022.1080p.WEBRip.x265\\Whitney.Houston.I.Wanna.Dance.with.Somebody.2022.1080p.WEBRip.x265.mp4' → 'Z:\\MEDIA\\MOVIES\\Whitney Houston I Wanna Dance with Somebody (2022)\\Whitney.Houston.I.Wanna.Dance.with.Somebody.2022.720p.BluRay.DTS.x264-FuzerHD.mp4'
+2026-05-01 04:39:43 | INFO     | backend.core.replacer - File move succeeded. New size: 2,414,551,253 bytes
+2026-05-01 04:39:43 | INFO     | backend.core.replacer - Deleted old file: Z:\MEDIA\MOVIES\Whitney Houston I Wanna Dance with Somebody (2022)\Whitney.Houston.I.Wanna.Dance.with.Somebody.2022.720p.BluRay.DTS.x264-FuzerHD.mkv
+2026-05-01 04:39:44 | INFO     | backend.core.replacer - Radarr rescan triggered for Whitney Houston: I Wanna Dance with Somebody
+2026-05-01 04:39:44 | INFO     | backend.core.searcher - Searching for: Wicked: For Good (2025)
+2026-05-01 04:39:47 | INFO     | backend.core.searcher - Found 174 raw results for Wicked: For Good
+2026-05-01 04:39:47 | INFO     | backend.core.searcher - Analyzed 174 results: 19 accepted, 155 rejected (8 due to resolution downgrade limit, 133 due to larger size limit).
+2026-05-01 04:39:48 | INFO     | backend.core.downloader - Submitted to sabnzbd: wicked.for.good.2025.2160p.hdr10plus.dv.webrip.6ch.x265.hevc-psa → job_id=SABnzbd_nzo_hta8mxky
+2026-05-01 04:43:41 | INFO     | backend.core.downloader - Download 1555: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\wicked.for.good.2025.2160p.hdr10plus.dv.webrip.6ch.x265.hevc-psa\\wicked.for.good.2025.2160p.hdr10plus.dv.webrip.6ch.x265.hevc-psa.mkv'
+2026-05-01 04:43:41 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\wicked.for.good.2025.2160p.hdr10plus.dv.webrip.6ch.x265.hevc-psa\\wicked.for.good.2025.2160p.hdr10plus.dv.webrip.6ch.x265.hevc-psa.mkv'
+2026-05-01 04:43:41 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\wicked.for.good.2025.2160p.hdr10plus.dv.webrip.6ch.x265.hevc-psa\\wicked.for.good.2025.2160p.hdr10plus.dv.webrip.6ch.x265.hevc-psa.mkv'
+2026-05-01 04:43:41 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Wicked For Good (2025)\\Wicked.For.Good.2025.1080p.WEB.h264-ETHEL.mkv'
+2026-05-01 04:43:41 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\Wicked For Good (2025)' — target path: 'Z:\\MEDIA\\MOVIES\\Wicked For Good (2025)\\Wicked.For.Good.2025.1080p.WEB.h264-ETHEL.mkv'
+2026-05-01 04:43:41 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,380,087,296 free, 7,629,219,632 needed); using local backup fallback
+2026-05-01 04:43:41 | INFO     | backend.core.replacer - Moved existing target aside before replacement: Z:\MEDIA\MOVIES\Wicked For Good (2025)\Wicked.For.Good.2025.1080p.WEB.h264-ETHEL.mkv.slimarr-old
+2026-05-01 04:43:41 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\wicked.for.good.2025.2160p.hdr10plus.dv.webrip.6ch.x265.hevc-psa\\wicked.for.good.2025.2160p.hdr10plus.dv.webrip.6ch.x265.hevc-psa.mkv' → 'Z:\\MEDIA\\MOVIES\\Wicked For Good (2025)\\Wicked.For.Good.2025.1080p.WEB.h264-ETHEL.mkv'
+2026-05-01 04:44:16 | INFO     | backend.core.replacer - File move succeeded. New size: 3,807,574,137 bytes
+2026-05-01 04:44:16 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: Z:\MEDIA\MOVIES\Wicked For Good (2025)\Wicked.For.Good.2025.1080p.WEB.h264-ETHEL.mkv.slimarr-old
+2026-05-01 04:44:17 | INFO     | backend.core.replacer - Radarr rescan triggered for Wicked: For Good
+2026-05-01 04:44:17 | INFO     | backend.core.searcher - Searching for: Will & Harper (2024)
+2026-05-01 04:44:20 | INFO     | backend.core.searcher - Found 28 raw results for Will & Harper
+2026-05-01 04:44:20 | INFO     | backend.core.searcher - Analyzed 28 results: 13 accepted, 15 rejected (4 due to resolution downgrade limit, 11 due to larger size limit).
+2026-05-01 04:44:20 | INFO     | backend.core.downloader - Submitted to sabnzbd: Will.and.Harper.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy → job_id=SABnzbd_nzo_b6v_vct_
+2026-05-01 04:46:17 | INFO     | backend.core.downloader - Download 1556: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Will.and.Harper.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy\\WillandHarper.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy.mkv'
+2026-05-01 04:46:17 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Will.and.Harper.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy\\WillandHarper.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy.mkv'
+2026-05-01 04:46:17 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Will.and.Harper.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy\\WillandHarper.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy.mkv'
+2026-05-01 04:46:17 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\Will & Harper (2024)\\Will.and.Harper.2024.1080p.WEB.H264-AccomplishedYak.mkv'
+2026-05-01 04:46:17 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\Will & Harper (2024)' — target path: 'E:\\MOVIES\\Will & Harper (2024)\\Will.and.Harper.2024.1080p.WEB.H264-AccomplishedYak.mkv'
+2026-05-01 04:46:17 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,379,698,176 free, 4,829,040,882 needed); using local backup fallback
+2026-05-01 04:46:17 | INFO     | backend.core.replacer - Moved existing target aside before replacement: E:\MOVIES\Will & Harper (2024)\Will.and.Harper.2024.1080p.WEB.H264-AccomplishedYak.mkv.slimarr-old
+2026-05-01 04:46:17 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Will.and.Harper.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy\\WillandHarper.2024.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy.mkv' → 'E:\\MOVIES\\Will & Harper (2024)\\Will.and.Harper.2024.1080p.WEB.H264-AccomplishedYak.mkv'
+2026-05-01 04:46:18 | INFO     | backend.core.replacer - File move succeeded. New size: 1,829,710,486 bytes
+2026-05-01 04:46:18 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: E:\MOVIES\Will & Harper (2024)\Will.and.Harper.2024.1080p.WEB.H264-AccomplishedYak.mkv.slimarr-old
+2026-05-01 04:46:18 | INFO     | backend.core.replacer - Radarr rescan triggered for Will & Harper
+2026-05-01 04:46:18 | INFO     | backend.core.searcher - Searching for: Wind River (2017)
+2026-05-01 04:46:19 | INFO     | backend.core.searcher - Found 182 raw results for Wind River
+2026-05-01 04:46:19 | INFO     | backend.core.searcher - Analyzed 182 results: 24 accepted, 158 rejected (19 due to resolution downgrade limit, 112 due to larger size limit).
+2026-05-01 04:46:20 | INFO     | backend.core.downloader - Submitted to sabnzbd: Wind.River.2017.1080p.BluRay.x265 → job_id=SABnzbd_nzo_ah8z69f_
+2026-05-01 04:48:11 | INFO     | backend.core.downloader - Download 1557: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Wind.River.2017.1080p.BluRay.x265\\Wind.River.2017.1080p.BluRay.x265.mp4'
+2026-05-01 04:48:11 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Wind.River.2017.1080p.BluRay.x265\\Wind.River.2017.1080p.BluRay.x265.mp4'
+2026-05-01 04:48:11 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Wind.River.2017.1080p.BluRay.x265\\Wind.River.2017.1080p.BluRay.x265.mp4'
+2026-05-01 04:48:11 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Wind River (2017)\\Wind.River.2017.720p.BluRay.DTS.x264-FuzerHD.mkv'
+2026-05-01 04:48:11 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\Wind River (2017)' — target path: 'Z:\\MEDIA\\MOVIES\\Wind River (2017)\\Wind.River.2017.720p.BluRay.DTS.x264-FuzerHD.mp4'
+2026-05-01 04:48:11 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,379,010,048 free, 5,834,024,617 needed); using local backup fallback
+2026-05-01 04:48:11 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Wind.River.2017.1080p.BluRay.x265\\Wind.River.2017.1080p.BluRay.x265.mp4' → 'Z:\\MEDIA\\MOVIES\\Wind River (2017)\\Wind.River.2017.720p.BluRay.DTS.x264-FuzerHD.mp4'
+2026-05-01 04:48:27 | INFO     | backend.core.replacer - File move succeeded. New size: 1,783,352,448 bytes
+2026-05-01 04:48:27 | INFO     | backend.core.replacer - Deleted old file: Z:\MEDIA\MOVIES\Wind River (2017)\Wind.River.2017.720p.BluRay.DTS.x264-FuzerHD.mkv
+2026-05-01 04:48:27 | INFO     | backend.core.replacer - Radarr rescan triggered for Wind River
+2026-05-01 04:48:27 | INFO     | backend.core.searcher - Searching for: The Wizard of Oz (1939)
+2026-05-01 04:48:29 | INFO     | backend.core.searcher - Found 180 raw results for The Wizard of Oz
+2026-05-01 04:48:30 | INFO     | backend.core.searcher - Analyzed 180 results: 7 accepted, 173 rejected (43 due to resolution downgrade limit, 91 due to larger size limit).
+2026-05-01 04:48:30 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Wizard.of.Oz.1939.2160p.MA.WEB-DL.DTS-HD.MA.5.1.H.265-FLUX → job_id=SABnzbd_nzo_150bl92m
+2026-05-01 04:51:33 | INFO     | backend.core.downloader - Download 1558: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\The.Wizard.of.Oz.1939.2160p.MA.WEB-DL.DTS-HD.MA.5.1.H.265-FLUX\\The.Wizard.of.Oz.1939.2160p.MA.WEB-DL.DTS-HD.MA.5.1.H.265-FLUX.mkv'
+2026-05-01 04:51:33 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\The.Wizard.of.Oz.1939.2160p.MA.WEB-DL.DTS-HD.MA.5.1.H.265-FLUX\\The.Wizard.of.Oz.1939.2160p.MA.WEB-DL.DTS-HD.MA.5.1.H.265-FLUX.mkv'
+2026-05-01 04:51:33 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\The.Wizard.of.Oz.1939.2160p.MA.WEB-DL.DTS-HD.MA.5.1.H.265-FLUX\\The.Wizard.of.Oz.1939.2160p.MA.WEB-DL.DTS-HD.MA.5.1.H.265-FLUX.mkv'
+2026-05-01 04:51:33 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\The Wizard of Oz (1939)\\The.Wizard.of.Oz.1939.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-LAMA.mkv'
+2026-05-01 04:51:33 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\The Wizard of Oz (1939)' — target path: 'E:\\MOVIES\\The Wizard of Oz (1939)\\The.Wizard.of.Oz.1939.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-LAMA.mkv'
+2026-05-01 04:51:33 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,377,605,120 free, 9,226,034,032 needed); using local backup fallback
+2026-05-01 04:51:33 | INFO     | backend.core.replacer - Moved existing target aside before replacement: E:\MOVIES\The Wizard of Oz (1939)\The.Wizard.of.Oz.1939.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-LAMA.mkv.slimarr-old
+2026-05-01 04:51:33 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\The.Wizard.of.Oz.1939.2160p.MA.WEB-DL.DTS-HD.MA.5.1.H.265-FLUX\\The.Wizard.of.Oz.1939.2160p.MA.WEB-DL.DTS-HD.MA.5.1.H.265-FLUX.mkv' → 'E:\\MOVIES\\The Wizard of Oz (1939)\\The.Wizard.of.Oz.1939.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-LAMA.mkv'
+2026-05-01 04:51:34 | INFO     | backend.core.replacer - File move succeeded. New size: 2,971,449,329 bytes
+2026-05-01 04:51:34 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: E:\MOVIES\The Wizard of Oz (1939)\The.Wizard.of.Oz.1939.2160p.UHD.BluRay.x265.10bit.HDR.DTS-HD.MA.5.1-LAMA.mkv.slimarr-old
+2026-05-01 04:51:35 | INFO     | backend.core.replacer - Radarr rescan triggered for The Wizard of Oz
+2026-05-01 04:51:35 | INFO     | backend.core.searcher - Searching for: Wolf Man (2025)
+2026-05-01 04:51:37 | INFO     | backend.core.searcher - Found 137 raw results for Wolf Man
+2026-05-01 04:51:37 | INFO     | backend.core.searcher - Analyzed 137 results: 20 accepted, 117 rejected (5 due to resolution downgrade limit, 109 due to larger size limit).
+2026-05-01 04:51:37 | INFO     | backend.core.downloader - Submitted to sabnzbd: Wolf.Man.2025.1080p.BluRay.DDP.5.1.10bit.H.265-iVy → job_id=SABnzbd_nzo_ilg46iez
+2026-05-01 04:52:50 | INFO     | backend.core.downloader - Download 1559: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 04:52:50 | INFO     | backend.core.downloader - Download 1559: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 04:52:56 | INFO     | backend.core.downloader - Download 1559: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 04:52:56 | INFO     | backend.core.downloader - Download 1559: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 04:53:02 | INFO     | backend.core.downloader - Download 1559: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 04:53:02 | INFO     | backend.core.downloader - Download 1559: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 04:53:08 | INFO     | backend.core.downloader - Download 1559: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 04:53:08 | INFO     | backend.core.downloader - Download 1559: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 04:53:15 | INFO     | backend.core.downloader - Download 1559: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 04:53:15 | INFO     | backend.core.downloader - Download 1559: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 04:53:21 | INFO     | backend.core.downloader - Download 1559: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Wolf.Man.2025.1080p.BluRay.DDP.5.1.10bit.H.265-iVy\\Wolf.Man.2025.1080p.BluRay.DDP.5.1.10bit.H.265-iVy.mkv'
+2026-05-01 04:53:21 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Wolf.Man.2025.1080p.BluRay.DDP.5.1.10bit.H.265-iVy\\Wolf.Man.2025.1080p.BluRay.DDP.5.1.10bit.H.265-iVy.mkv'
+2026-05-01 04:53:21 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Wolf.Man.2025.1080p.BluRay.DDP.5.1.10bit.H.265-iVy\\Wolf.Man.2025.1080p.BluRay.DDP.5.1.10bit.H.265-iVy.mkv'
+2026-05-01 04:53:21 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\Wolf Man (2025)\\Wolf.Man.2025.1080p.WEB-DLAV1.AAC.DD.5.1-LuCY.mkv'
+2026-05-01 04:53:21 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\Wolf Man (2025)' — target path: 'E:\\MOVIES\\Wolf Man (2025)\\Wolf.Man.2025.1080p.WEB-DLAV1.AAC.DD.5.1-LuCY.mkv'
+2026-05-01 04:53:21 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,377,871,360 free, 2,915,875,000 needed); using local backup fallback
+2026-05-01 04:53:21 | INFO     | backend.core.replacer - Moved existing target aside before replacement: E:\MOVIES\Wolf Man (2025)\Wolf.Man.2025.1080p.WEB-DLAV1.AAC.DD.5.1-LuCY.mkv.slimarr-old
+2026-05-01 04:53:21 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Wolf.Man.2025.1080p.BluRay.DDP.5.1.10bit.H.265-iVy\\Wolf.Man.2025.1080p.BluRay.DDP.5.1.10bit.H.265-iVy.mkv' → 'E:\\MOVIES\\Wolf Man (2025)\\Wolf.Man.2025.1080p.WEB-DLAV1.AAC.DD.5.1-LuCY.mkv'
+2026-05-01 04:53:21 | INFO     | backend.core.replacer - File move succeeded. New size: 996,928,929 bytes
+2026-05-01 04:53:21 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: E:\MOVIES\Wolf Man (2025)\Wolf.Man.2025.1080p.WEB-DLAV1.AAC.DD.5.1-LuCY.mkv.slimarr-old
+2026-05-01 04:53:22 | INFO     | backend.core.replacer - Radarr rescan triggered for Wolf Man
+2026-05-01 04:53:22 | INFO     | backend.core.searcher - Searching for: The Wolf of Wall Street (2013)
+2026-05-01 04:53:23 | INFO     | backend.core.searcher - Found 200 raw results for The Wolf of Wall Street
+2026-05-01 04:53:23 | INFO     | backend.core.searcher - Analyzed 200 results: 53 accepted, 147 rejected (30 due to resolution downgrade limit, 87 due to larger size limit).
+2026-05-01 04:53:24 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Wolf.of.Wall.Street.2013.2160p.UHD.Blu-ray.Remux.HEVC.DV.DTS-HD.MA.5.1-HDT → job_id=SABnzbd_nzo_q_j2xo7r
+2026-05-01 04:53:30 | INFO     | backend.core.downloader - Download 1560: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\The.Wolf.of.Wall.Street.2013.2160p.UHD.Blu-ray.Remux.HEVC.DV.DTS-HD.MA.5.1-HDT'
+2026-05-01 04:53:30 | ERROR    | backend.core.orchestrator - Error processing The Wolf of Wall Street: float() argument must be a string or a real number, not 'NoneType'
+2026-05-01 04:53:30 | INFO     | backend.core.searcher - Searching for: Wolfs (2024)
+2026-05-01 04:53:31 | INFO     | backend.core.searcher - Found 156 raw results for Wolfs
+2026-05-01 04:53:31 | INFO     | backend.core.searcher - Analyzed 156 results: 36 accepted, 120 rejected (17 due to resolution downgrade limit, 91 due to larger size limit).
+2026-05-01 04:53:31 | INFO     | backend.core.downloader - Submitted to sabnzbd: Wolfs.2024.2160p.HDR10Plus.DV.WEBRip.6CH.x265.HEVC-PSA → job_id=SABnzbd_nzo_xl9p4pdf
+2026-05-01 04:53:43 | INFO     | backend.core.downloader - Download 1561: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Wolfs.2024.2160p.HDR10Plus.DV.WEBRip.6CH.x265.HEVC-PSA'
+2026-05-01 04:53:44 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_xl9p4pdf
+2026-05-01 04:53:44 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Wolfs.2024.2160p.HDR10Plus.DV.WEBRip.6CH.x265.HEVC-PSA
+2026-05-01 04:53:44 | INFO     | backend.core.download_workflow - Failed download cleanup for 1561: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 04:53:44 | INFO     | backend.core.blacklist - Added to blacklist: Wolfs.2024.2160p.HDR10Plus.DV.WEBRip.6CH.x265.HEVC-PSA (reason=retry_failed_release, expires=2026-05-30 18:53:44.820530+00:00)
+2026-05-01 04:53:45 | INFO     | backend.core.downloader - Submitted to sabnzbd: Wolfs.2024.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH → job_id=SABnzbd_nzo_uz9q0xvc
+2026-05-01 04:53:45 | INFO     | backend.core.retry_ladder - Retrying download 1561 with candidate 282624: Wolfs.2024.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH
+2026-05-01 04:53:45 | INFO     | backend.core.download_workflow - Retrying failed download 1561 as download 1562: Retry #1 started: Wolfs.2024.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH
+2026-05-01 05:00:02 | INFO     | backend.core.downloader - Download 1562: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 05:00:02 | INFO     | backend.core.downloader - Download 1562: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 05:00:08 | INFO     | backend.core.downloader - Download 1562: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Wolfs.2024.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH'
+2026-05-01 05:00:08 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Wolfs.2024.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH'
+2026-05-01 05:00:08 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Wolfs.2024.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH\\Wolfs.2024.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH.mkv'
+2026-05-01 05:00:08 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\Wolfs (2024)\\Wolfs.2024.1080p.ATVP.WEB-DL.DDP5.1.Atmos.H.264-FLUX-Scrambled.mkv'
+2026-05-01 05:00:08 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\Wolfs (2024)' — target path: 'E:\\MOVIES\\Wolfs (2024)\\Wolfs.2024.1080p.ATVP.WEB-DL.DDP5.1.Atmos.H.264-FLUX-Scrambled.mkv'
+2026-05-01 05:00:08 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,376,175,616 free, 8,638,949,436 needed); using local backup fallback
+2026-05-01 05:00:08 | INFO     | backend.core.replacer - Moved existing target aside before replacement: E:\MOVIES\Wolfs (2024)\Wolfs.2024.1080p.ATVP.WEB-DL.DDP5.1.Atmos.H.264-FLUX-Scrambled.mkv.slimarr-old
+2026-05-01 05:00:08 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Wolfs.2024.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH\\Wolfs.2024.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH.mkv' → 'E:\\MOVIES\\Wolfs (2024)\\Wolfs.2024.1080p.ATVP.WEB-DL.DDP5.1.Atmos.H.264-FLUX-Scrambled.mkv'
+2026-05-01 05:00:40 | INFO     | backend.core.replacer - File move succeeded. New size: 6,258,123,396 bytes
+2026-05-01 05:00:40 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: E:\MOVIES\Wolfs (2024)\Wolfs.2024.1080p.ATVP.WEB-DL.DDP5.1.Atmos.H.264-FLUX-Scrambled.mkv.slimarr-old
+2026-05-01 05:00:41 | INFO     | backend.core.replacer - Radarr rescan triggered for Wolfs
+2026-05-01 05:00:41 | INFO     | backend.core.replacer - Cleaned up download folder: 'H:\\DOWNLOADS\\USENET\\complete\\Wolfs.2024.2160p.WEBRip.DD+.5.1.Atmos.DV.HDR10+.AV1-RandH'
+2026-05-01 05:00:41 | INFO     | backend.core.searcher - Searching for: The Woman King (2022)
+2026-05-01 05:00:42 | INFO     | backend.core.searcher - Found 188 raw results for The Woman King
+2026-05-01 05:00:42 | INFO     | backend.core.searcher - Analyzed 188 results: 42 accepted, 146 rejected (6 due to resolution downgrade limit, 113 due to larger size limit).
+2026-05-01 05:00:43 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Woman.King.2022.720p.UHD.BluRay.x264.6CH-Pahe.in → job_id=SABnzbd_nzo_zcfd6kry
+2026-05-01 05:03:02 | INFO     | backend.core.downloader - Download 1563: found in sabnzbd history — status='verifying' storage=''
+2026-05-01 05:03:02 | INFO     | backend.core.downloader - Download 1563: sabnzbd history status 'verifying' is still post-processing; continuing monitor
+2026-05-01 05:03:08 | INFO     | backend.core.downloader - Download 1563: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\The.Woman.King.2022.720p.UHD.BluRay.x264.6CH-Pahe.in'
+2026-05-01 05:03:09 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_zcfd6kry
+2026-05-01 05:03:09 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\The.Woman.King.2022.720p.UHD.BluRay.x264.6CH-Pahe.in
+2026-05-01 05:03:09 | INFO     | backend.core.download_workflow - Failed download cleanup for 1563: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 05:03:09 | INFO     | backend.core.blacklist - Added to blacklist: The.Woman.King.2022.720p.UHD.BluRay.x264.6CH-Pahe.in (reason=retry_failed_release, expires=2026-05-30 19:03:09.546307+00:00)
+2026-05-01 05:03:10 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Woman.King.2022.1080p.BluRay.DD.5.1.X265-Ralphy → job_id=SABnzbd_nzo_9r1x9_8i
+2026-05-01 05:03:10 | INFO     | backend.core.retry_ladder - Retrying download 1563 with candidate 282671: The.Woman.King.2022.1080p.BluRay.DD.5.1.X265-Ralphy
+2026-05-01 05:03:10 | INFO     | backend.core.download_workflow - Retrying failed download 1563 as download 1564: Retry #1 started: The.Woman.King.2022.1080p.BluRay.DD.5.1.X265-Ralphy
+2026-05-01 05:06:13 | INFO     | backend.core.downloader - Download 1564: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\The.Woman.King.2022.1080p.BluRay.DD.5.1.X265-Ralphy\\The.Woman.King.2022.1080p.BluRay.DD.5.1.X265-Ralphy.mkv'
+2026-05-01 05:06:13 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\The.Woman.King.2022.1080p.BluRay.DD.5.1.X265-Ralphy\\The.Woman.King.2022.1080p.BluRay.DD.5.1.X265-Ralphy.mkv'
+2026-05-01 05:06:13 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\The.Woman.King.2022.1080p.BluRay.DD.5.1.X265-Ralphy\\The.Woman.King.2022.1080p.BluRay.DD.5.1.X265-Ralphy.mkv'
+2026-05-01 05:06:13 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\The Woman King 2022.1080p.WEB-DL.DDP5.1.H.264-EVO\\The.Woman.King.2022.720p.BluRay.DTS.5.1.x264-MTeam.mkv'
+2026-05-01 05:06:13 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\The Woman King 2022.1080p.WEB-DL.DDP5.1.H.264-EVO' — target path: 'Z:\\MEDIA\\MOVIES\\The Woman King 2022.1080p.WEB-DL.DDP5.1.H.264-EVO\\The.Woman.King.2022.720p.BluRay.DTS.5.1.x264-MTeam.mkv'
+2026-05-01 05:06:13 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,374,893,568 free, 7,257,036,965 needed); using local backup fallback
+2026-05-01 05:06:13 | INFO     | backend.core.replacer - Moved existing target aside before replacement: Z:\MEDIA\MOVIES\The Woman King 2022.1080p.WEB-DL.DDP5.1.H.264-EVO\The.Woman.King.2022.720p.BluRay.DTS.5.1.x264-MTeam.mkv.slimarr-old
+2026-05-01 05:06:13 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\The.Woman.King.2022.1080p.BluRay.DD.5.1.X265-Ralphy\\The.Woman.King.2022.1080p.BluRay.DD.5.1.X265-Ralphy.mkv' → 'Z:\\MEDIA\\MOVIES\\The Woman King 2022.1080p.WEB-DL.DDP5.1.H.264-EVO\\The.Woman.King.2022.720p.BluRay.DTS.5.1.x264-MTeam.mkv'
+2026-05-01 05:06:37 | INFO     | backend.core.replacer - File move succeeded. New size: 2,756,151,426 bytes
+2026-05-01 05:06:38 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: Z:\MEDIA\MOVIES\The Woman King 2022.1080p.WEB-DL.DDP5.1.H.264-EVO\The.Woman.King.2022.720p.BluRay.DTS.5.1.x264-MTeam.mkv.slimarr-old
+2026-05-01 05:06:38 | INFO     | backend.core.replacer - Radarr rescan triggered for The Woman King
+2026-05-01 05:06:38 | INFO     | backend.core.searcher - Searching for: Wonder Woman 1984 (2020)
+2026-05-01 05:06:40 | INFO     | backend.core.searcher - Found 200 raw results for Wonder Woman 1984
+2026-05-01 05:06:40 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (0 due to resolution downgrade limit, 123 due to larger size limit).
+2026-05-01 05:06:40 | INFO     | backend.core.searcher - Searching for: A Working Man (2025)
+2026-05-01 05:06:41 | INFO     | backend.core.searcher - Found 166 raw results for A Working Man
+2026-05-01 05:06:42 | INFO     | backend.core.searcher - Analyzed 166 results: 0 accepted, 166 rejected (7 due to resolution downgrade limit, 152 due to larger size limit).
+2026-05-01 05:06:42 | INFO     | backend.core.searcher - Searching for: World War Z (2013)
+2026-05-01 05:06:43 | INFO     | backend.core.searcher - Found 200 raw results for World War Z
+2026-05-01 05:06:43 | INFO     | backend.core.searcher - Analyzed 200 results: 31 accepted, 169 rejected (21 due to resolution downgrade limit, 89 due to larger size limit).
+2026-05-01 05:06:43 | INFO     | backend.core.downloader - Submitted to sabnzbd: World.War.Z.2013.2160p.HDR.Opus.AV1 → job_id=SABnzbd_nzo_hv8_jmkb
+2026-05-01 05:10:42 | INFO     | backend.core.downloader - Download 1565: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\World.War.Z.2013.2160p.HDR.Opus.AV1\\World.War.Z.2013.2160p.HDR.Opus.AV1.mkv'
+2026-05-01 05:10:42 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\World.War.Z.2013.2160p.HDR.Opus.AV1\\World.War.Z.2013.2160p.HDR.Opus.AV1.mkv'
+2026-05-01 05:10:42 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\World.War.Z.2013.2160p.HDR.Opus.AV1\\World.War.Z.2013.2160p.HDR.Opus.AV1.mkv'
+2026-05-01 05:10:42 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\World.War.Z.2013-2160p.HEVC.SDR.WEB-DL.x265.DD.5.1-R&H\\World.War.Z.2013.Unrated.1080p.BluRay.DTS.x264-CyTSuNee.mkv'
+2026-05-01 05:10:42 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\World.War.Z.2013-2160p.HEVC.SDR.WEB-DL.x265.DD.5.1-R&H' — target path: 'Z:\\MEDIA\\MOVIES\\World.War.Z.2013-2160p.HEVC.SDR.WEB-DL.x265.DD.5.1-R&H\\World.War.Z.2013.Unrated.1080p.BluRay.DTS.x264-CyTSuNee.mkv'
+2026-05-01 05:10:42 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,374,582,272 free, 10,879,001,568 needed); using local backup fallback
+2026-05-01 05:10:42 | INFO     | backend.core.replacer - Moved existing target aside before replacement: Z:\MEDIA\MOVIES\World.War.Z.2013-2160p.HEVC.SDR.WEB-DL.x265.DD.5.1-R&H\World.War.Z.2013.Unrated.1080p.BluRay.DTS.x264-CyTSuNee.mkv.slimarr-old
+2026-05-01 05:10:42 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\World.War.Z.2013.2160p.HDR.Opus.AV1\\World.War.Z.2013.2160p.HDR.Opus.AV1.mkv' → 'Z:\\MEDIA\\MOVIES\\World.War.Z.2013-2160p.HEVC.SDR.WEB-DL.x265.DD.5.1-R&H\\World.War.Z.2013.Unrated.1080p.BluRay.DTS.x264-CyTSuNee.mkv'
+2026-05-01 05:11:16 | INFO     | backend.core.replacer - File move succeeded. New size: 3,752,239,637 bytes
+2026-05-01 05:11:16 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: Z:\MEDIA\MOVIES\World.War.Z.2013-2160p.HEVC.SDR.WEB-DL.x265.DD.5.1-R&H\World.War.Z.2013.Unrated.1080p.BluRay.DTS.x264-CyTSuNee.mkv.slimarr-old
+2026-05-01 05:11:17 | INFO     | backend.core.replacer - Radarr rescan triggered for World War Z
+2026-05-01 05:11:17 | INFO     | backend.core.searcher - Searching for: The Wrath of Becky (2023)
+2026-05-01 05:11:18 | INFO     | backend.core.searcher - Found 83 raw results for The Wrath of Becky
+2026-05-01 05:11:18 | INFO     | backend.core.searcher - Analyzed 83 results: 14 accepted, 69 rejected (9 due to resolution downgrade limit, 49 due to larger size limit).
+2026-05-01 05:11:18 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Wrath.of.Becky.2023.2160p.AV1 → job_id=SABnzbd_nzo_b2_zjq3t
+2026-05-01 05:13:15 | INFO     | backend.core.downloader - Download 1566: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\The.Wrath.of.Becky.2023.2160p.AV1\\The.Wrath.of.Becky.2023.2160p.AV1.mkv'
+2026-05-01 05:13:15 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\The.Wrath.of.Becky.2023.2160p.AV1\\The.Wrath.of.Becky.2023.2160p.AV1.mkv'
+2026-05-01 05:13:15 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\The.Wrath.of.Becky.2023.2160p.AV1\\The.Wrath.of.Becky.2023.2160p.AV1.mkv'
+2026-05-01 05:13:15 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\The.Wrath.of.Becky.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-SCOPE.mkv'
+2026-05-01 05:13:15 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES' — target path: 'Z:\\MEDIA\\MOVIES\\The.Wrath.of.Becky.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-SCOPE.mkv'
+2026-05-01 05:13:15 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,374,565,888 free, 3,481,658,439 needed); using local backup fallback
+2026-05-01 05:13:15 | INFO     | backend.core.replacer - Moved existing target aside before replacement: Z:\MEDIA\MOVIES\The.Wrath.of.Becky.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-SCOPE.mkv.slimarr-old
+2026-05-01 05:13:15 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\The.Wrath.of.Becky.2023.2160p.AV1\\The.Wrath.of.Becky.2023.2160p.AV1.mkv' → 'Z:\\MEDIA\\MOVIES\\The.Wrath.of.Becky.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-SCOPE.mkv'
+2026-05-01 05:13:32 | INFO     | backend.core.replacer - File move succeeded. New size: 1,863,928,396 bytes
+2026-05-01 05:13:32 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: Z:\MEDIA\MOVIES\The.Wrath.of.Becky.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-SCOPE.mkv.slimarr-old
+2026-05-01 05:13:32 | INFO     | backend.core.searcher - Searching for: Wrath of Man (2021)
+2026-05-01 05:13:33 | INFO     | backend.core.searcher - Found 200 raw results for Wrath of Man
+2026-05-01 05:13:34 | INFO     | backend.core.searcher - Analyzed 200 results: 36 accepted, 164 rejected (22 due to resolution downgrade limit, 122 due to larger size limit).
+2026-05-01 05:13:34 | INFO     | backend.core.downloader - Submitted to sabnzbd: (Wrath of Man) [01/45] - "Wrath of Man 2021 1080p h265.par2" → job_id=SABnzbd_nzo_x0du8gcs
+2026-05-01 05:15:31 | INFO     | backend.core.downloader - Download 1567: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\(Wrath of Man) [01_45] - _Wrath of Man 2021 1080p h265.par2_'
+2026-05-01 05:15:31 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\(Wrath of Man) [01_45] - _Wrath of Man 2021 1080p h265.par2_'
+2026-05-01 05:15:31 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\(Wrath of Man) [01_45] - _Wrath of Man 2021 1080p h265.par2_\\Wrath of Man.mp4'
+2026-05-01 05:15:31 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Wrath.Of.Man.2021.1080p.Bluray.DTS-HD.MA.5.1.X264-EVO\\Wrath.of.Man.2021.MULTi.1080p.BluRay.x264-ULYSSE.mkv'
+2026-05-01 05:15:31 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\Wrath.Of.Man.2021.1080p.Bluray.DTS-HD.MA.5.1.X264-EVO' — target path: 'Z:\\MEDIA\\MOVIES\\Wrath.Of.Man.2021.1080p.Bluray.DTS-HD.MA.5.1.X264-EVO\\Wrath.of.Man.2021.MULTi.1080p.BluRay.x264-ULYSSE.mp4'
+2026-05-01 05:15:31 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,377,744,384 free, 10,560,910,742 needed); using local backup fallback
+2026-05-01 05:15:31 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\(Wrath of Man) [01_45] - _Wrath of Man 2021 1080p h265.par2_\\Wrath of Man.mp4' → 'Z:\\MEDIA\\MOVIES\\Wrath.Of.Man.2021.1080p.Bluray.DTS-HD.MA.5.1.X264-EVO\\Wrath.of.Man.2021.MULTi.1080p.BluRay.x264-ULYSSE.mp4'
+2026-05-01 05:15:46 | INFO     | backend.core.replacer - File move succeeded. New size: 1,715,913,281 bytes
+2026-05-01 05:15:46 | INFO     | backend.core.replacer - Deleted old file: Z:\MEDIA\MOVIES\Wrath.Of.Man.2021.1080p.Bluray.DTS-HD.MA.5.1.X264-EVO\Wrath.of.Man.2021.MULTi.1080p.BluRay.x264-ULYSSE.mkv
+2026-05-01 05:15:47 | INFO     | backend.core.replacer - Radarr rescan triggered for Wrath of Man
+2026-05-01 05:15:47 | INFO     | backend.core.replacer - Cleaned up download folder: 'H:\\DOWNLOADS\\USENET\\complete\\(Wrath of Man) [01_45] - _Wrath of Man 2021 1080p h265.par2_'
+2026-05-01 05:15:47 | INFO     | backend.core.searcher - Searching for: Wrath of the Titans (2012)
+2026-05-01 05:15:48 | INFO     | backend.core.searcher - Found 161 raw results for Wrath of the Titans
+2026-05-01 05:15:48 | INFO     | backend.core.searcher - Analyzed 161 results: 8 accepted, 153 rejected (14 due to resolution downgrade limit, 101 due to larger size limit).
+2026-05-01 05:15:49 | INFO     | backend.core.downloader - Submitted to sabnzbd: Wrath.Of.The.Titans.2012.1080p.BluRay.x265 → job_id=SABnzbd_nzo_lsvk7pme
+2026-05-01 05:17:34 | INFO     | backend.core.downloader - Download 1568: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 05:17:34 | INFO     | backend.core.downloader - Download 1568: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 05:17:41 | INFO     | backend.core.downloader - Download 1568: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Wrath.Of.The.Titans.2012.1080p.BluRay.x265\\Wrath.Of.The.Titans.2012.1080p.BluRay.x265.mp4'
+2026-05-01 05:17:41 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Wrath.Of.The.Titans.2012.1080p.BluRay.x265\\Wrath.Of.The.Titans.2012.1080p.BluRay.x265.mp4'
+2026-05-01 05:17:41 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Wrath.Of.The.Titans.2012.1080p.BluRay.x265\\Wrath.Of.The.Titans.2012.1080p.BluRay.x265.mp4'
+2026-05-01 05:17:41 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Clash.n.Wrath.Of.The.Titans.Duology.2010-2012.BluRay.1080p.HEVC.DTS-HD.MA 5.1-x265-SDC-\\Wrath.Of.The.Titans.2012.BluRay.1080p.HEVC.DTS-HD.MA 5.1-x265-SDC-.mkv'
+2026-05-01 05:17:41 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\Clash.n.Wrath.Of.The.Titans.Duology.2010-2012.BluRay.1080p.HEVC.DTS-HD.MA 5.1-x265-SDC-' — target path: 'Z:\\MEDIA\\MOVIES\\Clash.n.Wrath.Of.The.Titans.Duology.2010-2012.BluRay.1080p.HEVC.DTS-HD.MA 5.1-x265-SDC-\\Wrath.Of.The.Titans.2012.BluRay.1080p.HEVC.DTS-HD.MA 5.1-x265-SDC-.mp4'
+2026-05-01 05:17:41 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,374,971,392 free, 5,991,607,247 needed); using local backup fallback
+2026-05-01 05:17:41 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Wrath.Of.The.Titans.2012.1080p.BluRay.x265\\Wrath.Of.The.Titans.2012.1080p.BluRay.x265.mp4' → 'Z:\\MEDIA\\MOVIES\\Clash.n.Wrath.Of.The.Titans.Duology.2010-2012.BluRay.1080p.HEVC.DTS-HD.MA 5.1-x265-SDC-\\Wrath.Of.The.Titans.2012.BluRay.1080p.HEVC.DTS-HD.MA 5.1-x265-SDC-.mp4'
+2026-05-01 05:17:55 | INFO     | backend.core.replacer - File move succeeded. New size: 1,664,654,953 bytes
+2026-05-01 05:17:55 | INFO     | backend.core.replacer - Deleted old file: Z:\MEDIA\MOVIES\Clash.n.Wrath.Of.The.Titans.Duology.2010-2012.BluRay.1080p.HEVC.DTS-HD.MA 5.1-x265-SDC-\Wrath.Of.The.Titans.2012.BluRay.1080p.HEVC.DTS-HD.MA 5.1-x265-SDC-.mkv
+2026-05-01 05:17:56 | INFO     | backend.core.searcher - Searching for: The Wrecking Crew (2026)
+2026-05-01 05:17:57 | INFO     | backend.core.searcher - Found 105 raw results for The Wrecking Crew
+2026-05-01 05:17:58 | INFO     | backend.core.searcher - Analyzed 105 results: 18 accepted, 87 rejected (57 due to resolution downgrade limit, 26 due to larger size limit).
+2026-05-01 05:17:58 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Wrecking.Crew.2026.2160p.HDR10Plus.DV.WEBRip.6CH.x265.HEVC-PSA → job_id=SABnzbd_nzo_im962nic
+2026-05-01 05:22:41 | INFO     | backend.core.downloader - Download 1569: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\The.Wrecking.Crew.2026.2160p.HDR10Plus.DV.WEBRip.6CH.x265.HEVC-PSA\\The.Wrecking.Crew.2026.2160p.HDR10Plus.DV.WEBRip.6CH.x265.HEVC-PSA.mkv'
+2026-05-01 05:22:41 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\The.Wrecking.Crew.2026.2160p.HDR10Plus.DV.WEBRip.6CH.x265.HEVC-PSA\\The.Wrecking.Crew.2026.2160p.HDR10Plus.DV.WEBRip.6CH.x265.HEVC-PSA.mkv'
+2026-05-01 05:22:41 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\The.Wrecking.Crew.2026.2160p.HDR10Plus.DV.WEBRip.6CH.x265.HEVC-PSA\\The.Wrecking.Crew.2026.2160p.HDR10Plus.DV.WEBRip.6CH.x265.HEVC-PSA.mkv'
+2026-05-01 05:22:41 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\The Wrecking Crew (2026)\\The.Wrecking.Crew.2026.HDR.2160p.WEB.h265-ETHEL.mkv'
+2026-05-01 05:22:41 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\The Wrecking Crew (2026)' — target path: 'Z:\\MEDIA\\MOVIES\\The Wrecking Crew (2026)\\The.Wrecking.Crew.2026.HDR.2160p.WEB.h265-ETHEL.mkv'
+2026-05-01 05:22:41 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,371,387,392 free, 18,810,839,571 needed); using local backup fallback
+2026-05-01 05:22:41 | INFO     | backend.core.replacer - Moved existing target aside before replacement: Z:\MEDIA\MOVIES\The Wrecking Crew (2026)\The.Wrecking.Crew.2026.HDR.2160p.WEB.h265-ETHEL.mkv.slimarr-old
+2026-05-01 05:22:41 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\The.Wrecking.Crew.2026.2160p.HDR10Plus.DV.WEBRip.6CH.x265.HEVC-PSA\\The.Wrecking.Crew.2026.2160p.HDR10Plus.DV.WEBRip.6CH.x265.HEVC-PSA.mkv' → 'Z:\\MEDIA\\MOVIES\\The Wrecking Crew (2026)\\The.Wrecking.Crew.2026.HDR.2160p.WEB.h265-ETHEL.mkv'
+2026-05-01 05:23:24 | INFO     | backend.core.replacer - File move succeeded. New size: 4,750,635,840 bytes
+2026-05-01 05:23:24 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: Z:\MEDIA\MOVIES\The Wrecking Crew (2026)\The.Wrecking.Crew.2026.HDR.2160p.WEB.h265-ETHEL.mkv.slimarr-old
+2026-05-01 05:23:25 | INFO     | backend.core.replacer - Radarr rescan triggered for The Wrecking Crew
+2026-05-01 05:23:25 | INFO     | backend.core.searcher - Searching for: Wuthering Heights (2026)
+2026-05-01 05:23:26 | INFO     | backend.core.searcher - Found 101 raw results for Wuthering Heights
+2026-05-01 05:23:26 | INFO     | backend.core.searcher - Analyzed 101 results: 3 accepted, 98 rejected (39 due to resolution downgrade limit, 56 due to larger size limit).
+2026-05-01 05:23:26 | INFO     | backend.core.downloader - Submitted to sabnzbd: Wuthering.Heights.2026.2160p.4K.WEB.x265.10bit.AAC5.1-LAMA → job_id=SABnzbd_nzo_kkvpu5r7
+2026-05-01 05:30:39 | INFO     | backend.core.downloader - Download 1570: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Wuthering.Heights.2026.2160p.4K.WEB.x265.10bit.AAC5.1-LAMA\\Wuthering.Heights.2026.2160p.4K.WEB.x265.10bit.AAC5.1-LAMA.mkv'
+2026-05-01 05:30:39 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Wuthering.Heights.2026.2160p.4K.WEB.x265.10bit.AAC5.1-LAMA\\Wuthering.Heights.2026.2160p.4K.WEB.x265.10bit.AAC5.1-LAMA.mkv'
+2026-05-01 05:30:39 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Wuthering.Heights.2026.2160p.4K.WEB.x265.10bit.AAC5.1-LAMA\\Wuthering.Heights.2026.2160p.4K.WEB.x265.10bit.AAC5.1-LAMA.mkv'
+2026-05-01 05:30:39 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\“Wuthering Heights” (2026)\\Wuthering.Heights.2026.2160p.WEB-DL.DDP5.1.SDR.H265-AOC.mkv'
+2026-05-01 05:30:39 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\“Wuthering Heights” (2026)' — target path: 'Z:\\MEDIA\\MOVIES\\“Wuthering Heights” (2026)\\Wuthering.Heights.2026.2160p.WEB-DL.DDP5.1.SDR.H265-AOC.mkv'
+2026-05-01 05:30:39 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,371,731,456 free, 15,873,892,771 needed); using local backup fallback
+2026-05-01 05:30:39 | INFO     | backend.core.replacer - Moved existing target aside before replacement: Z:\MEDIA\MOVIES\“Wuthering Heights” (2026)\Wuthering.Heights.2026.2160p.WEB-DL.DDP5.1.SDR.H265-AOC.mkv.slimarr-old
+2026-05-01 05:30:39 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Wuthering.Heights.2026.2160p.4K.WEB.x265.10bit.AAC5.1-LAMA\\Wuthering.Heights.2026.2160p.4K.WEB.x265.10bit.AAC5.1-LAMA.mkv' → 'Z:\\MEDIA\\MOVIES\\“Wuthering Heights” (2026)\\Wuthering.Heights.2026.2160p.WEB-DL.DDP5.1.SDR.H265-AOC.mkv'
+2026-05-01 05:31:37 | INFO     | backend.core.replacer - File move succeeded. New size: 6,525,555,381 bytes
+2026-05-01 05:31:38 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: Z:\MEDIA\MOVIES\“Wuthering Heights” (2026)\Wuthering.Heights.2026.2160p.WEB-DL.DDP5.1.SDR.H265-AOC.mkv.slimarr-old
+2026-05-01 05:31:38 | INFO     | backend.core.replacer - Radarr rescan triggered for Wuthering Heights
+2026-05-01 05:31:38 | INFO     | backend.core.searcher - Searching for: X (2022)
+2026-05-01 05:31:40 | INFO     | backend.core.searcher - Found 124 raw results for X
+2026-05-01 05:31:40 | INFO     | backend.core.searcher - Analyzed 124 results: 24 accepted, 100 rejected (17 due to resolution downgrade limit, 54 due to larger size limit).
+2026-05-01 05:31:41 | INFO     | backend.core.downloader - Submitted to sabnzbd: X.2022.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1.Atmos-LAMA → job_id=SABnzbd_nzo_i9j2ittl
+2026-05-01 05:38:42 | INFO     | backend.core.downloader - Download 1571: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 05:38:42 | INFO     | backend.core.downloader - Download 1571: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 05:38:48 | INFO     | backend.core.downloader - Download 1571: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\X.2022.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1.Atmos-LAMA\\X.2022.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1.Atmos-LAMA.mkv'
+2026-05-01 05:38:48 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\X.2022.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1.Atmos-LAMA\\X.2022.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1.Atmos-LAMA.mkv'
+2026-05-01 05:38:48 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\X.2022.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1.Atmos-LAMA\\X.2022.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1.Atmos-LAMA.mkv'
+2026-05-01 05:38:48 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\X.2022.1080p.WEB-DL.DDP5.1.H.264-EVO\\X 2022 BluRay 1080p DDP 5 1 x264-hallowed.mkv'
+2026-05-01 05:38:48 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\X.2022.1080p.WEB-DL.DDP5.1.H.264-EVO' — target path: 'Z:\\MEDIA\\MOVIES\\X.2022.1080p.WEB-DL.DDP5.1.H.264-EVO\\X 2022 BluRay 1080p DDP 5 1 x264-hallowed.mkv'
+2026-05-01 05:38:48 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,375,696,384 free, 10,074,129,817 needed); using local backup fallback
+2026-05-01 05:38:48 | INFO     | backend.core.replacer - Moved existing target aside before replacement: Z:\MEDIA\MOVIES\X.2022.1080p.WEB-DL.DDP5.1.H.264-EVO\X 2022 BluRay 1080p DDP 5 1 x264-hallowed.mkv.slimarr-old
+2026-05-01 05:38:48 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\X.2022.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1.Atmos-LAMA\\X.2022.2160p.UHD.BluRay.x265.10bit.HDR.DDP5.1.Atmos-LAMA.mkv' → 'Z:\\MEDIA\\MOVIES\\X.2022.1080p.WEB-DL.DDP5.1.H.264-EVO\\X 2022 BluRay 1080p DDP 5 1 x264-hallowed.mkv'
+2026-05-01 05:39:52 | INFO     | backend.core.replacer - File move succeeded. New size: 7,036,610,928 bytes
+2026-05-01 05:39:52 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: Z:\MEDIA\MOVIES\X.2022.1080p.WEB-DL.DDP5.1.H.264-EVO\X 2022 BluRay 1080p DDP 5 1 x264-hallowed.mkv.slimarr-old
+2026-05-01 05:39:52 | INFO     | backend.core.replacer - Radarr rescan triggered for X
+2026-05-01 05:39:52 | INFO     | backend.core.searcher - Searching for: X-Men: Dark Phoenix (2019)
+2026-05-01 05:39:54 | INFO     | backend.core.searcher - Found 179 raw results for X-Men: Dark Phoenix
+2026-05-01 05:39:54 | INFO     | backend.core.searcher - Analyzed 179 results: 8 accepted, 171 rejected (9 due to resolution downgrade limit, 96 due to larger size limit).
+2026-05-01 05:39:55 | INFO     | backend.core.downloader - Submitted to sabnzbd: X-Men.Dark.Phoenix.2019.BluRay.10Bit.1080p.DD.5.1.H265-d3g → job_id=SABnzbd_nzo_d1dhdm12
+2026-05-01 05:43:09 | INFO     | backend.core.downloader - Download 1572: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\X-Men.Dark.Phoenix.2019.BluRay.10Bit.1080p.DD.5.1.H265-d3g\\X-Men.Dark.Phoenix.2019.BluRay.10Bit.1080p.DD.5.1.H265-d3g.mkv'
+2026-05-01 05:43:10 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\X-Men.Dark.Phoenix.2019.BluRay.10Bit.1080p.DD.5.1.H265-d3g\\X-Men.Dark.Phoenix.2019.BluRay.10Bit.1080p.DD.5.1.H265-d3g.mkv'
+2026-05-01 05:43:10 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\X-Men.Dark.Phoenix.2019.BluRay.10Bit.1080p.DD.5.1.H265-d3g\\X-Men.Dark.Phoenix.2019.BluRay.10Bit.1080p.DD.5.1.H265-d3g.mkv'
+2026-05-01 05:43:10 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Dark.Phoenix.2019.1080p.BluRay.x264-GECKOS\\dark.phoenix.2019.1080p.bluray.x264-geckos.mkv'
+2026-05-01 05:43:10 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES\\Dark.Phoenix.2019.1080p.BluRay.x264-GECKOS' — target path: 'Z:\\MEDIA\\MOVIES\\Dark.Phoenix.2019.1080p.BluRay.x264-GECKOS\\dark.phoenix.2019.1080p.bluray.x264-geckos.mkv'
+2026-05-01 05:43:10 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,374,631,424 free, 9,385,974,896 needed); using local backup fallback
+2026-05-01 05:43:10 | INFO     | backend.core.replacer - Moved existing target aside before replacement: Z:\MEDIA\MOVIES\Dark.Phoenix.2019.1080p.BluRay.x264-GECKOS\dark.phoenix.2019.1080p.bluray.x264-geckos.mkv.slimarr-old
+2026-05-01 05:43:10 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\X-Men.Dark.Phoenix.2019.BluRay.10Bit.1080p.DD.5.1.H265-d3g\\X-Men.Dark.Phoenix.2019.BluRay.10Bit.1080p.DD.5.1.H265-d3g.mkv' → 'Z:\\MEDIA\\MOVIES\\Dark.Phoenix.2019.1080p.BluRay.x264-GECKOS\\dark.phoenix.2019.1080p.bluray.x264-geckos.mkv'
+2026-05-01 05:43:37 | INFO     | backend.core.replacer - File move succeeded. New size: 2,975,360,811 bytes
+2026-05-01 05:43:37 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: Z:\MEDIA\MOVIES\Dark.Phoenix.2019.1080p.BluRay.x264-GECKOS\dark.phoenix.2019.1080p.bluray.x264-geckos.mkv.slimarr-old
+2026-05-01 05:43:37 | INFO     | backend.core.replacer - Radarr rescan triggered for X-Men: Dark Phoenix
+2026-05-01 05:43:37 | INFO     | backend.core.searcher - Searching for: Yesterday (2019)
+2026-05-01 05:43:38 | INFO     | backend.core.searcher - Found 70 raw results for Yesterday
+2026-05-01 05:43:39 | INFO     | backend.core.searcher - Analyzed 70 results: 4 accepted, 66 rejected (48 due to resolution downgrade limit, 16 due to larger size limit).
+2026-05-01 05:43:39 | INFO     | backend.core.downloader - Submitted to sabnzbd: Yesterday.2019.2160p.UHD.BluRay.x265-TERMiNAL → job_id=SABnzbd_nzo_l_l0e0gd
+2026-05-01 05:44:29 | INFO     | backend.core.downloader - Download 1573: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Yesterday.2019.2160p.UHD.BluRay.x265-TERMiNAL'
+2026-05-01 05:44:29 | ERROR    | backend.core.orchestrator - Error processing Yesterday: float() argument must be a string or a real number, not 'NoneType'
+2026-05-01 05:44:29 | INFO     | backend.core.searcher - Searching for: You Hurt My Feelings (2023)
+2026-05-01 05:44:30 | INFO     | backend.core.searcher - Found 66 raw results for You Hurt My Feelings
+2026-05-01 05:44:31 | INFO     | backend.core.searcher - Analyzed 66 results: 20 accepted, 46 rejected (13 due to resolution downgrade limit, 33 due to larger size limit).
+2026-05-01 05:44:31 | INFO     | backend.core.downloader - Submitted to sabnzbd: You.Hurt.My.Feelings.2023.1080p.WEBRip.DDP.5.1.H.265.-iVy → job_id=SABnzbd_nzo_q68yet57
+2026-05-01 05:46:06 | INFO     | backend.core.downloader - Download 1574: found in sabnzbd history — status='completed' storage=''
+2026-05-01 05:46:07 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_q68yet57
+2026-05-01 05:46:07 | INFO     | backend.core.download_workflow - Failed download cleanup for 1574: cleaned folder_deleted=False downloader_purged=True
+2026-05-01 05:46:07 | INFO     | backend.core.blacklist - Added to blacklist: You.Hurt.My.Feelings.2023.1080p.WEBRip.DDP.5.1.H.265.-iVy (reason=retry_failed_release, expires=2026-05-30 19:46:07.509262+00:00)
+2026-05-01 05:46:08 | INFO     | backend.core.downloader - Submitted to sabnzbd: You.Hurt.My.Feelings.2023.1080p.BRRip.DDP.5.1.H.265.-iVy → job_id=SABnzbd_nzo_1c1tagrw
+2026-05-01 05:46:08 | INFO     | backend.core.retry_ladder - Retrying download 1574 with candidate 284454: You.Hurt.My.Feelings.2023.1080p.BRRip.DDP.5.1.H.265.-iVy
+2026-05-01 05:46:08 | INFO     | backend.core.download_workflow - Retrying failed download 1574 as download 1575: Retry #1 started: You.Hurt.My.Feelings.2023.1080p.BRRip.DDP.5.1.H.265.-iVy
+2026-05-01 05:47:42 | INFO     | backend.core.downloader - Download 1575: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\You.Hurt.My.Feelings.2023.1080p.BRRip.DDP.5.1.H.265.-iVy\\You.Hurt.My.Feelings.2023.1080p.BRRip.DDP.5.1.H.265.-iVy.mkv'
+2026-05-01 05:47:42 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\You.Hurt.My.Feelings.2023.1080p.BRRip.DDP.5.1.H.265.-iVy\\You.Hurt.My.Feelings.2023.1080p.BRRip.DDP.5.1.H.265.-iVy.mkv'
+2026-05-01 05:47:42 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\You.Hurt.My.Feelings.2023.1080p.BRRip.DDP.5.1.H.265.-iVy\\You.Hurt.My.Feelings.2023.1080p.BRRip.DDP.5.1.H.265.-iVy.mkv'
+2026-05-01 05:47:42 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\You.Hurt.My.Feelings.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-SCOPE\\You.Hurt.My.Feelings.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-SCOPE.mkv'
+2026-05-01 05:47:42 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\You.Hurt.My.Feelings.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-SCOPE' — target path: 'E:\\MOVIES\\You.Hurt.My.Feelings.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-SCOPE\\You.Hurt.My.Feelings.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-SCOPE.mkv'
+2026-05-01 05:47:42 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,368,991,232 free, 6,905,054,934 needed); using local backup fallback
+2026-05-01 05:47:42 | INFO     | backend.core.replacer - Moved existing target aside before replacement: E:\MOVIES\You.Hurt.My.Feelings.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-SCOPE\You.Hurt.My.Feelings.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-SCOPE.mkv.slimarr-old
+2026-05-01 05:47:42 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\You.Hurt.My.Feelings.2023.1080p.BRRip.DDP.5.1.H.265.-iVy\\You.Hurt.My.Feelings.2023.1080p.BRRip.DDP.5.1.H.265.-iVy.mkv' → 'E:\\MOVIES\\You.Hurt.My.Feelings.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-SCOPE\\You.Hurt.My.Feelings.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-SCOPE.mkv'
+2026-05-01 05:47:45 | INFO     | backend.core.replacer - File move succeeded. New size: 1,425,875,669 bytes
+2026-05-01 05:47:46 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: E:\MOVIES\You.Hurt.My.Feelings.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-SCOPE\You.Hurt.My.Feelings.2023.1080p.AMZN.WEB-DL.DDP5.1.H.264-SCOPE.mkv.slimarr-old
+2026-05-01 05:47:47 | INFO     | backend.core.replacer - Radarr rescan triggered for You Hurt My Feelings
+2026-05-01 05:47:47 | INFO     | backend.core.searcher - Searching for: Your Fault (2024)
+2026-05-01 05:47:48 | INFO     | backend.core.searcher - Found 47 raw results for Your Fault
+2026-05-01 05:47:48 | INFO     | backend.core.searcher - Analyzed 47 results: 2 accepted, 45 rejected (1 due to resolution downgrade limit, 40 due to larger size limit).
+2026-05-01 05:47:48 | INFO     | backend.core.downloader - Submitted to sabnzbd: Your.Fault.2024.1080p.WEBRip.10Bit.DUAL.DDP5.1.x265-Asiimov → job_id=SABnzbd_nzo_o5lirue7
+2026-05-01 05:50:13 | INFO     | backend.core.downloader - Download 1576: found in sabnzbd history — status='queued' storage=''
+2026-05-01 05:50:13 | INFO     | backend.core.downloader - Download 1576: sabnzbd history status 'queued' is still post-processing; continuing monitor
+2026-05-01 05:50:19 | INFO     | backend.core.downloader - Download 1576: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Your.Fault.2024.1080p.WEBRip.10Bit.DUAL.DDP5.1.x265-Asiimov\\Your.Fault.2024.1080p.WEBRip.10Bit.DUAL.DDP5.1.x265-Asiimov.mkv'
+2026-05-01 05:50:19 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Your.Fault.2024.1080p.WEBRip.10Bit.DUAL.DDP5.1.x265-Asiimov\\Your.Fault.2024.1080p.WEBRip.10Bit.DUAL.DDP5.1.x265-Asiimov.mkv'
+2026-05-01 05:50:19 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Your.Fault.2024.1080p.WEBRip.10Bit.DUAL.DDP5.1.x265-Asiimov\\Your.Fault.2024.1080p.WEBRip.10Bit.DUAL.DDP5.1.x265-Asiimov.mkv'
+2026-05-01 05:50:19 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\Culpa Tuya (2024)\\Your.Fault.2024.1080p.DS4K.AMZN.WEBrip.HIN-ENG-SPA.DDPA5.1.HDR.10bit.X265.HEVC-ZiroMB.mkv'
+2026-05-01 05:50:19 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\Culpa Tuya (2024)' — target path: 'E:\\MOVIES\\Culpa Tuya (2024)\\Your.Fault.2024.1080p.DS4K.AMZN.WEBrip.HIN-ENG-SPA.DDPA5.1.HDR.10bit.X265.HEVC-ZiroMB.mkv'
+2026-05-01 05:50:19 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,375,032,832 free, 4,949,291,702 needed); using local backup fallback
+2026-05-01 05:50:19 | INFO     | backend.core.replacer - Moved existing target aside before replacement: E:\MOVIES\Culpa Tuya (2024)\Your.Fault.2024.1080p.DS4K.AMZN.WEBrip.HIN-ENG-SPA.DDPA5.1.HDR.10bit.X265.HEVC-ZiroMB.mkv.slimarr-old
+2026-05-01 05:50:19 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Your.Fault.2024.1080p.WEBRip.10Bit.DUAL.DDP5.1.x265-Asiimov\\Your.Fault.2024.1080p.WEBRip.10Bit.DUAL.DDP5.1.x265-Asiimov.mkv' → 'E:\\MOVIES\\Culpa Tuya (2024)\\Your.Fault.2024.1080p.DS4K.AMZN.WEBrip.HIN-ENG-SPA.DDPA5.1.HDR.10bit.X265.HEVC-ZiroMB.mkv'
+2026-05-01 05:50:20 | INFO     | backend.core.replacer - File move succeeded. New size: 2,239,146,248 bytes
+2026-05-01 05:50:20 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: E:\MOVIES\Culpa Tuya (2024)\Your.Fault.2024.1080p.DS4K.AMZN.WEBrip.HIN-ENG-SPA.DDPA5.1.HDR.10bit.X265.HEVC-ZiroMB.mkv.slimarr-old
+2026-05-01 05:50:20 | INFO     | backend.core.replacer - Radarr rescan triggered for Your Fault
+2026-05-01 05:50:20 | INFO     | backend.core.searcher - Searching for: Zack Snyder's Justice League (2021)
+2026-05-01 05:50:23 | INFO     | backend.core.searcher - Found 200 raw results for Zack Snyder's Justice League
+2026-05-01 05:50:23 | INFO     | backend.core.searcher - Analyzed 200 results: 38 accepted, 162 rejected (20 due to resolution downgrade limit, 132 due to larger size limit).
+2026-05-01 05:50:23 | INFO     | backend.core.downloader - Submitted to sabnzbd: Zack.Snyders.Justice.League.2021.2160p.BDRip.AAC.7.1.HDR10.x265.10bit-MarkII → job_id=SABnzbd_nzo_1jd6y0d4
+2026-05-01 05:50:35 | INFO     | backend.core.downloader - Download 1577: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Zack.Snyders.Justice.League.2021.2160p.BDRip.AAC.7.1.HDR10.x265.10bit-MarkII'
+2026-05-01 05:50:36 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_1jd6y0d4
+2026-05-01 05:50:36 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Zack.Snyders.Justice.League.2021.2160p.BDRip.AAC.7.1.HDR10.x265.10bit-MarkII
+2026-05-01 05:50:36 | INFO     | backend.core.download_workflow - Failed download cleanup for 1577: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 05:50:36 | INFO     | backend.core.blacklist - Added to blacklist: Zack.Snyders.Justice.League.2021.2160p.BDRip.AAC.7.1.HDR10.x265.10bit-MarkII (reason=retry_failed_release, expires=2026-05-30 19:50:36.625311+00:00)
+2026-05-01 05:50:37 | INFO     | backend.core.downloader - Submitted to sabnzbd: Zack.Snyders.Justice.League.2021.2160p.BluRay.x264-SURCODE (Encoded) (1) → job_id=SABnzbd_nzo_hq67ffey
+2026-05-01 05:50:37 | INFO     | backend.core.retry_ladder - Retrying download 1577 with candidate 284687: Zack.Snyders.Justice.League.2021.2160p.BluRay.x264-SURCODE (Encoded) (1)
+2026-05-01 05:50:37 | INFO     | backend.core.download_workflow - Retrying failed download 1577 as download 1578: Retry #1 started: Zack.Snyders.Justice.League.2021.2160p.BluRay.x264-SURCODE (Encoded) (1)
+2026-05-01 05:50:48 | INFO     | backend.core.downloader - Download 1578: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Zack.Snyders.Justice.League.2021.2160p.BluRay.x264-SURCODE (Encoded) (1)'
+2026-05-01 05:50:49 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_hq67ffey
+2026-05-01 05:50:50 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Zack.Snyders.Justice.League.2021.2160p.BluRay.x264-SURCODE (Encoded) (1)
+2026-05-01 05:50:50 | INFO     | backend.core.download_workflow - Failed download cleanup for 1578: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 05:50:50 | INFO     | backend.core.blacklist - Added to blacklist: Zack.Snyders.Justice.League.2021.2160p.BluRay.x264-SURCODE (Encoded) (1) (reason=retry_failed_release, expires=2026-05-30 19:50:50.033763+00:00)
+2026-05-01 05:50:50 | INFO     | backend.core.downloader - Submitted to sabnzbd: (Zack Snyder's Justice League) [86/96] - "Zack Snyder's Justice League 2021 1080p h265.sfv" → job_id=SABnzbd_nzo_vg9idaer
+2026-05-01 05:50:50 | INFO     | backend.core.retry_ladder - Retrying download 1578 with candidate 284666: (Zack Snyder's Justice League) [86/96] - "Zack Snyder's Justice League 2021 1080p h265.sfv"
+2026-05-01 05:50:50 | INFO     | backend.core.download_workflow - Retrying failed download 1578 as download 1579: Retry #2 started: (Zack Snyder's Justice League) [86/96] - "Zack Snyder's Justice League 2021 1080p h265.sfv"
+2026-05-01 05:55:22 | INFO     | backend.core.downloader - Download 1579: found in sabnzbd history — status='completed' storage="H:\\DOWNLOADS\\USENET\\complete\\(Zack Snyder's Justice League) [86_96] - _Zack Snyder's Justice League 2021 1080p h265.sfv_"
+2026-05-01 05:55:22 | INFO     | backend.core.replacer - Replace starting — storage_path="H:\\DOWNLOADS\\USENET\\complete\\(Zack Snyder's Justice League) [86_96] - _Zack Snyder's Justice League 2021 1080p h265.sfv_"
+2026-05-01 05:55:22 | INFO     | backend.core.replacer - Video file found: "H:\\DOWNLOADS\\USENET\\complete\\(Zack Snyder's Justice League) [86_96] - _Zack Snyder's Justice League 2021 1080p h265.sfv_\\Justice League 1X.mp4"
+2026-05-01 05:55:22 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Zack.Snyders.Justice.League.2021.1080p.HMAX.WEB-DL.DDP5.1.Atmos.H.264-EVO.mkv'
+2026-05-01 05:55:22 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES' — target path: 'Z:\\MEDIA\\MOVIES\\Zack.Snyders.Justice.League.2021.1080p.HMAX.WEB-DL.DDP5.1.Atmos.H.264-EVO.mp4'
+2026-05-01 05:55:22 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,373,574,656 free, 16,330,398,554 needed); using local backup fallback
+2026-05-01 05:55:22 | INFO     | backend.core.replacer - Moving "H:\\DOWNLOADS\\USENET\\complete\\(Zack Snyder's Justice League) [86_96] - _Zack Snyder's Justice League 2021 1080p h265.sfv_\\Justice League 1X.mp4" → 'Z:\\MEDIA\\MOVIES\\Zack.Snyders.Justice.League.2021.1080p.HMAX.WEB-DL.DDP5.1.Atmos.H.264-EVO.mp4'
+2026-05-01 05:56:02 | INFO     | backend.core.replacer - File move succeeded. New size: 4,393,152,771 bytes
+2026-05-01 05:56:03 | INFO     | backend.core.replacer - Deleted old file: Z:\MEDIA\MOVIES\Zack.Snyders.Justice.League.2021.1080p.HMAX.WEB-DL.DDP5.1.Atmos.H.264-EVO.mkv
+2026-05-01 05:56:03 | INFO     | backend.core.replacer - Cleaned up download folder: "H:\\DOWNLOADS\\USENET\\complete\\(Zack Snyder's Justice League) [86_96] - _Zack Snyder's Justice League 2021 1080p h265.sfv_"
+2026-05-01 05:56:03 | INFO     | backend.core.searcher - Searching for: Zero Dark Thirty (2012)
+2026-05-01 05:56:04 | INFO     | backend.core.searcher - Found 163 raw results for Zero Dark Thirty
+2026-05-01 05:56:04 | INFO     | backend.core.searcher - Analyzed 163 results: 1 accepted, 162 rejected (11 due to resolution downgrade limit, 129 due to larger size limit).
+2026-05-01 05:56:05 | INFO     | backend.core.downloader - Submitted to sabnzbd: Zero.Dark.Thirty.2012.1080p.BrRip.x264.BlueBall → job_id=SABnzbd_nzo_qp_tm3ta
+2026-05-01 05:57:34 | INFO     | backend.core.downloader - Download 1580: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Zero.Dark.Thirty.2012.1080p.BrRip.x264.BlueBall'
+2026-05-01 05:57:34 | ERROR    | backend.core.orchestrator - Error processing Zero Dark Thirty: float() argument must be a string or a real number, not 'NoneType'
+2026-05-01 05:57:34 | INFO     | backend.core.searcher - Searching for: Zone 414 (2021)
+2026-05-01 05:57:35 | INFO     | backend.core.searcher - Found 69 raw results for Zone 414
+2026-05-01 05:57:35 | INFO     | backend.core.searcher - Analyzed 69 results: 10 accepted, 59 rejected (12 due to resolution downgrade limit, 36 due to larger size limit).
+2026-05-01 05:57:36 | INFO     | backend.core.downloader - Submitted to sabnzbd: Zone.414.2021.1080p.WEBRip.x265 → job_id=SABnzbd_nzo_u2h629nl
+2026-05-01 05:59:16 | INFO     | backend.core.downloader - Download 1581: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 05:59:16 | INFO     | backend.core.downloader - Download 1581: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 05:59:22 | INFO     | backend.core.downloader - Download 1581: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Zone.414.2021.1080p.WEBRip.x265\\Zone.414.2021.1080p.WEBRip.x265.mp4'
+2026-05-01 05:59:22 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Zone.414.2021.1080p.WEBRip.x265\\Zone.414.2021.1080p.WEBRip.x265.mp4'
+2026-05-01 05:59:22 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Zone.414.2021.1080p.WEBRip.x265\\Zone.414.2021.1080p.WEBRip.x265.mp4'
+2026-05-01 05:59:22 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\MOVIES\\Zone.414.2021.1080p.AMZN.WEB-DL.DDP5.1.H.264-EVO.mkv'
+2026-05-01 05:59:22 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\MOVIES' — target path: 'Z:\\MEDIA\\MOVIES\\Zone.414.2021.1080p.AMZN.WEB-DL.DDP5.1.H.264-EVO.mp4'
+2026-05-01 05:59:22 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,387,611,648 free, 3,490,484,851 needed); using local backup fallback
+2026-05-01 05:59:22 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Zone.414.2021.1080p.WEBRip.x265\\Zone.414.2021.1080p.WEBRip.x265.mp4' → 'Z:\\MEDIA\\MOVIES\\Zone.414.2021.1080p.AMZN.WEB-DL.DDP5.1.H.264-EVO.mp4'
+2026-05-01 05:59:37 | INFO     | backend.core.replacer - File move succeeded. New size: 1,647,742,583 bytes
+2026-05-01 05:59:37 | INFO     | backend.core.replacer - Deleted old file: Z:\MEDIA\MOVIES\Zone.414.2021.1080p.AMZN.WEB-DL.DDP5.1.H.264-EVO.mkv
+2026-05-01 05:59:37 | INFO     | backend.core.searcher - Searching for: The Zone of Interest (2023)
+2026-05-01 05:59:38 | INFO     | backend.core.searcher - Found 172 raw results for The Zone of Interest
+2026-05-01 05:59:38 | INFO     | backend.core.searcher - Analyzed 172 results: 4 accepted, 168 rejected (88 due to resolution downgrade limit, 66 due to larger size limit).
+2026-05-01 05:59:39 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Zone.Of.Interest.2023.2160p.4K.WEB.X265.10bit.AAC5.1-LAMA → job_id=SABnzbd_nzo_9k7q2cl7
+2026-05-01 06:04:55 | INFO     | backend.core.downloader - Download 1582: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:04:55 | INFO     | backend.core.downloader - Download 1582: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:05:01 | INFO     | backend.core.downloader - Download 1582: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\The.Zone.Of.Interest.2023.2160p.4K.WEB.X265.10bit.AAC5.1-LAMA\\The.Zone.Of.Interest.2023.2160p.4K.WEB.5.1-LAMA.mkv'
+2026-05-01 06:05:01 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\The.Zone.Of.Interest.2023.2160p.4K.WEB.X265.10bit.AAC5.1-LAMA\\The.Zone.Of.Interest.2023.2160p.4K.WEB.5.1-LAMA.mkv'
+2026-05-01 06:05:01 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\The.Zone.Of.Interest.2023.2160p.4K.WEB.X265.10bit.AAC5.1-LAMA\\The.Zone.Of.Interest.2023.2160p.4K.WEB.5.1-LAMA.mkv'
+2026-05-01 06:05:01 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\The Zone of Interest (2023)\\The.Zone.of.Interest.2023.2160p.AMZN.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-SasukeducK.mkv'
+2026-05-01 06:05:01 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\The Zone of Interest (2023)' — target path: 'E:\\MOVIES\\The Zone of Interest (2023)\\The.Zone.of.Interest.2023.2160p.AMZN.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-SasukeducK.mkv'
+2026-05-01 06:05:01 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (2,266,079,232 free, 11,465,005,522 needed); using local backup fallback
+2026-05-01 06:05:01 | INFO     | backend.core.replacer - Moved existing target aside before replacement: E:\MOVIES\The Zone of Interest (2023)\The.Zone.of.Interest.2023.2160p.AMZN.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-SasukeducK.mkv.slimarr-old
+2026-05-01 06:05:01 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\The.Zone.Of.Interest.2023.2160p.4K.WEB.X265.10bit.AAC5.1-LAMA\\The.Zone.Of.Interest.2023.2160p.4K.WEB.5.1-LAMA.mkv' → 'E:\\MOVIES\\The Zone of Interest (2023)\\The.Zone.of.Interest.2023.2160p.AMZN.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-SasukeducK.mkv'
+2026-05-01 06:05:16 | INFO     | backend.core.replacer - File move succeeded. New size: 5,018,990,400 bytes
+2026-05-01 06:05:16 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: E:\MOVIES\The Zone of Interest (2023)\The.Zone.of.Interest.2023.2160p.AMZN.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-SasukeducK.mkv.slimarr-old
+2026-05-01 06:05:17 | INFO     | backend.core.replacer - Radarr rescan triggered for The Zone of Interest
+2026-05-01 06:05:17 | INFO     | backend.core.searcher - Searching for: Faith No More – Live Hellfest 2015 (2015)
+2026-05-01 06:05:18 | INFO     | backend.core.searcher - Found 0 raw results for Faith No More – Live Hellfest 2015
+2026-05-01 06:05:18 | INFO     | backend.core.searcher - Searching for: Flight of the Conchords: Live in London (2018)
+2026-05-01 06:05:19 | INFO     | backend.core.searcher - Found 9 raw results for Flight of the Conchords: Live in London
+2026-05-01 06:05:20 | INFO     | backend.core.searcher - Analyzed 9 results: 2 accepted, 7 rejected (4 due to resolution downgrade limit, 3 due to larger size limit).
+2026-05-01 06:05:20 | INFO     | backend.core.downloader - Submitted to sabnzbd: Flight.Of.The.Conchords.Live.In.London.2018.INTERNAL.1080p.WEBRip.5.1-LAMA → job_id=SABnzbd_nzo_q_ivxv8b
+2026-05-01 06:07:11 | INFO     | backend.core.downloader - Download 1583: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Flight.Of.The.Conchords.Live.In.London.2018.INTERNAL.1080p.WEBRip.5.1-LAMA\\Flight.Of.The.Conchords.Live.In.London.2018.INTERNAL.1080p.WEBRip.5.1-LAMA.mp4'
+2026-05-01 06:07:11 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Flight.Of.The.Conchords.Live.In.London.2018.INTERNAL.1080p.WEBRip.5.1-LAMA\\Flight.Of.The.Conchords.Live.In.London.2018.INTERNAL.1080p.WEBRip.5.1-LAMA.mp4'
+2026-05-01 06:07:11 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Flight.Of.The.Conchords.Live.In.London.2018.INTERNAL.1080p.WEBRip.5.1-LAMA\\Flight.Of.The.Conchords.Live.In.London.2018.INTERNAL.1080p.WEBRip.5.1-LAMA.mp4'
+2026-05-01 06:07:11 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MUSIC\\Flight of the Conchords Live in London (2018)\\Flight.of.the.Conchords.Live.in.London.2018.iNTERNAL.1080p.WEB.H264-DiMEPiECE.mkv'
+2026-05-01 06:07:11 | INFO     | backend.core.replacer - Target dir: 'E:\\MUSIC\\Flight of the Conchords Live in London (2018)' — target path: 'E:\\MUSIC\\Flight of the Conchords Live in London (2018)\\Flight.of.the.Conchords.Live.in.London.2018.iNTERNAL.1080p.WEB.H264-DiMEPiECE.mp4'
+2026-05-01 06:07:11 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (1,994,641,408 free, 6,615,388,650 needed); using local backup fallback
+2026-05-01 06:07:11 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Flight.Of.The.Conchords.Live.In.London.2018.INTERNAL.1080p.WEBRip.5.1-LAMA\\Flight.Of.The.Conchords.Live.In.London.2018.INTERNAL.1080p.WEBRip.5.1-LAMA.mp4' → 'E:\\MUSIC\\Flight of the Conchords Live in London (2018)\\Flight.of.the.Conchords.Live.in.London.2018.iNTERNAL.1080p.WEB.H264-DiMEPiECE.mp4'
+2026-05-01 06:07:12 | INFO     | backend.core.replacer - File move succeeded. New size: 1,733,921,599 bytes
+2026-05-01 06:07:12 | INFO     | backend.core.replacer - Deleted old file: E:\MUSIC\Flight of the Conchords Live in London (2018)\Flight.of.the.Conchords.Live.in.London.2018.iNTERNAL.1080p.WEB.H264-DiMEPiECE.mkv
+2026-05-01 06:07:13 | INFO     | backend.core.replacer - Radarr rescan triggered for Flight of the Conchords: Live in London
+2026-05-01 06:07:13 | INFO     | backend.core.searcher - Searching for: Foo Fighters: Live at Wembley Stadium (2008)
+2026-05-01 06:07:14 | INFO     | backend.core.searcher - Found 11 raw results for Foo Fighters: Live at Wembley Stadium
+2026-05-01 06:07:14 | INFO     | backend.core.searcher - Analyzed 11 results: 5 accepted, 6 rejected (2 due to resolution downgrade limit, 2 due to larger size limit).
+2026-05-01 06:07:14 | INFO     | backend.core.downloader - Submitted to sabnzbd: Foo.Fighters.Live.At.Wembley.Stadium.2008.1080p.BluRay.FLAC.16bit.5.1.x265-WoKE → job_id=SABnzbd_nzo_jhrvus_r
+2026-05-01 06:14:49 | INFO     | backend.core.downloader - Download 1584: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Foo.Fighters.Live.At.Wembley.Stadium.2008.1080p.BluRay.FLAC.16bit.5.1.x265-WoKE'
+2026-05-01 06:14:49 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Foo.Fighters.Live.At.Wembley.Stadium.2008.1080p.BluRay.FLAC.16bit.5.1.x265-WoKE'
+2026-05-01 06:14:49 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Foo.Fighters.Live.At.Wembley.Stadium.2008.1080p.BluRay.FLAC.16bit.5.1.x265-WoKE\\Foo.Fighters.Live.At.Wembley.Stadium.2008.1080p.BluRay.FLAC.16bit.5.1.x265-WoKE.mkv'
+2026-05-01 06:14:49 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MUSIC\\Foo Fighters Live At Wembley Stadium m2ts Lpcm 5.1.m2ts'
+2026-05-01 06:14:49 | INFO     | backend.core.replacer - Target dir: 'E:\\MUSIC' — target path: 'E:\\MUSIC\\Foo Fighters Live At Wembley Stadium m2ts Lpcm 5.1.mkv'
+2026-05-01 06:14:49 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (1,874,505,728 free, 12,951,373,824 needed); using local backup fallback
+2026-05-01 06:14:49 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Foo.Fighters.Live.At.Wembley.Stadium.2008.1080p.BluRay.FLAC.16bit.5.1.x265-WoKE\\Foo.Fighters.Live.At.Wembley.Stadium.2008.1080p.BluRay.FLAC.16bit.5.1.x265-WoKE.mkv' → 'E:\\MUSIC\\Foo Fighters Live At Wembley Stadium m2ts Lpcm 5.1.mkv'
+2026-05-01 06:15:27 | INFO     | backend.core.replacer - File move succeeded. New size: 6,459,689,228 bytes
+2026-05-01 06:15:27 | INFO     | backend.core.replacer - Deleted old file: E:\MUSIC\Foo Fighters Live At Wembley Stadium m2ts Lpcm 5.1.m2ts
+2026-05-01 06:15:27 | INFO     | backend.core.replacer - Cleaned up download folder: 'H:\\DOWNLOADS\\USENET\\complete\\Foo.Fighters.Live.At.Wembley.Stadium.2008.1080p.BluRay.FLAC.16bit.5.1.x265-WoKE'
+2026-05-01 06:15:27 | INFO     | backend.core.searcher - Searching for: Incubus - Live at BeachLife Festival 2024 (2024)
+2026-05-01 06:15:28 | INFO     | backend.core.searcher - Found 0 raw results for Incubus - Live at BeachLife Festival 2024
+2026-05-01 06:15:28 | INFO     | backend.core.searcher - Searching for: Incubus - Live at Festival de Viña 2025 (2025)
+2026-05-01 06:15:36 | INFO     | backend.core.searcher - Found 0 raw results for Incubus - Live at Festival de Viña 2025
+2026-05-01 06:15:36 | INFO     | backend.core.searcher - Searching for: Incubus - Live at Rock in Rio 2024 (2024)
+2026-05-01 06:15:39 | INFO     | backend.core.searcher - Found 0 raw results for Incubus - Live at Rock in Rio 2024
+2026-05-01 06:15:39 | INFO     | backend.core.searcher - Searching for: Incubus Alive at Red Rocks (2004)
+2026-05-01 06:15:41 | INFO     | backend.core.searcher - Found 2 raw results for Incubus Alive at Red Rocks
+2026-05-01 06:15:41 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-01 06:15:41 | INFO     | backend.core.searcher - Searching for: Incubus: 20th Anniversary Morning View Concert (2021)
+2026-05-01 06:15:42 | INFO     | backend.core.searcher - Found 0 raw results for Incubus: 20th Anniversary Morning View Concert
+2026-05-01 06:15:42 | INFO     | backend.core.searcher - Searching for: Incubus: Look Alive (2007)
+2026-05-01 06:15:44 | INFO     | backend.core.searcher - Found 3 raw results for Incubus: Look Alive
+2026-05-01 06:15:44 | INFO     | backend.core.searcher - Analyzed 3 results: 0 accepted, 3 rejected (0 due to resolution downgrade limit, 3 due to larger size limit).
+2026-05-01 06:15:44 | INFO     | backend.core.searcher - Searching for: Karnivool: Live At The Forum (2013)
+2026-05-01 06:15:45 | INFO     | backend.core.searcher - Found 0 raw results for Karnivool: Live At The Forum
+2026-05-01 06:15:45 | INFO     | backend.core.searcher - Searching for: Karnivool: The Decade Of Sound Awake (2021)
+2026-05-01 06:15:48 | INFO     | backend.core.searcher - Found 0 raw results for Karnivool: The Decade Of Sound Awake
+2026-05-01 06:15:48 | INFO     | backend.core.searcher - Searching for: Michael Jackson Live at Wembley July 16, 1988 (2012)
+2026-05-01 06:15:49 | INFO     | backend.core.searcher - Found 0 raw results for Michael Jackson Live at Wembley July 16, 1988
+2026-05-01 06:15:49 | INFO     | backend.core.searcher - Searching for: Nirvana: Unplugged In New York (1993)
+2026-05-01 06:15:51 | INFO     | backend.core.searcher - Found 1 raw results for Nirvana: Unplugged In New York
+2026-05-01 06:15:51 | INFO     | backend.core.searcher - Analyzed 1 results: 0 accepted, 1 rejected (0 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-01 06:15:51 | INFO     | backend.core.searcher - Searching for: Queen + Adam Lambert: Live Around the World (2020)
+2026-05-01 06:15:52 | INFO     | backend.core.searcher - Found 1 raw results for Queen + Adam Lambert: Live Around the World
+2026-05-01 06:15:52 | INFO     | backend.core.searcher - Analyzed 1 results: 0 accepted, 1 rejected (0 due to resolution downgrade limit, 0 due to larger size limit).
+2026-05-01 06:15:52 | INFO     | backend.core.searcher - Searching for: Radiohead: The King of Limbs (2011)
+2026-05-01 06:15:53 | INFO     | backend.core.searcher - Found 8 raw results for Radiohead: The King of Limbs
+2026-05-01 06:15:53 | INFO     | backend.core.searcher - Analyzed 8 results: 2 accepted, 6 rejected (0 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-01 06:15:54 | INFO     | backend.core.downloader - Submitted to sabnzbd: Radiohead.The.King.Of.Limbs.2011.1080p.BluRay.5.1-LAMA → job_id=SABnzbd_nzo_6d7acm2d
+2026-05-01 06:18:07 | INFO     | backend.core.downloader - Download 1585: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 06:18:07 | INFO     | backend.core.downloader - Download 1585: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 06:18:13 | INFO     | backend.core.downloader - Download 1585: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 06:18:13 | INFO     | backend.core.downloader - Download 1585: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 06:18:19 | INFO     | backend.core.downloader - Download 1585: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 06:18:19 | INFO     | backend.core.downloader - Download 1585: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 06:18:25 | INFO     | backend.core.downloader - Download 1585: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 06:18:25 | INFO     | backend.core.downloader - Download 1585: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 06:18:32 | INFO     | backend.core.downloader - Download 1585: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 06:18:32 | INFO     | backend.core.downloader - Download 1585: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 06:18:38 | INFO     | backend.core.downloader - Download 1585: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 06:18:38 | INFO     | backend.core.downloader - Download 1585: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 06:18:44 | INFO     | backend.core.downloader - Download 1585: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Radiohead.The.King.Of.Limbs.2011.1080p.BluRay.5.1-LAMA\\Radiohead.The.King.Of.Limbs.2011.1080p.BluRay.5.1-LAMA.mp4'
+2026-05-01 06:18:44 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Radiohead.The.King.Of.Limbs.2011.1080p.BluRay.5.1-LAMA\\Radiohead.The.King.Of.Limbs.2011.1080p.BluRay.5.1-LAMA.mp4'
+2026-05-01 06:18:44 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Radiohead.The.King.Of.Limbs.2011.1080p.BluRay.5.1-LAMA\\Radiohead.The.King.Of.Limbs.2011.1080p.BluRay.5.1-LAMA.mp4'
+2026-05-01 06:18:44 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MUSIC\\Radiohead.The.King.of.Limbs.Live.From.the.Basement.2011.720p.BRRip.XviD.AC3-PRESTiGE\\Radiohead.The.King.of.Limbs.Live.From.the.Basement.2011.720p.BRRip.XviD.AC3-PRESTiGE.avi'
+2026-05-01 06:18:44 | INFO     | backend.core.replacer - Target dir: 'E:\\MUSIC\\Radiohead.The.King.of.Limbs.Live.From.the.Basement.2011.720p.BRRip.XviD.AC3-PRESTiGE' — target path: 'E:\\MUSIC\\Radiohead.The.King.of.Limbs.Live.From.the.Basement.2011.720p.BRRip.XviD.AC3-PRESTiGE\\Radiohead.The.King.of.Limbs.Live.From.the.Basement.2011.720p.BRRip.XviD.AC3-PRESTiGE.mp4'
+2026-05-01 06:18:50 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\Radiohead.The.King.of.Limbs.Live.From.the.Basement.2011.720p.BRRip.XviD.AC3-PRESTiGE_Radiohead.The.King.of.Limbs.Live.From.the.Basement.2011.720p.BRRip.XviD.AC3-PRESTiGE.avi
+2026-05-01 06:18:50 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Radiohead.The.King.Of.Limbs.2011.1080p.BluRay.5.1-LAMA\\Radiohead.The.King.Of.Limbs.2011.1080p.BluRay.5.1-LAMA.mp4' → 'E:\\MUSIC\\Radiohead.The.King.of.Limbs.Live.From.the.Basement.2011.720p.BRRip.XviD.AC3-PRESTiGE\\Radiohead.The.King.of.Limbs.Live.From.the.Basement.2011.720p.BRRip.XviD.AC3-PRESTiGE.mp4'
+2026-05-01 06:18:51 | INFO     | backend.core.replacer - File move succeeded. New size: 1,206,742,270 bytes
+2026-05-01 06:18:51 | INFO     | backend.core.replacer - Radarr rescan triggered for Radiohead: The King of Limbs
+2026-05-01 06:18:51 | INFO     | backend.core.searcher - Searching for: The Rage Factor: Rage Against the Machine Live from London (2015)
+2026-05-01 06:18:56 | INFO     | backend.core.searcher - Found 2 raw results for The Rage Factor: Rage Against the Machine Live from London
+2026-05-01 06:18:56 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 0 due to larger size limit).
+2026-05-01 06:18:56 | INFO     | backend.core.searcher - Searching for: Taylor Swift: The Eras Tour (2023)
+2026-05-01 06:18:57 | INFO     | backend.core.searcher - Found 68 raw results for Taylor Swift: The Eras Tour
+2026-05-01 06:18:57 | INFO     | backend.core.searcher - Analyzed 68 results: 22 accepted, 46 rejected (9 due to resolution downgrade limit, 32 due to larger size limit).
+2026-05-01 06:18:57 | INFO     | backend.core.downloader - Submitted to sabnzbd: Taylor.Swift.The.Eras.Tour.2023.2160p.4K.WEB.X265.10bit.AAC5.1-LAMA → job_id=SABnzbd_nzo_4swd71fy
+2026-05-01 06:21:44 | INFO     | backend.core.downloader - Download 1586: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Taylor.Swift.The.Eras.Tour.2023.2160p.4K.WEB.X265.10bit.AAC5.1-LAMA'
+2026-05-01 06:21:45 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_4swd71fy
+2026-05-01 06:21:45 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Taylor.Swift.The.Eras.Tour.2023.2160p.4K.WEB.X265.10bit.AAC5.1-LAMA
+2026-05-01 06:21:45 | INFO     | backend.core.download_workflow - Failed download cleanup for 1586: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 06:21:45 | INFO     | backend.core.blacklist - Added to blacklist: Taylor.Swift.The.Eras.Tour.2023.2160p.4K.WEB.X265.10bit.AAC5.1-LAMA (reason=retry_failed_release, expires=2026-05-30 20:21:45.651856+00:00)
+2026-05-01 06:21:46 | INFO     | backend.core.downloader - Submitted to sabnzbd: Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA → job_id=SABnzbd_nzo_596vjknt
+2026-05-01 06:21:46 | INFO     | backend.core.retry_ladder - Retrying download 1586 with candidate 285218: Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA
+2026-05-01 06:21:46 | INFO     | backend.core.download_workflow - Retrying failed download 1586 as download 1587: Retry #1 started: Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA
+2026-05-01 06:26:12 | INFO     | backend.core.downloader - Download 1587: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA'
+2026-05-01 06:26:13 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_596vjknt
+2026-05-01 06:26:13 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA
+2026-05-01 06:26:13 | INFO     | backend.core.download_workflow - Failed download cleanup for 1587: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 06:26:13 | INFO     | backend.core.blacklist - Added to blacklist: Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA (reason=retry_failed_release, expires=2026-05-30 20:26:13.884922+00:00)
+2026-05-01 06:26:14 | INFO     | backend.core.downloader - Submitted to sabnzbd: Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.WEBRip.x265.10bit.5.1-LAMA → job_id=SABnzbd_nzo_s8envs42
+2026-05-01 06:26:14 | INFO     | backend.core.retry_ladder - Retrying download 1587 with candidate 285219: Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.WEBRip.x265.10bit.5.1-LAMA
+2026-05-01 06:26:14 | INFO     | backend.core.download_workflow - Retrying failed download 1587 as download 1588: Retry #2 started: Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.WEBRip.x265.10bit.5.1-LAMA
+2026-05-01 06:32:25 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='verifying' storage=''
+2026-05-01 06:32:25 | INFO     | backend.core.downloader - Download 1588: sabnzbd history status 'verifying' is still post-processing; continuing monitor
+2026-05-01 06:32:32 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 06:32:32 | INFO     | backend.core.downloader - Download 1588: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 06:32:38 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:32:38 | INFO     | backend.core.downloader - Download 1588: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:32:44 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:32:44 | INFO     | backend.core.downloader - Download 1588: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:32:45 | INFO     | backend.core.download_workflow - Resuming monitor workflow for download 1588
+2026-05-01 06:32:45 | INFO     | backend.scheduler.scheduler - Stale download recovery resumed 1 workflow(s)
+2026-05-01 06:32:50 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:32:50 | INFO     | backend.core.downloader - Download 1588: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:32:51 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:32:51 | INFO     | backend.core.downloader - Download 1588: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:32:56 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:32:56 | INFO     | backend.core.downloader - Download 1588: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:32:57 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:32:57 | INFO     | backend.core.downloader - Download 1588: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:33:03 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:33:03 | INFO     | backend.core.downloader - Download 1588: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:33:03 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:33:03 | INFO     | backend.core.downloader - Download 1588: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:33:09 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:33:09 | INFO     | backend.core.downloader - Download 1588: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:33:10 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:33:10 | INFO     | backend.core.downloader - Download 1588: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:33:15 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:33:15 | INFO     | backend.core.downloader - Download 1588: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:33:16 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:33:16 | INFO     | backend.core.downloader - Download 1588: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:33:21 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:33:21 | INFO     | backend.core.downloader - Download 1588: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:33:22 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:33:22 | INFO     | backend.core.downloader - Download 1588: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:33:27 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.WEBRip.x265.10bit.5.1-LAMA\\Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.WEBRip.x265.10bit.5.1-LAMA.mp4'
+2026-05-01 06:33:27 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.WEBRip.x265.10bit.5.1-LAMA\\Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.WEBRip.x265.10bit.5.1-LAMA.mp4'
+2026-05-01 06:33:27 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.WEBRip.x265.10bit.5.1-LAMA\\Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.WEBRip.x265.10bit.5.1-LAMA.mp4'
+2026-05-01 06:33:27 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MUSIC\\Taylor.Swift.The.Eras.Tour.2023.Extended.1080p.AMZN.WEB-DL.DDP5.1.Atmos.H.264-FLUX.mkv'
+2026-05-01 06:33:27 | INFO     | backend.core.replacer - Target dir: 'E:\\MUSIC' — target path: 'E:\\MUSIC\\Taylor.Swift.The.Eras.Tour.2023.Extended.1080p.AMZN.WEB-DL.DDP5.1.Atmos.H.264-FLUX.mp4'
+2026-05-01 06:33:27 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (108,269,568 free, 13,874,148,242 needed); using local backup fallback
+2026-05-01 06:33:27 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.WEBRip.x265.10bit.5.1-LAMA\\Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.WEBRip.x265.10bit.5.1-LAMA.mp4' → 'E:\\MUSIC\\Taylor.Swift.The.Eras.Tour.2023.Extended.1080p.AMZN.WEB-DL.DDP5.1.Atmos.H.264-FLUX.mp4'
+2026-05-01 06:33:33 | INFO     | backend.core.replacer - File move succeeded. New size: 3,919,600,060 bytes
+2026-05-01 06:33:34 | INFO     | backend.core.replacer - Deleted old file: E:\MUSIC\Taylor.Swift.The.Eras.Tour.2023.Extended.1080p.AMZN.WEB-DL.DDP5.1.Atmos.H.264-FLUX.mkv
+2026-05-01 06:33:35 | INFO     | backend.core.downloader - Download 1588: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.WEBRip.x265.10bit.5.1-LAMA\\Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.WEBRip.x265.10bit.5.1-LAMA.mp4'
+2026-05-01 06:33:35 | INFO     | backend.core.searcher - Searching for: Arj Barker: Forever (2009)
+2026-05-01 06:33:35 | ERROR    | backend.core.replacer - Downloaded storage path missing or inaccessible: 'H:\\DOWNLOADS\\USENET\\complete\\Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.WEBRip.x265.10bit.5.1-LAMA\\Taylor.Swift.The.Eras.Tour.2023.EXTENDED.1080p.WEBRip.x265.10bit.5.1-LAMA.mp4'
+2026-05-01 06:33:36 | INFO     | backend.core.searcher - Found 5 raw results for Arj Barker: Forever
+2026-05-01 06:33:36 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 5 due to larger size limit).
+2026-05-01 06:33:36 | INFO     | backend.core.searcher - Searching for: Carl Barron: Drinking with a Fork (2018)
+2026-05-01 06:33:37 | INFO     | backend.core.searcher - Found 0 raw results for Carl Barron: Drinking with a Fork
+2026-05-01 06:33:37 | INFO     | backend.core.searcher - Searching for: Carl Barron: Whatever Comes Next (2005)
+2026-05-01 06:33:38 | INFO     | backend.core.searcher - Found 5 raw results for Carl Barron: Whatever Comes Next
+2026-05-01 06:33:38 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 5 due to larger size limit).
+2026-05-01 06:33:38 | INFO     | backend.core.searcher - Searching for: Chris Rock: Selective Outrage (2023)
+2026-05-01 06:33:40 | INFO     | backend.core.searcher - Found 34 raw results for Chris Rock: Selective Outrage
+2026-05-01 06:33:40 | INFO     | backend.core.searcher - Analyzed 34 results: 2 accepted, 32 rejected (1 due to resolution downgrade limit, 29 due to larger size limit).
+2026-05-01 06:33:40 | INFO     | backend.core.downloader - Submitted to sabnzbd: Chris.Rock.Selective.Outrage.2023.web.sdr.1080p.av1.5.1.eac3-Rosy → job_id=SABnzbd_nzo_s7wwu3dk
+2026-05-01 06:38:23 | INFO     | backend.core.downloader - Download 1589: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 06:38:23 | INFO     | backend.core.downloader - Download 1589: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 06:38:29 | INFO     | backend.core.downloader - Download 1589: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:38:29 | INFO     | backend.core.downloader - Download 1589: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:38:36 | INFO     | backend.core.downloader - Download 1589: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:38:36 | INFO     | backend.core.downloader - Download 1589: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:38:42 | INFO     | backend.core.downloader - Download 1589: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Chris.Rock.Selective.Outrage.2023.web.sdr.1080p.av1.5.1.eac3-Rosy\\Chris.Rock.Selective.Outrage.2023.web.sdr.1080p.av1.5.1.eac3-Rosy.mkv'
+2026-05-01 06:38:42 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Chris.Rock.Selective.Outrage.2023.web.sdr.1080p.av1.5.1.eac3-Rosy\\Chris.Rock.Selective.Outrage.2023.web.sdr.1080p.av1.5.1.eac3-Rosy.mkv'
+2026-05-01 06:38:42 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Chris.Rock.Selective.Outrage.2023.web.sdr.1080p.av1.5.1.eac3-Rosy\\Chris.Rock.Selective.Outrage.2023.web.sdr.1080p.av1.5.1.eac3-Rosy.mkv'
+2026-05-01 06:38:42 | INFO     | backend.core.replacer - Original Plex path: 'E:\\STAND UP\\Chris.Rock.Selective.Outrage.2023.1080p.WEBRip.x264-LAMA\\Chris.Rock.Selective.Outrage.2023.1080p.WEBRip.x264-LAMA.mp4'
+2026-05-01 06:38:42 | INFO     | backend.core.replacer - Target dir: 'E:\\STAND UP\\Chris.Rock.Selective.Outrage.2023.1080p.WEBRip.x264-LAMA' — target path: 'E:\\STAND UP\\Chris.Rock.Selective.Outrage.2023.1080p.WEBRip.x264-LAMA\\Chris.Rock.Selective.Outrage.2023.1080p.WEBRip.x264-LAMA.mkv'
+2026-05-01 06:38:42 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (107,929,600 free, 1,424,448,558 needed); using local backup fallback
+2026-05-01 06:38:42 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Chris.Rock.Selective.Outrage.2023.web.sdr.1080p.av1.5.1.eac3-Rosy\\Chris.Rock.Selective.Outrage.2023.web.sdr.1080p.av1.5.1.eac3-Rosy.mkv' → 'E:\\STAND UP\\Chris.Rock.Selective.Outrage.2023.1080p.WEBRip.x264-LAMA\\Chris.Rock.Selective.Outrage.2023.1080p.WEBRip.x264-LAMA.mkv'
+2026-05-01 06:38:42 | INFO     | backend.core.replacer - File move succeeded. New size: 862,964,557 bytes
+2026-05-01 06:38:42 | INFO     | backend.core.replacer - Deleted old file: E:\STAND UP\Chris.Rock.Selective.Outrage.2023.1080p.WEBRip.x264-LAMA\Chris.Rock.Selective.Outrage.2023.1080p.WEBRip.x264-LAMA.mp4
+2026-05-01 06:38:43 | INFO     | backend.core.searcher - Searching for: Dane Cook: Isolated Incident (2009)
+2026-05-01 06:38:44 | INFO     | backend.core.searcher - Found 4 raw results for Dane Cook: Isolated Incident
+2026-05-01 06:38:44 | INFO     | backend.core.searcher - Analyzed 4 results: 0 accepted, 4 rejected (0 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-01 06:38:44 | INFO     | backend.core.searcher - Searching for: Dane Cook: Rough Around the Edges (2007)
+2026-05-01 06:38:45 | INFO     | backend.core.searcher - Found 5 raw results for Dane Cook: Rough Around the Edges
+2026-05-01 06:38:45 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 5 due to larger size limit).
+2026-05-01 06:38:45 | INFO     | backend.core.searcher - Searching for: Dane Cook: Vicious Circle (2006)
+2026-05-01 06:38:46 | INFO     | backend.core.searcher - Found 9 raw results for Dane Cook: Vicious Circle
+2026-05-01 06:38:46 | INFO     | backend.core.searcher - Analyzed 9 results: 0 accepted, 9 rejected (0 due to resolution downgrade limit, 9 due to larger size limit).
+2026-05-01 06:38:46 | INFO     | backend.core.searcher - Searching for: Danny Bhoy: Live at the Athenaeum (2009)
+2026-05-01 06:38:49 | INFO     | backend.core.searcher - Found 0 raw results for Danny Bhoy: Live at the Athenaeum
+2026-05-01 06:38:49 | INFO     | backend.core.searcher - Searching for: Danny Bhoy: Live at the Sydney Opera House (2007)
+2026-05-01 06:38:50 | INFO     | backend.core.searcher - Found 2 raw results for Danny Bhoy: Live at the Sydney Opera House
+2026-05-01 06:38:50 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 2 due to larger size limit).
+2026-05-01 06:38:50 | INFO     | backend.core.searcher - Searching for: Dave Chappelle: Sticks & Stones (2019)
+2026-05-01 06:38:52 | INFO     | backend.core.searcher - Found 30 raw results for Dave Chappelle: Sticks & Stones
+2026-05-01 06:38:52 | INFO     | backend.core.searcher - Analyzed 30 results: 13 accepted, 17 rejected (3 due to resolution downgrade limit, 11 due to larger size limit).
+2026-05-01 06:38:53 | INFO     | backend.core.downloader - Submitted to sabnzbd: Dave.Chappelle.Sticks.&amp;.Stones2019.web.sdr.1080p.av1 → job_id=SABnzbd_nzo_upvexoxv
+2026-05-01 06:41:18 | INFO     | backend.core.downloader - Download 1590: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 06:41:18 | INFO     | backend.core.downloader - Download 1590: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 06:41:25 | INFO     | backend.core.downloader - Download 1590: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:41:25 | INFO     | backend.core.downloader - Download 1590: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:41:31 | INFO     | backend.core.downloader - Download 1590: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Dave.Chappelle.Sticks.&amp;.Stones2019.web.sdr.1080p.av1\\Dave.Chappelle.Sticks.&.Stones2019.web.sdr.1080p.av1.mkv'
+2026-05-01 06:41:31 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Dave.Chappelle.Sticks.&amp;.Stones2019.web.sdr.1080p.av1\\Dave.Chappelle.Sticks.&.Stones2019.web.sdr.1080p.av1.mkv'
+2026-05-01 06:41:31 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Dave.Chappelle.Sticks.&amp;.Stones2019.web.sdr.1080p.av1\\Dave.Chappelle.Sticks.&.Stones2019.web.sdr.1080p.av1.mkv'
+2026-05-01 06:41:31 | INFO     | backend.core.replacer - Original Plex path: 'E:\\STAND UP\\Dave Chappelle Sticks & Stones (2019)\\Dave.Chappelle.Sticks.And.Stones.2019.1080p.NF.WEB-DL.DDP5.1.X264-NTG.mkv'
+2026-05-01 06:41:31 | INFO     | backend.core.replacer - Target dir: 'E:\\STAND UP\\Dave Chappelle Sticks & Stones (2019)' — target path: 'E:\\STAND UP\\Dave Chappelle Sticks & Stones (2019)\\Dave.Chappelle.Sticks.And.Stones.2019.1080p.NF.WEB-DL.DDP5.1.X264-NTG.mkv'
+2026-05-01 06:41:31 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (108,253,184 free, 1,435,636,912 needed); using local backup fallback
+2026-05-01 06:41:31 | INFO     | backend.core.replacer - Moved existing target aside before replacement: E:\STAND UP\Dave Chappelle Sticks & Stones (2019)\Dave.Chappelle.Sticks.And.Stones.2019.1080p.NF.WEB-DL.DDP5.1.X264-NTG.mkv.slimarr-old
+2026-05-01 06:41:31 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Dave.Chappelle.Sticks.&amp;.Stones2019.web.sdr.1080p.av1\\Dave.Chappelle.Sticks.&.Stones2019.web.sdr.1080p.av1.mkv' → 'E:\\STAND UP\\Dave Chappelle Sticks & Stones (2019)\\Dave.Chappelle.Sticks.And.Stones.2019.1080p.NF.WEB-DL.DDP5.1.X264-NTG.mkv'
+2026-05-01 06:41:31 | INFO     | backend.core.replacer - File move succeeded. New size: 535,307,357 bytes
+2026-05-01 06:41:31 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: E:\STAND UP\Dave Chappelle Sticks & Stones (2019)\Dave.Chappelle.Sticks.And.Stones.2019.1080p.NF.WEB-DL.DDP5.1.X264-NTG.mkv.slimarr-old
+2026-05-01 06:41:32 | INFO     | backend.core.searcher - Searching for: Dave Chappelle: The Dreamer (2023)
+2026-05-01 06:41:33 | INFO     | backend.core.searcher - Found 25 raw results for Dave Chappelle: The Dreamer
+2026-05-01 06:41:33 | INFO     | backend.core.searcher - Analyzed 25 results: 10 accepted, 15 rejected (3 due to resolution downgrade limit, 7 due to larger size limit).
+2026-05-01 06:41:33 | INFO     | backend.core.downloader - Submitted to sabnzbd: Dave.Chappelle.The.Dreamer.2023.web.netflix.sdr.movie.1080p.av1.5.1.eac3-Rosy → job_id=SABnzbd_nzo_gdt3oxk3
+2026-05-01 06:43:47 | INFO     | backend.core.downloader - Download 1591: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 06:43:47 | INFO     | backend.core.downloader - Download 1591: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 06:43:53 | INFO     | backend.core.downloader - Download 1591: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:43:53 | INFO     | backend.core.downloader - Download 1591: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:43:59 | INFO     | backend.core.downloader - Download 1591: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Dave.Chappelle.The.Dreamer.2023.web.netflix.sdr.movie.1080p.av1.5.1.eac3-Rosy\\Dave.Chappelle.The.Dreamer.2023.web.netflix.sdr.movie.1080p.av1.5.1.eac3-Rosy.mkv'
+2026-05-01 06:43:59 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Dave.Chappelle.The.Dreamer.2023.web.netflix.sdr.movie.1080p.av1.5.1.eac3-Rosy\\Dave.Chappelle.The.Dreamer.2023.web.netflix.sdr.movie.1080p.av1.5.1.eac3-Rosy.mkv'
+2026-05-01 06:43:59 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Dave.Chappelle.The.Dreamer.2023.web.netflix.sdr.movie.1080p.av1.5.1.eac3-Rosy\\Dave.Chappelle.The.Dreamer.2023.web.netflix.sdr.movie.1080p.av1.5.1.eac3-Rosy.mkv'
+2026-05-01 06:43:59 | INFO     | backend.core.replacer - Original Plex path: 'E:\\STAND UP\\Dave Chappelle The Dreamer (2023)\\Dave.Chappelle.The.Dreamer.2023.1080p.WEB.h264-ETHEL.mkv'
+2026-05-01 06:43:59 | INFO     | backend.core.replacer - Target dir: 'E:\\STAND UP\\Dave Chappelle The Dreamer (2023)' — target path: 'E:\\STAND UP\\Dave Chappelle The Dreamer (2023)\\Dave.Chappelle.The.Dreamer.2023.1080p.WEB.h264-ETHEL.mkv'
+2026-05-01 06:43:59 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (107,204,608 free, 2,741,323,153 needed); using local backup fallback
+2026-05-01 06:43:59 | INFO     | backend.core.replacer - Moved existing target aside before replacement: E:\STAND UP\Dave Chappelle The Dreamer (2023)\Dave.Chappelle.The.Dreamer.2023.1080p.WEB.h264-ETHEL.mkv.slimarr-old
+2026-05-01 06:43:59 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Dave.Chappelle.The.Dreamer.2023.web.netflix.sdr.movie.1080p.av1.5.1.eac3-Rosy\\Dave.Chappelle.The.Dreamer.2023.web.netflix.sdr.movie.1080p.av1.5.1.eac3-Rosy.mkv' → 'E:\\STAND UP\\Dave Chappelle The Dreamer (2023)\\Dave.Chappelle.The.Dreamer.2023.1080p.WEB.h264-ETHEL.mkv'
+2026-05-01 06:44:00 | INFO     | backend.core.replacer - File move succeeded. New size: 759,201,058 bytes
+2026-05-01 06:44:00 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: E:\STAND UP\Dave Chappelle The Dreamer (2023)\Dave.Chappelle.The.Dreamer.2023.1080p.WEB.h264-ETHEL.mkv.slimarr-old
+2026-05-01 06:44:00 | INFO     | backend.core.searcher - Searching for: Gilly and Keeves: The Special (2022)
+2026-05-01 06:44:01 | INFO     | backend.core.searcher - Found 9 raw results for Gilly and Keeves: The Special
+2026-05-01 06:44:01 | INFO     | backend.core.searcher - Analyzed 9 results: 2 accepted, 7 rejected (2 due to resolution downgrade limit, 5 due to larger size limit).
+2026-05-01 06:44:02 | INFO     | backend.core.downloader - Submitted to sabnzbd: Gilly.And.Keeves.The.Special.2022.PROPER.1080p.WEBRip-LAMA → job_id=SABnzbd_nzo_z_p9zg3o
+2026-05-01 06:48:23 | INFO     | backend.core.downloader - Download 1592: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Gilly.And.Keeves.The.Special.2022.PROPER.1080p.WEBRip-LAMA'
+2026-05-01 06:48:24 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_z_p9zg3o
+2026-05-01 06:48:24 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Gilly.And.Keeves.The.Special.2022.PROPER.1080p.WEBRip-LAMA
+2026-05-01 06:48:24 | INFO     | backend.core.download_workflow - Failed download cleanup for 1592: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 06:48:24 | INFO     | backend.core.searcher - Searching for: Jerry Seinfeld: 'I'm Telling You for the Last Time' (1998)
+2026-05-01 06:48:25 | INFO     | backend.core.searcher - Found 5 raw results for Jerry Seinfeld: 'I'm Telling You for the Last Time'
+2026-05-01 06:48:25 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 5 due to larger size limit).
+2026-05-01 06:48:25 | INFO     | backend.core.searcher - Searching for: Jerry Seinfeld: 23 Hours to Kill (2020)
+2026-05-01 06:48:26 | INFO     | backend.core.searcher - Found 16 raw results for Jerry Seinfeld: 23 Hours to Kill
+2026-05-01 06:48:26 | INFO     | backend.core.searcher - Analyzed 16 results: 4 accepted, 12 rejected (4 due to resolution downgrade limit, 2 due to larger size limit).
+2026-05-01 06:48:27 | INFO     | backend.core.downloader - Submitted to sabnzbd: Jerry.Seinfeld.23.Hours.To.Kill.2020.1080p.WEBRip.x264 → job_id=SABnzbd_nzo_smga9leg
+2026-05-01 06:52:19 | INFO     | backend.core.downloader - Download 1593: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Jerry.Seinfeld.23.Hours.To.Kill.2020.1080p.WEBRip.x264'
+2026-05-01 06:52:19 | ERROR    | backend.core.orchestrator - Error processing Jerry Seinfeld: 23 Hours to Kill: float() argument must be a string or a real number, not 'NoneType'
+2026-05-01 06:52:19 | INFO     | backend.core.searcher - Searching for: Jim Gaffigan: Obsessed (2014)
+2026-05-01 06:52:20 | INFO     | backend.core.searcher - Found 25 raw results for Jim Gaffigan: Obsessed
+2026-05-01 06:52:20 | INFO     | backend.core.searcher - Analyzed 25 results: 0 accepted, 25 rejected (0 due to resolution downgrade limit, 25 due to larger size limit).
+2026-05-01 06:52:20 | INFO     | backend.core.searcher - Searching for: Jim Jefferies: Alcoholocaust (2010)
+2026-05-01 06:52:21 | INFO     | backend.core.searcher - Found 14 raw results for Jim Jefferies: Alcoholocaust
+2026-05-01 06:52:21 | INFO     | backend.core.searcher - Analyzed 14 results: 0 accepted, 14 rejected (0 due to resolution downgrade limit, 13 due to larger size limit).
+2026-05-01 06:52:21 | INFO     | backend.core.searcher - Searching for: Jim Jefferies: Contraband (2008)
+2026-05-01 06:52:22 | INFO     | backend.core.searcher - Found 1 raw results for Jim Jefferies: Contraband
+2026-05-01 06:52:22 | INFO     | backend.core.searcher - Analyzed 1 results: 0 accepted, 1 rejected (0 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-01 06:52:22 | INFO     | backend.core.searcher - Searching for: Jim Jefferies: I Swear to God (2009)
+2026-05-01 06:52:24 | INFO     | backend.core.searcher - Found 11 raw results for Jim Jefferies: I Swear to God
+2026-05-01 06:52:24 | INFO     | backend.core.searcher - Analyzed 11 results: 0 accepted, 11 rejected (0 due to resolution downgrade limit, 11 due to larger size limit).
+2026-05-01 06:52:24 | INFO     | backend.core.searcher - Searching for: Kevin Hart: Seriously Funny (2010)
+2026-05-01 06:52:25 | INFO     | backend.core.searcher - Found 29 raw results for Kevin Hart: Seriously Funny
+2026-05-01 06:52:25 | INFO     | backend.core.searcher - Analyzed 29 results: 0 accepted, 29 rejected (0 due to resolution downgrade limit, 27 due to larger size limit).
+2026-05-01 06:52:25 | INFO     | backend.core.searcher - Searching for: Louis C.K. Oh My God (2013)
+2026-05-01 06:52:26 | INFO     | backend.core.searcher - Found 24 raw results for Louis C.K. Oh My God
+2026-05-01 06:52:26 | INFO     | backend.core.searcher - Analyzed 24 results: 0 accepted, 24 rejected (0 due to resolution downgrade limit, 21 due to larger size limit).
+2026-05-01 06:52:26 | INFO     | backend.core.searcher - Searching for: Louis C.K.: Chewed Up (2008)
+2026-05-01 06:52:27 | INFO     | backend.core.searcher - Found 11 raw results for Louis C.K.: Chewed Up
+2026-05-01 06:52:27 | INFO     | backend.core.searcher - Analyzed 11 results: 3 accepted, 8 rejected (0 due to resolution downgrade limit, 8 due to larger size limit).
+2026-05-01 06:52:28 | INFO     | backend.core.downloader - Submitted to sabnzbd: Louis.C.K.Chewed.Up.2008.720p.WEBRip-LAMA → job_id=SABnzbd_nzo_ar65ydip
+2026-05-01 06:55:58 | INFO     | backend.core.downloader - Download 1594: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Louis.C.K.Chewed.Up.2008.720p.WEBRip-LAMA\\Louis.C.K.Chewed.Up.2008.720p.WEBRip-LAMA.mp4'
+2026-05-01 06:55:58 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Louis.C.K.Chewed.Up.2008.720p.WEBRip-LAMA\\Louis.C.K.Chewed.Up.2008.720p.WEBRip-LAMA.mp4'
+2026-05-01 06:55:58 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Louis.C.K.Chewed.Up.2008.720p.WEBRip-LAMA\\Louis.C.K.Chewed.Up.2008.720p.WEBRip-LAMA.mp4'
+2026-05-01 06:55:58 | INFO     | backend.core.replacer - Original Plex path: 'E:\\STAND UP\\Louis CK   Chewed Up (Standup Comedy)\\Louis.CK.Chewed.Up.mkv'
+2026-05-01 06:55:58 | INFO     | backend.core.replacer - Target dir: 'E:\\STAND UP\\Louis CK   Chewed Up (Standup Comedy)' — target path: 'E:\\STAND UP\\Louis CK   Chewed Up (Standup Comedy)\\Louis.CK.Chewed.Up.mp4'
+2026-05-01 06:55:58 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (507,281,408 free, 1,030,120,903 needed); using local backup fallback
+2026-05-01 06:55:58 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Louis.C.K.Chewed.Up.2008.720p.WEBRip-LAMA\\Louis.C.K.Chewed.Up.2008.720p.WEBRip-LAMA.mp4' → 'E:\\STAND UP\\Louis CK   Chewed Up (Standup Comedy)\\Louis.CK.Chewed.Up.mp4'
+2026-05-01 06:55:58 | INFO     | backend.core.replacer - File move succeeded. New size: 587,621,937 bytes
+2026-05-01 06:55:58 | INFO     | backend.core.replacer - Deleted old file: E:\STAND UP\Louis CK   Chewed Up (Standup Comedy)\Louis.CK.Chewed.Up.mkv
+2026-05-01 06:55:59 | INFO     | backend.core.searcher - Searching for: Louis C.K.: Live at the Beacon Theater (2011)
+2026-05-01 06:56:00 | INFO     | backend.core.searcher - Found 17 raw results for Louis C.K.: Live at the Beacon Theater
+2026-05-01 06:56:00 | INFO     | backend.core.searcher - Analyzed 17 results: 1 accepted, 16 rejected (6 due to resolution downgrade limit, 7 due to larger size limit).
+2026-05-01 06:56:01 | INFO     | backend.core.downloader - Submitted to sabnzbd: Louis.C.K.Live.At.The.Beacon.Theater.2011.720p.WEBRip-LAMA → job_id=SABnzbd_nzo_e8zw6kli
+2026-05-01 06:58:25 | INFO     | backend.core.downloader - Download 1595: found in sabnzbd history — status='verifying' storage=''
+2026-05-01 06:58:25 | INFO     | backend.core.downloader - Download 1595: sabnzbd history status 'verifying' is still post-processing; continuing monitor
+2026-05-01 06:58:31 | INFO     | backend.core.downloader - Download 1595: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 06:58:31 | INFO     | backend.core.downloader - Download 1595: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 06:58:37 | INFO     | backend.core.downloader - Download 1595: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Louis.C.K.Live.At.The.Beacon.Theater.2011.720p.WEBRip-LAMA\\Louis.C.K.Live.At.The.Beacon.Theater.2011.720p.WEBRip-LAMA.mp4'
+2026-05-01 06:58:37 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Louis.C.K.Live.At.The.Beacon.Theater.2011.720p.WEBRip-LAMA\\Louis.C.K.Live.At.The.Beacon.Theater.2011.720p.WEBRip-LAMA.mp4'
+2026-05-01 06:58:37 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Louis.C.K.Live.At.The.Beacon.Theater.2011.720p.WEBRip-LAMA\\Louis.C.K.Live.At.The.Beacon.Theater.2011.720p.WEBRip-LAMA.mp4'
+2026-05-01 06:58:37 | INFO     | backend.core.replacer - Original Plex path: 'E:\\STAND UP\\Louis_CK_Beacon_1280x720.mp4'
+2026-05-01 06:58:37 | INFO     | backend.core.replacer - Target dir: 'E:\\STAND UP' — target path: 'E:\\STAND UP\\Louis_CK_Beacon_1280x720.mp4'
+2026-05-01 06:58:37 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (506,683,392 free, 1,369,031,554 needed); using local backup fallback
+2026-05-01 06:58:37 | INFO     | backend.core.replacer - Moved existing target aside before replacement: E:\STAND UP\Louis_CK_Beacon_1280x720.mp4.slimarr-old
+2026-05-01 06:58:37 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Louis.C.K.Live.At.The.Beacon.Theater.2011.720p.WEBRip-LAMA\\Louis.C.K.Live.At.The.Beacon.Theater.2011.720p.WEBRip-LAMA.mp4' → 'E:\\STAND UP\\Louis_CK_Beacon_1280x720.mp4'
+2026-05-01 06:58:38 | INFO     | backend.core.replacer - File move succeeded. New size: 603,339,799 bytes
+2026-05-01 06:58:38 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: E:\STAND UP\Louis_CK_Beacon_1280x720.mp4.slimarr-old
+2026-05-01 06:58:38 | INFO     | backend.core.searcher - Searching for: Louis C.K.: Shameless (2007)
+2026-05-01 06:58:39 | INFO     | backend.core.searcher - Found 16 raw results for Louis C.K.: Shameless
+2026-05-01 06:58:39 | INFO     | backend.core.searcher - Analyzed 16 results: 0 accepted, 16 rejected (0 due to resolution downgrade limit, 16 due to larger size limit).
+2026-05-01 06:58:39 | INFO     | backend.core.searcher - Searching for: Ricky Gervais Meets... Larry David (2006)
+2026-05-01 06:58:40 | INFO     | backend.core.searcher - Found 0 raw results for Ricky Gervais Meets... Larry David
+2026-05-01 06:58:40 | INFO     | backend.core.searcher - Searching for: Ricky Gervais: Armageddon (2023)
+2026-05-01 06:58:41 | INFO     | backend.core.searcher - Found 28 raw results for Ricky Gervais: Armageddon
+2026-05-01 06:58:42 | INFO     | backend.core.searcher - Analyzed 28 results: 7 accepted, 21 rejected (5 due to resolution downgrade limit, 14 due to larger size limit).
+2026-05-01 06:58:42 | INFO     | backend.core.downloader - Submitted to sabnzbd: Ricky.Gervais.Armageddon.2023.1080p.WEBRip.DDP.Atmos.5.1.H.265.-iVy → job_id=SABnzbd_nzo_a3kpllrq
+2026-05-01 07:02:07 | INFO     | backend.core.downloader - Download 1596: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Ricky.Gervais.Armageddon.2023.1080p.WEBRip.DDP.Atmos.5.1.H.265.-iVy'
+2026-05-01 07:02:08 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_a3kpllrq
+2026-05-01 07:02:08 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Ricky.Gervais.Armageddon.2023.1080p.WEBRip.DDP.Atmos.5.1.H.265.-iVy
+2026-05-01 07:02:08 | INFO     | backend.core.download_workflow - Failed download cleanup for 1596: cleaned folder_deleted=True downloader_purged=True
+2026-05-01 07:02:08 | INFO     | backend.core.blacklist - Added to blacklist: Ricky.Gervais.Armageddon.2023.1080p.WEBRip.DDP.Atmos.5.1.H.265.-iVy (reason=retry_failed_release, expires=2026-05-30 21:02:08.774401+00:00)
+2026-05-01 07:02:09 | INFO     | backend.core.downloader - Submitted to sabnzbd: Ricky.Gervais.Armageddon.2023.1080p.WEBRip.x265-DH → job_id=SABnzbd_nzo_ubpe7ue8
+2026-05-01 07:02:09 | INFO     | backend.core.retry_ladder - Retrying download 1596 with candidate 285586: Ricky.Gervais.Armageddon.2023.1080p.WEBRip.x265-DH
+2026-05-01 07:02:09 | INFO     | backend.core.download_workflow - Retrying failed download 1596 as download 1597: Retry #1 started: Ricky.Gervais.Armageddon.2023.1080p.WEBRip.x265-DH
+2026-05-01 07:06:51 | INFO     | backend.core.downloader - Download 1597: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Ricky.Gervais.Armageddon.2023.1080p.WEBRip.x265-DH'
+2026-05-01 07:06:51 | ERROR    | backend.core.orchestrator - Error processing Ricky Gervais: Armageddon: float() argument must be a string or a real number, not 'NoneType'
+2026-05-01 07:06:51 | INFO     | backend.core.searcher - Searching for: Ricky Gervais: Out of England - The Stand-Up Special (2008)
+2026-05-01 07:06:53 | INFO     | backend.core.searcher - Found 2 raw results for Ricky Gervais: Out of England - The Stand-Up Special
+2026-05-01 07:06:53 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 2 due to larger size limit).
+2026-05-01 07:06:53 | INFO     | backend.core.searcher - Searching for: Russell Peters: Outsourced (2006)
+2026-05-01 07:06:54 | INFO     | backend.core.searcher - Found 0 raw results for Russell Peters: Outsourced
+2026-05-01 07:06:54 | INFO     | backend.core.searcher - Searching for: Russell Peters: Red, White and Brown (2008)
+2026-05-01 07:06:55 | INFO     | backend.core.searcher - Found 0 raw results for Russell Peters: Red, White and Brown
+2026-05-01 07:06:55 | INFO     | backend.core.searcher - Searching for: Science (2010)
+2026-05-01 07:06:56 | INFO     | backend.core.searcher - Found 18 raw results for Science
+2026-05-01 07:06:56 | INFO     | backend.core.searcher - Analyzed 18 results: 0 accepted, 18 rejected (0 due to resolution downgrade limit, 18 due to larger size limit).
+2026-05-01 07:06:56 | INFO     | backend.core.searcher - Searching for: Shane Gillis: Beautiful Dogs (2023)
+2026-05-01 07:06:57 | INFO     | backend.core.searcher - Found 21 raw results for Shane Gillis: Beautiful Dogs
+2026-05-01 07:06:57 | INFO     | backend.core.searcher - Analyzed 21 results: 7 accepted, 14 rejected (6 due to resolution downgrade limit, 8 due to larger size limit).
+2026-05-01 07:06:57 | INFO     | backend.core.downloader - Submitted to sabnzbd: Shane.Gillis.Beautiful.Dogs.2023.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy → job_id=SABnzbd_nzo_o9xa_nay
+2026-05-01 07:12:24 | INFO     | backend.core.downloader - Download 1598: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 07:12:24 | INFO     | backend.core.downloader - Download 1598: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 07:12:30 | INFO     | backend.core.downloader - Download 1598: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 07:12:30 | INFO     | backend.core.downloader - Download 1598: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 07:12:36 | INFO     | backend.core.downloader - Download 1598: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 07:12:36 | INFO     | backend.core.downloader - Download 1598: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 07:12:42 | INFO     | backend.core.downloader - Download 1598: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 07:12:42 | INFO     | backend.core.downloader - Download 1598: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 07:12:48 | INFO     | backend.core.downloader - Download 1598: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 07:12:48 | INFO     | backend.core.downloader - Download 1598: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 07:12:55 | INFO     | backend.core.downloader - Download 1598: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Shane.Gillis.Beautiful.Dogs.2023.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy\\Shane.Gillis.Beautiful.Dogs.2023.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy.mkv'
+2026-05-01 07:12:55 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Shane.Gillis.Beautiful.Dogs.2023.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy\\Shane.Gillis.Beautiful.Dogs.2023.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy.mkv'
+2026-05-01 07:12:55 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Shane.Gillis.Beautiful.Dogs.2023.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy\\Shane.Gillis.Beautiful.Dogs.2023.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy.mkv'
+2026-05-01 07:12:55 | INFO     | backend.core.replacer - Original Plex path: 'E:\\STAND UP\\Shane Gillis Beautiful Dogs (2023) 1080p WEBRip 5.1-LAMA\\Shane.Gillis.Beautiful.Dogs.2023.1080p.WEBRip.x264.AAC5.1-LAMA.mp4'
+2026-05-01 07:12:55 | INFO     | backend.core.replacer - Target dir: 'E:\\STAND UP\\Shane Gillis Beautiful Dogs (2023) 1080p WEBRip 5.1-LAMA' — target path: 'E:\\STAND UP\\Shane Gillis Beautiful Dogs (2023) 1080p WEBRip 5.1-LAMA\\Shane.Gillis.Beautiful.Dogs.2023.1080p.WEBRip.x264.AAC5.1-LAMA.mkv'
+2026-05-01 07:12:55 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (506,277,888 free, 1,040,719,571 needed); using local backup fallback
+2026-05-01 07:12:55 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Shane.Gillis.Beautiful.Dogs.2023.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy\\Shane.Gillis.Beautiful.Dogs.2023.1080p.WEBRip.DDP.5.1.10bit.H.265-iVy.mkv' → 'E:\\STAND UP\\Shane Gillis Beautiful Dogs (2023) 1080p WEBRip 5.1-LAMA\\Shane.Gillis.Beautiful.Dogs.2023.1080p.WEBRip.x264.AAC5.1-LAMA.mkv'
+2026-05-01 07:12:55 | INFO     | backend.core.replacer - File move succeeded. New size: 721,807,489 bytes
+2026-05-01 07:12:55 | INFO     | backend.core.replacer - Deleted old file: E:\STAND UP\Shane Gillis Beautiful Dogs (2023) 1080p WEBRip 5.1-LAMA\Shane.Gillis.Beautiful.Dogs.2023.1080p.WEBRip.x264.AAC5.1-LAMA.mp4
+2026-05-01 07:12:55 | INFO     | backend.core.searcher - Searching for: Bambi (1942)
+2026-05-01 07:12:56 | INFO     | backend.core.searcher - Found 175 raw results for Bambi
+2026-05-01 07:12:57 | INFO     | backend.core.searcher - Analyzed 175 results: 0 accepted, 175 rejected (0 due to resolution downgrade limit, 173 due to larger size limit).
+2026-05-01 07:12:57 | INFO     | backend.core.searcher - Searching for: Disney Classic 24 the Fox and the Hound (None)
+2026-05-01 07:12:59 | INFO     | backend.core.searcher - Found 1 raw results for Disney Classic 24 the Fox and the Hound
+2026-05-01 07:12:59 | INFO     | backend.core.searcher - Analyzed 1 results: 0 accepted, 1 rejected (0 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-01 07:12:59 | INFO     | backend.core.searcher - Searching for: Madagascar: Escape 2 Africa (2008)
+2026-05-01 07:13:00 | INFO     | backend.core.searcher - Found 156 raw results for Madagascar: Escape 2 Africa
+2026-05-01 07:13:01 | INFO     | backend.core.searcher - Analyzed 156 results: 0 accepted, 156 rejected (10 due to resolution downgrade limit, 127 due to larger size limit).
+2026-05-01 07:13:01 | INFO     | backend.core.searcher - Searching for: Shrek 2 (2004)
+2026-05-01 07:13:03 | INFO     | backend.core.searcher - Found 196 raw results for Shrek 2
+2026-05-01 07:13:03 | INFO     | backend.core.searcher - Analyzed 196 results: 0 accepted, 196 rejected (5 due to resolution downgrade limit, 181 due to larger size limit).
+2026-05-01 07:13:03 | INFO     | backend.core.searcher - Searching for: Shrek Forever After (2010)
+2026-05-01 07:13:04 | INFO     | backend.core.searcher - Found 189 raw results for Shrek Forever After
+2026-05-01 07:13:04 | INFO     | backend.core.searcher - Analyzed 189 results: 3 accepted, 186 rejected (6 due to resolution downgrade limit, 172 due to larger size limit).
+2026-05-01 07:13:05 | INFO     | backend.core.downloader - Submitted to sabnzbd: Shrek.4-Shrek.Forever.After.2010.ITA.ENG.Ac3.5.1.Sub.Ita.BDRip.1080p.H264.[ArMor] → job_id=SABnzbd_nzo_8cvxb6vy
+2026-05-01 07:25:09 | INFO     | backend.core.downloader - Download 1599: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Shrek.4-Shrek.Forever.After.2010.ITA.ENG.Ac3.5.1.Sub.Ita.BDRip.1080p.H264.[ArMor]'
+2026-05-01 07:25:09 | ERROR    | backend.core.orchestrator - Error processing Shrek Forever After: float() argument must be a string or a real number, not 'NoneType'
+2026-05-01 07:25:09 | INFO     | backend.core.searcher - Searching for: Mulan II (2004)
+2026-05-01 07:25:10 | INFO     | backend.core.searcher - Found 106 raw results for Mulan II
+2026-05-01 07:25:10 | INFO     | backend.core.searcher - Analyzed 106 results: 0 accepted, 106 rejected (4 due to resolution downgrade limit, 78 due to larger size limit).
+2026-05-01 07:25:10 | INFO     | backend.core.searcher - Searching for:  the Wind Rises (2013)
+2026-05-01 07:25:15 | INFO     | backend.core.searcher - Found 82 raw results for  the Wind Rises
+2026-05-01 07:25:15 | INFO     | backend.core.searcher - Analyzed 82 results: 0 accepted, 82 rejected (7 due to resolution downgrade limit, 71 due to larger size limit).
+2026-05-01 07:25:15 | INFO     | backend.core.searcher - Searching for: 13 Hours (2016)
+2026-05-01 07:25:16 | INFO     | backend.core.searcher - Found 200 raw results for 13 Hours
+2026-05-01 07:25:16 | INFO     | backend.core.searcher - Analyzed 200 results: 3 accepted, 197 rejected (0 due to resolution downgrade limit, 197 due to larger size limit).
+2026-05-01 07:25:16 | INFO     | backend.core.downloader - Submitted to sabnzbd: 13.Hours.The.Secret.Soldiers.of.Benghazi.2016.BluRay.720p.H265-20-40 → job_id=SABnzbd_nzo_mhd9yhwb
+2026-05-01 07:26:40 | INFO     | backend.core.downloader - Download 1600: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\13.Hours.The.Secret.Soldiers.of.Benghazi.2016.BluRay.720p.H265-20-40'
+2026-05-01 07:26:40 | ERROR    | backend.core.orchestrator - Error processing 13 Hours: float() argument must be a string or a real number, not 'NoneType'
+2026-05-01 07:26:40 | INFO     | backend.core.searcher - Searching for: Act of Valor (2012)
+2026-05-01 07:26:42 | INFO     | backend.core.searcher - Found 167 raw results for Act of Valor
+2026-05-01 07:26:42 | INFO     | backend.core.searcher - Analyzed 167 results: 0 accepted, 167 rejected (10 due to resolution downgrade limit, 133 due to larger size limit).
+2026-05-01 07:26:42 | INFO     | backend.core.searcher - Searching for: Ainbo (2021)
+2026-05-01 07:26:43 | INFO     | backend.core.searcher - Found 40 raw results for Ainbo
+2026-05-01 07:26:43 | INFO     | backend.core.searcher - Analyzed 40 results: 0 accepted, 40 rejected (1 due to resolution downgrade limit, 37 due to larger size limit).
+2026-05-01 07:26:43 | INFO     | backend.core.searcher - Searching for: Ant-Man (2015)
+2026-05-01 07:26:44 | INFO     | backend.core.searcher - Found 200 raw results for Ant-Man
+2026-05-01 07:26:44 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (1 due to resolution downgrade limit, 189 due to larger size limit).
+2026-05-01 07:26:44 | INFO     | backend.core.searcher - Searching for: Leo (2023)
+2026-05-01 07:26:45 | INFO     | backend.core.searcher - Found 3 raw results for Leo
+2026-05-01 07:26:45 | INFO     | backend.core.searcher - Analyzed 3 results: 0 accepted, 3 rejected (0 due to resolution downgrade limit, 3 due to larger size limit).
+2026-05-01 07:26:45 | INFO     | backend.core.searcher - Searching for: Mary Poppins (1964)
+2026-05-01 07:26:47 | INFO     | backend.core.searcher - Found 132 raw results for Mary Poppins
+2026-05-01 07:26:47 | INFO     | backend.core.searcher - Analyzed 132 results: 42 accepted, 90 rejected (41 due to resolution downgrade limit, 12 due to larger size limit).
+2026-05-01 07:26:47 | INFO     | backend.core.downloader - Submitted to sabnzbd: Mary.Poppins.1964.1080p.BluRay.x265 → job_id=SABnzbd_nzo_6ynfq060
+2026-05-01 07:37:29 | INFO     | backend.core.downloader - Download 1601: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 07:37:29 | INFO     | backend.core.downloader - Download 1601: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 07:37:36 | INFO     | backend.core.downloader - Download 1601: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 07:37:36 | INFO     | backend.core.downloader - Download 1601: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 07:37:42 | INFO     | backend.core.downloader - Download 1601: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 07:37:42 | INFO     | backend.core.downloader - Download 1601: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 07:37:48 | INFO     | backend.core.downloader - Download 1601: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 07:37:48 | INFO     | backend.core.downloader - Download 1601: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 07:37:54 | INFO     | backend.core.downloader - Download 1601: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 07:37:54 | INFO     | backend.core.downloader - Download 1601: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 07:38:00 | INFO     | backend.core.downloader - Download 1601: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Mary.Poppins.1964.1080p.BluRay.x265\\Mary.Poppins.1964.1080p.BluRay.x265.mp4'
+2026-05-01 07:38:00 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Mary.Poppins.1964.1080p.BluRay.x265\\Mary.Poppins.1964.1080p.BluRay.x265.mp4'
+2026-05-01 07:38:00 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Mary.Poppins.1964.1080p.BluRay.x265\\Mary.Poppins.1964.1080p.BluRay.x265.mp4'
+2026-05-01 07:38:00 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\KIDS MOVIES\\Mary Poppins (1964)\\Mary.Poppins.1964.MULTi.1080p.BluRay.REMUX.AVC.DTS.HDMA.5.1-CUSThOMe.mkv'
+2026-05-01 07:38:00 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\KIDS MOVIES\\Mary Poppins (1964)' — target path: 'Z:\\MEDIA\\KIDS MOVIES\\Mary Poppins (1964)\\Mary.Poppins.1964.MULTi.1080p.BluRay.REMUX.AVC.DTS.HDMA.5.1-CUSThOMe.mp4'
+2026-05-01 07:38:00 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (499,712,000 free, 27,064,523,326 needed); using local backup fallback
+2026-05-01 07:38:00 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Mary.Poppins.1964.1080p.BluRay.x265\\Mary.Poppins.1964.1080p.BluRay.x265.mp4' → 'Z:\\MEDIA\\KIDS MOVIES\\Mary Poppins (1964)\\Mary.Poppins.1964.MULTi.1080p.BluRay.REMUX.AVC.DTS.HDMA.5.1-CUSThOMe.mp4'
+2026-05-01 07:38:21 | INFO     | backend.core.replacer - File move succeeded. New size: 2,328,302,680 bytes
+2026-05-01 07:38:21 | INFO     | backend.core.replacer - Deleted old file: Z:\MEDIA\KIDS MOVIES\Mary Poppins (1964)\Mary.Poppins.1964.MULTi.1080p.BluRay.REMUX.AVC.DTS.HDMA.5.1-CUSThOMe.mkv
+2026-05-01 07:38:22 | INFO     | backend.core.replacer - Radarr rescan triggered for Mary Poppins
+2026-05-01 07:38:22 | INFO     | backend.core.searcher - Searching for: Hoppers (2026)
+2026-05-01 07:38:23 | INFO     | backend.core.searcher - Found 77 raw results for Hoppers
+2026-05-01 07:38:23 | INFO     | backend.core.searcher - Analyzed 77 results: 3 accepted, 74 rejected (51 due to resolution downgrade limit, 21 due to larger size limit).
+2026-05-01 07:38:24 | INFO     | backend.core.downloader - Submitted to sabnzbd: hoppers.2026.2160p.hdr10plus.dv.webrip.6cx265.hevc-psa → job_id=SABnzbd_nzo_z5rj0op7
+2026-05-01 08:44:25 | INFO     | backend.core.downloader - Download 1602: found in sabnzbd history — status='verifying' storage=''
+2026-05-01 08:44:25 | INFO     | backend.core.downloader - Download 1602: sabnzbd history status 'verifying' is still post-processing; continuing monitor
+2026-05-01 08:44:31 | INFO     | backend.core.downloader - Download 1602: found in sabnzbd history — status='verifying' storage=''
+2026-05-01 08:44:31 | INFO     | backend.core.downloader - Download 1602: sabnzbd history status 'verifying' is still post-processing; continuing monitor
+2026-05-01 08:44:37 | INFO     | backend.core.downloader - Download 1602: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 08:44:37 | INFO     | backend.core.downloader - Download 1602: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 08:44:43 | INFO     | backend.core.downloader - Download 1602: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 08:44:43 | INFO     | backend.core.downloader - Download 1602: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 08:44:50 | INFO     | backend.core.downloader - Download 1602: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 08:44:50 | INFO     | backend.core.downloader - Download 1602: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 08:44:56 | INFO     | backend.core.downloader - Download 1602: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 08:44:56 | INFO     | backend.core.downloader - Download 1602: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 08:45:02 | INFO     | backend.core.downloader - Download 1602: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 08:45:02 | INFO     | backend.core.downloader - Download 1602: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 08:45:08 | INFO     | backend.core.downloader - Download 1602: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 08:45:08 | INFO     | backend.core.downloader - Download 1602: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 08:45:14 | INFO     | backend.core.downloader - Download 1602: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 08:45:14 | INFO     | backend.core.downloader - Download 1602: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 08:45:21 | INFO     | backend.core.downloader - Download 1602: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 08:45:21 | INFO     | backend.core.downloader - Download 1602: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 08:45:27 | INFO     | backend.core.downloader - Download 1602: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 08:45:27 | INFO     | backend.core.downloader - Download 1602: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 08:45:33 | INFO     | backend.core.downloader - Download 1602: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 08:45:33 | INFO     | backend.core.downloader - Download 1602: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 08:45:39 | INFO     | backend.core.downloader - Download 1602: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 08:45:39 | INFO     | backend.core.downloader - Download 1602: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 08:45:45 | INFO     | backend.core.downloader - Download 1602: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 08:45:45 | INFO     | backend.core.downloader - Download 1602: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 08:45:52 | INFO     | backend.core.downloader - Download 1602: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\hoppers.2026.2160p.hdr10plus.dv.webrip.6cx265.hevc-psa\\hoppers.2026.2160p.hdr10plus.dv.webrip.6cx265.hevc-psa.mkv'
+2026-05-01 08:45:52 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\hoppers.2026.2160p.hdr10plus.dv.webrip.6cx265.hevc-psa\\hoppers.2026.2160p.hdr10plus.dv.webrip.6cx265.hevc-psa.mkv'
+2026-05-01 08:45:52 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\hoppers.2026.2160p.hdr10plus.dv.webrip.6cx265.hevc-psa\\hoppers.2026.2160p.hdr10plus.dv.webrip.6cx265.hevc-psa.mkv'
+2026-05-01 08:45:52 | INFO     | backend.core.replacer - Original Plex path: 'Z:\\MEDIA\\KIDS MOVIES\\Hoppers (2026)\\Hoppers 2026 2160p iT WEB-DL DDP5 1 Atmos DV H 265-BYNDR.mkv'
+2026-05-01 08:45:52 | INFO     | backend.core.replacer - Target dir: 'Z:\\MEDIA\\KIDS MOVIES\\Hoppers (2026)' — target path: 'Z:\\MEDIA\\KIDS MOVIES\\Hoppers (2026)\\Hoppers 2026 2160p iT WEB-DL DDP5 1 Atmos DV H 265-BYNDR.mkv'
+2026-05-01 08:45:52 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (502,788,096 free, 19,476,877,564 needed); using local backup fallback
+2026-05-01 08:45:53 | INFO     | backend.core.replacer - Moved existing target aside before replacement: Z:\MEDIA\KIDS MOVIES\Hoppers (2026)\Hoppers 2026 2160p iT WEB-DL DDP5 1 Atmos DV H 265-BYNDR.mkv.slimarr-old
+2026-05-01 08:45:53 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\hoppers.2026.2160p.hdr10plus.dv.webrip.6cx265.hevc-psa\\hoppers.2026.2160p.hdr10plus.dv.webrip.6cx265.hevc-psa.mkv' → 'Z:\\MEDIA\\KIDS MOVIES\\Hoppers (2026)\\Hoppers 2026 2160p iT WEB-DL DDP5 1 Atmos DV H 265-BYNDR.mkv'
+2026-05-01 08:47:07 | INFO     | backend.core.replacer - File move succeeded. New size: 3,989,271,907 bytes
+2026-05-01 08:47:08 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: Z:\MEDIA\KIDS MOVIES\Hoppers (2026)\Hoppers 2026 2160p iT WEB-DL DDP5 1 Atmos DV H 265-BYNDR.mkv.slimarr-old
+2026-05-01 08:47:08 | INFO     | backend.core.replacer - Radarr rescan triggered for Hoppers
+2026-05-01 08:47:08 | INFO     | backend.core.searcher - Searching for: Austin Powers: International Man of Mystery (1997)
+2026-05-01 08:47:10 | INFO     | backend.core.searcher - Found 165 raw results for Austin Powers: International Man of Mystery
+2026-05-01 08:47:10 | INFO     | backend.core.searcher - Analyzed 165 results: 4 accepted, 161 rejected (74 due to resolution downgrade limit, 44 due to larger size limit).
+2026-05-01 08:47:10 | INFO     | backend.core.downloader - Submitted to sabnzbd: Austin.Powers.International.Man.of.Mystery.1997.International.Version.2160p.BDRip.DTS-HD.MA.5.1.HDR10.x265.10bit-MarkII → job_id=SABnzbd_nzo_e9_i1asf
+2026-05-01 08:59:38 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='verifying' storage=''
+2026-05-01 08:59:38 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'verifying' is still post-processing; continuing monitor
+2026-05-01 08:59:44 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 08:59:44 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 08:59:50 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 08:59:50 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 08:59:56 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 08:59:56 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 09:00:03 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='repairing' storage=''
+2026-05-01 09:00:03 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'repairing' is still post-processing; continuing monitor
+2026-05-01 09:00:09 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 09:00:09 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 09:00:15 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 09:00:15 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 09:00:21 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 09:00:21 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 09:00:27 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 09:00:27 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 09:00:34 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 09:00:34 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 09:00:40 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 09:00:40 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 09:00:46 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 09:00:46 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 09:00:52 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 09:00:52 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 09:00:58 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 09:00:58 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 09:01:04 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 09:01:04 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 09:01:11 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 09:01:11 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 09:01:17 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 09:01:17 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 09:01:23 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 09:01:23 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 09:01:29 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='extracting' storage=''
+2026-05-01 09:01:29 | INFO     | backend.core.downloader - Download 1603: sabnzbd history status 'extracting' is still post-processing; continuing monitor
+2026-05-01 09:01:35 | INFO     | backend.core.downloader - Download 1603: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Austin.Powers.International.Man.of.Mystery.1997.International.Version.2160p.BDRip.DTS-HD.MA.5.1.HDR10.x265.10bit-MarkII\\Austin.Powers.International.Man.of.Mystery.1997.International.Version.2160p.BDRip.DTS-HD.MA.5.1.HDR10.x265.10bit-MarkII.mkv'
+2026-05-01 09:01:35 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Austin.Powers.International.Man.of.Mystery.1997.International.Version.2160p.BDRip.DTS-HD.MA.5.1.HDR10.x265.10bit-MarkII\\Austin.Powers.International.Man.of.Mystery.1997.International.Version.2160p.BDRip.DTS-HD.MA.5.1.HDR10.x265.10bit-MarkII.mkv'
+2026-05-01 09:01:35 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Austin.Powers.International.Man.of.Mystery.1997.International.Version.2160p.BDRip.DTS-HD.MA.5.1.HDR10.x265.10bit-MarkII\\Austin.Powers.International.Man.of.Mystery.1997.International.Version.2160p.BDRip.DTS-HD.MA.5.1.HDR10.x265.10bit-MarkII.mkv'
+2026-05-01 09:01:35 | INFO     | backend.core.replacer - Original Plex path: 'E:\\MOVIES\\Austin Powers International Man of Mystery (1997)\\Austin.Powers.International.Man.of.Mystery.1997.International.Cut.2160p.AMZN.WEB-DL.DTS-HD.MA.5.1.HDR.H.265-FLUX.mkv'
+2026-05-01 09:01:35 | INFO     | backend.core.replacer - Target dir: 'E:\\MOVIES\\Austin Powers International Man of Mystery (1997)' — target path: 'E:\\MOVIES\\Austin Powers International Man of Mystery (1997)\\Austin.Powers.International.Man.of.Mystery.1997.International.Cut.2160p.AMZN.WEB-DL.DTS-HD.MA.5.1.HDR.H.265-FLUX.mkv'
+2026-05-01 09:01:35 | WARNING  | backend.core.replacer - Recycle bin has insufficient free space (500,965,376 free, 12,408,960,273 needed); using local backup fallback
+2026-05-01 09:01:35 | INFO     | backend.core.replacer - Moved existing target aside before replacement: E:\MOVIES\Austin Powers International Man of Mystery (1997)\Austin.Powers.International.Man.of.Mystery.1997.International.Cut.2160p.AMZN.WEB-DL.DTS-HD.MA.5.1.HDR.H.265-FLUX.mkv.slimarr-old
+2026-05-01 09:01:35 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Austin.Powers.International.Man.of.Mystery.1997.International.Version.2160p.BDRip.DTS-HD.MA.5.1.HDR10.x265.10bit-MarkII\\Austin.Powers.International.Man.of.Mystery.1997.International.Version.2160p.BDRip.DTS-HD.MA.5.1.HDR10.x265.10bit-MarkII.mkv' → 'E:\\MOVIES\\Austin Powers International Man of Mystery (1997)\\Austin.Powers.International.Man.of.Mystery.1997.International.Cut.2160p.AMZN.WEB-DL.DTS-HD.MA.5.1.HDR.H.265-FLUX.mkv'
+2026-05-01 09:02:15 | INFO     | backend.core.replacer - File move succeeded. New size: 6,923,639,208 bytes
+2026-05-01 09:02:15 | INFO     | backend.core.replacer - Deleted fallback backup after successful replacement: E:\MOVIES\Austin Powers International Man of Mystery (1997)\Austin.Powers.International.Man.of.Mystery.1997.International.Cut.2160p.AMZN.WEB-DL.DTS-HD.MA.5.1.HDR.H.265-FLUX.mkv.slimarr-old
+2026-05-01 09:02:16 | INFO     | backend.core.replacer - Radarr rescan triggered for Austin Powers: International Man of Mystery
+2026-05-01 09:02:16 | INFO     | backend.core.searcher - Searching for: Tropic Thunder (2008)
+2026-05-01 09:02:17 | INFO     | backend.core.searcher - Found 177 raw results for Tropic Thunder
+2026-05-01 09:02:17 | INFO     | backend.core.searcher - Analyzed 177 results: 1 accepted, 176 rejected (77 due to resolution downgrade limit, 79 due to larger size limit).
+2026-05-01 09:02:18 | INFO     | backend.core.downloader - Submitted to sabnzbd: Tropic.Thunder.2008.2160p.BluRayRip.EAC3.5.1.DV.HDR.x265-Groupless → job_id=SABnzbd_nzo_vatusu5h
+2026-05-01 09:57:22 | INFO     | backend.core.downloader - Download 1604: found in sabnzbd history — status='verifying' storage=''
+2026-05-01 09:57:22 | INFO     | backend.core.downloader - Download 1604: sabnzbd history status 'verifying' is still post-processing; continuing monitor
+2026-05-01 09:57:28 | INFO     | backend.core.downloader - Download 1604: found in sabnzbd history — status='verifying' storage=''
+2026-05-01 09:57:28 | INFO     | backend.core.downloader - Download 1604: sabnzbd history status 'verifying' is still post-processing; continuing monitor
+2026-05-01 09:57:34 | INFO     | backend.core.downloader - Download 1604: found in sabnzbd history — status='verifying' storage=''
+2026-05-01 09:57:34 | INFO     | backend.core.downloader - Download 1604: sabnzbd history status 'verifying' is still post-processing; continuing monitor
+2026-05-01 09:57:40 | INFO     | backend.core.downloader - Download 1604: found in sabnzbd history — status='verifying' storage=''
+2026-05-01 09:57:40 | INFO     | backend.core.downloader - Download 1604: sabnzbd history status 'verifying' is still post-processing; continuing monitor
+2026-05-01 09:57:46 | INFO     | backend.core.downloader - Download 1604: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Tropic.Thunder.2008.2160p.BluRayRip.EAC3.5.1.DV.HDR.x265-Groupless'
+2026-05-01 09:57:46 | ERROR    | backend.core.orchestrator - Error processing Tropic Thunder: float() argument must be a string or a real number, not 'NoneType'
+2026-05-02 01:00:00 | INFO     | backend.scheduler.scheduler - Nightly cycle triggered
+2026-05-02 01:00:13 | INFO     | backend.core.scanner - Scan started: 1694 movies in Plex
+2026-05-02 01:01:20 | WARNING  | backend.core.scanner - TMDB lookup failed for Ricky Gervais Meets... Larry David: Client error '404 Not Found' for url 'https://api.themoviedb.org/3/movie/264152?api_key=b4476886334d94febf78d6460d852813&language=en-US'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404
+2026-05-02 01:01:21 | INFO     | backend.core.scanner - Scan completed: 1694 movies processed
+2026-05-02 01:01:21 | INFO     | backend.core.orchestrator - Cycle: 242 movies to process
+2026-05-02 01:01:21 | INFO     | backend.core.searcher - Searching for: Extraction II (2023)
+2026-05-02 01:01:22 | INFO     | backend.core.searcher - Found 5 raw results for Extraction II
+2026-05-02 01:01:22 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (2 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-02 01:01:22 | INFO     | backend.core.searcher - Searching for: Major Payne (1995)
+2026-05-02 01:01:23 | INFO     | backend.core.searcher - Found 65 raw results for Major Payne
+2026-05-02 01:01:23 | INFO     | backend.core.searcher - Analyzed 65 results: 9 accepted, 56 rejected (14 due to resolution downgrade limit, 31 due to larger size limit).
+2026-05-02 01:01:24 | INFO     | backend.core.downloader - Submitted to sabnzbd: (Major Payne) [55/60] - "Major Payne 1995 1080p h265.vol015+016.par2" → job_id=SABnzbd_nzo_afqalqbl
+2026-05-02 01:02:09 | INFO     | backend.core.downloader - Download 1605: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\(Major Payne) [55_60] - _Major Payne 1995 1080p h265.vol015+016.par2_'
+2026-05-02 01:02:09 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\(Major Payne) [55_60] - _Major Payne 1995 1080p h265.vol015+016.par2_'
+2026-05-02 01:02:09 | ERROR    | backend.core.replacer - No video file found in 'H:\\DOWNLOADS\\USENET\\complete\\(Major Payne) [55_60] - _Major Payne 1995 1080p h265.vol015+016.par2_'
+2026-05-02 01:02:09 | INFO     | backend.core.replacer - Cleaned up download folder: 'H:\\DOWNLOADS\\USENET\\complete\\(Major Payne) [55_60] - _Major Payne 1995 1080p h265.vol015+016.par2_'
+2026-05-02 01:02:09 | INFO     | backend.core.searcher - Searching for: Now You See Me (2013)
+2026-05-02 01:02:10 | INFO     | backend.core.searcher - Found 200 raw results for Now You See Me
+2026-05-02 01:02:10 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (7 due to resolution downgrade limit, 171 due to larger size limit).
+2026-05-02 01:02:10 | INFO     | backend.core.searcher - Searching for: Resident Evil: Retribution (2012)
+2026-05-02 01:02:12 | INFO     | backend.core.searcher - Found 183 raw results for Resident Evil: Retribution
+2026-05-02 01:02:12 | INFO     | backend.core.searcher - Analyzed 183 results: 1 accepted, 182 rejected (7 due to resolution downgrade limit, 169 due to larger size limit).
+2026-05-02 01:02:13 | INFO     | backend.core.downloader - Submitted to sabnzbd: Resident.Evil.Retribution.2012.m720p.AAC.x264-NoGroup → job_id=SABnzbd_nzo_7a685ra6
+2026-05-02 01:02:19 | INFO     | backend.core.downloader - Download 1606: found in sabnzbd history — status='queued' storage=''
+2026-05-02 01:02:19 | INFO     | backend.core.downloader - Download 1606: sabnzbd history status 'queued' is still post-processing; continuing monitor
+2026-05-02 01:02:25 | INFO     | backend.core.downloader - Download 1606: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Resident.Evil.Retribution.2012.m720p.AAC.x264-NoGroup'
+2026-05-02 01:02:26 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_7a685ra6
+2026-05-02 01:02:26 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Resident.Evil.Retribution.2012.m720p.AAC.x264-NoGroup
+2026-05-02 01:02:26 | INFO     | backend.core.download_workflow - Failed download cleanup for 1606: cleaned folder_deleted=True downloader_purged=True
+2026-05-02 01:02:26 | INFO     | backend.core.searcher - Searching for: The Running Man (2025)
+2026-05-02 01:02:28 | INFO     | backend.core.searcher - Found 196 raw results for The Running Man
+2026-05-02 01:02:28 | INFO     | backend.core.searcher - Analyzed 196 results: 7 accepted, 189 rejected (68 due to resolution downgrade limit, 114 due to larger size limit).
+2026-05-02 01:02:29 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Running.Man.2025.2160p.HDR10Plus.DV.WEBRip.6CH.X265.HEVC-PSA → job_id=SABnzbd_nzo_zg7h8qyh
+2026-05-02 01:02:41 | INFO     | backend.core.downloader - Download 1607: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\The.Running.Man.2025.2160p.HDR10Plus.DV.WEBRip.6CH.X265.HEVC-PSA'
+2026-05-02 01:02:42 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_zg7h8qyh
+2026-05-02 01:02:42 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\The.Running.Man.2025.2160p.HDR10Plus.DV.WEBRip.6CH.X265.HEVC-PSA
+2026-05-02 01:02:42 | INFO     | backend.core.download_workflow - Failed download cleanup for 1607: cleaned folder_deleted=True downloader_purged=True
+2026-05-02 01:02:42 | INFO     | backend.core.searcher - Searching for: Scream VI (2023)
+2026-05-02 01:02:43 | INFO     | backend.core.searcher - Found 200 raw results for Scream VI
+2026-05-02 01:02:43 | INFO     | backend.core.searcher - Analyzed 200 results: 2 accepted, 198 rejected (7 due to resolution downgrade limit, 190 due to larger size limit).
+2026-05-02 01:02:43 | INFO     | backend.core.downloader - Submitted to sabnzbd: Scream.VI.2023.720p.UHD.BluRay.x264.6CH-Pahe.in → job_id=SABnzbd_nzo_rfonbwze
+2026-05-02 01:02:50 | INFO     | backend.core.downloader - Download 1608: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Scream.VI.2023.720p.UHD.BluRay.x264.6CH-Pahe.in'
+2026-05-02 01:02:51 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_rfonbwze
+2026-05-02 01:02:51 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Scream.VI.2023.720p.UHD.BluRay.x264.6CH-Pahe.in
+2026-05-02 01:02:51 | INFO     | backend.core.download_workflow - Failed download cleanup for 1608: cleaned folder_deleted=True downloader_purged=True
+2026-05-02 01:02:51 | INFO     | backend.core.searcher - Searching for: South Park: The Streaming Wars (2022)
+2026-05-02 01:02:52 | INFO     | backend.core.searcher - Found 17 raw results for South Park: The Streaming Wars
+2026-05-02 01:02:52 | INFO     | backend.core.searcher - Analyzed 17 results: 1 accepted, 16 rejected (1 due to resolution downgrade limit, 13 due to larger size limit).
+2026-05-02 01:02:53 | INFO     | backend.core.downloader - Submitted to sabnzbd: (South Park the Streaming Wars) [00/22] - "South Park the Streaming Wars 2022 1080p h265.nzb" → job_id=SABnzbd_nzo_ucp2ytlz
+2026-05-02 01:02:59 | INFO     | backend.core.downloader - Download 1609: found in sabnzbd history — status='queued' storage=''
+2026-05-02 01:02:59 | INFO     | backend.core.downloader - Download 1609: sabnzbd history status 'queued' is still post-processing; continuing monitor
+2026-05-02 01:03:05 | INFO     | backend.core.downloader - Download 1609: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\(South Park the Streaming Wars) [00_22] - _South Park the Streaming Wars 2022 1080p h265.nzb_'
+2026-05-02 01:03:06 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_ucp2ytlz
+2026-05-02 01:03:06 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\(South Park the Streaming Wars) [00_22] - _South Park the Streaming Wars 2022 1080p h265.nzb_
+2026-05-02 01:03:06 | INFO     | backend.core.download_workflow - Failed download cleanup for 1609: cleaned folder_deleted=True downloader_purged=True
+2026-05-02 01:03:06 | INFO     | backend.core.searcher - Searching for: Tag (2018)
+2026-05-02 01:03:07 | INFO     | backend.core.searcher - Found 84 raw results for Tag
+2026-05-02 01:03:07 | INFO     | backend.core.searcher - Analyzed 84 results: 1 accepted, 83 rejected (2 due to resolution downgrade limit, 74 due to larger size limit).
+2026-05-02 01:03:08 | INFO     | backend.core.downloader - Submitted to sabnzbd: Tag.2018.[BluRay].[720p].[YTS.AM] → job_id=SABnzbd_nzo_gjei_geg
+2026-05-02 01:04:31 | INFO     | backend.core.downloader - Download 1610: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Tag.2018.[BluRay].[720p].[YTS.AM]'
+2026-05-02 01:04:33 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_gjei_geg
+2026-05-02 01:04:33 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Tag.2018.[BluRay].[720p].[YTS.AM]
+2026-05-02 01:04:33 | INFO     | backend.core.download_workflow - Failed download cleanup for 1610: cleaned folder_deleted=True downloader_purged=True
+2026-05-02 01:04:33 | INFO     | backend.core.searcher - Searching for: Tenet (2020)
+2026-05-02 01:04:34 | INFO     | backend.core.searcher - Found 200 raw results for Tenet
+2026-05-02 01:04:34 | INFO     | backend.core.searcher - Analyzed 200 results: 1 accepted, 199 rejected (44 due to resolution downgrade limit, 140 due to larger size limit).
+2026-05-02 01:04:35 | INFO     | backend.core.downloader - Submitted to sabnzbd: Tenet.2020.bluray.hdr.Imax.2160p.av1.5.1.opus.vmaf97-Rosy → job_id=SABnzbd_nzo_0lr4mfkc
+2026-05-02 01:04:46 | INFO     | backend.core.downloader - Download 1611: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Tenet.2020.bluray.hdr.Imax.2160p.av1.5.1.opus.vmaf97-Rosy'
+2026-05-02 01:04:47 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_0lr4mfkc
+2026-05-02 01:04:47 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Tenet.2020.bluray.hdr.Imax.2160p.av1.5.1.opus.vmaf97-Rosy
+2026-05-02 01:04:47 | INFO     | backend.core.download_workflow - Failed download cleanup for 1611: cleaned folder_deleted=True downloader_purged=True
+2026-05-02 01:04:47 | INFO     | backend.core.searcher - Searching for: Tetris (2023)
+2026-05-02 01:04:50 | INFO     | backend.core.searcher - Found 89 raw results for Tetris
+2026-05-02 01:04:50 | INFO     | backend.core.searcher - Analyzed 89 results: 2 accepted, 87 rejected (3 due to resolution downgrade limit, 80 due to larger size limit).
+2026-05-02 01:04:51 | INFO     | backend.core.downloader - Submitted to sabnzbd: (Tetris) [24/35] - "Tetris 2023 1080p h265.part23.rar" → job_id=SABnzbd_nzo_1otyqpmc
+2026-05-02 01:05:02 | INFO     | backend.core.downloader - Download 1612: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\(Tetris) [24_35] - _Tetris 2023 1080p h265.part23.rar_'
+2026-05-02 01:05:03 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_1otyqpmc
+2026-05-02 01:05:04 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\(Tetris) [24_35] - _Tetris 2023 1080p h265.part23.rar_
+2026-05-02 01:05:04 | INFO     | backend.core.download_workflow - Failed download cleanup for 1612: cleaned folder_deleted=True downloader_purged=True
+2026-05-02 01:05:04 | INFO     | backend.core.searcher - Searching for: Taylor Swift: The Eras Tour (2023)
+2026-05-02 01:05:04 | INFO     | backend.core.searcher - Found 68 raw results for Taylor Swift: The Eras Tour
+2026-05-02 01:05:05 | INFO     | backend.core.searcher - Analyzed 68 results: 0 accepted, 68 rejected (2 due to resolution downgrade limit, 65 due to larger size limit).
+2026-05-02 01:05:05 | INFO     | backend.core.searcher - Searching for: Gilly and Keeves: The Special (2022)
+2026-05-02 01:05:06 | INFO     | backend.core.searcher - Found 9 raw results for Gilly and Keeves: The Special
+2026-05-02 01:05:06 | INFO     | backend.core.searcher - Analyzed 9 results: 2 accepted, 7 rejected (2 due to resolution downgrade limit, 5 due to larger size limit).
+2026-05-02 01:05:06 | INFO     | backend.core.downloader - Submitted to sabnzbd: Gilly.And.Keeves.The.Special.2022.PROPER.1080p.WEBRip-LAMA → job_id=SABnzbd_nzo_e4t2ily8
+2026-05-02 01:06:13 | INFO     | backend.core.downloader - Download 1613: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\Gilly.And.Keeves.The.Special.2022.PROPER.1080p.WEBRip-LAMA\\Gilly.And.Keeves.The.Special.2022.PROPER.1080p.WEBRip-LAMA.mp4'
+2026-05-02 01:06:13 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\Gilly.And.Keeves.The.Special.2022.PROPER.1080p.WEBRip-LAMA\\Gilly.And.Keeves.The.Special.2022.PROPER.1080p.WEBRip-LAMA.mp4'
+2026-05-02 01:06:13 | INFO     | backend.core.replacer - Video file found: 'H:\\DOWNLOADS\\USENET\\complete\\Gilly.And.Keeves.The.Special.2022.PROPER.1080p.WEBRip-LAMA\\Gilly.And.Keeves.The.Special.2022.PROPER.1080p.WEBRip-LAMA.mp4'
+2026-05-02 01:06:13 | INFO     | backend.core.replacer - Original Plex path: 'E:\\STAND UP\\Gilly and Keeves The Special (2022)\\Gilly.and.Keeves.The.Special.2022.PROPER.1080p.WEB.h264-MSSP.mkv'
+2026-05-02 01:06:13 | INFO     | backend.core.replacer - Target dir: 'E:\\STAND UP\\Gilly and Keeves The Special (2022)' — target path: 'E:\\STAND UP\\Gilly and Keeves The Special (2022)\\Gilly.and.Keeves.The.Special.2022.PROPER.1080p.WEB.h264-MSSP.mp4'
+2026-05-02 01:06:20 | INFO     | backend.core.replacer - Moved original to recycle bin: ./data/recycling\Gilly and Keeves The Special (2022)_Gilly.and.Keeves.The.Special.2022.PROPER.1080p.WEB.h264-MSSP.mkv
+2026-05-02 01:06:20 | INFO     | backend.core.replacer - Moving 'H:\\DOWNLOADS\\USENET\\complete\\Gilly.And.Keeves.The.Special.2022.PROPER.1080p.WEBRip-LAMA\\Gilly.And.Keeves.The.Special.2022.PROPER.1080p.WEBRip-LAMA.mp4' → 'E:\\STAND UP\\Gilly and Keeves The Special (2022)\\Gilly.and.Keeves.The.Special.2022.PROPER.1080p.WEB.h264-MSSP.mp4'
+2026-05-02 01:06:21 | INFO     | backend.core.replacer - File move succeeded. New size: 1,046,428,249 bytes
+2026-05-02 01:06:21 | INFO     | backend.core.searcher - Searching for: Caitlyn & Matt's Wedding Film (2018)
+2026-05-02 01:06:22 | INFO     | backend.core.searcher - Found 0 raw results for Caitlyn & Matt's Wedding Film
+2026-05-02 01:06:23 | INFO     | backend.core.searcher - Searching for: Caitlyn & Matt's Wedding Speeches (2018)
+2026-05-02 01:06:24 | INFO     | backend.core.searcher - Found 0 raw results for Caitlyn & Matt's Wedding Speeches
+2026-05-02 01:06:24 | INFO     | backend.core.searcher - Searching for: David White - Interview (2011)
+2026-05-02 01:06:27 | INFO     | backend.core.searcher - Found 0 raw results for David White - Interview
+2026-05-02 01:06:27 | INFO     | backend.core.searcher - Searching for: Matt - Skydiving (2009)
+2026-05-02 01:06:29 | INFO     | backend.core.searcher - Found 0 raw results for Matt - Skydiving
+2026-05-02 01:06:29 | INFO     | backend.core.searcher - Searching for: The Hurley Chronicles - Pt 1 - Canberra and Toowoomba (1996)
+2026-05-02 01:06:30 | INFO     | backend.core.searcher - Found 0 raw results for The Hurley Chronicles - Pt 1 - Canberra and Toowoomba
+2026-05-02 01:06:30 | INFO     | backend.core.searcher - Searching for: The Hurley Chronicles - Pt 2 - Jellicoe St (2000)
+2026-05-02 01:06:32 | INFO     | backend.core.searcher - Found 0 raw results for The Hurley Chronicles - Pt 2 - Jellicoe St
+2026-05-02 01:06:32 | INFO     | backend.core.searcher - Searching for: Hurley Family Stories Chapter 3 Lake Eyre Trip (2002)
+2026-05-02 01:06:33 | INFO     | backend.core.searcher - Found 0 raw results for Hurley Family Stories Chapter 3 Lake Eyre Trip
+2026-05-02 01:06:33 | INFO     | backend.core.searcher - Searching for: 01 BREATHING AND POSTURE (None)
+2026-05-02 01:06:34 | INFO     | backend.core.searcher - Found 0 raw results for 01 BREATHING AND POSTURE
+2026-05-02 01:06:34 | INFO     | backend.core.searcher - Searching for: 02 METHOD TONING (None)
+2026-05-02 01:06:36 | INFO     | backend.core.searcher - Found 0 raw results for 02 METHOD TONING
+2026-05-02 01:06:36 | INFO     | backend.core.searcher - Searching for: 10 Minute Abs After Baby 8 Diastasis Recti Safe Ab Exercises (None)
+2026-05-02 01:06:37 | INFO     | backend.core.searcher - Found 0 raw results for 10 Minute Abs After Baby 8 Diastasis Recti Safe Ab Exercises
+2026-05-02 01:06:37 | INFO     | backend.core.searcher - Searching for: 15 Minute Postpartum Workout Diastasis Recti Safe (None)
+2026-05-02 01:06:38 | INFO     | backend.core.searcher - Found 0 raw results for 15 Minute Postpartum Workout Diastasis Recti Safe
+2026-05-02 01:06:38 | INFO     | backend.core.searcher - Searching for: After C Section Exercise Postpartum Workout After C Section (None)
+2026-05-02 01:06:39 | INFO     | backend.core.searcher - Found 0 raw results for After C Section Exercise Postpartum Workout After C Section
+2026-05-02 01:06:39 | INFO     | backend.core.searcher - Searching for: Amira's Belly Dance & Yoga for Pregnancy (None)
+2026-05-02 01:06:40 | INFO     | backend.core.searcher - Found 0 raw results for Amira's Belly Dance & Yoga for Pregnancy
+2026-05-02 01:06:40 | INFO     | backend.core.searcher - Searching for: The Ballet Workout II (None)
+2026-05-02 01:06:42 | INFO     | backend.core.searcher - Found 0 raw results for The Ballet Workout II
+2026-05-02 01:06:42 | INFO     | backend.core.searcher - Searching for: BONUS 12 Minute Pilates Energy Boost (None)
+2026-05-02 01:06:43 | INFO     | backend.core.searcher - Found 0 raw results for BONUS 12 Minute Pilates Energy Boost
+2026-05-02 01:06:43 | INFO     | backend.core.searcher - Searching for: BONUS Pilates Energy Boost II Workout (None)
+2026-05-02 01:06:45 | INFO     | backend.core.searcher - Found 0 raw results for BONUS Pilates Energy Boost II Workout
+2026-05-02 01:06:45 | INFO     | backend.core.searcher - Searching for: Core Warm Up (None)
+2026-05-02 01:06:46 | INFO     | backend.core.searcher - Found 0 raw results for Core Warm Up
+2026-05-02 01:06:46 | INFO     | backend.core.searcher - Searching for: Element Pilates Basics (None)
+2026-05-02 01:06:47 | INFO     | backend.core.searcher - Found 0 raw results for Element Pilates Basics
+2026-05-02 01:06:47 | INFO     | backend.core.searcher - Searching for: Exhale: Core Fusion - Pilates Plus (2008)
+2026-05-02 01:06:50 | INFO     | backend.core.searcher - Found 3 raw results for Exhale: Core Fusion - Pilates Plus
+2026-05-02 01:06:50 | INFO     | backend.core.searcher - Analyzed 3 results: 0 accepted, 3 rejected (0 due to resolution downgrade limit, 3 due to larger size limit).
+2026-05-02 01:06:50 | INFO     | backend.core.searcher - Searching for: Foundation Work (None)
+2026-05-02 01:06:52 | INFO     | backend.core.searcher - Found 4 raw results for Foundation Work
+2026-05-02 01:06:52 | INFO     | backend.core.searcher - Analyzed 4 results: 0 accepted, 4 rejected (0 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-02 01:06:52 | INFO     | backend.core.searcher - Searching for: An Interview with Ana Caban (None)
+2026-05-02 01:06:53 | INFO     | backend.core.searcher - Found 0 raw results for An Interview with Ana Caban
+2026-05-02 01:06:53 | INFO     | backend.core.searcher - Searching for: Introduction (None)
+2026-05-02 01:06:55 | INFO     | backend.core.searcher - Found 109 raw results for Introduction
+2026-05-02 01:06:55 | INFO     | backend.core.searcher - Analyzed 109 results: 0 accepted, 109 rejected (0 due to resolution downgrade limit, 109 due to larger size limit).
+2026-05-02 01:06:55 | INFO     | backend.core.searcher - Searching for: Jillian Michaels Beginner Shred - Workout 1 (2014)
+2026-05-02 01:06:58 | INFO     | backend.core.searcher - Found 0 raw results for Jillian Michaels Beginner Shred - Workout 1
+2026-05-02 01:06:58 | INFO     | backend.core.searcher - Searching for: Jillian Michaels Beginner Shred - Workout 3 (2014)
+2026-05-02 01:07:00 | INFO     | backend.core.searcher - Found 0 raw results for Jillian Michaels Beginner Shred - Workout 3
+2026-05-02 01:07:00 | INFO     | backend.core.searcher - Searching for: Meet Ana Caban (None)
+2026-05-02 01:07:03 | INFO     | backend.core.searcher - Found 0 raw results for Meet Ana Caban
+2026-05-02 01:07:03 | INFO     | backend.core.searcher - Searching for: Pilates Intermediate Mat Workout (None)
+2026-05-02 01:07:05 | INFO     | backend.core.searcher - Found 0 raw results for Pilates Intermediate Mat Workout
+2026-05-02 01:07:05 | INFO     | backend.core.searcher - Searching for: Pilates Tutorial (None)
+2026-05-02 01:07:06 | INFO     | backend.core.searcher - Found 0 raw results for Pilates Tutorial
+2026-05-02 01:07:06 | INFO     | backend.core.searcher - Searching for: Pilates: Beginning Mat Workout (2000)
+2026-05-02 01:07:07 | INFO     | backend.core.searcher - Found 0 raw results for Pilates: Beginning Mat Workout
+2026-05-02 01:07:07 | INFO     | backend.core.searcher - Searching for: Postnatal Pilates ¦ 20 Minute Full Body Postpartum Pilates Workout (None)
+2026-05-02 01:07:09 | INFO     | backend.core.searcher - Found 0 raw results for Postnatal Pilates ¦ 20 Minute Full Body Postpartum Pilates Workout
+2026-05-02 01:07:09 | INFO     | backend.core.searcher - Searching for: Power 90 Master Series - Cardio Intervals (None)
+2026-05-02 01:07:10 | INFO     | backend.core.searcher - Found 0 raw results for Power 90 Master Series - Cardio Intervals
+2026-05-02 01:07:10 | INFO     | backend.core.searcher - Searching for: Power 90 Master Series Core Cardio 49 Min Fitness TG (None)
+2026-05-02 01:07:12 | INFO     | backend.core.searcher - Found 0 raw results for Power 90 Master Series Core Cardio 49 Min Fitness TG
+2026-05-02 01:07:12 | INFO     | backend.core.searcher - Searching for: Power 90 Master Series Plyo Legs 51 Min Fitness TG (None)
+2026-05-02 01:07:15 | INFO     | backend.core.searcher - Found 0 raw results for Power 90 Master Series Plyo Legs 51 Min Fitness TG
+2026-05-02 01:07:15 | INFO     | backend.core.searcher - Searching for: Power 90 Master Series UML Upper Middle Lower 39 Min Fitness TG (None)
+2026-05-02 01:07:16 | INFO     | backend.core.searcher - Found 0 raw results for Power 90 Master Series UML Upper Middle Lower 39 Min Fitness TG
+2026-05-02 01:07:16 | INFO     | backend.core.searcher - Searching for: Sidemen: Death Core Collection (None)
+2026-05-02 01:07:17 | INFO     | backend.core.searcher - Found 0 raw results for Sidemen: Death Core Collection
+2026-05-02 01:07:17 | INFO     | backend.core.searcher - Searching for: Strong Backside (None)
+2026-05-02 01:07:18 | INFO     | backend.core.searcher - Found 0 raw results for Strong Backside
+2026-05-02 01:07:18 | INFO     | backend.core.searcher - Searching for: Tae-Bo Workout: Basic (1999)
+2026-05-02 01:07:19 | INFO     | backend.core.searcher - Found 0 raw results for Tae-Bo Workout: Basic
+2026-05-02 01:07:19 | INFO     | backend.core.searcher - Searching for: Tony Horton 10 Minute Trainer D3 Total Body 2, Core Cardio, Upper Body 43 Min Fitness TG (None)
+2026-05-02 01:07:20 | INFO     | backend.core.searcher - Found 0 raw results for Tony Horton 10 Minute Trainer D3 Total Body 2, Core Cardio, Upper Body 43 Min Fitness TG
+2026-05-02 01:07:20 | INFO     | backend.core.searcher - Searching for: Weight Loss Pilates (None)
+2026-05-02 01:07:21 | INFO     | backend.core.searcher - Found 0 raw results for Weight Loss Pilates
+2026-05-02 01:07:21 | INFO     | backend.core.searcher - Searching for: Winsor Pilates: Ab Sculpting (2003)
+2026-05-02 01:07:23 | INFO     | backend.core.searcher - Found 0 raw results for Winsor Pilates: Ab Sculpting
+2026-05-02 01:07:23 | INFO     | backend.core.searcher - Searching for: The Adventures of Ichabod and Mr. Toad (1949)
+2026-05-02 01:07:25 | INFO     | backend.core.searcher - Found 52 raw results for The Adventures of Ichabod and Mr. Toad
+2026-05-02 01:07:25 | INFO     | backend.core.searcher - Analyzed 52 results: 0 accepted, 52 rejected (0 due to resolution downgrade limit, 51 due to larger size limit).
+2026-05-02 01:07:25 | INFO     | backend.core.searcher - Searching for: Alice in Wonderland (1999)
+2026-05-02 01:07:26 | INFO     | backend.core.searcher - Found 12 raw results for Alice in Wonderland
+2026-05-02 01:07:26 | INFO     | backend.core.searcher - Analyzed 12 results: 0 accepted, 12 rejected (0 due to resolution downgrade limit, 12 due to larger size limit).
+2026-05-02 01:07:26 | INFO     | backend.core.searcher - Searching for: The AristoCats (1970)
+2026-05-02 01:07:27 | INFO     | backend.core.searcher - Found 164 raw results for The AristoCats
+2026-05-02 01:07:27 | INFO     | backend.core.searcher - Analyzed 164 results: 0 accepted, 164 rejected (0 due to resolution downgrade limit, 162 due to larger size limit).
+2026-05-02 01:07:27 | INFO     | backend.core.searcher - Searching for: Babe (1995)
+2026-05-02 01:07:28 | INFO     | backend.core.searcher - Found 86 raw results for Babe
+2026-05-02 01:07:28 | INFO     | backend.core.searcher - Analyzed 86 results: 0 accepted, 86 rejected (32 due to resolution downgrade limit, 39 due to larger size limit).
+2026-05-02 01:07:28 | INFO     | backend.core.searcher - Searching for: Barbie as Rapunzel (2002)
+2026-05-02 01:07:30 | INFO     | backend.core.searcher - Found 15 raw results for Barbie as Rapunzel
+2026-05-02 01:07:30 | INFO     | backend.core.searcher - Analyzed 15 results: 0 accepted, 15 rejected (10 due to resolution downgrade limit, 2 due to larger size limit).
+2026-05-02 01:07:30 | INFO     | backend.core.searcher - Searching for: Barbie Fairytopia: Mermaidia (2006)
+2026-05-02 01:07:31 | INFO     | backend.core.searcher - Found 6 raw results for Barbie Fairytopia: Mermaidia
+2026-05-02 01:07:31 | INFO     | backend.core.searcher - Analyzed 6 results: 0 accepted, 6 rejected (0 due to resolution downgrade limit, 6 due to larger size limit).
+2026-05-02 01:07:31 | INFO     | backend.core.searcher - Searching for: Barbie of Swan Lake (2003)
+2026-05-02 01:07:32 | INFO     | backend.core.searcher - Found 4 raw results for Barbie of Swan Lake
+2026-05-02 01:07:32 | INFO     | backend.core.searcher - Analyzed 4 results: 0 accepted, 4 rejected (0 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-02 01:07:32 | INFO     | backend.core.searcher - Searching for: Because of Winn-Dixie (2005)
+2026-05-02 01:07:33 | INFO     | backend.core.searcher - Found 22 raw results for Because of Winn-Dixie
+2026-05-02 01:07:33 | INFO     | backend.core.searcher - Analyzed 22 results: 0 accepted, 22 rejected (1 due to resolution downgrade limit, 20 due to larger size limit).
+2026-05-02 01:07:33 | INFO     | backend.core.searcher - Searching for: The Black Cauldron (1985)
+2026-05-02 01:07:35 | INFO     | backend.core.searcher - Found 106 raw results for The Black Cauldron
+2026-05-02 01:07:35 | INFO     | backend.core.searcher - Analyzed 106 results: 0 accepted, 106 rejected (1 due to resolution downgrade limit, 103 due to larger size limit).
+2026-05-02 01:07:35 | INFO     | backend.core.searcher - Searching for: Brother Bear (2003)
+2026-05-02 01:07:36 | INFO     | backend.core.searcher - Found 141 raw results for Brother Bear
+2026-05-02 01:07:36 | INFO     | backend.core.searcher - Analyzed 141 results: 0 accepted, 141 rejected (1 due to resolution downgrade limit, 137 due to larger size limit).
+2026-05-02 01:07:36 | INFO     | backend.core.searcher - Searching for: A Bug's Life (1998)
+2026-05-02 01:07:39 | INFO     | backend.core.searcher - Found 190 raw results for A Bug's Life
+2026-05-02 01:07:39 | INFO     | backend.core.searcher - Analyzed 190 results: 0 accepted, 190 rejected (0 due to resolution downgrade limit, 189 due to larger size limit).
+2026-05-02 01:07:39 | INFO     | backend.core.searcher - Searching for: Cars (2006)
+2026-05-02 01:07:40 | INFO     | backend.core.searcher - Found 148 raw results for Cars
+2026-05-02 01:07:40 | INFO     | backend.core.searcher - Analyzed 148 results: 0 accepted, 148 rejected (1 due to resolution downgrade limit, 145 due to larger size limit).
+2026-05-02 01:07:40 | INFO     | backend.core.searcher - Searching for: Chicken Little (2005)
+2026-05-02 01:07:41 | INFO     | backend.core.searcher - Found 143 raw results for Chicken Little
+2026-05-02 01:07:41 | INFO     | backend.core.searcher - Analyzed 143 results: 0 accepted, 143 rejected (0 due to resolution downgrade limit, 143 due to larger size limit).
+2026-05-02 01:07:41 | INFO     | backend.core.searcher - Searching for: Dennis the Menace Strikes Again! (1998)
+2026-05-02 01:07:43 | INFO     | backend.core.searcher - Found 10 raw results for Dennis the Menace Strikes Again!
+2026-05-02 01:07:43 | INFO     | backend.core.searcher - Analyzed 10 results: 0 accepted, 10 rejected (0 due to resolution downgrade limit, 10 due to larger size limit).
+2026-05-02 01:07:43 | INFO     | backend.core.searcher - Searching for: Diary of a Wimpy Kid: Rodrick Rules (2022)
+2026-05-02 01:07:44 | INFO     | backend.core.searcher - Found 25 raw results for Diary of a Wimpy Kid: Rodrick Rules
+2026-05-02 01:07:44 | INFO     | backend.core.searcher - Analyzed 25 results: 0 accepted, 25 rejected (0 due to resolution downgrade limit, 20 due to larger size limit).
+2026-05-02 01:07:44 | INFO     | backend.core.searcher - Searching for: The Dog Who Saved Easter (2014)
+2026-05-02 01:07:46 | INFO     | backend.core.searcher - Found 6 raw results for The Dog Who Saved Easter
+2026-05-02 01:07:46 | INFO     | backend.core.searcher - Analyzed 6 results: 0 accepted, 6 rejected (2 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-02 01:07:46 | INFO     | backend.core.searcher - Searching for: Elio (2025)
+2026-05-02 01:07:47 | INFO     | backend.core.searcher - Found 79 raw results for Elio
+2026-05-02 01:07:47 | INFO     | backend.core.searcher - Analyzed 79 results: 0 accepted, 79 rejected (2 due to resolution downgrade limit, 77 due to larger size limit).
+2026-05-02 01:07:47 | INFO     | backend.core.searcher - Searching for: Fantasia 2000 (1999)
+2026-05-02 01:07:48 | INFO     | backend.core.searcher - Found 77 raw results for Fantasia 2000
+2026-05-02 01:07:48 | INFO     | backend.core.searcher - Analyzed 77 results: 0 accepted, 77 rejected (0 due to resolution downgrade limit, 75 due to larger size limit).
+2026-05-02 01:07:48 | INFO     | backend.core.searcher - Searching for: Fun and Fancy Free (1947)
+2026-05-02 01:07:49 | INFO     | backend.core.searcher - Found 46 raw results for Fun and Fancy Free
+2026-05-02 01:07:49 | INFO     | backend.core.searcher - Analyzed 46 results: 0 accepted, 46 rejected (0 due to resolution downgrade limit, 46 due to larger size limit).
+2026-05-02 01:07:49 | INFO     | backend.core.searcher - Searching for: Hayao Miyazaki and the Ghibli Museum (2005)
+2026-05-02 01:07:50 | INFO     | backend.core.searcher - Found 0 raw results for Hayao Miyazaki and the Ghibli Museum
+2026-05-02 01:07:50 | INFO     | backend.core.searcher - Searching for: Home on the Range (2004)
+2026-05-02 01:07:51 | INFO     | backend.core.searcher - Found 107 raw results for Home on the Range
+2026-05-02 01:07:51 | INFO     | backend.core.searcher - Analyzed 107 results: 0 accepted, 107 rejected (0 due to resolution downgrade limit, 107 due to larger size limit).
+2026-05-02 01:07:51 | INFO     | backend.core.searcher - Searching for: The Hunchback of Notre Dame (1996)
+2026-05-02 01:07:52 | INFO     | backend.core.searcher - Found 139 raw results for The Hunchback of Notre Dame
+2026-05-02 01:07:52 | INFO     | backend.core.searcher - Analyzed 139 results: 0 accepted, 139 rejected (0 due to resolution downgrade limit, 138 due to larger size limit).
+2026-05-02 01:07:52 | INFO     | backend.core.searcher - Searching for: Jack the Giant Slayer (2013)
+2026-05-02 01:07:55 | INFO     | backend.core.searcher - Found 157 raw results for Jack the Giant Slayer
+2026-05-02 01:07:55 | INFO     | backend.core.searcher - Analyzed 157 results: 0 accepted, 157 rejected (0 due to resolution downgrade limit, 155 due to larger size limit).
+2026-05-02 01:07:55 | INFO     | backend.core.searcher - Searching for: The Jungle Book (1967)
+2026-05-02 01:07:56 | INFO     | backend.core.searcher - Found 146 raw results for The Jungle Book
+2026-05-02 01:07:56 | INFO     | backend.core.searcher - Analyzed 146 results: 0 accepted, 146 rejected (0 due to resolution downgrade limit, 139 due to larger size limit).
+2026-05-02 01:07:56 | INFO     | backend.core.searcher - Searching for: Kung Fu Panda 4 (2024)
+2026-05-02 01:07:57 | INFO     | backend.core.searcher - Found 200 raw results for Kung Fu Panda 4
+2026-05-02 01:07:58 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (1 due to resolution downgrade limit, 199 due to larger size limit).
+2026-05-02 01:07:58 | INFO     | backend.core.searcher - Searching for: Lady and the Tramp (1955)
+2026-05-02 01:07:59 | INFO     | backend.core.searcher - Found 166 raw results for Lady and the Tramp
+2026-05-02 01:07:59 | INFO     | backend.core.searcher - Analyzed 166 results: 0 accepted, 166 rejected (1 due to resolution downgrade limit, 161 due to larger size limit).
+2026-05-02 01:07:59 | INFO     | backend.core.searcher - Searching for: The Land Before Time (1988)
+2026-05-02 01:08:00 | INFO     | backend.core.searcher - Found 94 raw results for The Land Before Time
+2026-05-02 01:08:01 | INFO     | backend.core.searcher - Analyzed 94 results: 0 accepted, 94 rejected (7 due to resolution downgrade limit, 50 due to larger size limit).
+2026-05-02 01:08:01 | INFO     | backend.core.searcher - Searching for: Light of the World (2025)
+2026-05-02 01:08:02 | INFO     | backend.core.searcher - Found 23 raw results for Light of the World
+2026-05-02 01:08:02 | INFO     | backend.core.searcher - Analyzed 23 results: 0 accepted, 23 rejected (5 due to resolution downgrade limit, 18 due to larger size limit).
+2026-05-02 01:08:02 | INFO     | backend.core.searcher - Searching for: Lilo & Stitch (2002)
+2026-05-02 01:08:03 | INFO     | backend.core.searcher - Found 98 raw results for Lilo & Stitch
+2026-05-02 01:08:03 | INFO     | backend.core.searcher - Analyzed 98 results: 0 accepted, 98 rejected (0 due to resolution downgrade limit, 82 due to larger size limit).
+2026-05-02 01:08:03 | INFO     | backend.core.searcher - Searching for: Make Mine Music (1946)
+2026-05-02 01:08:04 | INFO     | backend.core.searcher - Found 27 raw results for Make Mine Music
+2026-05-02 01:08:04 | INFO     | backend.core.searcher - Analyzed 27 results: 0 accepted, 27 rejected (0 due to resolution downgrade limit, 26 due to larger size limit).
+2026-05-02 01:08:04 | INFO     | backend.core.searcher - Searching for: Mummies (2023)
+2026-05-02 01:08:05 | INFO     | backend.core.searcher - Found 37 raw results for Mummies
+2026-05-02 01:08:05 | INFO     | backend.core.searcher - Analyzed 37 results: 0 accepted, 37 rejected (3 due to resolution downgrade limit, 34 due to larger size limit).
+2026-05-02 01:08:05 | INFO     | backend.core.searcher - Searching for: The New Adventures of Pippi Longstocking (1988)
+2026-05-02 01:08:06 | INFO     | backend.core.searcher - Found 15 raw results for The New Adventures of Pippi Longstocking
+2026-05-02 01:08:06 | INFO     | backend.core.searcher - Analyzed 15 results: 0 accepted, 15 rejected (0 due to resolution downgrade limit, 15 due to larger size limit).
+2026-05-02 01:08:06 | INFO     | backend.core.searcher - Searching for: One Hundred and One Dalmatians (1961)
+2026-05-02 01:08:07 | INFO     | backend.core.searcher - Found 136 raw results for One Hundred and One Dalmatians
+2026-05-02 01:08:07 | INFO     | backend.core.searcher - Analyzed 136 results: 0 accepted, 136 rejected (0 due to resolution downgrade limit, 132 due to larger size limit).
+2026-05-02 01:08:07 | INFO     | backend.core.searcher - Searching for: The Rescuers (1977)
+2026-05-02 01:08:08 | INFO     | backend.core.searcher - Found 128 raw results for The Rescuers
+2026-05-02 01:08:08 | INFO     | backend.core.searcher - Analyzed 128 results: 0 accepted, 128 rejected (0 due to resolution downgrade limit, 128 due to larger size limit).
+2026-05-02 01:08:08 | INFO     | backend.core.searcher - Searching for: Richie Rich (1994)
+2026-05-02 01:08:09 | INFO     | backend.core.searcher - Found 66 raw results for Richie Rich
+2026-05-02 01:08:09 | INFO     | backend.core.searcher - Analyzed 66 results: 0 accepted, 66 rejected (12 due to resolution downgrade limit, 49 due to larger size limit).
+2026-05-02 01:08:09 | INFO     | backend.core.searcher - Searching for: Robin Hood (1973)
+2026-05-02 01:08:11 | INFO     | backend.core.searcher - Found 153 raw results for Robin Hood
+2026-05-02 01:08:11 | INFO     | backend.core.searcher - Analyzed 153 results: 0 accepted, 153 rejected (0 due to resolution downgrade limit, 151 due to larger size limit).
+2026-05-02 01:08:11 | INFO     | backend.core.searcher - Searching for: Saludos Amigos (1942)
+2026-05-02 01:08:12 | INFO     | backend.core.searcher - Found 46 raw results for Saludos Amigos
+2026-05-02 01:08:12 | INFO     | backend.core.searcher - Analyzed 46 results: 0 accepted, 46 rejected (2 due to resolution downgrade limit, 42 due to larger size limit).
+2026-05-02 01:08:12 | INFO     | backend.core.searcher - Searching for: Scrooge: A Christmas Carol (2022)
+2026-05-02 01:08:13 | INFO     | backend.core.searcher - Found 23 raw results for Scrooge: A Christmas Carol
+2026-05-02 01:08:13 | INFO     | backend.core.searcher - Analyzed 23 results: 0 accepted, 23 rejected (1 due to resolution downgrade limit, 21 due to larger size limit).
+2026-05-02 01:08:13 | INFO     | backend.core.searcher - Searching for: Sleeping Beauty (1995)
+2026-05-02 01:08:15 | INFO     | backend.core.searcher - Found 0 raw results for Sleeping Beauty
+2026-05-02 01:08:15 | INFO     | backend.core.searcher - Searching for: The Snail and the Whale (2019)
+2026-05-02 01:08:16 | INFO     | backend.core.searcher - Found 9 raw results for The Snail and the Whale
+2026-05-02 01:08:16 | INFO     | backend.core.searcher - Analyzed 9 results: 0 accepted, 9 rejected (0 due to resolution downgrade limit, 9 due to larger size limit).
+2026-05-02 01:08:16 | INFO     | backend.core.searcher - Searching for: Snow White and the Seven Dwarfs (1937)
+2026-05-02 01:08:17 | INFO     | backend.core.searcher - Found 193 raw results for Snow White and the Seven Dwarfs
+2026-05-02 01:08:18 | INFO     | backend.core.searcher - Analyzed 193 results: 0 accepted, 193 rejected (1 due to resolution downgrade limit, 191 due to larger size limit).
+2026-05-02 01:08:18 | INFO     | backend.core.searcher - Searching for: Sonic the Hedgehog (2020)
+2026-05-02 01:08:20 | INFO     | backend.core.searcher - Found 200 raw results for Sonic the Hedgehog
+2026-05-02 01:08:20 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (0 due to resolution downgrade limit, 200 due to larger size limit).
+2026-05-02 01:08:20 | INFO     | backend.core.searcher - Searching for: Spellbound (2024)
+2026-05-02 01:08:22 | INFO     | backend.core.searcher - Found 41 raw results for Spellbound
+2026-05-02 01:08:22 | INFO     | backend.core.searcher - Analyzed 41 results: 0 accepted, 41 rejected (5 due to resolution downgrade limit, 36 due to larger size limit).
+2026-05-02 01:08:22 | INFO     | backend.core.searcher - Searching for: The Super Mario Bros. Movie (2023)
+2026-05-02 01:08:23 | INFO     | backend.core.searcher - Found 200 raw results for The Super Mario Bros. Movie
+2026-05-02 01:08:23 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (2 due to resolution downgrade limit, 197 due to larger size limit).
+2026-05-02 01:08:23 | INFO     | backend.core.searcher - Searching for: The Sword in the Stone (1963)
+2026-05-02 01:08:25 | INFO     | backend.core.searcher - Found 180 raw results for The Sword in the Stone
+2026-05-02 01:08:25 | INFO     | backend.core.searcher - Analyzed 180 results: 0 accepted, 180 rejected (0 due to resolution downgrade limit, 180 due to larger size limit).
+2026-05-02 01:08:25 | INFO     | backend.core.searcher - Searching for: Tangled (2010)
+2026-05-02 01:08:26 | INFO     | backend.core.searcher - Found 200 raw results for Tangled
+2026-05-02 01:08:26 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (2 due to resolution downgrade limit, 189 due to larger size limit).
+2026-05-02 01:08:26 | INFO     | backend.core.searcher - Searching for: Tarzan (1999)
+2026-05-02 01:08:28 | INFO     | backend.core.searcher - Found 153 raw results for Tarzan
+2026-05-02 01:08:28 | INFO     | backend.core.searcher - Analyzed 153 results: 0 accepted, 153 rejected (0 due to resolution downgrade limit, 146 due to larger size limit).
+2026-05-02 01:08:28 | INFO     | backend.core.searcher - Searching for: The Three Caballeros (1944)
+2026-05-02 01:08:29 | INFO     | backend.core.searcher - Found 58 raw results for The Three Caballeros
+2026-05-02 01:08:29 | INFO     | backend.core.searcher - Analyzed 58 results: 0 accepted, 58 rejected (0 due to resolution downgrade limit, 58 due to larger size limit).
+2026-05-02 01:08:29 | INFO     | backend.core.searcher - Searching for: To Grandmother's House We Go (1992)
+2026-05-02 01:08:30 | INFO     | backend.core.searcher - Found 5 raw results for To Grandmother's House We Go
+2026-05-02 01:08:30 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-02 01:08:30 | INFO     | backend.core.searcher - Searching for: Toy Story 2 (1999)
+2026-05-02 01:08:32 | INFO     | backend.core.searcher - Found 200 raw results for Toy Story 2
+2026-05-02 01:08:32 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (2 due to resolution downgrade limit, 195 due to larger size limit).
+2026-05-02 01:08:32 | INFO     | backend.core.searcher - Searching for: The Wild Robot (2024)
+2026-05-02 01:08:33 | INFO     | backend.core.searcher - Found 200 raw results for The Wild Robot
+2026-05-02 01:08:33 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (3 due to resolution downgrade limit, 196 due to larger size limit).
+2026-05-02 01:08:33 | INFO     | backend.core.searcher - Searching for: 28 Years Later (2025)
+2026-05-02 01:08:34 | INFO     | backend.core.searcher - Found 183 raw results for 28 Years Later
+2026-05-02 01:08:34 | INFO     | backend.core.searcher - Analyzed 183 results: 0 accepted, 183 rejected (5 due to resolution downgrade limit, 175 due to larger size limit).
+2026-05-02 01:08:34 | INFO     | backend.core.searcher - Searching for: A.I. Rising (2018)
+2026-05-02 01:08:36 | INFO     | backend.core.searcher - Found 48 raw results for A.I. Rising
+2026-05-02 01:08:36 | INFO     | backend.core.searcher - Analyzed 48 results: 0 accepted, 48 rejected (0 due to resolution downgrade limit, 46 due to larger size limit).
+2026-05-02 01:08:36 | INFO     | backend.core.searcher - Searching for: Addams Family Reunion (1998)
+2026-05-02 01:08:37 | INFO     | backend.core.searcher - Found 9 raw results for Addams Family Reunion
+2026-05-02 01:08:37 | INFO     | backend.core.searcher - Analyzed 9 results: 0 accepted, 9 rejected (0 due to resolution downgrade limit, 9 due to larger size limit).
+2026-05-02 01:08:37 | INFO     | backend.core.searcher - Searching for: After (2019)
+2026-05-02 01:08:38 | INFO     | backend.core.searcher - Found 57 raw results for After
+2026-05-02 01:08:38 | INFO     | backend.core.searcher - Analyzed 57 results: 0 accepted, 57 rejected (0 due to resolution downgrade limit, 56 due to larger size limit).
+2026-05-02 01:08:38 | INFO     | backend.core.searcher - Searching for: The Age of Disclosure (2025)
+2026-05-02 01:08:39 | INFO     | backend.core.searcher - Found 9 raw results for The Age of Disclosure
+2026-05-02 01:08:39 | INFO     | backend.core.searcher - Analyzed 9 results: 0 accepted, 9 rejected (6 due to resolution downgrade limit, 3 due to larger size limit).
+2026-05-02 01:08:39 | INFO     | backend.core.searcher - Searching for: American Reunion (2012)
+2026-05-02 01:08:40 | INFO     | backend.core.searcher - Found 160 raw results for American Reunion
+2026-05-02 01:08:40 | INFO     | backend.core.searcher - Analyzed 160 results: 0 accepted, 160 rejected (1 due to resolution downgrade limit, 150 due to larger size limit).
+2026-05-02 01:08:40 | INFO     | backend.core.searcher - Searching for: Angels & Demons (2009)
+2026-05-02 01:08:42 | INFO     | backend.core.searcher - Found 146 raw results for Angels & Demons
+2026-05-02 01:08:42 | INFO     | backend.core.searcher - Analyzed 146 results: 0 accepted, 146 rejected (0 due to resolution downgrade limit, 144 due to larger size limit).
+2026-05-02 01:08:42 | INFO     | backend.core.searcher - Searching for: Animal Kingdom (2010)
+2026-05-02 01:08:43 | INFO     | backend.core.searcher - Found 88 raw results for Animal Kingdom
+2026-05-02 01:08:43 | INFO     | backend.core.searcher - Analyzed 88 results: 0 accepted, 88 rejected (0 due to resolution downgrade limit, 87 due to larger size limit).
+2026-05-02 01:08:43 | INFO     | backend.core.searcher - Searching for: Ant-Man and the Wasp: Quantumania (2023)
+2026-05-02 01:08:47 | INFO     | backend.core.searcher - Found 200 raw results for Ant-Man and the Wasp: Quantumania
+2026-05-02 01:08:48 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (3 due to resolution downgrade limit, 195 due to larger size limit).
+2026-05-02 01:08:48 | INFO     | backend.core.searcher - Searching for: Avatar: The Way of Water (2022)
+2026-05-02 01:08:49 | INFO     | backend.core.searcher - Found 200 raw results for Avatar: The Way of Water
+2026-05-02 01:08:49 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (30 due to resolution downgrade limit, 157 due to larger size limit).
+2026-05-02 01:08:49 | INFO     | backend.core.searcher - Searching for: Battleship (2012)
+2026-05-02 01:08:51 | INFO     | backend.core.searcher - Found 179 raw results for Battleship
+2026-05-02 01:08:51 | INFO     | backend.core.searcher - Analyzed 179 results: 0 accepted, 179 rejected (0 due to resolution downgrade limit, 171 due to larger size limit).
+2026-05-02 01:08:51 | INFO     | backend.core.searcher - Searching for: Big Fish (2003)
+2026-05-02 01:08:52 | INFO     | backend.core.searcher - Found 143 raw results for Big Fish
+2026-05-02 01:08:52 | INFO     | backend.core.searcher - Analyzed 143 results: 0 accepted, 143 rejected (4 due to resolution downgrade limit, 129 due to larger size limit).
+2026-05-02 01:08:52 | INFO     | backend.core.searcher - Searching for: Blueback (2022)
+2026-05-02 01:08:53 | INFO     | backend.core.searcher - Found 25 raw results for Blueback
+2026-05-02 01:08:53 | INFO     | backend.core.searcher - Analyzed 25 results: 0 accepted, 25 rejected (3 due to resolution downgrade limit, 22 due to larger size limit).
+2026-05-02 01:08:53 | INFO     | backend.core.searcher - Searching for: Book Club: The Next Chapter (2023)
+2026-05-02 01:08:54 | INFO     | backend.core.searcher - Found 99 raw results for Book Club: The Next Chapter
+2026-05-02 01:08:54 | INFO     | backend.core.searcher - Analyzed 99 results: 0 accepted, 99 rejected (2 due to resolution downgrade limit, 97 due to larger size limit).
+2026-05-02 01:08:54 | INFO     | backend.core.searcher - Searching for: Can't Hardly Wait (1998)
+2026-05-02 01:08:55 | INFO     | backend.core.searcher - Found 81 raw results for Can't Hardly Wait
+2026-05-02 01:08:55 | INFO     | backend.core.searcher - Analyzed 81 results: 0 accepted, 81 rejected (0 due to resolution downgrade limit, 81 due to larger size limit).
+2026-05-02 01:08:55 | INFO     | backend.core.searcher - Searching for: Challengers (2024)
+2026-05-02 01:08:57 | INFO     | backend.core.searcher - Found 169 raw results for Challengers
+2026-05-02 01:08:57 | INFO     | backend.core.searcher - Analyzed 169 results: 0 accepted, 169 rejected (6 due to resolution downgrade limit, 163 due to larger size limit).
+2026-05-02 01:08:57 | INFO     | backend.core.searcher - Searching for: Christmas in Paradise (2022)
+2026-05-02 01:08:58 | INFO     | backend.core.searcher - Found 21 raw results for Christmas in Paradise
+2026-05-02 01:08:58 | INFO     | backend.core.searcher - Analyzed 21 results: 0 accepted, 21 rejected (1 due to resolution downgrade limit, 16 due to larger size limit).
+2026-05-02 01:08:58 | INFO     | backend.core.searcher - Searching for: The Chronicles of Riddick: Dark Fury (2004)
+2026-05-02 01:08:59 | INFO     | backend.core.searcher - Found 19 raw results for The Chronicles of Riddick: Dark Fury
+2026-05-02 01:08:59 | INFO     | backend.core.searcher - Analyzed 19 results: 0 accepted, 19 rejected (0 due to resolution downgrade limit, 17 due to larger size limit).
+2026-05-02 01:08:59 | INFO     | backend.core.searcher - Searching for: Contraband (2012)
+2026-05-02 01:09:00 | INFO     | backend.core.searcher - Found 151 raw results for Contraband
+2026-05-02 01:09:00 | INFO     | backend.core.searcher - Analyzed 151 results: 0 accepted, 151 rejected (1 due to resolution downgrade limit, 145 due to larger size limit).
+2026-05-02 01:09:00 | INFO     | backend.core.searcher - Searching for: Crazy, Stupid, Love. (2011)
+2026-05-02 01:09:01 | INFO     | backend.core.searcher - Found 155 raw results for Crazy, Stupid, Love.
+2026-05-02 01:09:01 | INFO     | backend.core.searcher - Analyzed 155 results: 0 accepted, 155 rejected (1 due to resolution downgrade limit, 151 due to larger size limit).
+2026-05-02 01:09:01 | INFO     | backend.core.searcher - Searching for: Destroyer (2018)
+2026-05-02 01:09:02 | INFO     | backend.core.searcher - Found 89 raw results for Destroyer
+2026-05-02 01:09:03 | INFO     | backend.core.searcher - Analyzed 89 results: 0 accepted, 89 rejected (4 due to resolution downgrade limit, 79 due to larger size limit).
+2026-05-02 01:09:03 | INFO     | backend.core.searcher - Searching for: Divine Secrets of the Ya-Ya Sisterhood (2002)
+2026-05-02 01:09:04 | INFO     | backend.core.searcher - Found 11 raw results for Divine Secrets of the Ya-Ya Sisterhood
+2026-05-02 01:09:04 | INFO     | backend.core.searcher - Analyzed 11 results: 0 accepted, 11 rejected (4 due to resolution downgrade limit, 6 due to larger size limit).
+2026-05-02 01:09:04 | INFO     | backend.core.searcher - Searching for: A Dog's Way Home (2019)
+2026-05-02 01:09:07 | INFO     | backend.core.searcher - Found 136 raw results for A Dog's Way Home
+2026-05-02 01:09:07 | INFO     | backend.core.searcher - Analyzed 136 results: 0 accepted, 136 rejected (75 due to resolution downgrade limit, 46 due to larger size limit).
+2026-05-02 01:09:07 | INFO     | backend.core.searcher - Searching for: Dune: Part Two (2024)
+2026-05-02 01:09:08 | INFO     | backend.core.searcher - Found 200 raw results for Dune: Part Two
+2026-05-02 01:09:08 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (2 due to resolution downgrade limit, 198 due to larger size limit).
+2026-05-02 01:09:08 | INFO     | backend.core.searcher - Searching for: Eenie Meanie (2025)
+2026-05-02 01:09:09 | INFO     | backend.core.searcher - Found 68 raw results for Eenie Meanie
+2026-05-02 01:09:09 | INFO     | backend.core.searcher - Analyzed 68 results: 0 accepted, 68 rejected (0 due to resolution downgrade limit, 68 due to larger size limit).
+2026-05-02 01:09:09 | INFO     | backend.core.searcher - Searching for: The Endless Summer 2 (1994)
+2026-05-02 01:09:10 | INFO     | backend.core.searcher - Found 2 raw results for The Endless Summer 2
+2026-05-02 01:09:10 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 2 due to larger size limit).
+2026-05-02 01:09:10 | INFO     | backend.core.searcher - Searching for: Enola Holmes 2 (2022)
+2026-05-02 01:09:11 | INFO     | backend.core.searcher - Found 63 raw results for Enola Holmes 2
+2026-05-02 01:09:11 | INFO     | backend.core.searcher - Analyzed 63 results: 0 accepted, 63 rejected (4 due to resolution downgrade limit, 57 due to larger size limit).
+2026-05-02 01:09:11 | INFO     | backend.core.searcher - Searching for: Fast and Furious Collection Extra (None)
+2026-05-02 01:09:13 | INFO     | backend.core.searcher - Found 0 raw results for Fast and Furious Collection Extra
+2026-05-02 01:09:13 | INFO     | backend.core.searcher - Searching for: Fast X (2023)
+2026-05-02 01:09:13 | INFO     | backend.core.searcher - Found 200 raw results for Fast X
+2026-05-02 01:09:14 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (8 due to resolution downgrade limit, 189 due to larger size limit).
+2026-05-02 01:09:14 | INFO     | backend.core.searcher - Searching for: Finding You (2020)
+2026-05-02 01:09:15 | INFO     | backend.core.searcher - Found 2 raw results for Finding You
+2026-05-02 01:09:15 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 2 due to larger size limit).
+2026-05-02 01:09:15 | INFO     | backend.core.searcher - Searching for: Five Feet Apart (2019)
+2026-05-02 01:09:16 | INFO     | backend.core.searcher - Found 86 raw results for Five Feet Apart
+2026-05-02 01:09:16 | INFO     | backend.core.searcher - Analyzed 86 results: 0 accepted, 86 rejected (2 due to resolution downgrade limit, 80 due to larger size limit).
+2026-05-02 01:09:16 | INFO     | backend.core.searcher - Searching for: The Flood (2019)
+2026-05-02 01:09:17 | INFO     | backend.core.searcher - Found 9 raw results for The Flood
+2026-05-02 01:09:17 | INFO     | backend.core.searcher - Analyzed 9 results: 0 accepted, 9 rejected (1 due to resolution downgrade limit, 6 due to larger size limit).
+2026-05-02 01:09:17 | INFO     | backend.core.searcher - Searching for: Forgiven (2011)
+2026-05-02 01:09:19 | INFO     | backend.core.searcher - Found 10 raw results for Forgiven
+2026-05-02 01:09:19 | INFO     | backend.core.searcher - Analyzed 10 results: 0 accepted, 10 rejected (7 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-02 01:09:19 | INFO     | backend.core.searcher - Searching for: G-Funk (2017)
+2026-05-02 01:09:20 | INFO     | backend.core.searcher - Found 0 raw results for G-Funk
+2026-05-02 01:09:20 | INFO     | backend.core.searcher - Searching for: The Giants (2023)
+2026-05-02 01:09:21 | INFO     | backend.core.searcher - Found 3 raw results for The Giants
+2026-05-02 01:09:21 | INFO     | backend.core.searcher - Analyzed 3 results: 0 accepted, 3 rejected (0 due to resolution downgrade limit, 3 due to larger size limit).
+2026-05-02 01:09:21 | INFO     | backend.core.searcher - Searching for: Godzilla X Kong: The New Empire (2024)
+2026-05-02 01:09:23 | INFO     | backend.core.searcher - Found 200 raw results for Godzilla X Kong: The New Empire
+2026-05-02 01:09:24 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (4 due to resolution downgrade limit, 196 due to larger size limit).
+2026-05-02 01:09:24 | INFO     | backend.core.searcher - Searching for: Gold (2022)
+2026-05-02 01:09:25 | INFO     | backend.core.searcher - Found 45 raw results for Gold
+2026-05-02 01:09:25 | INFO     | backend.core.searcher - Analyzed 45 results: 0 accepted, 45 rejected (28 due to resolution downgrade limit, 11 due to larger size limit).
+2026-05-02 01:09:25 | INFO     | backend.core.searcher - Searching for: Good Luck to You, Leo Grande (2022)
+2026-05-02 01:09:28 | INFO     | backend.core.searcher - Found 78 raw results for Good Luck to You, Leo Grande
+2026-05-02 01:09:28 | INFO     | backend.core.searcher - Analyzed 78 results: 0 accepted, 78 rejected (12 due to resolution downgrade limit, 54 due to larger size limit).
+2026-05-02 01:09:28 | INFO     | backend.core.searcher - Searching for: The Gorge (2025)
+2026-05-02 01:09:30 | INFO     | backend.core.searcher - Found 91 raw results for The Gorge
+2026-05-02 01:09:30 | INFO     | backend.core.searcher - Analyzed 91 results: 0 accepted, 91 rejected (3 due to resolution downgrade limit, 88 due to larger size limit).
+2026-05-02 01:09:30 | INFO     | backend.core.searcher - Searching for: Harold & Kumar Go to White Castle (2004)
+2026-05-02 01:09:32 | INFO     | backend.core.searcher - Found 91 raw results for Harold & Kumar Go to White Castle
+2026-05-02 01:09:32 | INFO     | backend.core.searcher - Analyzed 91 results: 0 accepted, 91 rejected (0 due to resolution downgrade limit, 90 due to larger size limit).
+2026-05-02 01:09:32 | INFO     | backend.core.searcher - Searching for: Hitler and I (2003)
+2026-05-02 01:09:35 | INFO     | backend.core.searcher - Found 0 raw results for Hitler and I
+2026-05-02 01:09:35 | INFO     | backend.core.searcher - Searching for: The Holiday (2006)
+2026-05-02 01:09:37 | INFO     | backend.core.searcher - Found 94 raw results for The Holiday
+2026-05-02 01:09:37 | INFO     | backend.core.searcher - Analyzed 94 results: 0 accepted, 94 rejected (32 due to resolution downgrade limit, 47 due to larger size limit).
+2026-05-02 01:09:37 | INFO     | backend.core.searcher - Searching for: Host (2020)
+2026-05-02 01:09:38 | INFO     | backend.core.searcher - Found 24 raw results for Host
+2026-05-02 01:09:38 | INFO     | backend.core.searcher - Analyzed 24 results: 0 accepted, 24 rejected (1 due to resolution downgrade limit, 23 due to larger size limit).
+2026-05-02 01:09:38 | INFO     | backend.core.searcher - Searching for: How Do You Know (2010)
+2026-05-02 01:09:41 | INFO     | backend.core.searcher - Found 92 raw results for How Do You Know
+2026-05-02 01:09:41 | INFO     | backend.core.searcher - Analyzed 92 results: 0 accepted, 92 rejected (0 due to resolution downgrade limit, 91 due to larger size limit).
+2026-05-02 01:09:41 | INFO     | backend.core.searcher - Searching for: The Hustle (2019)
+2026-05-02 01:09:42 | INFO     | backend.core.searcher - Found 91 raw results for The Hustle
+2026-05-02 01:09:42 | INFO     | backend.core.searcher - Analyzed 91 results: 0 accepted, 91 rejected (55 due to resolution downgrade limit, 32 due to larger size limit).
+2026-05-02 01:09:42 | INFO     | backend.core.searcher - Searching for: I Want You Back (2022)
+2026-05-02 01:09:44 | INFO     | backend.core.searcher - Found 41 raw results for I Want You Back
+2026-05-02 01:09:44 | INFO     | backend.core.searcher - Analyzed 41 results: 0 accepted, 41 rejected (0 due to resolution downgrade limit, 40 due to larger size limit).
+2026-05-02 01:09:44 | INFO     | backend.core.searcher - Searching for: I'm Still Here (2024)
+2026-05-02 01:09:45 | INFO     | backend.core.searcher - Found 46 raw results for I'm Still Here
+2026-05-02 01:09:45 | INFO     | backend.core.searcher - Analyzed 46 results: 0 accepted, 46 rejected (17 due to resolution downgrade limit, 28 due to larger size limit).
+2026-05-02 01:09:45 | INFO     | backend.core.searcher - Searching for: In Cold Blood (1967)
+2026-05-02 01:09:46 | INFO     | backend.core.searcher - Found 71 raw results for In Cold Blood
+2026-05-02 01:09:46 | INFO     | backend.core.searcher - Analyzed 71 results: 0 accepted, 71 rejected (5 due to resolution downgrade limit, 60 due to larger size limit).
+2026-05-02 01:09:46 | INFO     | backend.core.searcher - Searching for: It Ends with Us (2024)
+2026-05-02 01:09:47 | INFO     | backend.core.searcher - Found 147 raw results for It Ends with Us
+2026-05-02 01:09:47 | INFO     | backend.core.searcher - Analyzed 147 results: 0 accepted, 147 rejected (4 due to resolution downgrade limit, 143 due to larger size limit).
+2026-05-02 01:09:47 | INFO     | backend.core.searcher - Searching for: Kokoda: 39th Battalion (2006)
+2026-05-02 01:09:48 | INFO     | backend.core.searcher - Found 23 raw results for Kokoda: 39th Battalion
+2026-05-02 01:09:48 | INFO     | backend.core.searcher - Analyzed 23 results: 0 accepted, 23 rejected (0 due to resolution downgrade limit, 19 due to larger size limit).
+2026-05-02 01:09:48 | INFO     | backend.core.searcher - Searching for: Ladies in Black (2018)
+2026-05-02 01:09:49 | INFO     | backend.core.searcher - Found 45 raw results for Ladies in Black
+2026-05-02 01:09:50 | INFO     | backend.core.searcher - Analyzed 45 results: 0 accepted, 45 rejected (6 due to resolution downgrade limit, 37 due to larger size limit).
+2026-05-02 01:09:50 | INFO     | backend.core.searcher - Searching for: Last Sentinel (2023)
+2026-05-02 01:09:51 | INFO     | backend.core.searcher - Found 54 raw results for Last Sentinel
+2026-05-02 01:09:51 | INFO     | backend.core.searcher - Analyzed 54 results: 0 accepted, 54 rejected (1 due to resolution downgrade limit, 52 due to larger size limit).
+2026-05-02 01:09:51 | INFO     | backend.core.searcher - Searching for: Little (2019)
+2026-05-02 01:09:52 | INFO     | backend.core.searcher - Found 28 raw results for Little
+2026-05-02 01:09:52 | INFO     | backend.core.searcher - Analyzed 28 results: 0 accepted, 28 rejected (1 due to resolution downgrade limit, 27 due to larger size limit).
+2026-05-02 01:09:52 | INFO     | backend.core.searcher - Searching for: The Long Walk (2025)
+2026-05-02 01:09:53 | INFO     | backend.core.searcher - Found 150 raw results for The Long Walk
+2026-05-02 01:09:53 | INFO     | backend.core.searcher - Analyzed 150 results: 0 accepted, 150 rejected (4 due to resolution downgrade limit, 140 due to larger size limit).
+2026-05-02 01:09:53 | INFO     | backend.core.searcher - Searching for: The Lord of the Rings: The Return of the King (2003)
+2026-05-02 01:09:54 | INFO     | backend.core.searcher - Found 200 raw results for The Lord of the Rings: The Return of the King
+2026-05-02 01:09:54 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (30 due to resolution downgrade limit, 161 due to larger size limit).
+2026-05-02 01:09:54 | INFO     | backend.core.searcher - Searching for: M3GAN (2022)
+2026-05-02 01:09:55 | INFO     | backend.core.searcher - Found 200 raw results for M3GAN
+2026-05-02 01:09:55 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (0 due to resolution downgrade limit, 195 due to larger size limit).
+2026-05-02 01:09:55 | INFO     | backend.core.searcher - Searching for: Machine Gun Preacher (2011)
+2026-05-02 01:09:57 | INFO     | backend.core.searcher - Found 128 raw results for Machine Gun Preacher
+2026-05-02 01:09:57 | INFO     | backend.core.searcher - Analyzed 128 results: 0 accepted, 128 rejected (9 due to resolution downgrade limit, 107 due to larger size limit).
+2026-05-02 01:09:57 | INFO     | backend.core.searcher - Searching for: The Man from Toronto (2022)
+2026-05-02 01:09:58 | INFO     | backend.core.searcher - Found 101 raw results for The Man from Toronto
+2026-05-02 01:09:58 | INFO     | backend.core.searcher - Analyzed 101 results: 0 accepted, 101 rejected (5 due to resolution downgrade limit, 96 due to larger size limit).
+2026-05-02 01:09:58 | INFO     | backend.core.searcher - Searching for: Max Payne (2008)
+2026-05-02 01:09:59 | INFO     | backend.core.searcher - Found 145 raw results for Max Payne
+2026-05-02 01:10:00 | INFO     | backend.core.searcher - Analyzed 145 results: 0 accepted, 145 rejected (1 due to resolution downgrade limit, 140 due to larger size limit).
+2026-05-02 01:10:00 | INFO     | backend.core.searcher - Searching for: Me, Myself & Irene (2000)
+2026-05-02 01:10:01 | INFO     | backend.core.searcher - Found 99 raw results for Me, Myself & Irene
+2026-05-02 01:10:01 | INFO     | backend.core.searcher - Analyzed 99 results: 0 accepted, 99 rejected (3 due to resolution downgrade limit, 93 due to larger size limit).
+2026-05-02 01:10:01 | INFO     | backend.core.searcher - Searching for: Miss Congeniality 2: Armed and Fabulous (2005)
+2026-05-02 01:10:02 | INFO     | backend.core.searcher - Found 47 raw results for Miss Congeniality 2: Armed and Fabulous
+2026-05-02 01:10:02 | INFO     | backend.core.searcher - Analyzed 47 results: 0 accepted, 47 rejected (1 due to resolution downgrade limit, 42 due to larger size limit).
+2026-05-02 01:10:02 | INFO     | backend.core.searcher - Searching for: Moonrise Kingdom (2012)
+2026-05-02 01:10:03 | INFO     | backend.core.searcher - Found 141 raw results for Moonrise Kingdom
+2026-05-02 01:10:03 | INFO     | backend.core.searcher - Analyzed 141 results: 0 accepted, 141 rejected (8 due to resolution downgrade limit, 128 due to larger size limit).
+2026-05-02 01:10:03 | INFO     | backend.core.searcher - Searching for: Mrs. Harris Goes to Paris (2022)
+2026-05-02 01:10:04 | INFO     | backend.core.searcher - Found 83 raw results for Mrs. Harris Goes to Paris
+2026-05-02 01:10:04 | INFO     | backend.core.searcher - Analyzed 83 results: 0 accepted, 83 rejected (8 due to resolution downgrade limit, 69 due to larger size limit).
+2026-05-02 01:10:04 | INFO     | backend.core.searcher - Searching for: The Mule (2018)
+2026-05-02 01:10:05 | INFO     | backend.core.searcher - Found 180 raw results for The Mule
+2026-05-02 01:10:05 | INFO     | backend.core.searcher - Analyzed 180 results: 0 accepted, 180 rejected (54 due to resolution downgrade limit, 115 due to larger size limit).
+2026-05-02 01:10:05 | INFO     | backend.core.searcher - Searching for: My Dinner with Hervé (2018)
+2026-05-02 01:10:07 | INFO     | backend.core.searcher - Found 17 raw results for My Dinner with Hervé
+2026-05-02 01:10:07 | INFO     | backend.core.searcher - Analyzed 17 results: 0 accepted, 17 rejected (4 due to resolution downgrade limit, 13 due to larger size limit).
+2026-05-02 01:10:07 | INFO     | backend.core.searcher - Searching for: Nitram (2021)
+2026-05-02 01:10:08 | INFO     | backend.core.searcher - Found 63 raw results for Nitram
+2026-05-02 01:10:08 | INFO     | backend.core.searcher - Analyzed 63 results: 0 accepted, 63 rejected (6 due to resolution downgrade limit, 50 due to larger size limit).
+2026-05-02 01:10:08 | INFO     | backend.core.searcher - Searching for: Novocaine (2025)
+2026-05-02 01:10:09 | INFO     | backend.core.searcher - Found 176 raw results for Novocaine
+2026-05-02 01:10:09 | INFO     | backend.core.searcher - Analyzed 176 results: 0 accepted, 176 rejected (0 due to resolution downgrade limit, 174 due to larger size limit).
+2026-05-02 01:10:09 | INFO     | backend.core.searcher - Searching for: Papillon (None)
+2026-05-02 01:10:10 | INFO     | backend.core.searcher - Found 1 raw results for Papillon
+2026-05-02 01:10:10 | INFO     | backend.core.searcher - Analyzed 1 results: 0 accepted, 1 rejected (0 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-02 01:10:10 | INFO     | backend.core.searcher - Searching for: Perfect Days (2023)
+2026-05-02 01:10:13 | INFO     | backend.core.searcher - Found 105 raw results for Perfect Days
+2026-05-02 01:10:13 | INFO     | backend.core.searcher - Analyzed 105 results: 0 accepted, 105 rejected (2 due to resolution downgrade limit, 103 due to larger size limit).
+2026-05-02 01:10:13 | INFO     | backend.core.searcher - Searching for: Playing God (2021)
+2026-05-02 01:10:14 | INFO     | backend.core.searcher - Found 11 raw results for Playing God
+2026-05-02 01:10:14 | INFO     | backend.core.searcher - Analyzed 11 results: 0 accepted, 11 rejected (2 due to resolution downgrade limit, 8 due to larger size limit).
+2026-05-02 01:10:14 | INFO     | backend.core.searcher - Searching for: Prometheus (2012)
+2026-05-02 01:10:15 | INFO     | backend.core.searcher - Found 200 raw results for Prometheus
+2026-05-02 01:10:15 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (6 due to resolution downgrade limit, 190 due to larger size limit).
+2026-05-02 01:10:15 | INFO     | backend.core.searcher - Searching for: Pure Pwnage (2016)
+2026-05-02 01:10:17 | INFO     | backend.core.searcher - Found 10 raw results for Pure Pwnage
+2026-05-02 01:10:17 | INFO     | backend.core.searcher - Analyzed 10 results: 0 accepted, 10 rejected (0 due to resolution downgrade limit, 10 due to larger size limit).
+2026-05-02 01:10:17 | INFO     | backend.core.searcher - Searching for: Rabbit-Proof Fence (2002)
+2026-05-02 01:10:18 | INFO     | backend.core.searcher - Found 39 raw results for Rabbit-Proof Fence
+2026-05-02 01:10:18 | INFO     | backend.core.searcher - Analyzed 39 results: 0 accepted, 39 rejected (0 due to resolution downgrade limit, 39 due to larger size limit).
+2026-05-02 01:10:18 | INFO     | backend.core.searcher - Searching for: Red Joan (2018)
+2026-05-02 01:10:19 | INFO     | backend.core.searcher - Found 60 raw results for Red Joan
+2026-05-02 01:10:19 | INFO     | backend.core.searcher - Analyzed 60 results: 0 accepted, 60 rejected (0 due to resolution downgrade limit, 60 due to larger size limit).
+2026-05-02 01:10:19 | INFO     | backend.core.searcher - Searching for: Red Tails (2012)
+2026-05-02 01:10:21 | INFO     | backend.core.searcher - Found 61 raw results for Red Tails
+2026-05-02 01:10:21 | INFO     | backend.core.searcher - Analyzed 61 results: 0 accepted, 61 rejected (0 due to resolution downgrade limit, 60 due to larger size limit).
+2026-05-02 01:10:21 | INFO     | backend.core.searcher - Searching for: Reminders of Him (2026)
+2026-05-02 01:10:22 | INFO     | backend.core.searcher - Found 40 raw results for Reminders of Him
+2026-05-02 01:10:22 | INFO     | backend.core.searcher - Analyzed 40 results: 0 accepted, 40 rejected (29 due to resolution downgrade limit, 11 due to larger size limit).
+2026-05-02 01:10:22 | INFO     | backend.core.searcher - Searching for: Resident Evil: Degeneration (2008)
+2026-05-02 01:10:23 | INFO     | backend.core.searcher - Found 80 raw results for Resident Evil: Degeneration
+2026-05-02 01:10:23 | INFO     | backend.core.searcher - Analyzed 80 results: 0 accepted, 80 rejected (0 due to resolution downgrade limit, 79 due to larger size limit).
+2026-05-02 01:10:23 | INFO     | backend.core.searcher - Searching for: Revealed - Craig Bellamy: Inside the Storm (2025)
+2026-05-02 01:10:24 | INFO     | backend.core.searcher - Found 0 raw results for Revealed - Craig Bellamy: Inside the Storm
+2026-05-02 01:10:24 | INFO     | backend.core.searcher - Searching for: Road Diary: Bruce Springsteen and the E Street Band (2024)
+2026-05-02 01:10:25 | INFO     | backend.core.searcher - Found 28 raw results for Road Diary: Bruce Springsteen and the E Street Band
+2026-05-02 01:10:25 | INFO     | backend.core.searcher - Analyzed 28 results: 0 accepted, 28 rejected (0 due to resolution downgrade limit, 28 due to larger size limit).
+2026-05-02 01:10:25 | INFO     | backend.core.searcher - Searching for: Roadrunner: A Film About Anthony Bourdain (2021)
+2026-05-02 01:10:26 | INFO     | backend.core.searcher - Found 11 raw results for Roadrunner: A Film About Anthony Bourdain
+2026-05-02 01:10:26 | INFO     | backend.core.searcher - Analyzed 11 results: 0 accepted, 11 rejected (0 due to resolution downgrade limit, 11 due to larger size limit).
+2026-05-02 01:10:26 | INFO     | backend.core.searcher - Searching for: Scream 7 (2026)
+2026-05-02 01:10:27 | INFO     | backend.core.searcher - Found 84 raw results for Scream 7
+2026-05-02 01:10:27 | INFO     | backend.core.searcher - Analyzed 84 results: 0 accepted, 84 rejected (5 due to resolution downgrade limit, 77 due to larger size limit).
+2026-05-02 01:10:27 | INFO     | backend.core.searcher - Searching for: Sniper: The White Raven (2022)
+2026-05-02 01:10:28 | INFO     | backend.core.searcher - Found 52 raw results for Sniper: The White Raven
+2026-05-02 01:10:28 | INFO     | backend.core.searcher - Analyzed 52 results: 0 accepted, 52 rejected (5 due to resolution downgrade limit, 45 due to larger size limit).
+2026-05-02 01:10:28 | INFO     | backend.core.searcher - Searching for: Song Sung Blue (2025)
+2026-05-02 01:10:29 | INFO     | backend.core.searcher - Found 122 raw results for Song Sung Blue
+2026-05-02 01:10:29 | INFO     | backend.core.searcher - Analyzed 122 results: 0 accepted, 122 rejected (4 due to resolution downgrade limit, 117 due to larger size limit).
+2026-05-02 01:10:29 | INFO     | backend.core.searcher - Searching for: Soul (2020)
+2026-05-02 01:10:30 | INFO     | backend.core.searcher - Found 79 raw results for Soul
+2026-05-02 01:10:30 | INFO     | backend.core.searcher - Analyzed 79 results: 0 accepted, 79 rejected (5 due to resolution downgrade limit, 68 due to larger size limit).
+2026-05-02 01:10:30 | INFO     | backend.core.searcher - Searching for: South Park: Post COVID (2021)
+2026-05-02 01:10:33 | INFO     | backend.core.searcher - Found 59 raw results for South Park: Post COVID
+2026-05-02 01:10:33 | INFO     | backend.core.searcher - Analyzed 59 results: 0 accepted, 59 rejected (53 due to resolution downgrade limit, 6 due to larger size limit).
+2026-05-02 01:10:33 | INFO     | backend.core.searcher - Searching for: Sweet Country (2018)
+2026-05-02 01:10:34 | INFO     | backend.core.searcher - Found 25 raw results for Sweet Country
+2026-05-02 01:10:34 | INFO     | backend.core.searcher - Analyzed 25 results: 0 accepted, 25 rejected (0 due to resolution downgrade limit, 23 due to larger size limit).
+2026-05-02 01:10:34 | INFO     | backend.core.searcher - Searching for: T-34 (2018)
+2026-05-02 01:10:35 | INFO     | backend.core.searcher - Found 13 raw results for T-34
+2026-05-02 01:10:35 | INFO     | backend.core.searcher - Analyzed 13 results: 0 accepted, 13 rejected (1 due to resolution downgrade limit, 11 due to larger size limit).
+2026-05-02 01:10:35 | INFO     | backend.core.searcher - Searching for: Tiña (None)
+2026-05-02 01:10:36 | INFO     | backend.core.searcher - Found 0 raw results for Tiña
+2026-05-02 01:10:36 | INFO     | backend.core.searcher - Searching for: Transfusion (2023)
+2026-05-02 01:10:37 | INFO     | backend.core.searcher - Found 62 raw results for Transfusion
+2026-05-02 01:10:37 | INFO     | backend.core.searcher - Analyzed 62 results: 0 accepted, 62 rejected (34 due to resolution downgrade limit, 25 due to larger size limit).
+2026-05-02 01:10:37 | INFO     | backend.core.searcher - Searching for: Union (2024)
+2026-05-02 01:10:38 | INFO     | backend.core.searcher - Found 5 raw results for Union
+2026-05-02 01:10:38 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-02 01:10:38 | INFO     | backend.core.searcher - Searching for: The Upside (2019)
+2026-05-02 01:10:39 | INFO     | backend.core.searcher - Found 88 raw results for The Upside
+2026-05-02 01:10:39 | INFO     | backend.core.searcher - Analyzed 88 results: 0 accepted, 88 rejected (8 due to resolution downgrade limit, 23 due to larger size limit).
+2026-05-02 01:10:39 | INFO     | backend.core.searcher - Searching for: War of the Worlds (2025)
+2026-05-02 01:10:40 | INFO     | backend.core.searcher - Found 34 raw results for War of the Worlds
+2026-05-02 01:10:40 | INFO     | backend.core.searcher - Analyzed 34 results: 0 accepted, 34 rejected (21 due to resolution downgrade limit, 12 due to larger size limit).
+2026-05-02 01:10:40 | INFO     | backend.core.searcher - Searching for: The Way, My Way (2024)
+2026-05-02 01:10:42 | INFO     | backend.core.searcher - Found 8 raw results for The Way, My Way
+2026-05-02 01:10:42 | INFO     | backend.core.searcher - Analyzed 8 results: 0 accepted, 8 rejected (1 due to resolution downgrade limit, 7 due to larger size limit).
+2026-05-02 01:10:42 | INFO     | backend.core.searcher - Searching for: Wonder Woman 1984 (2020)
+2026-05-02 01:10:43 | INFO     | backend.core.searcher - Found 200 raw results for Wonder Woman 1984
+2026-05-02 01:10:43 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (0 due to resolution downgrade limit, 123 due to larger size limit).
+2026-05-02 01:10:43 | INFO     | backend.core.searcher - Searching for: A Working Man (2025)
+2026-05-02 01:10:45 | INFO     | backend.core.searcher - Found 166 raw results for A Working Man
+2026-05-02 01:10:45 | INFO     | backend.core.searcher - Analyzed 166 results: 0 accepted, 166 rejected (7 due to resolution downgrade limit, 152 due to larger size limit).
+2026-05-02 01:10:45 | INFO     | backend.core.searcher - Searching for: Faith No More – Live Hellfest 2015 (2015)
+2026-05-02 01:10:46 | INFO     | backend.core.searcher - Found 0 raw results for Faith No More – Live Hellfest 2015
+2026-05-02 01:10:46 | INFO     | backend.core.searcher - Searching for: Incubus - Live at BeachLife Festival 2024 (2024)
+2026-05-02 01:10:47 | INFO     | backend.core.searcher - Found 0 raw results for Incubus - Live at BeachLife Festival 2024
+2026-05-02 01:10:47 | INFO     | backend.core.searcher - Searching for: Incubus - Live at Festival de Viña 2025 (2025)
+2026-05-02 01:10:48 | INFO     | backend.core.searcher - Found 0 raw results for Incubus - Live at Festival de Viña 2025
+2026-05-02 01:10:48 | INFO     | backend.core.searcher - Searching for: Incubus - Live at Rock in Rio 2024 (2024)
+2026-05-02 01:10:51 | INFO     | backend.core.searcher - Found 0 raw results for Incubus - Live at Rock in Rio 2024
+2026-05-02 01:10:51 | INFO     | backend.core.searcher - Searching for: Incubus Alive at Red Rocks (2004)
+2026-05-02 01:10:53 | INFO     | backend.core.searcher - Found 2 raw results for Incubus Alive at Red Rocks
+2026-05-02 01:10:53 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-02 01:10:53 | INFO     | backend.core.searcher - Searching for: Incubus: 20th Anniversary Morning View Concert (2021)
+2026-05-02 01:10:55 | INFO     | backend.core.searcher - Found 0 raw results for Incubus: 20th Anniversary Morning View Concert
+2026-05-02 01:10:55 | INFO     | backend.core.searcher - Searching for: Incubus: Look Alive (2007)
+2026-05-02 01:10:56 | INFO     | backend.core.searcher - Found 3 raw results for Incubus: Look Alive
+2026-05-02 01:10:56 | INFO     | backend.core.searcher - Analyzed 3 results: 0 accepted, 3 rejected (0 due to resolution downgrade limit, 3 due to larger size limit).
+2026-05-02 01:10:56 | INFO     | backend.core.searcher - Searching for: Karnivool: Live At The Forum (2013)
+2026-05-02 01:10:57 | INFO     | backend.core.searcher - Found 0 raw results for Karnivool: Live At The Forum
+2026-05-02 01:10:57 | INFO     | backend.core.searcher - Searching for: Karnivool: The Decade Of Sound Awake (2021)
+2026-05-02 01:10:58 | INFO     | backend.core.searcher - Found 0 raw results for Karnivool: The Decade Of Sound Awake
+2026-05-02 01:10:58 | INFO     | backend.core.searcher - Searching for: Michael Jackson Live at Wembley July 16, 1988 (2012)
+2026-05-02 01:10:59 | INFO     | backend.core.searcher - Found 0 raw results for Michael Jackson Live at Wembley July 16, 1988
+2026-05-02 01:10:59 | INFO     | backend.core.searcher - Searching for: Nirvana: Unplugged In New York (1993)
+2026-05-02 01:11:01 | INFO     | backend.core.searcher - Found 1 raw results for Nirvana: Unplugged In New York
+2026-05-02 01:11:01 | INFO     | backend.core.searcher - Analyzed 1 results: 0 accepted, 1 rejected (0 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-02 01:11:01 | INFO     | backend.core.searcher - Searching for: Queen + Adam Lambert: Live Around the World (2020)
+2026-05-02 01:11:02 | INFO     | backend.core.searcher - Found 1 raw results for Queen + Adam Lambert: Live Around the World
+2026-05-02 01:11:02 | INFO     | backend.core.searcher - Analyzed 1 results: 0 accepted, 1 rejected (0 due to resolution downgrade limit, 0 due to larger size limit).
+2026-05-02 01:11:02 | INFO     | backend.core.searcher - Searching for: The Rage Factor: Rage Against the Machine Live from London (2015)
+2026-05-02 01:11:03 | INFO     | backend.core.searcher - Found 2 raw results for The Rage Factor: Rage Against the Machine Live from London
+2026-05-02 01:11:03 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 0 due to larger size limit).
+2026-05-02 01:11:03 | INFO     | backend.core.searcher - Searching for: Arj Barker: Forever (2009)
+2026-05-02 01:11:04 | INFO     | backend.core.searcher - Found 5 raw results for Arj Barker: Forever
+2026-05-02 01:11:04 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 5 due to larger size limit).
+2026-05-02 01:11:04 | INFO     | backend.core.searcher - Searching for: Carl Barron: Drinking with a Fork (2018)
+2026-05-02 01:11:05 | INFO     | backend.core.searcher - Found 0 raw results for Carl Barron: Drinking with a Fork
+2026-05-02 01:11:05 | INFO     | backend.core.searcher - Searching for: Carl Barron: Whatever Comes Next (2005)
+2026-05-02 01:11:06 | INFO     | backend.core.searcher - Found 5 raw results for Carl Barron: Whatever Comes Next
+2026-05-02 01:11:06 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 5 due to larger size limit).
+2026-05-02 01:11:06 | INFO     | backend.core.searcher - Searching for: Dane Cook: Isolated Incident (2009)
+2026-05-02 01:11:07 | INFO     | backend.core.searcher - Found 4 raw results for Dane Cook: Isolated Incident
+2026-05-02 01:11:07 | INFO     | backend.core.searcher - Analyzed 4 results: 0 accepted, 4 rejected (0 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-02 01:11:07 | INFO     | backend.core.searcher - Searching for: Dane Cook: Rough Around the Edges (2007)
+2026-05-02 01:11:08 | INFO     | backend.core.searcher - Found 5 raw results for Dane Cook: Rough Around the Edges
+2026-05-02 01:11:08 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 5 due to larger size limit).
+2026-05-02 01:11:08 | INFO     | backend.core.searcher - Searching for: Dane Cook: Vicious Circle (2006)
+2026-05-02 01:11:09 | INFO     | backend.core.searcher - Found 9 raw results for Dane Cook: Vicious Circle
+2026-05-02 01:11:09 | INFO     | backend.core.searcher - Analyzed 9 results: 0 accepted, 9 rejected (0 due to resolution downgrade limit, 9 due to larger size limit).
+2026-05-02 01:11:09 | INFO     | backend.core.searcher - Searching for: Danny Bhoy: Live at the Athenaeum (2009)
+2026-05-02 01:11:10 | INFO     | backend.core.searcher - Found 0 raw results for Danny Bhoy: Live at the Athenaeum
+2026-05-02 01:11:10 | INFO     | backend.core.searcher - Searching for: Danny Bhoy: Live at the Sydney Opera House (2007)
+2026-05-02 01:11:11 | INFO     | backend.core.searcher - Found 2 raw results for Danny Bhoy: Live at the Sydney Opera House
+2026-05-02 01:11:11 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 2 due to larger size limit).
+2026-05-02 01:11:11 | INFO     | backend.core.searcher - Searching for: Jerry Seinfeld: 'I'm Telling You for the Last Time' (1998)
+2026-05-02 01:11:13 | INFO     | backend.core.searcher - Found 5 raw results for Jerry Seinfeld: 'I'm Telling You for the Last Time'
+2026-05-02 01:11:13 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 5 due to larger size limit).
+2026-05-02 01:11:13 | INFO     | backend.core.searcher - Searching for: Jim Gaffigan: Obsessed (2014)
+2026-05-02 01:11:14 | INFO     | backend.core.searcher - Found 25 raw results for Jim Gaffigan: Obsessed
+2026-05-02 01:11:14 | INFO     | backend.core.searcher - Analyzed 25 results: 0 accepted, 25 rejected (0 due to resolution downgrade limit, 25 due to larger size limit).
+2026-05-02 01:11:14 | INFO     | backend.core.searcher - Searching for: Jim Jefferies: Alcoholocaust (2010)
+2026-05-02 01:11:15 | INFO     | backend.core.searcher - Found 14 raw results for Jim Jefferies: Alcoholocaust
+2026-05-02 01:11:15 | INFO     | backend.core.searcher - Analyzed 14 results: 0 accepted, 14 rejected (0 due to resolution downgrade limit, 13 due to larger size limit).
+2026-05-02 01:11:15 | INFO     | backend.core.searcher - Searching for: Jim Jefferies: Contraband (2008)
+2026-05-02 01:11:16 | INFO     | backend.core.searcher - Found 1 raw results for Jim Jefferies: Contraband
+2026-05-02 01:11:16 | INFO     | backend.core.searcher - Analyzed 1 results: 0 accepted, 1 rejected (0 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-02 01:11:16 | INFO     | backend.core.searcher - Searching for: Jim Jefferies: I Swear to God (2009)
+2026-05-02 01:11:17 | INFO     | backend.core.searcher - Found 11 raw results for Jim Jefferies: I Swear to God
+2026-05-02 01:11:17 | INFO     | backend.core.searcher - Analyzed 11 results: 0 accepted, 11 rejected (0 due to resolution downgrade limit, 11 due to larger size limit).
+2026-05-02 01:11:17 | INFO     | backend.core.searcher - Searching for: Kevin Hart: Seriously Funny (2010)
+2026-05-02 01:11:18 | INFO     | backend.core.searcher - Found 29 raw results for Kevin Hart: Seriously Funny
+2026-05-02 01:11:18 | INFO     | backend.core.searcher - Analyzed 29 results: 0 accepted, 29 rejected (0 due to resolution downgrade limit, 27 due to larger size limit).
+2026-05-02 01:11:18 | INFO     | backend.core.searcher - Searching for: Louis C.K. Oh My God (2013)
+2026-05-02 01:11:20 | INFO     | backend.core.searcher - Found 24 raw results for Louis C.K. Oh My God
+2026-05-02 01:11:20 | INFO     | backend.core.searcher - Analyzed 24 results: 0 accepted, 24 rejected (0 due to resolution downgrade limit, 21 due to larger size limit).
+2026-05-02 01:11:20 | INFO     | backend.core.searcher - Searching for: Louis C.K.: Shameless (2007)
+2026-05-02 01:11:21 | INFO     | backend.core.searcher - Found 16 raw results for Louis C.K.: Shameless
+2026-05-02 01:11:21 | INFO     | backend.core.searcher - Analyzed 16 results: 0 accepted, 16 rejected (0 due to resolution downgrade limit, 16 due to larger size limit).
+2026-05-02 01:11:21 | INFO     | backend.core.searcher - Searching for: Ricky Gervais Meets... Larry David (2006)
+2026-05-02 01:11:22 | INFO     | backend.core.searcher - Found 0 raw results for Ricky Gervais Meets... Larry David
+2026-05-02 01:11:22 | INFO     | backend.core.searcher - Searching for: Ricky Gervais: Out of England - The Stand-Up Special (2008)
+2026-05-02 01:11:23 | INFO     | backend.core.searcher - Found 2 raw results for Ricky Gervais: Out of England - The Stand-Up Special
+2026-05-02 01:11:23 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 2 due to larger size limit).
+2026-05-02 01:11:23 | INFO     | backend.core.searcher - Searching for: Russell Peters: Outsourced (2006)
+2026-05-02 01:11:24 | INFO     | backend.core.searcher - Found 0 raw results for Russell Peters: Outsourced
+2026-05-02 01:11:24 | INFO     | backend.core.searcher - Searching for: Russell Peters: Red, White and Brown (2008)
+2026-05-02 01:11:26 | INFO     | backend.core.searcher - Found 0 raw results for Russell Peters: Red, White and Brown
+2026-05-02 01:11:26 | INFO     | backend.core.searcher - Searching for: Science (2010)
+2026-05-02 01:11:27 | INFO     | backend.core.searcher - Found 18 raw results for Science
+2026-05-02 01:11:27 | INFO     | backend.core.searcher - Analyzed 18 results: 0 accepted, 18 rejected (0 due to resolution downgrade limit, 18 due to larger size limit).
+2026-05-02 01:11:27 | INFO     | backend.core.searcher - Searching for: Bambi (1942)
+2026-05-02 01:11:28 | INFO     | backend.core.searcher - Found 175 raw results for Bambi
+2026-05-02 01:11:28 | INFO     | backend.core.searcher - Analyzed 175 results: 0 accepted, 175 rejected (0 due to resolution downgrade limit, 173 due to larger size limit).
+2026-05-02 01:11:28 | INFO     | backend.core.searcher - Searching for: Disney Classic 24 the Fox and the Hound (None)
+2026-05-02 01:11:31 | INFO     | backend.core.searcher - Found 1 raw results for Disney Classic 24 the Fox and the Hound
+2026-05-02 01:11:31 | INFO     | backend.core.searcher - Analyzed 1 results: 0 accepted, 1 rejected (0 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-02 01:11:31 | INFO     | backend.core.searcher - Searching for: Madagascar: Escape 2 Africa (2008)
+2026-05-02 01:11:32 | INFO     | backend.core.searcher - Found 156 raw results for Madagascar: Escape 2 Africa
+2026-05-02 01:11:32 | INFO     | backend.core.searcher - Analyzed 156 results: 0 accepted, 156 rejected (10 due to resolution downgrade limit, 127 due to larger size limit).
+2026-05-02 01:11:32 | INFO     | backend.core.searcher - Searching for: Shrek 2 (2004)
+2026-05-02 01:11:33 | INFO     | backend.core.searcher - Found 196 raw results for Shrek 2
+2026-05-02 01:11:33 | INFO     | backend.core.searcher - Analyzed 196 results: 0 accepted, 196 rejected (5 due to resolution downgrade limit, 181 due to larger size limit).
+2026-05-02 01:11:33 | INFO     | backend.core.searcher - Searching for: Mulan II (2004)
+2026-05-02 01:11:35 | INFO     | backend.core.searcher - Found 106 raw results for Mulan II
+2026-05-02 01:11:36 | INFO     | backend.core.searcher - Analyzed 106 results: 0 accepted, 106 rejected (4 due to resolution downgrade limit, 78 due to larger size limit).
+2026-05-02 01:11:36 | INFO     | backend.core.searcher - Searching for:  the Wind Rises (2013)
+2026-05-02 01:11:40 | INFO     | backend.core.searcher - Found 82 raw results for  the Wind Rises
+2026-05-02 01:11:40 | INFO     | backend.core.searcher - Analyzed 82 results: 0 accepted, 82 rejected (7 due to resolution downgrade limit, 71 due to larger size limit).
+2026-05-02 01:11:40 | INFO     | backend.core.searcher - Searching for: Act of Valor (2012)
+2026-05-02 01:11:41 | INFO     | backend.core.searcher - Found 167 raw results for Act of Valor
+2026-05-02 01:11:42 | INFO     | backend.core.searcher - Analyzed 167 results: 0 accepted, 167 rejected (10 due to resolution downgrade limit, 133 due to larger size limit).
+2026-05-02 01:11:42 | INFO     | backend.core.searcher - Searching for: Ainbo (2021)
+2026-05-02 01:11:43 | INFO     | backend.core.searcher - Found 40 raw results for Ainbo
+2026-05-02 01:11:43 | INFO     | backend.core.searcher - Analyzed 40 results: 0 accepted, 40 rejected (1 due to resolution downgrade limit, 37 due to larger size limit).
+2026-05-02 01:11:43 | INFO     | backend.core.searcher - Searching for: Ant-Man (2015)
+2026-05-02 01:11:44 | INFO     | backend.core.searcher - Found 200 raw results for Ant-Man
+2026-05-02 01:11:44 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (1 due to resolution downgrade limit, 189 due to larger size limit).
+2026-05-02 01:11:44 | INFO     | backend.core.searcher - Searching for: Leo (2023)
+2026-05-02 01:11:47 | INFO     | backend.core.searcher - Found 3 raw results for Leo
+2026-05-02 01:11:47 | INFO     | backend.core.searcher - Analyzed 3 results: 0 accepted, 3 rejected (0 due to resolution downgrade limit, 3 due to larger size limit).
+2026-05-02 01:11:47 | INFO     | backend.core.searcher - Searching for: Hotel Transylvania 2 (2015)
+2026-05-02 01:11:48 | INFO     | backend.core.searcher - Found 200 raw results for Hotel Transylvania 2
+2026-05-02 01:11:48 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (0 due to resolution downgrade limit, 190 due to larger size limit).
+2026-05-02 03:00:00 | INFO     | backend.scheduler.scheduler - Cleaned 1 file(s) from recycle bin
+2026-05-02 04:00:00 | INFO     | backend.scheduler.scheduler - Orphan scanner triggered
+2026-05-02 15:21:35 | INFO     | backend.core.scanner - Scan started: 1695 movies in Plex
+2026-05-02 15:22:40 | WARNING  | backend.core.scanner - TMDB lookup failed for Ricky Gervais Meets... Larry David: Client error '404 Not Found' for url 'https://api.themoviedb.org/3/movie/264152?api_key=b4476886334d94febf78d6460d852813&language=en-US'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404
+2026-05-02 15:22:41 | INFO     | backend.core.scanner - Scan completed: 1695 movies processed
+2026-05-02 17:57:00 | INFO     | backend.utils.logger - Logger initialised — level=INFO
+2026-05-02 17:57:00 | INFO     | backend.scheduler.scheduler - Scheduled nightly cycle at 01:00 UTC
+2026-05-02 17:57:00 | INFO     | backend.scheduler.scheduler - Scheduler started
+2026-05-02 17:57:55 | INFO     | backend.core.scanner - Scan started: 1695 movies in Plex
+2026-05-02 17:59:03 | WARNING  | backend.core.scanner - TMDB lookup failed for Ricky Gervais Meets... Larry David: Client error '404 Not Found' for url 'https://api.themoviedb.org/3/movie/264152?api_key=b4476886334d94febf78d6460d852813&language=en-US'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404
+2026-05-02 17:59:04 | INFO     | backend.core.scanner - Scan completed: 1695 movies processed
+2026-05-03 01:00:00 | INFO     | backend.scheduler.scheduler - Nightly cycle triggered
+2026-05-03 01:00:04 | INFO     | backend.core.scanner - Scan started: 1695 movies in Plex
+2026-05-03 01:01:07 | WARNING  | backend.core.scanner - TMDB lookup failed for Ricky Gervais Meets... Larry David: Client error '404 Not Found' for url 'https://api.themoviedb.org/3/movie/264152?api_key=b4476886334d94febf78d6460d852813&language=en-US'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404
+2026-05-03 01:01:07 | INFO     | backend.core.scanner - Scan completed: 1695 movies processed
+2026-05-03 01:01:07 | INFO     | backend.core.orchestrator - Cycle: 241 movies to process
+2026-05-03 01:01:07 | INFO     | backend.core.searcher - Searching for: Extraction II (2023)
+2026-05-03 01:01:09 | INFO     | backend.core.searcher - Found 5 raw results for Extraction II
+2026-05-03 01:01:09 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (2 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-03 01:01:09 | INFO     | backend.core.searcher - Searching for: Major Payne (1995)
+2026-05-03 01:01:10 | INFO     | backend.core.searcher - Found 65 raw results for Major Payne
+2026-05-03 01:01:10 | INFO     | backend.core.searcher - Analyzed 65 results: 9 accepted, 56 rejected (14 due to resolution downgrade limit, 31 due to larger size limit).
+2026-05-03 01:01:10 | INFO     | backend.core.downloader - Submitted to sabnzbd: (Major Payne) [55/60] - "Major Payne 1995 1080p h265.vol015+016.par2" → job_id=SABnzbd_nzo_j1wltrh9
+2026-05-03 01:01:38 | INFO     | backend.core.downloader - Download 1614: found in sabnzbd history — status='completed' storage='H:\\DOWNLOADS\\USENET\\complete\\(Major Payne) [55_60] - _Major Payne 1995 1080p h265.vol015+016.par2_'
+2026-05-03 01:01:38 | INFO     | backend.core.replacer - Replace starting — storage_path='H:\\DOWNLOADS\\USENET\\complete\\(Major Payne) [55_60] - _Major Payne 1995 1080p h265.vol015+016.par2_'
+2026-05-03 01:01:38 | ERROR    | backend.core.replacer - No video file found in 'H:\\DOWNLOADS\\USENET\\complete\\(Major Payne) [55_60] - _Major Payne 1995 1080p h265.vol015+016.par2_'
+2026-05-03 01:01:38 | INFO     | backend.core.replacer - Cleaned up download folder: 'H:\\DOWNLOADS\\USENET\\complete\\(Major Payne) [55_60] - _Major Payne 1995 1080p h265.vol015+016.par2_'
+2026-05-03 01:01:38 | INFO     | backend.core.searcher - Searching for: Now You See Me (2013)
+2026-05-03 01:01:40 | INFO     | backend.core.searcher - Found 200 raw results for Now You See Me
+2026-05-03 01:01:40 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (7 due to resolution downgrade limit, 171 due to larger size limit).
+2026-05-03 01:01:40 | INFO     | backend.core.searcher - Searching for: Resident Evil: Retribution (2012)
+2026-05-03 01:01:41 | INFO     | backend.core.searcher - Found 183 raw results for Resident Evil: Retribution
+2026-05-03 01:01:41 | INFO     | backend.core.searcher - Analyzed 183 results: 1 accepted, 182 rejected (7 due to resolution downgrade limit, 169 due to larger size limit).
+2026-05-03 01:01:41 | INFO     | backend.core.downloader - Submitted to sabnzbd: Resident.Evil.Retribution.2012.m720p.AAC.x264-NoGroup → job_id=SABnzbd_nzo_5xxnv7dz
+2026-05-03 01:01:48 | INFO     | backend.core.downloader - Download 1615: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Resident.Evil.Retribution.2012.m720p.AAC.x264-NoGroup'
+2026-05-03 01:01:49 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_5xxnv7dz
+2026-05-03 01:01:49 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Resident.Evil.Retribution.2012.m720p.AAC.x264-NoGroup
+2026-05-03 01:01:49 | INFO     | backend.core.download_workflow - Failed download cleanup for 1615: cleaned folder_deleted=True downloader_purged=True
+2026-05-03 01:01:49 | INFO     | backend.core.searcher - Searching for: The Running Man (2025)
+2026-05-03 01:01:50 | INFO     | backend.core.searcher - Found 196 raw results for The Running Man
+2026-05-03 01:01:50 | INFO     | backend.core.searcher - Analyzed 196 results: 7 accepted, 189 rejected (68 due to resolution downgrade limit, 114 due to larger size limit).
+2026-05-03 01:01:50 | INFO     | backend.core.downloader - Submitted to sabnzbd: The.Running.Man.2025.2160p.HDR10Plus.DV.WEBRip.6CH.X265.HEVC-PSA → job_id=SABnzbd_nzo_dh4m_pny
+2026-05-03 01:02:02 | INFO     | backend.core.downloader - Download 1616: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\The.Running.Man.2025.2160p.HDR10Plus.DV.WEBRip.6CH.X265.HEVC-PSA'
+2026-05-03 01:02:03 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_dh4m_pny
+2026-05-03 01:02:03 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\The.Running.Man.2025.2160p.HDR10Plus.DV.WEBRip.6CH.X265.HEVC-PSA
+2026-05-03 01:02:03 | INFO     | backend.core.download_workflow - Failed download cleanup for 1616: cleaned folder_deleted=True downloader_purged=True
+2026-05-03 01:02:03 | INFO     | backend.core.searcher - Searching for: Scream VI (2023)
+2026-05-03 01:02:04 | INFO     | backend.core.searcher - Found 200 raw results for Scream VI
+2026-05-03 01:02:04 | INFO     | backend.core.searcher - Analyzed 200 results: 2 accepted, 198 rejected (7 due to resolution downgrade limit, 190 due to larger size limit).
+2026-05-03 01:02:05 | INFO     | backend.core.downloader - Submitted to sabnzbd: Scream.VI.2023.720p.UHD.BluRay.x264.6CH-Pahe.in → job_id=SABnzbd_nzo_y5zb34vi
+2026-05-03 01:02:11 | INFO     | backend.core.downloader - Download 1617: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Scream.VI.2023.720p.UHD.BluRay.x264.6CH-Pahe.in'
+2026-05-03 01:02:12 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_y5zb34vi
+2026-05-03 01:02:12 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Scream.VI.2023.720p.UHD.BluRay.x264.6CH-Pahe.in
+2026-05-03 01:02:12 | INFO     | backend.core.download_workflow - Failed download cleanup for 1617: cleaned folder_deleted=True downloader_purged=True
+2026-05-03 01:02:12 | INFO     | backend.core.searcher - Searching for: South Park: The Streaming Wars (2022)
+2026-05-03 01:02:13 | INFO     | backend.core.searcher - Found 17 raw results for South Park: The Streaming Wars
+2026-05-03 01:02:13 | INFO     | backend.core.searcher - Analyzed 17 results: 1 accepted, 16 rejected (1 due to resolution downgrade limit, 13 due to larger size limit).
+2026-05-03 01:02:14 | INFO     | backend.core.downloader - Submitted to sabnzbd: (South Park the Streaming Wars) [00/22] - "South Park the Streaming Wars 2022 1080p h265.nzb" → job_id=SABnzbd_nzo_hw4h4q6w
+2026-05-03 01:02:20 | INFO     | backend.core.downloader - Download 1618: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\(South Park the Streaming Wars) [00_22] - _South Park the Streaming Wars 2022 1080p h265.nzb_'
+2026-05-03 01:02:21 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_hw4h4q6w
+2026-05-03 01:02:21 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\(South Park the Streaming Wars) [00_22] - _South Park the Streaming Wars 2022 1080p h265.nzb_
+2026-05-03 01:02:21 | INFO     | backend.core.download_workflow - Failed download cleanup for 1618: cleaned folder_deleted=True downloader_purged=True
+2026-05-03 01:02:21 | INFO     | backend.core.searcher - Searching for: Tag (2018)
+2026-05-03 01:02:22 | INFO     | backend.core.searcher - Found 84 raw results for Tag
+2026-05-03 01:02:22 | INFO     | backend.core.searcher - Analyzed 84 results: 1 accepted, 83 rejected (2 due to resolution downgrade limit, 74 due to larger size limit).
+2026-05-03 01:02:23 | INFO     | backend.core.downloader - Submitted to sabnzbd: Tag.2018.[BluRay].[720p].[YTS.AM] → job_id=SABnzbd_nzo_24119nza
+2026-05-03 01:03:57 | INFO     | backend.core.downloader - Download 1619: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Tag.2018.[BluRay].[720p].[YTS.AM]'
+2026-05-03 01:03:58 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_24119nza
+2026-05-03 01:03:58 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Tag.2018.[BluRay].[720p].[YTS.AM]
+2026-05-03 01:03:58 | INFO     | backend.core.download_workflow - Failed download cleanup for 1619: cleaned folder_deleted=True downloader_purged=True
+2026-05-03 01:03:58 | INFO     | backend.core.searcher - Searching for: Tenet (2020)
+2026-05-03 01:03:59 | INFO     | backend.core.searcher - Found 200 raw results for Tenet
+2026-05-03 01:04:00 | INFO     | backend.core.searcher - Analyzed 200 results: 1 accepted, 199 rejected (44 due to resolution downgrade limit, 140 due to larger size limit).
+2026-05-03 01:04:00 | INFO     | backend.core.downloader - Submitted to sabnzbd: Tenet.2020.bluray.hdr.Imax.2160p.av1.5.1.opus.vmaf97-Rosy → job_id=SABnzbd_nzo_pcmjxcp4
+2026-05-03 01:04:12 | INFO     | backend.core.downloader - Download 1620: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\Tenet.2020.bluray.hdr.Imax.2160p.av1.5.1.opus.vmaf97-Rosy'
+2026-05-03 01:04:13 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_pcmjxcp4
+2026-05-03 01:04:13 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\Tenet.2020.bluray.hdr.Imax.2160p.av1.5.1.opus.vmaf97-Rosy
+2026-05-03 01:04:13 | INFO     | backend.core.download_workflow - Failed download cleanup for 1620: cleaned folder_deleted=True downloader_purged=True
+2026-05-03 01:04:13 | INFO     | backend.core.searcher - Searching for: Tetris (2023)
+2026-05-03 01:04:16 | INFO     | backend.core.searcher - Found 89 raw results for Tetris
+2026-05-03 01:04:16 | INFO     | backend.core.searcher - Analyzed 89 results: 2 accepted, 87 rejected (3 due to resolution downgrade limit, 80 due to larger size limit).
+2026-05-03 01:04:17 | INFO     | backend.core.downloader - Submitted to sabnzbd: (Tetris) [24/35] - "Tetris 2023 1080p h265.part23.rar" → job_id=SABnzbd_nzo_16dn1mmz
+2026-05-03 01:04:29 | INFO     | backend.core.downloader - Download 1621: found in sabnzbd history — status='failed' storage='H:\\DOWNLOADS\\USENET\\incomplete\\(Tetris) [24_35] - _Tetris 2023 1080p h265.part23.rar_'
+2026-05-03 01:04:30 | INFO     | backend.integrations.sabnzbd - SABnzbd purged history job SABnzbd_nzo_16dn1mmz
+2026-05-03 01:04:30 | INFO     | backend.core.downloader - Cleaned up failed download folder: H:\DOWNLOADS\USENET\incomplete\(Tetris) [24_35] - _Tetris 2023 1080p h265.part23.rar_
+2026-05-03 01:04:30 | INFO     | backend.core.download_workflow - Failed download cleanup for 1621: cleaned folder_deleted=True downloader_purged=True
+2026-05-03 01:04:30 | INFO     | backend.core.searcher - Searching for: Taylor Swift: The Eras Tour (2023)
+2026-05-03 01:04:31 | INFO     | backend.core.searcher - Found 68 raw results for Taylor Swift: The Eras Tour
+2026-05-03 01:04:31 | INFO     | backend.core.searcher - Analyzed 68 results: 0 accepted, 68 rejected (2 due to resolution downgrade limit, 65 due to larger size limit).
+2026-05-03 01:04:31 | INFO     | backend.core.searcher - Searching for: Caitlyn & Matt's Wedding Film (2018)
+2026-05-03 01:04:32 | INFO     | backend.core.searcher - Found 0 raw results for Caitlyn & Matt's Wedding Film
+2026-05-03 01:04:32 | INFO     | backend.core.searcher - Searching for: Caitlyn & Matt's Wedding Speeches (2018)
+2026-05-03 01:04:33 | INFO     | backend.core.searcher - Found 0 raw results for Caitlyn & Matt's Wedding Speeches
+2026-05-03 01:04:33 | INFO     | backend.core.searcher - Searching for: David White - Interview (2011)
+2026-05-03 01:04:36 | INFO     | backend.core.searcher - Found 0 raw results for David White - Interview
+2026-05-03 01:04:36 | INFO     | backend.core.searcher - Searching for: Matt - Skydiving (2009)
+2026-05-03 01:04:38 | INFO     | backend.core.searcher - Found 0 raw results for Matt - Skydiving
+2026-05-03 01:04:38 | INFO     | backend.core.searcher - Searching for: The Hurley Chronicles - Pt 1 - Canberra and Toowoomba (1996)
+2026-05-03 01:04:40 | INFO     | backend.core.searcher - Found 0 raw results for The Hurley Chronicles - Pt 1 - Canberra and Toowoomba
+2026-05-03 01:04:40 | INFO     | backend.core.searcher - Searching for: The Hurley Chronicles - Pt 2 - Jellicoe St (2000)
+2026-05-03 01:04:41 | INFO     | backend.core.searcher - Found 0 raw results for The Hurley Chronicles - Pt 2 - Jellicoe St
+2026-05-03 01:04:41 | INFO     | backend.core.searcher - Searching for: Hurley Family Stories Chapter 3 Lake Eyre Trip (2002)
+2026-05-03 01:04:42 | INFO     | backend.core.searcher - Found 0 raw results for Hurley Family Stories Chapter 3 Lake Eyre Trip
+2026-05-03 01:04:42 | INFO     | backend.core.searcher - Searching for: 01 BREATHING AND POSTURE (None)
+2026-05-03 01:04:44 | INFO     | backend.core.searcher - Found 0 raw results for 01 BREATHING AND POSTURE
+2026-05-03 01:04:44 | INFO     | backend.core.searcher - Searching for: 02 METHOD TONING (None)
+2026-05-03 01:04:45 | INFO     | backend.core.searcher - Found 0 raw results for 02 METHOD TONING
+2026-05-03 01:04:45 | INFO     | backend.core.searcher - Searching for: 10 Minute Abs After Baby 8 Diastasis Recti Safe Ab Exercises (None)
+2026-05-03 01:04:46 | INFO     | backend.core.searcher - Found 0 raw results for 10 Minute Abs After Baby 8 Diastasis Recti Safe Ab Exercises
+2026-05-03 01:04:46 | INFO     | backend.core.searcher - Searching for: 15 Minute Postpartum Workout Diastasis Recti Safe (None)
+2026-05-03 01:04:47 | INFO     | backend.core.searcher - Found 0 raw results for 15 Minute Postpartum Workout Diastasis Recti Safe
+2026-05-03 01:04:47 | INFO     | backend.core.searcher - Searching for: After C Section Exercise Postpartum Workout After C Section (None)
+2026-05-03 01:04:48 | INFO     | backend.core.searcher - Found 0 raw results for After C Section Exercise Postpartum Workout After C Section
+2026-05-03 01:04:48 | INFO     | backend.core.searcher - Searching for: Amira's Belly Dance & Yoga for Pregnancy (None)
+2026-05-03 01:04:50 | INFO     | backend.core.searcher - Found 0 raw results for Amira's Belly Dance & Yoga for Pregnancy
+2026-05-03 01:04:50 | INFO     | backend.core.searcher - Searching for: The Ballet Workout II (None)
+2026-05-03 01:04:51 | INFO     | backend.core.searcher - Found 0 raw results for The Ballet Workout II
+2026-05-03 01:04:51 | INFO     | backend.core.searcher - Searching for: BONUS 12 Minute Pilates Energy Boost (None)
+2026-05-03 01:04:52 | INFO     | backend.core.searcher - Found 0 raw results for BONUS 12 Minute Pilates Energy Boost
+2026-05-03 01:04:52 | INFO     | backend.core.searcher - Searching for: BONUS Pilates Energy Boost II Workout (None)
+2026-05-03 01:04:54 | INFO     | backend.core.searcher - Found 0 raw results for BONUS Pilates Energy Boost II Workout
+2026-05-03 01:04:54 | INFO     | backend.core.searcher - Searching for: Core Warm Up (None)
+2026-05-03 01:04:55 | INFO     | backend.core.searcher - Found 0 raw results for Core Warm Up
+2026-05-03 01:04:55 | INFO     | backend.core.searcher - Searching for: Element Pilates Basics (None)
+2026-05-03 01:04:56 | INFO     | backend.core.searcher - Found 0 raw results for Element Pilates Basics
+2026-05-03 01:04:56 | INFO     | backend.core.searcher - Searching for: Exhale: Core Fusion - Pilates Plus (2008)
+2026-05-03 01:04:59 | INFO     | backend.core.searcher - Found 3 raw results for Exhale: Core Fusion - Pilates Plus
+2026-05-03 01:04:59 | INFO     | backend.core.searcher - Analyzed 3 results: 0 accepted, 3 rejected (0 due to resolution downgrade limit, 3 due to larger size limit).
+2026-05-03 01:04:59 | INFO     | backend.core.searcher - Searching for: Foundation Work (None)
+2026-05-03 01:05:01 | INFO     | backend.core.searcher - Found 4 raw results for Foundation Work
+2026-05-03 01:05:01 | INFO     | backend.core.searcher - Analyzed 4 results: 0 accepted, 4 rejected (0 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-03 01:05:01 | INFO     | backend.core.searcher - Searching for: An Interview with Ana Caban (None)
+2026-05-03 01:05:02 | INFO     | backend.core.searcher - Found 0 raw results for An Interview with Ana Caban
+2026-05-03 01:05:03 | INFO     | backend.core.searcher - Searching for: Introduction (None)
+2026-05-03 01:05:04 | INFO     | backend.core.searcher - Found 109 raw results for Introduction
+2026-05-03 01:05:04 | INFO     | backend.core.searcher - Analyzed 109 results: 0 accepted, 109 rejected (0 due to resolution downgrade limit, 109 due to larger size limit).
+2026-05-03 01:05:04 | INFO     | backend.core.searcher - Searching for: Jillian Michaels Beginner Shred - Workout 1 (2014)
+2026-05-03 01:05:05 | INFO     | backend.core.searcher - Found 0 raw results for Jillian Michaels Beginner Shred - Workout 1
+2026-05-03 01:05:05 | INFO     | backend.core.searcher - Searching for: Jillian Michaels Beginner Shred - Workout 3 (2014)
+2026-05-03 01:05:06 | INFO     | backend.core.searcher - Found 0 raw results for Jillian Michaels Beginner Shred - Workout 3
+2026-05-03 01:05:06 | INFO     | backend.core.searcher - Searching for: Meet Ana Caban (None)
+2026-05-03 01:05:07 | INFO     | backend.core.searcher - Found 0 raw results for Meet Ana Caban
+2026-05-03 01:05:07 | INFO     | backend.core.searcher - Searching for: Pilates Intermediate Mat Workout (None)
+2026-05-03 01:05:08 | INFO     | backend.core.searcher - Found 0 raw results for Pilates Intermediate Mat Workout
+2026-05-03 01:05:08 | INFO     | backend.core.searcher - Searching for: Pilates Tutorial (None)
+2026-05-03 01:05:09 | INFO     | backend.core.searcher - Found 0 raw results for Pilates Tutorial
+2026-05-03 01:05:09 | INFO     | backend.core.searcher - Searching for: Pilates: Beginning Mat Workout (2000)
+2026-05-03 01:05:10 | INFO     | backend.core.searcher - Found 0 raw results for Pilates: Beginning Mat Workout
+2026-05-03 01:05:10 | INFO     | backend.core.searcher - Searching for: Postnatal Pilates ¦ 20 Minute Full Body Postpartum Pilates Workout (None)
+2026-05-03 01:05:11 | INFO     | backend.core.searcher - Found 0 raw results for Postnatal Pilates ¦ 20 Minute Full Body Postpartum Pilates Workout
+2026-05-03 01:05:11 | INFO     | backend.core.searcher - Searching for: Power 90 Master Series - Cardio Intervals (None)
+2026-05-03 01:05:12 | INFO     | backend.core.searcher - Found 0 raw results for Power 90 Master Series - Cardio Intervals
+2026-05-03 01:05:12 | INFO     | backend.core.searcher - Searching for: Power 90 Master Series Core Cardio 49 Min Fitness TG (None)
+2026-05-03 01:05:13 | INFO     | backend.core.searcher - Found 0 raw results for Power 90 Master Series Core Cardio 49 Min Fitness TG
+2026-05-03 01:05:13 | INFO     | backend.core.searcher - Searching for: Power 90 Master Series Plyo Legs 51 Min Fitness TG (None)
+2026-05-03 01:05:14 | INFO     | backend.core.searcher - Found 0 raw results for Power 90 Master Series Plyo Legs 51 Min Fitness TG
+2026-05-03 01:05:14 | INFO     | backend.core.searcher - Searching for: Power 90 Master Series UML Upper Middle Lower 39 Min Fitness TG (None)
+2026-05-03 01:05:15 | INFO     | backend.core.searcher - Found 0 raw results for Power 90 Master Series UML Upper Middle Lower 39 Min Fitness TG
+2026-05-03 01:05:15 | INFO     | backend.core.searcher - Searching for: Sidemen: Death Core Collection (None)
+2026-05-03 01:05:16 | INFO     | backend.core.searcher - Found 0 raw results for Sidemen: Death Core Collection
+2026-05-03 01:05:16 | INFO     | backend.core.searcher - Searching for: Strong Backside (None)
+2026-05-03 01:05:17 | INFO     | backend.core.searcher - Found 0 raw results for Strong Backside
+2026-05-03 01:05:17 | INFO     | backend.core.searcher - Searching for: Tae-Bo Workout: Basic (1999)
+2026-05-03 01:05:18 | INFO     | backend.core.searcher - Found 0 raw results for Tae-Bo Workout: Basic
+2026-05-03 01:05:18 | INFO     | backend.core.searcher - Searching for: Tony Horton 10 Minute Trainer D3 Total Body 2, Core Cardio, Upper Body 43 Min Fitness TG (None)
+2026-05-03 01:05:19 | INFO     | backend.core.searcher - Found 0 raw results for Tony Horton 10 Minute Trainer D3 Total Body 2, Core Cardio, Upper Body 43 Min Fitness TG
+2026-05-03 01:05:19 | INFO     | backend.core.searcher - Searching for: Weight Loss Pilates (None)
+2026-05-03 01:05:20 | INFO     | backend.core.searcher - Found 0 raw results for Weight Loss Pilates
+2026-05-03 01:05:20 | INFO     | backend.core.searcher - Searching for: Winsor Pilates: Ab Sculpting (2003)
+2026-05-03 01:05:21 | INFO     | backend.core.searcher - Found 0 raw results for Winsor Pilates: Ab Sculpting
+2026-05-03 01:05:21 | INFO     | backend.core.searcher - Searching for: The Adventures of Ichabod and Mr. Toad (1949)
+2026-05-03 01:05:22 | INFO     | backend.core.searcher - Found 52 raw results for The Adventures of Ichabod and Mr. Toad
+2026-05-03 01:05:23 | INFO     | backend.core.searcher - Analyzed 52 results: 0 accepted, 52 rejected (0 due to resolution downgrade limit, 51 due to larger size limit).
+2026-05-03 01:05:23 | INFO     | backend.core.searcher - Searching for: Alice in Wonderland (1999)
+2026-05-03 01:05:24 | INFO     | backend.core.searcher - Found 12 raw results for Alice in Wonderland
+2026-05-03 01:05:24 | INFO     | backend.core.searcher - Analyzed 12 results: 0 accepted, 12 rejected (0 due to resolution downgrade limit, 12 due to larger size limit).
+2026-05-03 01:05:24 | INFO     | backend.core.searcher - Searching for: The AristoCats (1970)
+2026-05-03 01:05:25 | INFO     | backend.core.searcher - Found 164 raw results for The AristoCats
+2026-05-03 01:05:25 | INFO     | backend.core.searcher - Analyzed 164 results: 0 accepted, 164 rejected (0 due to resolution downgrade limit, 162 due to larger size limit).
+2026-05-03 01:05:25 | INFO     | backend.core.searcher - Searching for: Babe (1995)
+2026-05-03 01:05:26 | INFO     | backend.core.searcher - Found 86 raw results for Babe
+2026-05-03 01:05:26 | INFO     | backend.core.searcher - Analyzed 86 results: 0 accepted, 86 rejected (32 due to resolution downgrade limit, 39 due to larger size limit).
+2026-05-03 01:05:26 | INFO     | backend.core.searcher - Searching for: Barbie as Rapunzel (2002)
+2026-05-03 01:05:27 | INFO     | backend.core.searcher - Found 15 raw results for Barbie as Rapunzel
+2026-05-03 01:05:27 | INFO     | backend.core.searcher - Analyzed 15 results: 0 accepted, 15 rejected (10 due to resolution downgrade limit, 2 due to larger size limit).
+2026-05-03 01:05:27 | INFO     | backend.core.searcher - Searching for: Barbie Fairytopia: Mermaidia (2006)
+2026-05-03 01:05:28 | INFO     | backend.core.searcher - Found 6 raw results for Barbie Fairytopia: Mermaidia
+2026-05-03 01:05:28 | INFO     | backend.core.searcher - Analyzed 6 results: 0 accepted, 6 rejected (0 due to resolution downgrade limit, 6 due to larger size limit).
+2026-05-03 01:05:28 | INFO     | backend.core.searcher - Searching for: Barbie of Swan Lake (2003)
+2026-05-03 01:05:29 | INFO     | backend.core.searcher - Found 4 raw results for Barbie of Swan Lake
+2026-05-03 01:05:29 | INFO     | backend.core.searcher - Analyzed 4 results: 0 accepted, 4 rejected (0 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-03 01:05:29 | INFO     | backend.core.searcher - Searching for: Because of Winn-Dixie (2005)
+2026-05-03 01:05:30 | INFO     | backend.core.searcher - Found 22 raw results for Because of Winn-Dixie
+2026-05-03 01:05:30 | INFO     | backend.core.searcher - Analyzed 22 results: 0 accepted, 22 rejected (1 due to resolution downgrade limit, 20 due to larger size limit).
+2026-05-03 01:05:30 | INFO     | backend.core.searcher - Searching for: The Black Cauldron (1985)
+2026-05-03 01:05:31 | INFO     | backend.core.searcher - Found 106 raw results for The Black Cauldron
+2026-05-03 01:05:31 | INFO     | backend.core.searcher - Analyzed 106 results: 0 accepted, 106 rejected (1 due to resolution downgrade limit, 103 due to larger size limit).
+2026-05-03 01:05:31 | INFO     | backend.core.searcher - Searching for: Brother Bear (2003)
+2026-05-03 01:05:32 | INFO     | backend.core.searcher - Found 141 raw results for Brother Bear
+2026-05-03 01:05:32 | INFO     | backend.core.searcher - Analyzed 141 results: 0 accepted, 141 rejected (1 due to resolution downgrade limit, 137 due to larger size limit).
+2026-05-03 01:05:32 | INFO     | backend.core.searcher - Searching for: A Bug's Life (1998)
+2026-05-03 01:05:33 | INFO     | backend.core.searcher - Found 190 raw results for A Bug's Life
+2026-05-03 01:05:33 | INFO     | backend.core.searcher - Analyzed 190 results: 0 accepted, 190 rejected (0 due to resolution downgrade limit, 189 due to larger size limit).
+2026-05-03 01:05:33 | INFO     | backend.core.searcher - Searching for: Cars (2006)
+2026-05-03 01:05:34 | INFO     | backend.core.searcher - Found 148 raw results for Cars
+2026-05-03 01:05:34 | INFO     | backend.core.searcher - Analyzed 148 results: 0 accepted, 148 rejected (1 due to resolution downgrade limit, 145 due to larger size limit).
+2026-05-03 01:05:35 | INFO     | backend.core.searcher - Searching for: Chicken Little (2005)
+2026-05-03 01:05:35 | INFO     | backend.core.searcher - Found 143 raw results for Chicken Little
+2026-05-03 01:05:36 | INFO     | backend.core.searcher - Analyzed 143 results: 0 accepted, 143 rejected (0 due to resolution downgrade limit, 143 due to larger size limit).
+2026-05-03 01:05:36 | INFO     | backend.core.searcher - Searching for: Dennis the Menace Strikes Again! (1998)
+2026-05-03 01:05:37 | INFO     | backend.core.searcher - Found 10 raw results for Dennis the Menace Strikes Again!
+2026-05-03 01:05:37 | INFO     | backend.core.searcher - Analyzed 10 results: 0 accepted, 10 rejected (0 due to resolution downgrade limit, 10 due to larger size limit).
+2026-05-03 01:05:37 | INFO     | backend.core.searcher - Searching for: Diary of a Wimpy Kid: Rodrick Rules (2022)
+2026-05-03 01:05:38 | INFO     | backend.core.searcher - Found 25 raw results for Diary of a Wimpy Kid: Rodrick Rules
+2026-05-03 01:05:38 | INFO     | backend.core.searcher - Analyzed 25 results: 0 accepted, 25 rejected (0 due to resolution downgrade limit, 20 due to larger size limit).
+2026-05-03 01:05:38 | INFO     | backend.core.searcher - Searching for: The Dog Who Saved Easter (2014)
+2026-05-03 01:05:40 | INFO     | backend.core.searcher - Found 6 raw results for The Dog Who Saved Easter
+2026-05-03 01:05:40 | INFO     | backend.core.searcher - Analyzed 6 results: 0 accepted, 6 rejected (2 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-03 01:05:40 | INFO     | backend.core.searcher - Searching for: Elio (2025)
+2026-05-03 01:05:41 | INFO     | backend.core.searcher - Found 79 raw results for Elio
+2026-05-03 01:05:41 | INFO     | backend.core.searcher - Analyzed 79 results: 0 accepted, 79 rejected (2 due to resolution downgrade limit, 77 due to larger size limit).
+2026-05-03 01:05:41 | INFO     | backend.core.searcher - Searching for: Fantasia 2000 (1999)
+2026-05-03 01:05:42 | INFO     | backend.core.searcher - Found 77 raw results for Fantasia 2000
+2026-05-03 01:05:42 | INFO     | backend.core.searcher - Analyzed 77 results: 0 accepted, 77 rejected (0 due to resolution downgrade limit, 75 due to larger size limit).
+2026-05-03 01:05:42 | INFO     | backend.core.searcher - Searching for: Fun and Fancy Free (1947)
+2026-05-03 01:05:44 | INFO     | backend.core.searcher - Found 46 raw results for Fun and Fancy Free
+2026-05-03 01:05:44 | INFO     | backend.core.searcher - Analyzed 46 results: 0 accepted, 46 rejected (0 due to resolution downgrade limit, 46 due to larger size limit).
+2026-05-03 01:05:44 | INFO     | backend.core.searcher - Searching for: Hayao Miyazaki and the Ghibli Museum (2005)
+2026-05-03 01:05:45 | INFO     | backend.core.searcher - Found 0 raw results for Hayao Miyazaki and the Ghibli Museum
+2026-05-03 01:05:45 | INFO     | backend.core.searcher - Searching for: Home on the Range (2004)
+2026-05-03 01:05:46 | INFO     | backend.core.searcher - Found 107 raw results for Home on the Range
+2026-05-03 01:05:46 | INFO     | backend.core.searcher - Analyzed 107 results: 0 accepted, 107 rejected (0 due to resolution downgrade limit, 107 due to larger size limit).
+2026-05-03 01:05:46 | INFO     | backend.core.searcher - Searching for: The Hunchback of Notre Dame (1996)
+2026-05-03 01:05:47 | INFO     | backend.core.searcher - Found 139 raw results for The Hunchback of Notre Dame
+2026-05-03 01:05:47 | INFO     | backend.core.searcher - Analyzed 139 results: 0 accepted, 139 rejected (0 due to resolution downgrade limit, 138 due to larger size limit).
+2026-05-03 01:05:47 | INFO     | backend.core.searcher - Searching for: Jack the Giant Slayer (2013)
+2026-05-03 01:05:48 | INFO     | backend.core.searcher - Found 157 raw results for Jack the Giant Slayer
+2026-05-03 01:05:49 | INFO     | backend.core.searcher - Analyzed 157 results: 0 accepted, 157 rejected (0 due to resolution downgrade limit, 155 due to larger size limit).
+2026-05-03 01:05:49 | INFO     | backend.core.searcher - Searching for: The Jungle Book (1967)
+2026-05-03 01:05:50 | INFO     | backend.core.searcher - Found 146 raw results for The Jungle Book
+2026-05-03 01:05:50 | INFO     | backend.core.searcher - Analyzed 146 results: 0 accepted, 146 rejected (0 due to resolution downgrade limit, 139 due to larger size limit).
+2026-05-03 01:05:50 | INFO     | backend.core.searcher - Searching for: Kung Fu Panda 4 (2024)
+2026-05-03 01:05:51 | INFO     | backend.core.searcher - Found 200 raw results for Kung Fu Panda 4
+2026-05-03 01:05:51 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (1 due to resolution downgrade limit, 199 due to larger size limit).
+2026-05-03 01:05:51 | INFO     | backend.core.searcher - Searching for: Lady and the Tramp (1955)
+2026-05-03 01:05:52 | INFO     | backend.core.searcher - Found 166 raw results for Lady and the Tramp
+2026-05-03 01:05:52 | INFO     | backend.core.searcher - Analyzed 166 results: 0 accepted, 166 rejected (1 due to resolution downgrade limit, 161 due to larger size limit).
+2026-05-03 01:05:52 | INFO     | backend.core.searcher - Searching for: The Land Before Time (1988)
+2026-05-03 01:05:53 | INFO     | backend.core.searcher - Found 94 raw results for The Land Before Time
+2026-05-03 01:05:53 | INFO     | backend.core.searcher - Analyzed 94 results: 0 accepted, 94 rejected (7 due to resolution downgrade limit, 50 due to larger size limit).
+2026-05-03 01:05:53 | INFO     | backend.core.searcher - Searching for: Light of the World (2025)
+2026-05-03 01:05:54 | INFO     | backend.core.searcher - Found 23 raw results for Light of the World
+2026-05-03 01:05:54 | INFO     | backend.core.searcher - Analyzed 23 results: 0 accepted, 23 rejected (5 due to resolution downgrade limit, 18 due to larger size limit).
+2026-05-03 01:05:54 | INFO     | backend.core.searcher - Searching for: Lilo & Stitch (2002)
+2026-05-03 01:05:55 | INFO     | backend.core.searcher - Found 98 raw results for Lilo & Stitch
+2026-05-03 01:05:55 | INFO     | backend.core.searcher - Analyzed 98 results: 0 accepted, 98 rejected (0 due to resolution downgrade limit, 82 due to larger size limit).
+2026-05-03 01:05:55 | INFO     | backend.core.searcher - Searching for: Make Mine Music (1946)
+2026-05-03 01:05:56 | INFO     | backend.core.searcher - Found 27 raw results for Make Mine Music
+2026-05-03 01:05:56 | INFO     | backend.core.searcher - Analyzed 27 results: 0 accepted, 27 rejected (0 due to resolution downgrade limit, 26 due to larger size limit).
+2026-05-03 01:05:56 | INFO     | backend.core.searcher - Searching for: Mummies (2023)
+2026-05-03 01:05:58 | INFO     | backend.core.searcher - Found 37 raw results for Mummies
+2026-05-03 01:05:58 | INFO     | backend.core.searcher - Analyzed 37 results: 0 accepted, 37 rejected (3 due to resolution downgrade limit, 34 due to larger size limit).
+2026-05-03 01:05:58 | INFO     | backend.core.searcher - Searching for: The New Adventures of Pippi Longstocking (1988)
+2026-05-03 01:05:59 | INFO     | backend.core.searcher - Found 15 raw results for The New Adventures of Pippi Longstocking
+2026-05-03 01:05:59 | INFO     | backend.core.searcher - Analyzed 15 results: 0 accepted, 15 rejected (0 due to resolution downgrade limit, 15 due to larger size limit).
+2026-05-03 01:05:59 | INFO     | backend.core.searcher - Searching for: One Hundred and One Dalmatians (1961)
+2026-05-03 01:06:00 | INFO     | backend.core.searcher - Found 136 raw results for One Hundred and One Dalmatians
+2026-05-03 01:06:00 | INFO     | backend.core.searcher - Analyzed 136 results: 0 accepted, 136 rejected (0 due to resolution downgrade limit, 132 due to larger size limit).
+2026-05-03 01:06:00 | INFO     | backend.core.searcher - Searching for: The Rescuers (1977)
+2026-05-03 01:06:01 | INFO     | backend.core.searcher - Found 128 raw results for The Rescuers
+2026-05-03 01:06:01 | INFO     | backend.core.searcher - Analyzed 128 results: 0 accepted, 128 rejected (0 due to resolution downgrade limit, 128 due to larger size limit).
+2026-05-03 01:06:01 | INFO     | backend.core.searcher - Searching for: Richie Rich (1994)
+2026-05-03 01:06:02 | INFO     | backend.core.searcher - Found 66 raw results for Richie Rich
+2026-05-03 01:06:03 | INFO     | backend.core.searcher - Analyzed 66 results: 0 accepted, 66 rejected (12 due to resolution downgrade limit, 49 due to larger size limit).
+2026-05-03 01:06:03 | INFO     | backend.core.searcher - Searching for: Robin Hood (1973)
+2026-05-03 01:06:04 | INFO     | backend.core.searcher - Found 153 raw results for Robin Hood
+2026-05-03 01:06:04 | INFO     | backend.core.searcher - Analyzed 153 results: 0 accepted, 153 rejected (0 due to resolution downgrade limit, 151 due to larger size limit).
+2026-05-03 01:06:04 | INFO     | backend.core.searcher - Searching for: Saludos Amigos (1942)
+2026-05-03 01:06:05 | INFO     | backend.core.searcher - Found 46 raw results for Saludos Amigos
+2026-05-03 01:06:05 | INFO     | backend.core.searcher - Analyzed 46 results: 0 accepted, 46 rejected (2 due to resolution downgrade limit, 42 due to larger size limit).
+2026-05-03 01:06:05 | INFO     | backend.core.searcher - Searching for: Scrooge: A Christmas Carol (2022)
+2026-05-03 01:06:06 | INFO     | backend.core.searcher - Found 23 raw results for Scrooge: A Christmas Carol
+2026-05-03 01:06:06 | INFO     | backend.core.searcher - Analyzed 23 results: 0 accepted, 23 rejected (1 due to resolution downgrade limit, 21 due to larger size limit).
+2026-05-03 01:06:06 | INFO     | backend.core.searcher - Searching for: Sleeping Beauty (1995)
+2026-05-03 01:06:07 | INFO     | backend.core.searcher - Found 0 raw results for Sleeping Beauty
+2026-05-03 01:06:07 | INFO     | backend.core.searcher - Searching for: The Snail and the Whale (2019)
+2026-05-03 01:06:08 | INFO     | backend.core.searcher - Found 9 raw results for The Snail and the Whale
+2026-05-03 01:06:08 | INFO     | backend.core.searcher - Analyzed 9 results: 0 accepted, 9 rejected (0 due to resolution downgrade limit, 9 due to larger size limit).
+2026-05-03 01:06:08 | INFO     | backend.core.searcher - Searching for: Snow White and the Seven Dwarfs (1937)
+2026-05-03 01:06:10 | INFO     | backend.core.searcher - Found 193 raw results for Snow White and the Seven Dwarfs
+2026-05-03 01:06:10 | INFO     | backend.core.searcher - Analyzed 193 results: 0 accepted, 193 rejected (1 due to resolution downgrade limit, 191 due to larger size limit).
+2026-05-03 01:06:10 | INFO     | backend.core.searcher - Searching for: Sonic the Hedgehog (2020)
+2026-05-03 01:06:11 | INFO     | backend.core.searcher - Found 200 raw results for Sonic the Hedgehog
+2026-05-03 01:06:11 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (0 due to resolution downgrade limit, 200 due to larger size limit).
+2026-05-03 01:06:11 | INFO     | backend.core.searcher - Searching for: Spellbound (2024)
+2026-05-03 01:06:14 | INFO     | backend.core.searcher - Found 41 raw results for Spellbound
+2026-05-03 01:06:14 | INFO     | backend.core.searcher - Analyzed 41 results: 0 accepted, 41 rejected (5 due to resolution downgrade limit, 36 due to larger size limit).
+2026-05-03 01:06:14 | INFO     | backend.core.searcher - Searching for: The Super Mario Bros. Movie (2023)
+2026-05-03 01:06:16 | INFO     | backend.core.searcher - Found 200 raw results for The Super Mario Bros. Movie
+2026-05-03 01:06:16 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (2 due to resolution downgrade limit, 197 due to larger size limit).
+2026-05-03 01:06:16 | INFO     | backend.core.searcher - Searching for: The Sword in the Stone (1963)
+2026-05-03 01:06:19 | INFO     | backend.core.searcher - Found 180 raw results for The Sword in the Stone
+2026-05-03 01:06:19 | INFO     | backend.core.searcher - Analyzed 180 results: 0 accepted, 180 rejected (0 due to resolution downgrade limit, 180 due to larger size limit).
+2026-05-03 01:06:19 | INFO     | backend.core.searcher - Searching for: Tangled (2010)
+2026-05-03 01:06:23 | INFO     | backend.core.searcher - Found 200 raw results for Tangled
+2026-05-03 01:06:23 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (2 due to resolution downgrade limit, 189 due to larger size limit).
+2026-05-03 01:06:23 | INFO     | backend.core.searcher - Searching for: Tarzan (1999)
+2026-05-03 01:06:25 | INFO     | backend.core.searcher - Found 153 raw results for Tarzan
+2026-05-03 01:06:25 | INFO     | backend.core.searcher - Analyzed 153 results: 0 accepted, 153 rejected (0 due to resolution downgrade limit, 146 due to larger size limit).
+2026-05-03 01:06:25 | INFO     | backend.core.searcher - Searching for: The Three Caballeros (1944)
+2026-05-03 01:06:26 | INFO     | backend.core.searcher - Found 58 raw results for The Three Caballeros
+2026-05-03 01:06:26 | INFO     | backend.core.searcher - Analyzed 58 results: 0 accepted, 58 rejected (0 due to resolution downgrade limit, 58 due to larger size limit).
+2026-05-03 01:06:26 | INFO     | backend.core.searcher - Searching for: To Grandmother's House We Go (1992)
+2026-05-03 01:06:32 | INFO     | backend.core.searcher - Found 5 raw results for To Grandmother's House We Go
+2026-05-03 01:06:32 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-03 01:06:32 | INFO     | backend.core.searcher - Searching for: Toy Story 2 (1999)
+2026-05-03 01:06:33 | INFO     | backend.core.searcher - Found 200 raw results for Toy Story 2
+2026-05-03 01:06:33 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (2 due to resolution downgrade limit, 195 due to larger size limit).
+2026-05-03 01:06:33 | INFO     | backend.core.searcher - Searching for: The Wild Robot (2024)
+2026-05-03 01:06:34 | INFO     | backend.core.searcher - Found 200 raw results for The Wild Robot
+2026-05-03 01:06:34 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (3 due to resolution downgrade limit, 196 due to larger size limit).
+2026-05-03 01:06:34 | INFO     | backend.core.searcher - Searching for: 28 Years Later (2025)
+2026-05-03 01:06:36 | INFO     | backend.core.searcher - Found 183 raw results for 28 Years Later
+2026-05-03 01:06:36 | INFO     | backend.core.searcher - Analyzed 183 results: 0 accepted, 183 rejected (5 due to resolution downgrade limit, 175 due to larger size limit).
+2026-05-03 01:06:36 | INFO     | backend.core.searcher - Searching for: A.I. Rising (2018)
+2026-05-03 01:06:38 | INFO     | backend.core.searcher - Found 48 raw results for A.I. Rising
+2026-05-03 01:06:38 | INFO     | backend.core.searcher - Analyzed 48 results: 0 accepted, 48 rejected (0 due to resolution downgrade limit, 46 due to larger size limit).
+2026-05-03 01:06:38 | INFO     | backend.core.searcher - Searching for: Addams Family Reunion (1998)
+2026-05-03 01:06:41 | INFO     | backend.core.searcher - Found 9 raw results for Addams Family Reunion
+2026-05-03 01:06:41 | INFO     | backend.core.searcher - Analyzed 9 results: 0 accepted, 9 rejected (0 due to resolution downgrade limit, 9 due to larger size limit).
+2026-05-03 01:06:41 | INFO     | backend.core.searcher - Searching for: After (2019)
+2026-05-03 01:06:42 | INFO     | backend.core.searcher - Found 57 raw results for After
+2026-05-03 01:06:42 | INFO     | backend.core.searcher - Analyzed 57 results: 0 accepted, 57 rejected (0 due to resolution downgrade limit, 56 due to larger size limit).
+2026-05-03 01:06:42 | INFO     | backend.core.searcher - Searching for: The Age of Disclosure (2025)
+2026-05-03 01:06:43 | INFO     | backend.core.searcher - Found 9 raw results for The Age of Disclosure
+2026-05-03 01:06:43 | INFO     | backend.core.searcher - Analyzed 9 results: 0 accepted, 9 rejected (6 due to resolution downgrade limit, 3 due to larger size limit).
+2026-05-03 01:06:43 | INFO     | backend.core.searcher - Searching for: American Reunion (2012)
+2026-05-03 01:06:45 | INFO     | backend.core.searcher - Found 160 raw results for American Reunion
+2026-05-03 01:06:45 | INFO     | backend.core.searcher - Analyzed 160 results: 0 accepted, 160 rejected (1 due to resolution downgrade limit, 150 due to larger size limit).
+2026-05-03 01:06:45 | INFO     | backend.core.searcher - Searching for: Angels & Demons (2009)
+2026-05-03 01:06:46 | INFO     | backend.core.searcher - Found 146 raw results for Angels & Demons
+2026-05-03 01:06:47 | INFO     | backend.core.searcher - Analyzed 146 results: 0 accepted, 146 rejected (0 due to resolution downgrade limit, 144 due to larger size limit).
+2026-05-03 01:06:47 | INFO     | backend.core.searcher - Searching for: Animal Kingdom (2010)
+2026-05-03 01:06:48 | INFO     | backend.core.searcher - Found 88 raw results for Animal Kingdom
+2026-05-03 01:06:48 | INFO     | backend.core.searcher - Analyzed 88 results: 0 accepted, 88 rejected (0 due to resolution downgrade limit, 87 due to larger size limit).
+2026-05-03 01:06:48 | INFO     | backend.core.searcher - Searching for: Ant-Man and the Wasp: Quantumania (2023)
+2026-05-03 01:06:50 | INFO     | backend.core.searcher - Found 200 raw results for Ant-Man and the Wasp: Quantumania
+2026-05-03 01:06:50 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (3 due to resolution downgrade limit, 195 due to larger size limit).
+2026-05-03 01:06:50 | INFO     | backend.core.searcher - Searching for: Avatar: The Way of Water (2022)
+2026-05-03 01:06:51 | INFO     | backend.core.searcher - Found 200 raw results for Avatar: The Way of Water
+2026-05-03 01:06:51 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (30 due to resolution downgrade limit, 157 due to larger size limit).
+2026-05-03 01:06:51 | INFO     | backend.core.searcher - Searching for: Battleship (2012)
+2026-05-03 01:06:52 | INFO     | backend.core.searcher - Found 179 raw results for Battleship
+2026-05-03 01:06:52 | INFO     | backend.core.searcher - Analyzed 179 results: 0 accepted, 179 rejected (0 due to resolution downgrade limit, 171 due to larger size limit).
+2026-05-03 01:06:52 | INFO     | backend.core.searcher - Searching for: Big Fish (2003)
+2026-05-03 01:06:54 | INFO     | backend.core.searcher - Found 143 raw results for Big Fish
+2026-05-03 01:06:54 | INFO     | backend.core.searcher - Analyzed 143 results: 0 accepted, 143 rejected (4 due to resolution downgrade limit, 129 due to larger size limit).
+2026-05-03 01:06:54 | INFO     | backend.core.searcher - Searching for: Blueback (2022)
+2026-05-03 01:06:55 | INFO     | backend.core.searcher - Found 25 raw results for Blueback
+2026-05-03 01:06:55 | INFO     | backend.core.searcher - Analyzed 25 results: 0 accepted, 25 rejected (3 due to resolution downgrade limit, 22 due to larger size limit).
+2026-05-03 01:06:55 | INFO     | backend.core.searcher - Searching for: Book Club: The Next Chapter (2023)
+2026-05-03 01:06:56 | INFO     | backend.core.searcher - Found 99 raw results for Book Club: The Next Chapter
+2026-05-03 01:06:56 | INFO     | backend.core.searcher - Analyzed 99 results: 0 accepted, 99 rejected (2 due to resolution downgrade limit, 97 due to larger size limit).
+2026-05-03 01:06:56 | INFO     | backend.core.searcher - Searching for: Can't Hardly Wait (1998)
+2026-05-03 01:06:57 | INFO     | backend.core.searcher - Found 81 raw results for Can't Hardly Wait
+2026-05-03 01:06:57 | INFO     | backend.core.searcher - Analyzed 81 results: 0 accepted, 81 rejected (0 due to resolution downgrade limit, 81 due to larger size limit).
+2026-05-03 01:06:57 | INFO     | backend.core.searcher - Searching for: Challengers (2024)
+2026-05-03 01:06:59 | INFO     | backend.core.searcher - Found 169 raw results for Challengers
+2026-05-03 01:06:59 | INFO     | backend.core.searcher - Analyzed 169 results: 0 accepted, 169 rejected (6 due to resolution downgrade limit, 163 due to larger size limit).
+2026-05-03 01:06:59 | INFO     | backend.core.searcher - Searching for: Christmas in Paradise (2022)
+2026-05-03 01:07:01 | INFO     | backend.core.searcher - Found 21 raw results for Christmas in Paradise
+2026-05-03 01:07:02 | INFO     | backend.core.searcher - Analyzed 21 results: 0 accepted, 21 rejected (1 due to resolution downgrade limit, 16 due to larger size limit).
+2026-05-03 01:07:02 | INFO     | backend.core.searcher - Searching for: The Chronicles of Riddick: Dark Fury (2004)
+2026-05-03 01:07:02 | INFO     | backend.core.searcher - Found 19 raw results for The Chronicles of Riddick: Dark Fury
+2026-05-03 01:07:02 | INFO     | backend.core.searcher - Analyzed 19 results: 0 accepted, 19 rejected (0 due to resolution downgrade limit, 17 due to larger size limit).
+2026-05-03 01:07:03 | INFO     | backend.core.searcher - Searching for: Contraband (2012)
+2026-05-03 01:07:04 | INFO     | backend.core.searcher - Found 151 raw results for Contraband
+2026-05-03 01:07:04 | INFO     | backend.core.searcher - Analyzed 151 results: 0 accepted, 151 rejected (1 due to resolution downgrade limit, 145 due to larger size limit).
+2026-05-03 01:07:04 | INFO     | backend.core.searcher - Searching for: Crazy, Stupid, Love. (2011)
+2026-05-03 01:07:05 | INFO     | backend.core.searcher - Found 155 raw results for Crazy, Stupid, Love.
+2026-05-03 01:07:05 | INFO     | backend.core.searcher - Analyzed 155 results: 0 accepted, 155 rejected (1 due to resolution downgrade limit, 151 due to larger size limit).
+2026-05-03 01:07:05 | INFO     | backend.core.searcher - Searching for: Destroyer (2018)
+2026-05-03 01:07:06 | INFO     | backend.core.searcher - Found 89 raw results for Destroyer
+2026-05-03 01:07:06 | INFO     | backend.core.searcher - Analyzed 89 results: 0 accepted, 89 rejected (4 due to resolution downgrade limit, 79 due to larger size limit).
+2026-05-03 01:07:06 | INFO     | backend.core.searcher - Searching for: Divine Secrets of the Ya-Ya Sisterhood (2002)
+2026-05-03 01:07:07 | INFO     | backend.core.searcher - Found 11 raw results for Divine Secrets of the Ya-Ya Sisterhood
+2026-05-03 01:07:07 | INFO     | backend.core.searcher - Analyzed 11 results: 0 accepted, 11 rejected (4 due to resolution downgrade limit, 6 due to larger size limit).
+2026-05-03 01:07:07 | INFO     | backend.core.searcher - Searching for: A Dog's Way Home (2019)
+2026-05-03 01:07:09 | INFO     | backend.core.searcher - Found 136 raw results for A Dog's Way Home
+2026-05-03 01:07:09 | INFO     | backend.core.searcher - Analyzed 136 results: 0 accepted, 136 rejected (75 due to resolution downgrade limit, 46 due to larger size limit).
+2026-05-03 01:07:09 | INFO     | backend.core.searcher - Searching for: Dune: Part Two (2024)
+2026-05-03 01:07:10 | INFO     | backend.core.searcher - Found 200 raw results for Dune: Part Two
+2026-05-03 01:07:10 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (2 due to resolution downgrade limit, 198 due to larger size limit).
+2026-05-03 01:07:10 | INFO     | backend.core.searcher - Searching for: Eenie Meanie (2025)
+2026-05-03 01:07:11 | INFO     | backend.core.searcher - Found 68 raw results for Eenie Meanie
+2026-05-03 01:07:11 | INFO     | backend.core.searcher - Analyzed 68 results: 0 accepted, 68 rejected (0 due to resolution downgrade limit, 68 due to larger size limit).
+2026-05-03 01:07:11 | INFO     | backend.core.searcher - Searching for: The Endless Summer 2 (1994)
+2026-05-03 01:07:12 | INFO     | backend.core.searcher - Found 2 raw results for The Endless Summer 2
+2026-05-03 01:07:12 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 2 due to larger size limit).
+2026-05-03 01:07:12 | INFO     | backend.core.searcher - Searching for: Enola Holmes 2 (2022)
+2026-05-03 01:07:14 | INFO     | backend.core.searcher - Found 63 raw results for Enola Holmes 2
+2026-05-03 01:07:14 | INFO     | backend.core.searcher - Analyzed 63 results: 0 accepted, 63 rejected (4 due to resolution downgrade limit, 57 due to larger size limit).
+2026-05-03 01:07:14 | INFO     | backend.core.searcher - Searching for: Fast and Furious Collection Extra (None)
+2026-05-03 01:07:16 | INFO     | backend.core.searcher - Found 0 raw results for Fast and Furious Collection Extra
+2026-05-03 01:07:16 | INFO     | backend.core.searcher - Searching for: Fast X (2023)
+2026-05-03 01:07:17 | INFO     | backend.core.searcher - Found 200 raw results for Fast X
+2026-05-03 01:07:17 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (8 due to resolution downgrade limit, 189 due to larger size limit).
+2026-05-03 01:07:17 | INFO     | backend.core.searcher - Searching for: Finding You (2020)
+2026-05-03 01:07:18 | INFO     | backend.core.searcher - Found 2 raw results for Finding You
+2026-05-03 01:07:18 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 2 due to larger size limit).
+2026-05-03 01:07:18 | INFO     | backend.core.searcher - Searching for: Five Feet Apart (2019)
+2026-05-03 01:07:19 | INFO     | backend.core.searcher - Found 86 raw results for Five Feet Apart
+2026-05-03 01:07:19 | INFO     | backend.core.searcher - Analyzed 86 results: 0 accepted, 86 rejected (2 due to resolution downgrade limit, 80 due to larger size limit).
+2026-05-03 01:07:19 | INFO     | backend.core.searcher - Searching for: The Flood (2019)
+2026-05-03 01:07:21 | INFO     | backend.core.searcher - Found 9 raw results for The Flood
+2026-05-03 01:07:21 | INFO     | backend.core.searcher - Analyzed 9 results: 0 accepted, 9 rejected (1 due to resolution downgrade limit, 6 due to larger size limit).
+2026-05-03 01:07:21 | INFO     | backend.core.searcher - Searching for: Forgiven (2011)
+2026-05-03 01:07:22 | INFO     | backend.core.searcher - Found 10 raw results for Forgiven
+2026-05-03 01:07:22 | INFO     | backend.core.searcher - Analyzed 10 results: 0 accepted, 10 rejected (7 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-03 01:07:22 | INFO     | backend.core.searcher - Searching for: G-Funk (2017)
+2026-05-03 01:07:23 | INFO     | backend.core.searcher - Found 0 raw results for G-Funk
+2026-05-03 01:07:23 | INFO     | backend.core.searcher - Searching for: The Giants (2023)
+2026-05-03 01:07:24 | INFO     | backend.core.searcher - Found 3 raw results for The Giants
+2026-05-03 01:07:24 | INFO     | backend.core.searcher - Analyzed 3 results: 0 accepted, 3 rejected (0 due to resolution downgrade limit, 3 due to larger size limit).
+2026-05-03 01:07:24 | INFO     | backend.core.searcher - Searching for: Godzilla X Kong: The New Empire (2024)
+2026-05-03 01:07:25 | INFO     | backend.core.searcher - Found 200 raw results for Godzilla X Kong: The New Empire
+2026-05-03 01:07:25 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (4 due to resolution downgrade limit, 196 due to larger size limit).
+2026-05-03 01:07:25 | INFO     | backend.core.searcher - Searching for: Gold (2022)
+2026-05-03 01:07:27 | INFO     | backend.core.searcher - Found 45 raw results for Gold
+2026-05-03 01:07:27 | INFO     | backend.core.searcher - Analyzed 45 results: 0 accepted, 45 rejected (28 due to resolution downgrade limit, 11 due to larger size limit).
+2026-05-03 01:07:27 | INFO     | backend.core.searcher - Searching for: Good Luck to You, Leo Grande (2022)
+2026-05-03 01:07:28 | INFO     | backend.core.searcher - Found 78 raw results for Good Luck to You, Leo Grande
+2026-05-03 01:07:28 | INFO     | backend.core.searcher - Analyzed 78 results: 0 accepted, 78 rejected (12 due to resolution downgrade limit, 54 due to larger size limit).
+2026-05-03 01:07:28 | INFO     | backend.core.searcher - Searching for: The Gorge (2025)
+2026-05-03 01:07:29 | INFO     | backend.core.searcher - Found 91 raw results for The Gorge
+2026-05-03 01:07:29 | INFO     | backend.core.searcher - Analyzed 91 results: 0 accepted, 91 rejected (3 due to resolution downgrade limit, 88 due to larger size limit).
+2026-05-03 01:07:29 | INFO     | backend.core.searcher - Searching for: Harold & Kumar Go to White Castle (2004)
+2026-05-03 01:07:30 | INFO     | backend.core.searcher - Found 91 raw results for Harold & Kumar Go to White Castle
+2026-05-03 01:07:30 | INFO     | backend.core.searcher - Analyzed 91 results: 0 accepted, 91 rejected (0 due to resolution downgrade limit, 90 due to larger size limit).
+2026-05-03 01:07:30 | INFO     | backend.core.searcher - Searching for: Hitler and I (2003)
+2026-05-03 01:07:32 | INFO     | backend.core.searcher - Found 0 raw results for Hitler and I
+2026-05-03 01:07:32 | INFO     | backend.core.searcher - Searching for: The Holiday (2006)
+2026-05-03 01:07:33 | INFO     | backend.core.searcher - Found 94 raw results for The Holiday
+2026-05-03 01:07:33 | INFO     | backend.core.searcher - Analyzed 94 results: 0 accepted, 94 rejected (32 due to resolution downgrade limit, 47 due to larger size limit).
+2026-05-03 01:07:33 | INFO     | backend.core.searcher - Searching for: Host (2020)
+2026-05-03 01:07:34 | INFO     | backend.core.searcher - Found 24 raw results for Host
+2026-05-03 01:07:34 | INFO     | backend.core.searcher - Analyzed 24 results: 0 accepted, 24 rejected (1 due to resolution downgrade limit, 23 due to larger size limit).
+2026-05-03 01:07:34 | INFO     | backend.core.searcher - Searching for: How Do You Know (2010)
+2026-05-03 01:07:35 | INFO     | backend.core.searcher - Found 92 raw results for How Do You Know
+2026-05-03 01:07:35 | INFO     | backend.core.searcher - Analyzed 92 results: 0 accepted, 92 rejected (0 due to resolution downgrade limit, 91 due to larger size limit).
+2026-05-03 01:07:35 | INFO     | backend.core.searcher - Searching for: The Hustle (2019)
+2026-05-03 01:07:36 | INFO     | backend.core.searcher - Found 91 raw results for The Hustle
+2026-05-03 01:07:36 | INFO     | backend.core.searcher - Analyzed 91 results: 0 accepted, 91 rejected (55 due to resolution downgrade limit, 32 due to larger size limit).
+2026-05-03 01:07:36 | INFO     | backend.core.searcher - Searching for: I Want You Back (2022)
+2026-05-03 01:07:37 | INFO     | backend.core.searcher - Found 41 raw results for I Want You Back
+2026-05-03 01:07:37 | INFO     | backend.core.searcher - Analyzed 41 results: 0 accepted, 41 rejected (0 due to resolution downgrade limit, 40 due to larger size limit).
+2026-05-03 01:07:37 | INFO     | backend.core.searcher - Searching for: I'm Still Here (2024)
+2026-05-03 01:07:38 | INFO     | backend.core.searcher - Found 46 raw results for I'm Still Here
+2026-05-03 01:07:39 | INFO     | backend.core.searcher - Analyzed 46 results: 0 accepted, 46 rejected (17 due to resolution downgrade limit, 28 due to larger size limit).
+2026-05-03 01:07:39 | INFO     | backend.core.searcher - Searching for: In Cold Blood (1967)
+2026-05-03 01:07:40 | INFO     | backend.core.searcher - Found 71 raw results for In Cold Blood
+2026-05-03 01:07:40 | INFO     | backend.core.searcher - Analyzed 71 results: 0 accepted, 71 rejected (4 due to resolution downgrade limit, 60 due to larger size limit).
+2026-05-03 01:07:40 | INFO     | backend.core.searcher - Searching for: It Ends with Us (2024)
+2026-05-03 01:07:41 | INFO     | backend.core.searcher - Found 148 raw results for It Ends with Us
+2026-05-03 01:07:41 | INFO     | backend.core.searcher - Analyzed 148 results: 0 accepted, 148 rejected (4 due to resolution downgrade limit, 144 due to larger size limit).
+2026-05-03 01:07:41 | INFO     | backend.core.searcher - Searching for: Kokoda: 39th Battalion (2006)
+2026-05-03 01:07:42 | INFO     | backend.core.searcher - Found 23 raw results for Kokoda: 39th Battalion
+2026-05-03 01:07:42 | INFO     | backend.core.searcher - Analyzed 23 results: 0 accepted, 23 rejected (0 due to resolution downgrade limit, 19 due to larger size limit).
+2026-05-03 01:07:42 | INFO     | backend.core.searcher - Searching for: Ladies in Black (2018)
+2026-05-03 01:07:43 | INFO     | backend.core.searcher - Found 45 raw results for Ladies in Black
+2026-05-03 01:07:43 | INFO     | backend.core.searcher - Analyzed 45 results: 0 accepted, 45 rejected (6 due to resolution downgrade limit, 37 due to larger size limit).
+2026-05-03 01:07:43 | INFO     | backend.core.searcher - Searching for: Last Sentinel (2023)
+2026-05-03 01:07:44 | INFO     | backend.core.searcher - Found 54 raw results for Last Sentinel
+2026-05-03 01:07:44 | INFO     | backend.core.searcher - Analyzed 54 results: 0 accepted, 54 rejected (1 due to resolution downgrade limit, 52 due to larger size limit).
+2026-05-03 01:07:44 | INFO     | backend.core.searcher - Searching for: Little (2019)
+2026-05-03 01:07:45 | INFO     | backend.core.searcher - Found 28 raw results for Little
+2026-05-03 01:07:45 | INFO     | backend.core.searcher - Analyzed 28 results: 0 accepted, 28 rejected (1 due to resolution downgrade limit, 27 due to larger size limit).
+2026-05-03 01:07:45 | INFO     | backend.core.searcher - Searching for: The Long Walk (2025)
+2026-05-03 01:07:46 | INFO     | backend.core.searcher - Found 150 raw results for The Long Walk
+2026-05-03 01:07:47 | INFO     | backend.core.searcher - Analyzed 150 results: 0 accepted, 150 rejected (4 due to resolution downgrade limit, 140 due to larger size limit).
+2026-05-03 01:07:47 | INFO     | backend.core.searcher - Searching for: The Lord of the Rings: The Return of the King (2003)
+2026-05-03 01:07:48 | INFO     | backend.core.searcher - Found 200 raw results for The Lord of the Rings: The Return of the King
+2026-05-03 01:07:48 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (30 due to resolution downgrade limit, 161 due to larger size limit).
+2026-05-03 01:07:48 | INFO     | backend.core.searcher - Searching for: M3GAN (2022)
+2026-05-03 01:07:49 | INFO     | backend.core.searcher - Found 200 raw results for M3GAN
+2026-05-03 01:07:49 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (0 due to resolution downgrade limit, 195 due to larger size limit).
+2026-05-03 01:07:49 | INFO     | backend.core.searcher - Searching for: Machine Gun Preacher (2011)
+2026-05-03 01:07:50 | INFO     | backend.core.searcher - Found 128 raw results for Machine Gun Preacher
+2026-05-03 01:07:51 | INFO     | backend.core.searcher - Analyzed 128 results: 0 accepted, 128 rejected (9 due to resolution downgrade limit, 107 due to larger size limit).
+2026-05-03 01:07:51 | INFO     | backend.core.searcher - Searching for: The Man from Toronto (2022)
+2026-05-03 01:07:51 | INFO     | backend.core.searcher - Found 101 raw results for The Man from Toronto
+2026-05-03 01:07:52 | INFO     | backend.core.searcher - Analyzed 101 results: 0 accepted, 101 rejected (5 due to resolution downgrade limit, 96 due to larger size limit).
+2026-05-03 01:07:52 | INFO     | backend.core.searcher - Searching for: Max Payne (2008)
+2026-05-03 01:07:53 | INFO     | backend.core.searcher - Found 145 raw results for Max Payne
+2026-05-03 01:07:53 | INFO     | backend.core.searcher - Analyzed 145 results: 0 accepted, 145 rejected (1 due to resolution downgrade limit, 140 due to larger size limit).
+2026-05-03 01:07:53 | INFO     | backend.core.searcher - Searching for: Me, Myself & Irene (2000)
+2026-05-03 01:07:54 | INFO     | backend.core.searcher - Found 99 raw results for Me, Myself & Irene
+2026-05-03 01:07:54 | INFO     | backend.core.searcher - Analyzed 99 results: 0 accepted, 99 rejected (3 due to resolution downgrade limit, 93 due to larger size limit).
+2026-05-03 01:07:54 | INFO     | backend.core.searcher - Searching for: Miss Congeniality 2: Armed and Fabulous (2005)
+2026-05-03 01:07:55 | INFO     | backend.core.searcher - Found 47 raw results for Miss Congeniality 2: Armed and Fabulous
+2026-05-03 01:07:55 | INFO     | backend.core.searcher - Analyzed 47 results: 0 accepted, 47 rejected (1 due to resolution downgrade limit, 42 due to larger size limit).
+2026-05-03 01:07:55 | INFO     | backend.core.searcher - Searching for: Moonrise Kingdom (2012)
+2026-05-03 01:07:56 | INFO     | backend.core.searcher - Found 141 raw results for Moonrise Kingdom
+2026-05-03 01:07:56 | INFO     | backend.core.searcher - Analyzed 141 results: 0 accepted, 141 rejected (8 due to resolution downgrade limit, 128 due to larger size limit).
+2026-05-03 01:07:56 | INFO     | backend.core.searcher - Searching for: Mrs. Harris Goes to Paris (2022)
+2026-05-03 01:07:57 | INFO     | backend.core.searcher - Found 83 raw results for Mrs. Harris Goes to Paris
+2026-05-03 01:07:57 | INFO     | backend.core.searcher - Analyzed 83 results: 0 accepted, 83 rejected (8 due to resolution downgrade limit, 69 due to larger size limit).
+2026-05-03 01:07:57 | INFO     | backend.core.searcher - Searching for: The Mule (2018)
+2026-05-03 01:07:58 | INFO     | backend.core.searcher - Found 180 raw results for The Mule
+2026-05-03 01:07:58 | INFO     | backend.core.searcher - Analyzed 180 results: 0 accepted, 180 rejected (54 due to resolution downgrade limit, 115 due to larger size limit).
+2026-05-03 01:07:58 | INFO     | backend.core.searcher - Searching for: My Dinner with Hervé (2018)
+2026-05-03 01:07:59 | INFO     | backend.core.searcher - Found 17 raw results for My Dinner with Hervé
+2026-05-03 01:07:59 | INFO     | backend.core.searcher - Analyzed 17 results: 0 accepted, 17 rejected (4 due to resolution downgrade limit, 13 due to larger size limit).
+2026-05-03 01:07:59 | INFO     | backend.core.searcher - Searching for: Nitram (2021)
+2026-05-03 01:08:01 | INFO     | backend.core.searcher - Found 63 raw results for Nitram
+2026-05-03 01:08:01 | INFO     | backend.core.searcher - Analyzed 63 results: 0 accepted, 63 rejected (6 due to resolution downgrade limit, 50 due to larger size limit).
+2026-05-03 01:08:01 | INFO     | backend.core.searcher - Searching for: Novocaine (2025)
+2026-05-03 01:08:02 | INFO     | backend.core.searcher - Found 176 raw results for Novocaine
+2026-05-03 01:08:02 | INFO     | backend.core.searcher - Analyzed 176 results: 0 accepted, 176 rejected (0 due to resolution downgrade limit, 174 due to larger size limit).
+2026-05-03 01:08:02 | INFO     | backend.core.searcher - Searching for: Papillon (None)
+2026-05-03 01:08:04 | INFO     | backend.core.searcher - Found 1 raw results for Papillon
+2026-05-03 01:08:04 | INFO     | backend.core.searcher - Analyzed 1 results: 0 accepted, 1 rejected (0 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-03 01:08:04 | INFO     | backend.core.searcher - Searching for: Perfect Days (2023)
+2026-05-03 01:08:05 | INFO     | backend.core.searcher - Found 105 raw results for Perfect Days
+2026-05-03 01:08:05 | INFO     | backend.core.searcher - Analyzed 105 results: 0 accepted, 105 rejected (2 due to resolution downgrade limit, 103 due to larger size limit).
+2026-05-03 01:08:05 | INFO     | backend.core.searcher - Searching for: Playing God (2021)
+2026-05-03 01:08:06 | INFO     | backend.core.searcher - Found 11 raw results for Playing God
+2026-05-03 01:08:06 | INFO     | backend.core.searcher - Analyzed 11 results: 0 accepted, 11 rejected (2 due to resolution downgrade limit, 8 due to larger size limit).
+2026-05-03 01:08:06 | INFO     | backend.core.searcher - Searching for: Prometheus (2012)
+2026-05-03 01:08:08 | INFO     | backend.core.searcher - Found 200 raw results for Prometheus
+2026-05-03 01:08:09 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (6 due to resolution downgrade limit, 190 due to larger size limit).
+2026-05-03 01:08:09 | INFO     | backend.core.searcher - Searching for: Pure Pwnage (2016)
+2026-05-03 01:08:09 | INFO     | backend.core.searcher - Found 10 raw results for Pure Pwnage
+2026-05-03 01:08:10 | INFO     | backend.core.searcher - Analyzed 10 results: 0 accepted, 10 rejected (0 due to resolution downgrade limit, 10 due to larger size limit).
+2026-05-03 01:08:10 | INFO     | backend.core.searcher - Searching for: Rabbit-Proof Fence (2002)
+2026-05-03 01:08:10 | INFO     | backend.core.searcher - Found 39 raw results for Rabbit-Proof Fence
+2026-05-03 01:08:11 | INFO     | backend.core.searcher - Analyzed 39 results: 0 accepted, 39 rejected (0 due to resolution downgrade limit, 39 due to larger size limit).
+2026-05-03 01:08:11 | INFO     | backend.core.searcher - Searching for: Red Joan (2018)
+2026-05-03 01:08:12 | INFO     | backend.core.searcher - Found 60 raw results for Red Joan
+2026-05-03 01:08:12 | INFO     | backend.core.searcher - Analyzed 60 results: 0 accepted, 60 rejected (0 due to resolution downgrade limit, 60 due to larger size limit).
+2026-05-03 01:08:12 | INFO     | backend.core.searcher - Searching for: Red Tails (2012)
+2026-05-03 01:08:13 | INFO     | backend.core.searcher - Found 64 raw results for Red Tails
+2026-05-03 01:08:13 | INFO     | backend.core.searcher - Analyzed 64 results: 0 accepted, 64 rejected (0 due to resolution downgrade limit, 63 due to larger size limit).
+2026-05-03 01:08:13 | INFO     | backend.core.searcher - Searching for: Reminders of Him (2026)
+2026-05-03 01:08:14 | INFO     | backend.core.searcher - Found 40 raw results for Reminders of Him
+2026-05-03 01:08:14 | INFO     | backend.core.searcher - Analyzed 40 results: 0 accepted, 40 rejected (29 due to resolution downgrade limit, 11 due to larger size limit).
+2026-05-03 01:08:14 | INFO     | backend.core.searcher - Searching for: Resident Evil: Degeneration (2008)
+2026-05-03 01:08:15 | INFO     | backend.core.searcher - Found 80 raw results for Resident Evil: Degeneration
+2026-05-03 01:08:15 | INFO     | backend.core.searcher - Analyzed 80 results: 0 accepted, 80 rejected (0 due to resolution downgrade limit, 79 due to larger size limit).
+2026-05-03 01:08:15 | INFO     | backend.core.searcher - Searching for: Revealed - Craig Bellamy: Inside the Storm (2025)
+2026-05-03 01:08:16 | INFO     | backend.core.searcher - Found 0 raw results for Revealed - Craig Bellamy: Inside the Storm
+2026-05-03 01:08:16 | INFO     | backend.core.searcher - Searching for: Road Diary: Bruce Springsteen and the E Street Band (2024)
+2026-05-03 01:08:17 | INFO     | backend.core.searcher - Found 28 raw results for Road Diary: Bruce Springsteen and the E Street Band
+2026-05-03 01:08:17 | INFO     | backend.core.searcher - Analyzed 28 results: 0 accepted, 28 rejected (0 due to resolution downgrade limit, 28 due to larger size limit).
+2026-05-03 01:08:17 | INFO     | backend.core.searcher - Searching for: Roadrunner: A Film About Anthony Bourdain (2021)
+2026-05-03 01:08:18 | INFO     | backend.core.searcher - Found 11 raw results for Roadrunner: A Film About Anthony Bourdain
+2026-05-03 01:08:18 | INFO     | backend.core.searcher - Analyzed 11 results: 0 accepted, 11 rejected (0 due to resolution downgrade limit, 11 due to larger size limit).
+2026-05-03 01:08:18 | INFO     | backend.core.searcher - Searching for: Scream 7 (2026)
+2026-05-03 01:08:19 | INFO     | backend.core.searcher - Found 84 raw results for Scream 7
+2026-05-03 01:08:19 | INFO     | backend.core.searcher - Analyzed 84 results: 0 accepted, 84 rejected (5 due to resolution downgrade limit, 77 due to larger size limit).
+2026-05-03 01:08:19 | INFO     | backend.core.searcher - Searching for: Sniper: The White Raven (2022)
+2026-05-03 01:08:20 | INFO     | backend.core.searcher - Found 52 raw results for Sniper: The White Raven
+2026-05-03 01:08:20 | INFO     | backend.core.searcher - Analyzed 52 results: 0 accepted, 52 rejected (5 due to resolution downgrade limit, 45 due to larger size limit).
+2026-05-03 01:08:20 | INFO     | backend.core.searcher - Searching for: Song Sung Blue (2025)
+2026-05-03 01:08:23 | INFO     | backend.core.searcher - Found 122 raw results for Song Sung Blue
+2026-05-03 01:08:23 | INFO     | backend.core.searcher - Analyzed 122 results: 0 accepted, 122 rejected (4 due to resolution downgrade limit, 117 due to larger size limit).
+2026-05-03 01:08:23 | INFO     | backend.core.searcher - Searching for: Soul (2020)
+2026-05-03 01:08:24 | INFO     | backend.core.searcher - Found 79 raw results for Soul
+2026-05-03 01:08:24 | INFO     | backend.core.searcher - Analyzed 79 results: 0 accepted, 79 rejected (5 due to resolution downgrade limit, 68 due to larger size limit).
+2026-05-03 01:08:24 | INFO     | backend.core.searcher - Searching for: South Park: Post COVID (2021)
+2026-05-03 01:08:26 | INFO     | backend.core.searcher - Found 59 raw results for South Park: Post COVID
+2026-05-03 01:08:26 | INFO     | backend.core.searcher - Analyzed 59 results: 0 accepted, 59 rejected (53 due to resolution downgrade limit, 6 due to larger size limit).
+2026-05-03 01:08:26 | INFO     | backend.core.searcher - Searching for: Sweet Country (2018)
+2026-05-03 01:08:27 | INFO     | backend.core.searcher - Found 25 raw results for Sweet Country
+2026-05-03 01:08:27 | INFO     | backend.core.searcher - Analyzed 25 results: 0 accepted, 25 rejected (0 due to resolution downgrade limit, 23 due to larger size limit).
+2026-05-03 01:08:27 | INFO     | backend.core.searcher - Searching for: T-34 (2018)
+2026-05-03 01:08:28 | INFO     | backend.core.searcher - Found 13 raw results for T-34
+2026-05-03 01:08:28 | INFO     | backend.core.searcher - Analyzed 13 results: 0 accepted, 13 rejected (1 due to resolution downgrade limit, 11 due to larger size limit).
+2026-05-03 01:08:28 | INFO     | backend.core.searcher - Searching for: Tiña (None)
+2026-05-03 01:08:30 | INFO     | backend.core.searcher - Found 0 raw results for Tiña
+2026-05-03 01:08:30 | INFO     | backend.core.searcher - Searching for: Transfusion (2023)
+2026-05-03 01:08:31 | INFO     | backend.core.searcher - Found 62 raw results for Transfusion
+2026-05-03 01:08:31 | INFO     | backend.core.searcher - Analyzed 62 results: 0 accepted, 62 rejected (34 due to resolution downgrade limit, 25 due to larger size limit).
+2026-05-03 01:08:31 | INFO     | backend.core.searcher - Searching for: Union (2024)
+2026-05-03 01:08:34 | INFO     | backend.core.searcher - Found 5 raw results for Union
+2026-05-03 01:08:34 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-03 01:08:34 | INFO     | backend.core.searcher - Searching for: The Upside (2019)
+2026-05-03 01:08:35 | INFO     | backend.core.searcher - Found 88 raw results for The Upside
+2026-05-03 01:08:35 | INFO     | backend.core.searcher - Analyzed 88 results: 0 accepted, 88 rejected (8 due to resolution downgrade limit, 23 due to larger size limit).
+2026-05-03 01:08:35 | INFO     | backend.core.searcher - Searching for: War of the Worlds (2025)
+2026-05-03 01:08:36 | INFO     | backend.core.searcher - Found 34 raw results for War of the Worlds
+2026-05-03 01:08:36 | INFO     | backend.core.searcher - Analyzed 34 results: 0 accepted, 34 rejected (21 due to resolution downgrade limit, 12 due to larger size limit).
+2026-05-03 01:08:36 | INFO     | backend.core.searcher - Searching for: The Way, My Way (2024)
+2026-05-03 01:08:37 | INFO     | backend.core.searcher - Found 8 raw results for The Way, My Way
+2026-05-03 01:08:37 | INFO     | backend.core.searcher - Analyzed 8 results: 0 accepted, 8 rejected (1 due to resolution downgrade limit, 7 due to larger size limit).
+2026-05-03 01:08:37 | INFO     | backend.core.searcher - Searching for: Wonder Woman 1984 (2020)
+2026-05-03 01:08:39 | INFO     | backend.core.searcher - Found 200 raw results for Wonder Woman 1984
+2026-05-03 01:08:39 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (0 due to resolution downgrade limit, 123 due to larger size limit).
+2026-05-03 01:08:39 | INFO     | backend.core.searcher - Searching for: A Working Man (2025)
+2026-05-03 01:08:40 | INFO     | backend.core.searcher - Found 166 raw results for A Working Man
+2026-05-03 01:08:40 | INFO     | backend.core.searcher - Analyzed 166 results: 0 accepted, 166 rejected (7 due to resolution downgrade limit, 152 due to larger size limit).
+2026-05-03 01:08:40 | INFO     | backend.core.searcher - Searching for: Faith No More – Live Hellfest 2015 (2015)
+2026-05-03 01:08:42 | INFO     | backend.core.searcher - Found 0 raw results for Faith No More – Live Hellfest 2015
+2026-05-03 01:08:42 | INFO     | backend.core.searcher - Searching for: Incubus - Live at BeachLife Festival 2024 (2024)
+2026-05-03 01:08:43 | INFO     | backend.core.searcher - Found 0 raw results for Incubus - Live at BeachLife Festival 2024
+2026-05-03 01:08:43 | INFO     | backend.core.searcher - Searching for: Incubus - Live at Festival de Viña 2025 (2025)
+2026-05-03 01:08:44 | INFO     | backend.core.searcher - Found 0 raw results for Incubus - Live at Festival de Viña 2025
+2026-05-03 01:08:44 | INFO     | backend.core.searcher - Searching for: Incubus - Live at Rock in Rio 2024 (2024)
+2026-05-03 01:08:47 | INFO     | backend.core.searcher - Found 0 raw results for Incubus - Live at Rock in Rio 2024
+2026-05-03 01:08:47 | INFO     | backend.core.searcher - Searching for: Incubus Alive at Red Rocks (2004)
+2026-05-03 01:08:48 | INFO     | backend.core.searcher - Found 2 raw results for Incubus Alive at Red Rocks
+2026-05-03 01:08:48 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-03 01:08:48 | INFO     | backend.core.searcher - Searching for: Incubus: 20th Anniversary Morning View Concert (2021)
+2026-05-03 01:08:49 | INFO     | backend.core.searcher - Found 0 raw results for Incubus: 20th Anniversary Morning View Concert
+2026-05-03 01:08:49 | INFO     | backend.core.searcher - Searching for: Incubus: Look Alive (2007)
+2026-05-03 01:08:50 | INFO     | backend.core.searcher - Found 3 raw results for Incubus: Look Alive
+2026-05-03 01:08:50 | INFO     | backend.core.searcher - Analyzed 3 results: 0 accepted, 3 rejected (0 due to resolution downgrade limit, 3 due to larger size limit).
+2026-05-03 01:08:50 | INFO     | backend.core.searcher - Searching for: Karnivool: Live At The Forum (2013)
+2026-05-03 01:08:51 | INFO     | backend.core.searcher - Found 0 raw results for Karnivool: Live At The Forum
+2026-05-03 01:08:51 | INFO     | backend.core.searcher - Searching for: Karnivool: The Decade Of Sound Awake (2021)
+2026-05-03 01:08:53 | INFO     | backend.core.searcher - Found 0 raw results for Karnivool: The Decade Of Sound Awake
+2026-05-03 01:08:53 | INFO     | backend.core.searcher - Searching for: Michael Jackson Live at Wembley July 16, 1988 (2012)
+2026-05-03 01:08:54 | INFO     | backend.core.searcher - Found 0 raw results for Michael Jackson Live at Wembley July 16, 1988
+2026-05-03 01:08:54 | INFO     | backend.core.searcher - Searching for: Nirvana: Unplugged In New York (1993)
+2026-05-03 01:08:55 | INFO     | backend.core.searcher - Found 1 raw results for Nirvana: Unplugged In New York
+2026-05-03 01:08:55 | INFO     | backend.core.searcher - Analyzed 1 results: 0 accepted, 1 rejected (0 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-03 01:08:55 | INFO     | backend.core.searcher - Searching for: Queen + Adam Lambert: Live Around the World (2020)
+2026-05-03 01:08:56 | INFO     | backend.core.searcher - Found 1 raw results for Queen + Adam Lambert: Live Around the World
+2026-05-03 01:08:56 | INFO     | backend.core.searcher - Analyzed 1 results: 0 accepted, 1 rejected (0 due to resolution downgrade limit, 0 due to larger size limit).
+2026-05-03 01:08:56 | INFO     | backend.core.searcher - Searching for: The Rage Factor: Rage Against the Machine Live from London (2015)
+2026-05-03 01:08:58 | INFO     | backend.core.searcher - Found 2 raw results for The Rage Factor: Rage Against the Machine Live from London
+2026-05-03 01:08:58 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 0 due to larger size limit).
+2026-05-03 01:08:58 | INFO     | backend.core.searcher - Searching for: Arj Barker: Forever (2009)
+2026-05-03 01:08:59 | INFO     | backend.core.searcher - Found 5 raw results for Arj Barker: Forever
+2026-05-03 01:08:59 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 5 due to larger size limit).
+2026-05-03 01:08:59 | INFO     | backend.core.searcher - Searching for: Carl Barron: Drinking with a Fork (2018)
+2026-05-03 01:09:00 | INFO     | backend.core.searcher - Found 0 raw results for Carl Barron: Drinking with a Fork
+2026-05-03 01:09:00 | INFO     | backend.core.searcher - Searching for: Carl Barron: Whatever Comes Next (2005)
+2026-05-03 01:09:01 | INFO     | backend.core.searcher - Found 5 raw results for Carl Barron: Whatever Comes Next
+2026-05-03 01:09:01 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 5 due to larger size limit).
+2026-05-03 01:09:01 | INFO     | backend.core.searcher - Searching for: Dane Cook: Isolated Incident (2009)
+2026-05-03 01:09:02 | INFO     | backend.core.searcher - Found 4 raw results for Dane Cook: Isolated Incident
+2026-05-03 01:09:02 | INFO     | backend.core.searcher - Analyzed 4 results: 0 accepted, 4 rejected (0 due to resolution downgrade limit, 4 due to larger size limit).
+2026-05-03 01:09:02 | INFO     | backend.core.searcher - Searching for: Dane Cook: Rough Around the Edges (2007)
+2026-05-03 01:09:03 | INFO     | backend.core.searcher - Found 5 raw results for Dane Cook: Rough Around the Edges
+2026-05-03 01:09:03 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 5 due to larger size limit).
+2026-05-03 01:09:03 | INFO     | backend.core.searcher - Searching for: Dane Cook: Vicious Circle (2006)
+2026-05-03 01:09:04 | INFO     | backend.core.searcher - Found 9 raw results for Dane Cook: Vicious Circle
+2026-05-03 01:09:04 | INFO     | backend.core.searcher - Analyzed 9 results: 0 accepted, 9 rejected (0 due to resolution downgrade limit, 9 due to larger size limit).
+2026-05-03 01:09:04 | INFO     | backend.core.searcher - Searching for: Danny Bhoy: Live at the Athenaeum (2009)
+2026-05-03 01:09:05 | INFO     | backend.core.searcher - Found 0 raw results for Danny Bhoy: Live at the Athenaeum
+2026-05-03 01:09:05 | INFO     | backend.core.searcher - Searching for: Danny Bhoy: Live at the Sydney Opera House (2007)
+2026-05-03 01:09:06 | INFO     | backend.core.searcher - Found 2 raw results for Danny Bhoy: Live at the Sydney Opera House
+2026-05-03 01:09:06 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 2 due to larger size limit).
+2026-05-03 01:09:06 | INFO     | backend.core.searcher - Searching for: Jerry Seinfeld: 'I'm Telling You for the Last Time' (1998)
+2026-05-03 01:09:07 | INFO     | backend.core.searcher - Found 5 raw results for Jerry Seinfeld: 'I'm Telling You for the Last Time'
+2026-05-03 01:09:07 | INFO     | backend.core.searcher - Analyzed 5 results: 0 accepted, 5 rejected (0 due to resolution downgrade limit, 5 due to larger size limit).
+2026-05-03 01:09:07 | INFO     | backend.core.searcher - Searching for: Jim Gaffigan: Obsessed (2014)
+2026-05-03 01:09:08 | INFO     | backend.core.searcher - Found 25 raw results for Jim Gaffigan: Obsessed
+2026-05-03 01:09:08 | INFO     | backend.core.searcher - Analyzed 25 results: 0 accepted, 25 rejected (0 due to resolution downgrade limit, 25 due to larger size limit).
+2026-05-03 01:09:08 | INFO     | backend.core.searcher - Searching for: Jim Jefferies: Alcoholocaust (2010)
+2026-05-03 01:09:09 | INFO     | backend.core.searcher - Found 14 raw results for Jim Jefferies: Alcoholocaust
+2026-05-03 01:09:09 | INFO     | backend.core.searcher - Analyzed 14 results: 0 accepted, 14 rejected (0 due to resolution downgrade limit, 13 due to larger size limit).
+2026-05-03 01:09:09 | INFO     | backend.core.searcher - Searching for: Jim Jefferies: Contraband (2008)
+2026-05-03 01:09:10 | INFO     | backend.core.searcher - Found 1 raw results for Jim Jefferies: Contraband
+2026-05-03 01:09:10 | INFO     | backend.core.searcher - Analyzed 1 results: 0 accepted, 1 rejected (0 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-03 01:09:10 | INFO     | backend.core.searcher - Searching for: Jim Jefferies: I Swear to God (2009)
+2026-05-03 01:09:11 | INFO     | backend.core.searcher - Found 11 raw results for Jim Jefferies: I Swear to God
+2026-05-03 01:09:11 | INFO     | backend.core.searcher - Analyzed 11 results: 0 accepted, 11 rejected (0 due to resolution downgrade limit, 11 due to larger size limit).
+2026-05-03 01:09:11 | INFO     | backend.core.searcher - Searching for: Kevin Hart: Seriously Funny (2010)
+2026-05-03 01:09:15 | INFO     | backend.core.searcher - Found 29 raw results for Kevin Hart: Seriously Funny
+2026-05-03 01:09:15 | INFO     | backend.core.searcher - Analyzed 29 results: 0 accepted, 29 rejected (0 due to resolution downgrade limit, 27 due to larger size limit).
+2026-05-03 01:09:15 | INFO     | backend.core.searcher - Searching for: Louis C.K. Oh My God (2013)
+2026-05-03 01:09:16 | INFO     | backend.core.searcher - Found 24 raw results for Louis C.K. Oh My God
+2026-05-03 01:09:16 | INFO     | backend.core.searcher - Analyzed 24 results: 0 accepted, 24 rejected (0 due to resolution downgrade limit, 21 due to larger size limit).
+2026-05-03 01:09:16 | INFO     | backend.core.searcher - Searching for: Louis C.K.: Shameless (2007)
+2026-05-03 01:09:20 | INFO     | backend.core.searcher - Found 16 raw results for Louis C.K.: Shameless
+2026-05-03 01:09:20 | INFO     | backend.core.searcher - Analyzed 16 results: 0 accepted, 16 rejected (0 due to resolution downgrade limit, 16 due to larger size limit).
+2026-05-03 01:09:20 | INFO     | backend.core.searcher - Searching for: Ricky Gervais Meets... Larry David (2006)
+2026-05-03 01:09:24 | INFO     | backend.core.searcher - Found 0 raw results for Ricky Gervais Meets... Larry David
+2026-05-03 01:09:24 | INFO     | backend.core.searcher - Searching for: Ricky Gervais: Out of England - The Stand-Up Special (2008)
+2026-05-03 01:09:25 | INFO     | backend.core.searcher - Found 2 raw results for Ricky Gervais: Out of England - The Stand-Up Special
+2026-05-03 01:09:25 | INFO     | backend.core.searcher - Analyzed 2 results: 0 accepted, 2 rejected (0 due to resolution downgrade limit, 2 due to larger size limit).
+2026-05-03 01:09:25 | INFO     | backend.core.searcher - Searching for: Russell Peters: Outsourced (2006)
+2026-05-03 01:09:26 | INFO     | backend.core.searcher - Found 0 raw results for Russell Peters: Outsourced
+2026-05-03 01:09:26 | INFO     | backend.core.searcher - Searching for: Russell Peters: Red, White and Brown (2008)
+2026-05-03 01:09:27 | INFO     | backend.core.searcher - Found 0 raw results for Russell Peters: Red, White and Brown
+2026-05-03 01:09:27 | INFO     | backend.core.searcher - Searching for: Science (2010)
+2026-05-03 01:09:28 | INFO     | backend.core.searcher - Found 18 raw results for Science
+2026-05-03 01:09:28 | INFO     | backend.core.searcher - Analyzed 18 results: 0 accepted, 18 rejected (0 due to resolution downgrade limit, 18 due to larger size limit).
+2026-05-03 01:09:28 | INFO     | backend.core.searcher - Searching for: Bambi (1942)
+2026-05-03 01:09:31 | INFO     | backend.core.searcher - Found 175 raw results for Bambi
+2026-05-03 01:09:31 | INFO     | backend.core.searcher - Analyzed 175 results: 0 accepted, 175 rejected (0 due to resolution downgrade limit, 173 due to larger size limit).
+2026-05-03 01:09:31 | INFO     | backend.core.searcher - Searching for: Disney Classic 24 the Fox and the Hound (None)
+2026-05-03 01:09:33 | INFO     | backend.core.searcher - Found 1 raw results for Disney Classic 24 the Fox and the Hound
+2026-05-03 01:09:33 | INFO     | backend.core.searcher - Analyzed 1 results: 0 accepted, 1 rejected (0 due to resolution downgrade limit, 1 due to larger size limit).
+2026-05-03 01:09:33 | INFO     | backend.core.searcher - Searching for: Madagascar: Escape 2 Africa (2008)
+2026-05-03 01:09:34 | INFO     | backend.core.searcher - Found 156 raw results for Madagascar: Escape 2 Africa
+2026-05-03 01:09:35 | INFO     | backend.core.searcher - Analyzed 156 results: 0 accepted, 156 rejected (10 due to resolution downgrade limit, 127 due to larger size limit).
+2026-05-03 01:09:35 | INFO     | backend.core.searcher - Searching for: Shrek 2 (2004)
+2026-05-03 01:09:36 | INFO     | backend.core.searcher - Found 196 raw results for Shrek 2
+2026-05-03 01:09:36 | INFO     | backend.core.searcher - Analyzed 196 results: 0 accepted, 196 rejected (5 due to resolution downgrade limit, 181 due to larger size limit).
+2026-05-03 01:09:36 | INFO     | backend.core.searcher - Searching for: Mulan II (2004)
+2026-05-03 01:09:38 | INFO     | backend.core.searcher - Found 106 raw results for Mulan II
+2026-05-03 01:09:38 | INFO     | backend.core.searcher - Analyzed 106 results: 0 accepted, 106 rejected (4 due to resolution downgrade limit, 78 due to larger size limit).
+2026-05-03 01:09:38 | INFO     | backend.core.searcher - Searching for:  the Wind Rises (2013)
+2026-05-03 01:09:42 | INFO     | backend.core.searcher - Found 82 raw results for  the Wind Rises
+2026-05-03 01:09:43 | INFO     | backend.core.searcher - Analyzed 82 results: 0 accepted, 82 rejected (7 due to resolution downgrade limit, 71 due to larger size limit).
+2026-05-03 01:09:43 | INFO     | backend.core.searcher - Searching for: Act of Valor (2012)
+2026-05-03 01:09:43 | INFO     | backend.core.searcher - Found 167 raw results for Act of Valor
+2026-05-03 01:09:44 | INFO     | backend.core.searcher - Analyzed 167 results: 0 accepted, 167 rejected (10 due to resolution downgrade limit, 133 due to larger size limit).
+2026-05-03 01:09:44 | INFO     | backend.core.searcher - Searching for: Ainbo (2021)
+2026-05-03 01:09:45 | INFO     | backend.core.searcher - Found 40 raw results for Ainbo
+2026-05-03 01:09:45 | INFO     | backend.core.searcher - Analyzed 40 results: 0 accepted, 40 rejected (1 due to resolution downgrade limit, 37 due to larger size limit).
+2026-05-03 01:09:45 | INFO     | backend.core.searcher - Searching for: Ant-Man (2015)
+2026-05-03 01:09:46 | INFO     | backend.core.searcher - Found 200 raw results for Ant-Man
+2026-05-03 01:09:46 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (1 due to resolution downgrade limit, 189 due to larger size limit).
+2026-05-03 01:09:46 | INFO     | backend.core.searcher - Searching for: Leo (2023)
+2026-05-03 01:09:47 | INFO     | backend.core.searcher - Found 3 raw results for Leo
+2026-05-03 01:09:47 | INFO     | backend.core.searcher - Analyzed 3 results: 0 accepted, 3 rejected (0 due to resolution downgrade limit, 3 due to larger size limit).
+2026-05-03 01:09:47 | INFO     | backend.core.searcher - Searching for: Hotel Transylvania 2 (2015)
+2026-05-03 01:09:48 | INFO     | backend.core.searcher - Found 200 raw results for Hotel Transylvania 2
+2026-05-03 01:09:48 | INFO     | backend.core.searcher - Analyzed 200 results: 0 accepted, 200 rejected (0 due to resolution downgrade limit, 190 due to larger size limit).
+2026-05-03 04:00:00 | INFO     | backend.scheduler.scheduler - Orphan scanner triggered
+2026-05-03 15:16:03 | INFO     | backend.core.searcher - Searching for: The Holiday (2006)
+2026-05-03 15:16:05 | INFO     | backend.core.searcher - Found 95 raw results for The Holiday
+2026-05-03 15:16:06 | INFO     | backend.core.searcher - Analyzed 95 results: 0 accepted, 95 rejected (32 due to resolution downgrade limit, 47 due to larger size limit).
+2026-05-03 15:19:09 | INFO     | backend.utils.logger - Logger initialised — level=INFO
+2026-05-03 15:19:10 | INFO     | backend.scheduler.scheduler - Scheduled nightly cycle at 01:00 UTC
+2026-05-03 15:19:10 | INFO     | backend.scheduler.scheduler - Scheduler started
+2026-05-03 15:19:57 | INFO     | backend.core.scanner - Scan started: 1696 movies in Plex
+2026-05-03 15:21:07 | WARNING  | backend.core.scanner - TMDB lookup failed for Ricky Gervais Meets... Larry David: Client error '404 Not Found' for url 'https://api.themoviedb.org/3/movie/264152?api_key=b4476886334d94febf78d6460d852813&language=en-US'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404
+2026-05-03 15:21:08 | INFO     | backend.core.scanner - Scan completed: 1696 movies processed
+2026-05-04 08:28:14 | INFO     | backend.utils.logger - Logger initialised — level=INFO
+2026-05-04 08:28:14 | INFO     | backend.scheduler.scheduler - Scheduled nightly cycle at 01:00 UTC
+2026-05-04 08:28:14 | INFO     | backend.scheduler.scheduler - Scheduler started
+2026-05-04 08:28:59 | INFO     | backend.core.scanner - Scan started: 1696 movies in Plex
+2026-05-04 08:30:12 | WARNING  | backend.core.scanner - TMDB lookup failed for Ricky Gervais Meets... Larry David: Client error '404 Not Found' for url 'https://api.themoviedb.org/3/movie/264152?api_key=b4476886334d94febf78d6460d852813&language=en-US'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404
+2026-05-04 08:30:13 | INFO     | backend.core.scanner - Scan completed: 1696 movies processed

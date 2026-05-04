@@ -60,6 +60,31 @@ def _apply_path_mapping(path: str, mappings: list) -> str:
     return path
 
 
+async def _run_radarr_post_replace(movie: Movie, config) -> None:
+    """Dispatch Radarr post-replace action based on configuration."""
+    if not (config.radarr.enabled and config.radarr.url and config.radarr.api_key and movie.imdb_id):
+        return
+
+    action = config.radarr.post_replace_action or "rescan"
+    if action == "none":
+        return
+
+    try:
+        from backend.integrations.radarr import RadarrClient
+
+        radarr = RadarrClient()
+        found = await radarr.post_replace_action(movie.imdb_id, action)
+        if found:
+            if action == "rescan_unmonitor":
+                logger.info(f"Radarr rescan + unmonitor triggered for {movie.title}")
+            else:
+                logger.info(f"Radarr rescan triggered for {movie.title}")
+        else:
+            logger.debug(f"Movie not found in Radarr: {movie.title}")
+    except Exception as e:
+        logger.warning(f"Radarr post-replace action failed: {e}")
+
+
 async def replace_file(download_id: int) -> bool:
     """
     Move the downloaded file to the library, remove the old file,
@@ -299,22 +324,7 @@ async def replace_file(download_id: int) -> bool:
                 logger.warning(f"Plex refresh failed: {e}")
 
         # Notify Radarr (rescan / rescan+unmonitor / nothing) based on post_replace_action
-        if config.radarr.enabled and config.radarr.url and config.radarr.api_key and movie.imdb_id:
-            action = config.radarr.post_replace_action or "rescan"
-            if action != "none":
-                try:
-                    from backend.integrations.radarr import RadarrClient
-                    radarr = RadarrClient()
-                    found = await radarr.post_replace_action(movie.imdb_id, action)
-                    if found:
-                        if action == "rescan_unmonitor":
-                            logger.info(f"Radarr rescan + unmonitor triggered for {movie.title}")
-                        else:
-                            logger.info(f"Radarr rescan triggered for {movie.title}")
-                    else:
-                        logger.debug(f"Movie not found in Radarr: {movie.title}")
-                except Exception as e:
-                    logger.warning(f"Radarr post-replace action failed: {e}")
+        await _run_radarr_post_replace(movie, config)
 
         # Clean up the SABnzbd download folder now that we're done with it
         _cleanup_download_folder(storage_path)
