@@ -62,6 +62,8 @@ guards to make source installs seamless on any supported Python version.
 - Added a one-click diagnostics export endpoint at `/api/v1/system/diagnostics/bundle` that
   packages redacted config, system/integration health snapshots, and recent log tail into a zip
   for easier support troubleshooting.
+- Updated system API runtime version constant to `1.2.0.0` for accurate `/system/info` and
+  `/system/update-check` reporting.
 
 **API contract improvements**
 - Added shared Pydantic response models and wired them into core API routes for clearer OpenAPI

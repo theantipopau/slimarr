@@ -66,7 +66,7 @@ async def _start_guarded_background_task(task_key: str, background: BackgroundTa
 _start_time = datetime.now(timezone.utc)
 
 
-CURRENT_VERSION = "1.1.0.0"
+CURRENT_VERSION = "1.2.0.0"
 GITHUB_REPO = "theantipopau/slimarr"
 
 _SERVICES_HEALTH_TTL_SECONDS = 20.0
