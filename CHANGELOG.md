@@ -58,6 +58,12 @@ guards to make source installs seamless on any supported Python version.
   while a matching task key is already running.
 - Applied guards to scheduler task runs, full scan trigger, cleanup trigger, and full cycle start.
 
+**API contract improvements**
+- Added shared Pydantic response models and wired them into core API routes for clearer OpenAPI
+  docs and safer frontend type expectations.
+- Covered auth check, dashboard stats/history/activity, library movie/search/action endpoints,
+  queue endpoints, and activity list responses.
+
 ---
 
 ## [1.1.2.0] - 2026-05-04

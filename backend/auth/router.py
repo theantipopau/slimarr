@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy import select
 
 from backend.auth.jwt import create_access_token
+from backend.api.models import AuthCheckResponse
 from backend.config import get_config
 from backend.core.audit import log_audit_event
 from backend.database import AsyncSession, User, get_db
@@ -83,7 +84,7 @@ class RegisterRequest(BaseModel):
     password: str
 
 
-@router.get("/check")
+@router.get("/check", response_model=AuthCheckResponse)
 async def check_auth_status(db: AsyncSession = Depends(get_db)):
     """
     GET /api/v1/auth/check

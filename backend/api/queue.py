@@ -4,13 +4,14 @@ from __future__ import annotations
 from fastapi import APIRouter, BackgroundTasks, Depends
 from sqlalchemy import select
 
+from backend.api.models import DownloadOut, OrphanCleanupResponse, ResumeDownloadsResponse, RetryDownloadResponse
 from backend.auth.dependencies import get_current_user
 from backend.database import Download, async_session
 
 router = APIRouter(prefix="/queue", tags=["queue"])
 
 
-@router.get("/active")
+@router.get("/active", response_model=list[DownloadOut])
 async def get_active_downloads(user=Depends(get_current_user)):
     async with async_session() as db:
         result = await db.execute(
@@ -22,7 +23,7 @@ async def get_active_downloads(user=Depends(get_current_user)):
     return [_dl_dict(d) for d in downloads]
 
 
-@router.get("/recent")
+@router.get("/recent", response_model=list[DownloadOut])
 async def get_recent_downloads(limit: int = 20, user=Depends(get_current_user)):
     async with async_session() as db:
         result = await db.execute(
@@ -34,7 +35,7 @@ async def get_recent_downloads(limit: int = 20, user=Depends(get_current_user)):
     return [_dl_dict(d) for d in downloads]
 
 
-@router.get("/failed")
+@router.get("/failed", response_model=list[DownloadOut])
 async def get_failed_downloads(limit: int = 50, user=Depends(get_current_user)):
     """List all failed downloads with cleanup status."""
     async with async_session() as db:
@@ -48,7 +49,7 @@ async def get_failed_downloads(limit: int = 50, user=Depends(get_current_user)):
     return [_dl_dict(d) for d in downloads]
 
 
-@router.post("/resume")
+@router.post("/resume", response_model=ResumeDownloadsResponse)
 async def resume_stuck_downloads_endpoint(user=Depends(get_current_user)):
     """Resume monitor workflows for downloads left in downloading state."""
     from backend.core.download_workflow import resume_downloading_downloads
@@ -68,7 +69,7 @@ async def cleanup_failed_download_endpoint(download_id: int, user=Depends(get_cu
 
 
 
-@router.post("/{download_id}/retry")
+@router.post("/{download_id}/retry", response_model=RetryDownloadResponse)
 async def retry_failed_download_endpoint(
     download_id: int,
     background: BackgroundTasks,
@@ -104,7 +105,7 @@ async def get_orphaned_downloads(limit: int = 100, user=Depends(get_current_user
     return orphans
 
 
-@router.post("/orphaned/{orphan_id}/cleanup")
+@router.post("/orphaned/{orphan_id}/cleanup", response_model=OrphanCleanupResponse)
 async def cleanup_orphaned_download_endpoint(orphan_id: int, user=Depends(get_current_user)):
     """Mark an orphaned download for cleanup."""
     from backend.core.orphan_scanner import cleanup_orphaned_download

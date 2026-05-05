@@ -6,6 +6,7 @@ import json
 from fastapi import APIRouter, BackgroundTasks, Depends
 from sqlalchemy import or_, select
 
+from backend.api.models import ActionStatusResponse, MovieListResponse, MovieOut, SearchResultOut
 from backend.auth.dependencies import get_current_user
 from backend.database import Movie, SearchResult, async_session
 from backend.utils.responses import not_found, get_correlation_id
@@ -13,7 +14,7 @@ from backend.utils.responses import not_found, get_correlation_id
 router = APIRouter(prefix="/library", tags=["library"])
 
 
-@router.get("/movies")
+@router.get("/movies", response_model=MovieListResponse)
 async def list_movies(
     page: int = 1,
     per_page: int = 50,
@@ -60,7 +61,7 @@ async def list_movies(
     }
 
 
-@router.get("/movies/{movie_id}")
+@router.get("/movies/{movie_id}", response_model=MovieOut)
 async def get_movie(movie_id: int, user=Depends(get_current_user)):
     async with async_session() as db:
         result = await db.execute(select(Movie).where(Movie.id == movie_id))
@@ -70,7 +71,7 @@ async def get_movie(movie_id: int, user=Depends(get_current_user)):
     return _movie_dict(movie)
 
 
-@router.get("/movies/{movie_id}/search-results")
+@router.get("/movies/{movie_id}/search-results", response_model=list[SearchResultOut])
 async def get_search_results(movie_id: int, user=Depends(get_current_user)):
     async with async_session() as db:
         result = await db.execute(
@@ -82,7 +83,7 @@ async def get_search_results(movie_id: int, user=Depends(get_current_user)):
     return [_sr_dict(s) for s in srs]
 
 
-@router.post("/movies/{movie_id}/search-results/{result_id}/download")
+@router.post("/movies/{movie_id}/search-results/{result_id}/download", response_model=ActionStatusResponse)
 async def download_result(
     movie_id: int,
     result_id: int,
@@ -121,19 +122,19 @@ async def download_result(
     return {"status": "download_queued", "search_result_id": result_id}
 
 
-@router.post("/movies/{movie_id}/search")
+@router.post("/movies/{movie_id}/search", response_model=ActionStatusResponse)
 async def trigger_search(movie_id: int, background: BackgroundTasks, user=Depends(get_current_user)):
     background.add_task(_run_search, movie_id)
     return {"status": "search_started", "movie_id": movie_id}
 
 
-@router.post("/movies/{movie_id}/process")
+@router.post("/movies/{movie_id}/process", response_model=ActionStatusResponse)
 async def trigger_process(movie_id: int, background: BackgroundTasks, user=Depends(get_current_user)):
     background.add_task(_run_process, movie_id)
     return {"status": "process_started", "movie_id": movie_id}
 
 
-@router.post("/movies/{movie_id}/lock")
+@router.post("/movies/{movie_id}/lock", response_model=ActionStatusResponse)
 async def lock_movie(movie_id: int, user=Depends(get_current_user)):
     """Lock a movie so Slimarr will not attempt to replace it."""
     async with async_session() as db:
@@ -146,7 +147,7 @@ async def lock_movie(movie_id: int, user=Depends(get_current_user)):
     return {"status": "locked", "movie_id": movie_id}
 
 
-@router.post("/movies/{movie_id}/unlock")
+@router.post("/movies/{movie_id}/unlock", response_model=ActionStatusResponse)
 async def unlock_movie(movie_id: int, user=Depends(get_current_user)):
     """Unlock a movie so Slimarr can attempt to replace it again."""
     async with async_session() as db:

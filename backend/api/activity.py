@@ -4,13 +4,14 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends
 from sqlalchemy import func, select
 
+from backend.api.models import ActivityListResponse
 from backend.auth.dependencies import get_current_user
 from backend.database import ActivityLog, async_session
 
 router = APIRouter(prefix="/activity", tags=["activity"])
 
 
-@router.get("")
+@router.get("", response_model=ActivityListResponse)
 async def list_activity(
     page: int = 1,
     per_page: int = 50,

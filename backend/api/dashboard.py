@@ -6,13 +6,14 @@ from datetime import datetime
 from fastapi import APIRouter, Depends
 from sqlalchemy import func, select
 
+from backend.api.models import DashboardStatsResponse, RecentActivityItem, SavingsHistoryPoint
 from backend.auth.dependencies import get_current_user
 from backend.database import ActivityLog, Download, Movie, async_session
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
 
-@router.get("/stats")
+@router.get("/stats", response_model=DashboardStatsResponse)
 async def get_stats(user=Depends(get_current_user)):
     async with async_session() as db:
         total_movies = (await db.execute(select(func.count()).select_from(Movie))).scalar_one()
@@ -53,7 +54,7 @@ async def get_stats(user=Depends(get_current_user)):
     }
 
 
-@router.get("/savings-history")
+@router.get("/savings-history", response_model=list[SavingsHistoryPoint])
 async def get_savings_history(days: int = 30, user=Depends(get_current_user)):
     from datetime import datetime, timedelta, timezone
     from sqlalchemy import and_
@@ -87,7 +88,7 @@ async def get_savings_history(days: int = 30, user=Depends(get_current_user)):
     return series
 
 
-@router.get("/recent-activity")
+@router.get("/recent-activity", response_model=list[RecentActivityItem])
 async def get_recent_activity(limit: int = 20, user=Depends(get_current_user)):
     async with async_session() as db:
         result = await db.execute(
