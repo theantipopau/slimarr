@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ActionStatusResponse(BaseModel):
@@ -147,3 +147,142 @@ class ActivityListResponse(BaseModel):
     page: int
     per_page: int
     activity: list[ActivityItemOut]
+
+
+class ServiceCheckResponse(BaseModel):
+    success: bool
+    error: str | None = None
+    version: str | None = None
+    message: str | None = None
+    model_config = ConfigDict(extra="allow")
+
+
+class DownloadClientCapabilitiesResponse(BaseModel):
+    active: str
+    clients: dict[str, Any]
+
+
+class BlacklistEntryOut(BaseModel):
+    id: int
+    release_title: str
+    release_hash: str | None = None
+    uploader: str | None = None
+    indexer_name: str | None = None
+    reason: str | None = None
+    manual: bool
+    added_at: str | None = None
+    expires_at: str | None = None
+
+
+class AddBlacklistResponse(BaseModel):
+    success: bool
+    id: int
+    release_hash: str | None = None
+
+
+class RemoveBlacklistResponse(BaseModel):
+    success: bool
+    message: str
+
+
+class SystemHealthResponse(BaseModel):
+    status: str
+
+
+class SystemInfoResponse(BaseModel):
+    version: str
+    python: str
+    platform: str
+    uptime_seconds: int
+    db_size_bytes: int
+    port: int
+
+
+class UpdateCheckResponse(BaseModel):
+    update_available: bool
+    current: str
+    latest: str | None = None
+    latest_name: str | None = None
+    release_url: str | None = None
+    published_at: str | None = None
+    error: str | None = None
+
+
+class RecyclingBinInfoResponse(BaseModel):
+    enabled: bool
+    path: str
+    exists: bool
+    files: int
+    bytes: int
+
+
+class RecyclingBinEmptyResponse(BaseModel):
+    status: str
+    removed_files: int
+    removed_dirs: int
+    freed_bytes: int
+
+
+class SystemStatusResponse(BaseModel):
+    cycle: dict[str, Any]
+    scheduler_running: bool
+    jobs: list[dict[str, Any]]
+
+
+class PreflightCheckItem(BaseModel):
+    status: str
+    name: str
+    message: str
+    detail: Any | None = None
+
+
+class PreflightResponse(BaseModel):
+    status: str
+    checked_at: str
+    checks: list[PreflightCheckItem]
+
+
+class IntegrationMatrixResponse(BaseModel):
+    status: str
+    active_download_client: str
+    checked_at: str
+    services: list[dict[str, Any]]
+
+
+class HealthMatrixResponse(BaseModel):
+    status: str
+    checked_at: str
+    components: dict[str, dict[str, Any]]
+
+
+class DecisionAuditItem(BaseModel):
+    id: int
+    movie_id: int | None = None
+    movie_title: str | None = None
+    indexer_name: str | None = None
+    release_title: str
+    candidate_size: int | None = None
+    local_size: int | None = None
+    decision: str
+    score: float | None = None
+    confidence_score: float | None = None
+    confidence_breakdown: dict[str, Any]
+    savings_bytes: int | None = None
+    savings_pct: float | None = None
+    reject_reason: str | None = None
+    notes: str | None = None
+    created_at: str | None = None
+
+
+class TVShowsListResponse(BaseModel):
+    total: int
+    stale_days_filter: int
+    shows: list[dict[str, Any]]
+
+
+class TVDeleteResponse(BaseModel):
+    title: str
+    plex_rating_key: str
+    sonarr_unmonitored: bool
+    plex_deleted: bool
+    errors: list[str]

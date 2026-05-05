@@ -13,6 +13,7 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
+from backend.api.models import TVDeleteResponse, TVShowsListResponse
 from backend.auth.dependencies import get_current_user
 from backend.config import get_config
 from backend.realtime.events import emit_event
@@ -49,7 +50,7 @@ def _show_is_stale(show: dict, days_threshold: int) -> bool:
 # Routes
 # ---------------------------------------------------------------------------
 
-@router.get("/shows")
+@router.get("/shows", response_model=TVShowsListResponse)
 async def list_shows(
     stale_days: int = 0,
     sort: str = "size",
@@ -104,7 +105,7 @@ class DeleteShowRequest(BaseModel):
     so it will not be re-downloaded."""
 
 
-@router.delete("/shows/{plex_rating_key}")
+@router.delete("/shows/{plex_rating_key}", response_model=TVDeleteResponse)
 async def delete_show(
     plex_rating_key: str,
     body: DeleteShowRequest,

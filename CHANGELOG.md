@@ -65,6 +65,9 @@ guards to make source installs seamless on any supported Python version.
   queue endpoints, and activity list responses.
 - Aligned auth dependency failures (API key/JWT/auth required) with centralized error envelopes
   for consistent unauthorized response payloads.
+- Expanded response-model coverage to `system`, `settings`, and `tv` routers for health,
+  preflight, matrix, update/task actions, blacklist, settings test, and TV cleanup endpoints.
+- Added API contract test coverage to assert key routes keep declared response models.
 
 ---
 

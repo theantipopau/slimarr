@@ -6,6 +6,14 @@ from typing import Optional
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
+from backend.api.models import (
+    ActionStatusResponse,
+    AddBlacklistResponse,
+    BlacklistEntryOut,
+    DownloadClientCapabilitiesResponse,
+    RemoveBlacklistResponse,
+    ServiceCheckResponse,
+)
 from backend.auth.dependencies import get_current_user
 from backend.config import IndexerConfig, get_config, reload_config, save_config
 from backend.core.audit import log_audit_event
@@ -14,7 +22,7 @@ from backend.utils.responses import validation_error, get_correlation_id
 router = APIRouter(prefix="/settings", tags=["settings"])
 
 
-@router.get("")
+@router.get("", response_model=dict)
 async def get_settings(user=Depends(get_current_user)):
     config = get_config()
     d = config.model_dump()
@@ -24,7 +32,7 @@ async def get_settings(user=Depends(get_current_user)):
     return d
 
 
-@router.get("/download-clients/capabilities")
+@router.get("/download-clients/capabilities", response_model=DownloadClientCapabilitiesResponse)
 async def download_client_capabilities(user=Depends(get_current_user)):
     from backend.integrations.download_client import (
         get_active_download_client_name,
@@ -37,7 +45,7 @@ async def download_client_capabilities(user=Depends(get_current_user)):
     }
 
 
-@router.put("")
+@router.put("", response_model=ActionStatusResponse)
 async def update_settings(body: dict, user=Depends(get_current_user)):
     config = get_config()
     before = config.model_dump()
@@ -83,7 +91,7 @@ class IndexerTestBody(BaseModel):
     categories: Optional[list[int]] = []
 
 
-@router.post("/test/{service}")
+@router.post("/test/{service}", response_model=ServiceCheckResponse)
 async def test_connection(service: str, body: Optional[IndexerTestBody] = None, user=Depends(get_current_user)):
     config = get_config()
 
@@ -192,7 +200,7 @@ def _deep_merge(base: dict, override: dict) -> None:
 
 
 # Blacklist management endpoints
-@router.get("/blacklist")
+@router.get("/blacklist", response_model=list[BlacklistEntryOut])
 async def get_blacklist(user=Depends(get_current_user)):
     """Get all active blacklist entries."""
     from backend.core.blacklist import get_all_blacklist_entries
@@ -222,7 +230,7 @@ class BlacklistAddBody(BaseModel):
     expires_in_days: Optional[int] = 30
 
 
-@router.post("/blacklist")
+@router.post("/blacklist", response_model=AddBlacklistResponse)
 async def add_blacklist_entry(body: BlacklistAddBody, user=Depends(get_current_user)):
     """Add a release to the blacklist."""
     from backend.core.blacklist import add_to_blacklist
@@ -243,7 +251,7 @@ async def add_blacklist_entry(body: BlacklistAddBody, user=Depends(get_current_u
     }
 
 
-@router.delete("/blacklist/{release_hash}")
+@router.delete("/blacklist/{release_hash}", response_model=RemoveBlacklistResponse)
 async def remove_blacklist_entry(release_hash: str, user=Depends(get_current_user)):
     """Remove a release from the blacklist."""
     from backend.core.blacklist import remove_from_blacklist

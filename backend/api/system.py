@@ -15,6 +15,19 @@ from typing import Any
 from fastapi import APIRouter, BackgroundTasks, Depends
 from sqlalchemy import func, select
 
+from backend.api.models import (
+    ActionStatusResponse,
+    DecisionAuditItem,
+    HealthMatrixResponse,
+    IntegrationMatrixResponse,
+    PreflightResponse,
+    RecyclingBinEmptyResponse,
+    RecyclingBinInfoResponse,
+    SystemHealthResponse,
+    SystemInfoResponse,
+    SystemStatusResponse,
+    UpdateCheckResponse,
+)
 from backend.auth.dependencies import get_current_user
 from backend.core.orchestrator import get_status, is_running, request_stop
 from backend.database import DecisionAuditLog, Download, Movie, async_session
@@ -124,12 +137,12 @@ def _disk_preflight_check(name: str, path: str, warn_below_gb: float = 10.0, blo
     return _check("ok", name, f"{free_gb:.2f} GB free at {existing_path}", detail)
 
 
-@router.get("/health")
+@router.get("/health", response_model=SystemHealthResponse)
 async def health():
     return {"status": "ok"}
 
 
-@router.get("/info")
+@router.get("/info", response_model=SystemInfoResponse)
 async def get_system_info(user=Depends(get_current_user)):
     """Return version, uptime, DB size, and platform info."""
     from backend.config import get_config
@@ -148,7 +161,7 @@ async def get_system_info(user=Depends(get_current_user)):
     }
 
 
-@router.get("/update-check")
+@router.get("/update-check", response_model=UpdateCheckResponse)
 async def check_for_update(user=Depends(get_current_user)):
     """Check GitHub releases for a newer version."""
     import httpx
@@ -188,7 +201,7 @@ async def check_for_update(user=Depends(get_current_user)):
     }
 
 
-@router.get("/recycling-bin")
+@router.get("/recycling-bin", response_model=RecyclingBinInfoResponse)
 async def recycling_bin_info(user=Depends(get_current_user)):
     """Return live recycling bin status and size."""
     recycle_path = _get_recycling_bin_path()
@@ -212,7 +225,7 @@ async def recycling_bin_info(user=Depends(get_current_user)):
     }
 
 
-@router.post("/recycling-bin/empty")
+@router.post("/recycling-bin/empty", response_model=RecyclingBinEmptyResponse)
 async def recycling_bin_empty(user=Depends(get_current_user)):
     """Delete all files/folders inside the configured recycling bin."""
     recycle_path = _get_recycling_bin_path()
@@ -253,7 +266,7 @@ async def recycling_bin_empty(user=Depends(get_current_user)):
     }
 
 
-@router.get("/status")
+@router.get("/status", response_model=SystemStatusResponse)
 async def get_system_status(user=Depends(get_current_user)):
     scheduler = get_scheduler()
     return {
@@ -268,7 +281,7 @@ async def list_tasks(user=Depends(get_current_user)):
     return list_jobs()
 
 
-@router.post("/tasks/{task_id}/run")
+@router.post("/tasks/{task_id}/run", response_model=ActionStatusResponse)
 async def run_task(task_id: str, background: BackgroundTasks, user=Depends(get_current_user)):
     scheduler = get_scheduler()
     job = scheduler.get_job(task_id)
@@ -280,7 +293,7 @@ async def run_task(task_id: str, background: BackgroundTasks, user=Depends(get_c
     return {"status": "triggered", "task_id": task_id}
 
 
-@router.post("/scan")
+@router.post("/scan", response_model=ActionStatusResponse)
 async def trigger_scan(background: BackgroundTasks, user=Depends(get_current_user)):
     """Trigger a full library scan in the background."""
     from backend.core.scanner import is_scan_running, scan_library
@@ -293,7 +306,7 @@ async def trigger_scan(background: BackgroundTasks, user=Depends(get_current_use
     return {"status": "scan_started"}
 
 
-@router.post("/cleanup")
+@router.post("/cleanup", response_model=ActionStatusResponse)
 async def trigger_cleanup(background: BackgroundTasks, user=Depends(get_current_user)):
     """Trigger a duplicate file cleanup in the library."""
     from backend.core.cleanup import scan_and_clean_duplicates
@@ -303,7 +316,7 @@ async def trigger_cleanup(background: BackgroundTasks, user=Depends(get_current_
     return {"status": "cleanup_started"}
 
 
-@router.post("/cycle/start")
+@router.post("/cycle/start", response_model=ActionStatusResponse)
 async def start_cycle(background: BackgroundTasks, user=Depends(get_current_user)):
     if is_running():
         return {"status": "already_running"}
@@ -314,7 +327,7 @@ async def start_cycle(background: BackgroundTasks, user=Depends(get_current_user
     return {"status": "started"}
 
 
-@router.post("/cycle/stop")
+@router.post("/cycle/stop", response_model=ActionStatusResponse)
 async def stop_cycle(user=Depends(get_current_user)):
     if not is_running():
         return {"status": "not_running"}
@@ -322,7 +335,7 @@ async def stop_cycle(user=Depends(get_current_user)):
     return {"status": "stop_requested"}
 
 
-@router.get("/preflight")
+@router.get("/preflight", response_model=PreflightResponse)
 async def automation_preflight(user=Depends(get_current_user)):
     """Run quick checks before starting a full automation cycle."""
     from backend.config import get_config
@@ -616,7 +629,7 @@ def _integration_status(raw: dict[str, Any], *, enabled: bool, configured: bool)
     return "degraded"
 
 
-@router.get("/integrations/matrix")
+@router.get("/integrations/matrix", response_model=IntegrationMatrixResponse)
 async def integration_matrix(user=Depends(get_current_user)):
     """Return user-facing integration state, purpose, and dependency hints."""
     from backend.config import get_config
@@ -751,7 +764,7 @@ async def integration_matrix(user=Depends(get_current_user)):
     }
 
 
-@router.get("/health/matrix")
+@router.get("/health/matrix", response_model=HealthMatrixResponse)
 async def health_matrix(user=Depends(get_current_user)):
     """Return end-to-end health for app, DB, scheduler, queue, and integrations."""
     components: dict[str, dict[str, Any]] = {
@@ -856,7 +869,7 @@ async def health_matrix(user=Depends(get_current_user)):
     }
 
 
-@router.get("/decision-audit")
+@router.get("/decision-audit", response_model=list[DecisionAuditItem])
 async def decision_audit(limit: int = 50, decision: str = "", user=Depends(get_current_user)):
     """Return recent comparison decisions with rationale."""
     limit = max(1, min(limit, 500))
@@ -902,7 +915,7 @@ async def decision_audit(limit: int = 50, decision: str = "", user=Depends(get_c
 _update_lock = False  # prevent concurrent updates
 
 
-@router.post("/update")
+@router.post("/update", response_model=ActionStatusResponse)
 async def trigger_update(background: BackgroundTasks, user=Depends(get_current_user)):
     """
     Pull latest code from GitHub, install new dependencies, then signal the
