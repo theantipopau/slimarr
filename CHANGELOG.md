@@ -58,6 +58,11 @@ guards to make source installs seamless on any supported Python version.
   while a matching task key is already running.
 - Applied guards to scheduler task runs, full scan trigger, cleanup trigger, and full cycle start.
 
+**Diagnostics bundle**
+- Added a one-click diagnostics export endpoint at `/api/v1/system/diagnostics/bundle` that
+  packages redacted config, system/integration health snapshots, and recent log tail into a zip
+  for easier support troubleshooting.
+
 **API contract improvements**
 - Added shared Pydantic response models and wired them into core API routes for clearer OpenAPI
   docs and safer frontend type expectations.

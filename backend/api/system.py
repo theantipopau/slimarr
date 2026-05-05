@@ -9,11 +9,15 @@ import platform
 import shutil
 import sys
 import time
+import tempfile
+import zipfile
 from datetime import datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, BackgroundTasks, Depends
+from fastapi.responses import FileResponse
 from sqlalchemy import func, select
+from starlette.background import BackgroundTask
 
 from backend.api.models import (
     ActionStatusResponse,
@@ -117,6 +121,41 @@ def _find_existing_parent(path: str) -> str | None:
     return current if os.path.exists(current) else None
 
 
+def _redact_sensitive(data: Any) -> Any:
+    """Recursively redact obvious secrets in config-like payloads."""
+    secret_markers = ("secret", "token", "password", "api_key", "apikey")
+    if isinstance(data, dict):
+        out: dict[str, Any] = {}
+        for key, value in data.items():
+            key_l = key.lower()
+            if any(marker in key_l for marker in secret_markers):
+                out[key] = "***"
+            else:
+                out[key] = _redact_sensitive(value)
+        return out
+    if isinstance(data, list):
+        return [_redact_sensitive(v) for v in data]
+    return data
+
+
+def _read_log_tail(path: str, max_lines: int = 2000) -> str:
+    if not os.path.isfile(path):
+        return ""
+    try:
+        with open(path, "r", encoding="utf-8", errors="replace") as f:
+            lines = f.readlines()
+        return "".join(lines[-max_lines:])
+    except Exception:
+        return ""
+
+
+def _cleanup_dir(path: str) -> None:
+    try:
+        shutil.rmtree(path, ignore_errors=True)
+    except Exception:
+        pass
+
+
 def _disk_preflight_check(name: str, path: str, warn_below_gb: float = 10.0, block_below_gb: float = 1.0) -> dict[str, Any]:
     existing_path = _find_existing_parent(path)
     if not existing_path:
@@ -159,6 +198,54 @@ async def get_system_info(user=Depends(get_current_user)):
         "db_size_bytes": db_size,
         "port": cfg.server.port,
     }
+
+
+@router.get("/diagnostics/bundle")
+async def diagnostics_bundle(user=Depends(get_current_user)):
+    """Build and download a support diagnostics zip with redacted config and health snapshots."""
+    from backend.config import get_config
+
+    ts = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+    temp_dir = tempfile.mkdtemp(prefix="slimarr-diagnostics-")
+    payload_dir = os.path.join(temp_dir, "payload")
+    os.makedirs(payload_dir, exist_ok=True)
+
+    config_dump = _redact_sensitive(get_config().model_dump())
+    services = await _build_services_health()
+    matrix = await integration_matrix(user)
+    health = await health_matrix(user)
+    info = await get_system_info(user)
+
+    with open(os.path.join(payload_dir, "config.redacted.json"), "w", encoding="utf-8") as f:
+        json.dump(config_dump, f, indent=2)
+    with open(os.path.join(payload_dir, "system.info.json"), "w", encoding="utf-8") as f:
+        json.dump(info, f, indent=2)
+    with open(os.path.join(payload_dir, "system.health.matrix.json"), "w", encoding="utf-8") as f:
+        json.dump(health, f, indent=2)
+    with open(os.path.join(payload_dir, "system.integrations.matrix.json"), "w", encoding="utf-8") as f:
+        json.dump(matrix, f, indent=2)
+    with open(os.path.join(payload_dir, "system.services.health.json"), "w", encoding="utf-8") as f:
+        json.dump(services, f, indent=2)
+
+    log_tail = _read_log_tail(os.path.join("data", "logs", "slimarr.log"), max_lines=3000)
+    with open(os.path.join(payload_dir, "logs.slimarr.tail.log"), "w", encoding="utf-8") as f:
+        f.write(log_tail)
+
+    bundle_name = f"slimarr-diagnostics-{ts}.zip"
+    bundle_path = os.path.join(temp_dir, bundle_name)
+    with zipfile.ZipFile(bundle_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for root, _dirs, files in os.walk(payload_dir):
+            for name in files:
+                abs_path = os.path.join(root, name)
+                rel_path = os.path.relpath(abs_path, payload_dir)
+                zf.write(abs_path, arcname=rel_path)
+
+    return FileResponse(
+        bundle_path,
+        media_type="application/zip",
+        filename=bundle_name,
+        background=BackgroundTask(_cleanup_dir, temp_dir),
+    )
 
 
 @router.get("/update-check", response_model=UpdateCheckResponse)
