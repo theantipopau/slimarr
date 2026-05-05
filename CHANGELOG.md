@@ -63,6 +63,8 @@ guards to make source installs seamless on any supported Python version.
   docs and safer frontend type expectations.
 - Covered auth check, dashboard stats/history/activity, library movie/search/action endpoints,
   queue endpoints, and activity list responses.
+- Aligned auth dependency failures (API key/JWT/auth required) with centralized error envelopes
+  for consistent unauthorized response payloads.
 
 ---
 

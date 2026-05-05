@@ -1,11 +1,12 @@
 """FastAPI auth dependencies."""
 from typing import Optional
 
-from fastapi import Depends, HTTPException, Request
+from fastapi import Depends, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from backend.auth.jwt import decode_access_token
 from backend.config import get_config
+from backend.utils.responses import get_correlation_id, unauthorized
 
 _bearer = HTTPBearer(auto_error=False)
 
@@ -29,7 +30,7 @@ async def get_current_user(
     if api_key:
         if api_key == config.auth.api_key and config.auth.api_key:
             return "api_user"
-        raise HTTPException(status_code=401, detail="Invalid API key")
+        raise unauthorized("Invalid API key", correlation_id=get_correlation_id())
 
     # JWT bearer token check
     if credentials and credentials.credentials:
@@ -37,9 +38,9 @@ async def get_current_user(
             payload = decode_access_token(credentials.credentials, config.auth.secret_key)
             return payload["sub"]
         except Exception:
-            raise HTTPException(status_code=401, detail="Invalid or expired token")
+            raise unauthorized("Invalid or expired token", correlation_id=get_correlation_id())
 
-    raise HTTPException(status_code=401, detail="Authentication required")
+    raise unauthorized("Authentication required", correlation_id=get_correlation_id())
 
 
 # Re-export for convenience
