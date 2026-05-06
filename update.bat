@@ -4,6 +4,14 @@ echo.
 
 cd /d "%~dp0"
 
+if not exist ".git" (
+    echo ERROR: This folder is not a git source checkout.
+    echo        update.bat only updates source installs (git clone), not packaged installer installs.
+    echo        For installer deployments, download and run the latest SlimarrSetup-*.exe release.
+    pause
+    exit /b 1
+)
+
 echo [1] Pulling latest code from GitHub...
 git pull
 if %ERRORLEVEL% neq 0 (

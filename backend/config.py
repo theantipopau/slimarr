@@ -107,6 +107,7 @@ class FilesConfig(BaseModel):
 
 class ScheduleConfig(BaseModel):
     mode: str = "nightly"
+    timezone: str = "local"
     start_time: str = "01:00"
     end_time: str = "07:00"
     days: list[str] = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]

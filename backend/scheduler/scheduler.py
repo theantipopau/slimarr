@@ -6,6 +6,8 @@ from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.interval import IntervalTrigger
 from loguru import logger
 
+from backend.core.schedule_window import get_schedule_timezone, is_within_schedule_window
+
 _scheduler: AsyncIOScheduler | None = None
 
 
@@ -17,7 +19,14 @@ def get_scheduler() -> AsyncIOScheduler:
 
 
 async def _nightly_cycle() -> None:
+    from backend.config import get_config
     from backend.core.orchestrator import run_full_cycle
+
+    config = get_config()
+    if not is_within_schedule_window(config):
+        logger.info("Nightly cycle skipped (outside configured schedule window)")
+        return
+
     logger.info("Nightly cycle triggered")
     await run_full_cycle()
 
@@ -91,21 +100,31 @@ def start_scheduler() -> None:
     config = get_config()
 
     scheduler = get_scheduler()
+    scheduler.configure(timezone=get_schedule_timezone(config))
 
-    # Nightly cycle — use schedule.start_time ("01:00")
+    # Window start trigger — use schedule.start_time (for example "23:00")
     nightly_time = config.schedule.start_time
     try:
-        hour, minute = nightly_time.split(":")
+        hour, minute = nightly_time.split(":", 1)
     except Exception:
-        hour, minute = "1", "0"
+        hour, minute = "23", "0"
 
     scheduler.add_job(
         _nightly_cycle,
         CronTrigger(hour=int(hour), minute=int(minute)),
-        id="nightly_cycle",
+        id="night_window_start_cycle",
         replace_existing=True,
     )
-    logger.info(f"Scheduled nightly cycle at {nightly_time} UTC")
+
+    scheduler.add_job(
+        _nightly_cycle,
+        IntervalTrigger(hours=1),
+        id="night_window_pulse",
+        replace_existing=True,
+    )
+    logger.info(
+        f"Scheduled nightly cycle window {config.schedule.start_time} -> {config.schedule.end_time} ({get_schedule_timezone(config)})"
+    )
 
     # Recycle bin cleanup — daily at 03:00
     scheduler.add_job(

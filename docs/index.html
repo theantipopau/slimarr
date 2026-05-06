@@ -22,6 +22,7 @@
         <img src="images/header-logo.PNG" alt="Slimarr" />
       </a>
       <nav class="nav-links">
+        <a href="#v1200">v1.2.0.0</a>
         <a href="#features">Features</a>
         <a href="#screenshots">Screenshots</a>
         <a href="#integrations">Integrations</a>
@@ -35,11 +36,36 @@
         <h1>Stop hoarding bloated releases.<br />Let Slimarr slim your library overnight.</h1>
         <p class="subtitle">
           Slimarr scans your Plex library, finds smaller Usenet releases, and safely replaces media while you sleep.
-          Built to feel native in the *arr ecosystem.
+          Built to feel native in the *arr ecosystem, now with stronger language controls and schedule windows in v1.2.0.0.
         </p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="https://github.com/theantipopau/slimarr" target="_blank" rel="noopener noreferrer">View On GitHub</a>
           <a class="btn btn-ghost" href="https://github.com/theantipopau/slimarr/releases" target="_blank" rel="noopener noreferrer">Download Release</a>
+        </div>
+      </section>
+
+      <section id="v1200" class="panel release-panel reveal">
+        <div class="section-head">
+          <h2>What Is New In v1.2.0.0</h2>
+          <p>Safer automation, cleaner upgrades, and a tighter overnight optimization loop.</p>
+        </div>
+        <div class="release-grid">
+          <article>
+            <h3>Language Priority Controls</h3>
+            <p>Preferred-language matching is stricter, with explicit rejection of non-preferred language markers for safer download decisions.</p>
+          </article>
+          <article>
+            <h3>Night Window Scheduling</h3>
+            <p>Movie cross-checks now respect configured schedule windows including overnight ranges like 23:00 to 05:00, with timezone awareness.</p>
+          </article>
+          <article>
+            <h3>Version And Upgrade Consistency</h3>
+            <p>Version metadata is aligned for backend, frontend, docs, and installer, with clearer guidance on source versus installer update paths.</p>
+          </article>
+          <article>
+            <h3>Release Reliability</h3>
+            <p>Added tests for language and schedule behavior, cleaner installer output, and compatibility pinning to reduce startup warning noise.</p>
+          </article>
         </div>
       </section>
 
@@ -98,6 +124,15 @@
           <a href="https://radarr.video/" target="_blank" rel="noopener noreferrer">Radarr</a>
           <a href="https://sabnzbd.org/" target="_blank" rel="noopener noreferrer">SABnzbd</a>
           <a href="https://www.plex.tv/" target="_blank" rel="noopener noreferrer">Plex</a>
+        </div>
+      </section>
+
+      <section class="panel cta-panel reveal">
+        <h2>Ready To Ship A Leaner Library?</h2>
+        <p>Install Slimarr, point it at Plex and your download stack, and let nightly automation keep your movie storage under control.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://github.com/theantipopau/slimarr/releases" target="_blank" rel="noopener noreferrer">Get SlimarrSetup-1.2.0.0</a>
+          <a class="btn btn-ghost" href="../README.md" target="_blank" rel="noopener noreferrer">Read Setup Guide</a>
         </div>
       </section>
     </main>

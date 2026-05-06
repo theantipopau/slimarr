@@ -18,6 +18,7 @@ from backend.database import init_db
 from backend.realtime.sio_instance import sio
 from backend.scheduler.scheduler import start_scheduler
 from backend.utils.logger import setup_logger
+from backend.version import APP_VERSION
 from backend.utils.responses import (
     APIException,
     ErrorResponse,
@@ -90,7 +91,7 @@ async def _resume_downloads_after_startup() -> None:
 
 app = FastAPI(
     title="Slimarr",
-    version="1.2.0.0",
+    version=APP_VERSION,
     description="Smart Usenet replacement manager for Plex movie libraries",
     lifespan=lifespan,
 )

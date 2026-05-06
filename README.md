@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/react-18-61DAFB?logo=react&logoColor=black" />
   <img src="https://img.shields.io/badge/license-MIT-green" />
   <img src="https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white" />
-  <img src="https://img.shields.io/badge/release-1.1.0.0-success" />
+  <img src="https://img.shields.io/badge/release-1.2.0.0-success" />
 </p>
 
 <p align="center">
@@ -36,9 +36,9 @@ Scan Plex library -> Search Usenet indexers -> Compare releases
 
 Slimarr is designed to look and feel like a native member of the **\*arr ecosystem** (Radarr, Sonarr, Prowlarr). If you're familiar with those tools, you'll feel right at home.
 
-Current stable release: **1.1.0.0**.
+Current stable release: **1.2.0.0**.
 
-### What's New in 1.1.0.0
+### What's New in 1.2.0.0
 
 - Dashboard command-center stats for library size, total savings, pending candidates, active downloads, failed items, last scan, and integration health
 - Integration Matrix covering Plex, Radarr, Sonarr, Prowlarr, SABnzbd, NZBGet, TMDB, and direct indexers
@@ -102,11 +102,11 @@ Current stable release: **1.1.0.0**.
 
 ### Option A - Installer (recommended for sharing)
 
-Download `SlimarrSetup-1.1.0.0.exe` (or the latest `SlimarrSetup-*.exe`) from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies - no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
+Download `SlimarrSetup-1.2.0.0.exe` (or the latest `SlimarrSetup-*.exe`) from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies - no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
 
 At the end of setup, the installer shows `Do you want to open Slimarr?` (checked by default). If selected, Slimarr starts minimized and your browser opens automatically to `http://localhost:9494` when the backend is ready.
 
-`1.1.0.0` is the current installer target. Newer `main` branch changes may land before the next installer is cut; if you want those immediately, run Slimarr from source or build a fresh installer from `main`.
+`1.2.0.0` is the current installer target. Newer `main` branch changes may land before the next installer is cut; if you want those immediately, run Slimarr from source or build a fresh installer from `main`.
 
 ### Option B - From source
 
@@ -141,7 +141,14 @@ python run.py --headless
 
 ### Keeping up to date
 
-On machines that pull from git, run `update.bat` (or `git pull`). The System page shows a badge when a newer release is available.
+Use one update path consistently:
+
+- **Source install (git clone)**: run `update.bat` (or `git pull`) inside your Slimarr repo folder.
+- **Installer install (Start Menu / Program Files)**: install the newest `SlimarrSetup-*.exe` from Releases.
+
+`update.bat` only updates the git working copy it is run from; it does **not** patch an already-installed Program Files build.
+
+Keep `config.yaml` and `data/` when upgrading. Your settings/database remain intact as long as those are preserved.
 
 ---
 

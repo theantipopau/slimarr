@@ -89,6 +89,21 @@ def _source_quality_score(source: str | None) -> float:
     }
     return scores.get(source, 55.0)
 
+
+def _has_explicit_language_marker(candidate_title: str, language: str) -> bool:
+    checks = {
+        "english": r"\b(eng|english|dual[- ._]?audio[ ._]?eng?)\b",
+        "italian": r"\b(ita|italian|trueita|subita)\b",
+        "french": r"\b(fr|fra|french|vff|truefrench)\b",
+        "german": r"\b(ger|deu|german)\b",
+        "spanish": r"\b(esp|spanish|castellano|latino)\b",
+        "russian": r"\b(rus|russian)\b",
+    }
+    pattern = checks.get((language or "").strip().lower())
+    if not pattern:
+        return False
+    return re.search(pattern, candidate_title, re.IGNORECASE) is not None
+
 def compare_release(
     local_size: int,
     local_resolution: str,
@@ -182,24 +197,38 @@ def compare_release(
     if cand_res_rank >= 4 and cand_res_rank > local_res_rank:
         score += 50.0
 
-    # LANGUAGE VALIDATION: Enforce English-only by default
-    if config.comparison.preferred_language:
-        pref = config.comparison.preferred_language.lower()
-        # STRENGTHENED: Reject any release with non-English tags unless multi
-        if parsed.languages:
-            has_pref = pref in parsed.languages
-            has_multi = 'multi' in parsed.languages
-            
-            # If no explicit preference or if we found explicit non-preferred languages
-            if not has_pref and not has_multi:
-                found_langs = ','.join(parsed.languages)
-                return _reject(f"Non-English release detected: {found_langs} (expected {pref})")
-            
-            # Bonus if language is explicitly tagged as preferred
-            if has_pref:
-                score += 5.0
+    # Language preference validation
+    preferred_language = (config.comparison.preferred_language or "").strip().lower()
+    if preferred_language:
+        detected_languages = [lang.lower() for lang in (parsed.languages or [])]
+        has_preferred_language = preferred_language in detected_languages
+        non_preferred_languages = [
+            lang for lang in detected_languages
+            if lang not in {preferred_language, "multi"}
+        ]
+
+        if detected_languages:
+            # Explicit language tags exist: require preferred language.
+            if not has_preferred_language:
+                return _reject(
+                    f"Preferred language '{preferred_language}' not found in release tags: {','.join(detected_languages)}"
+                )
+
+            # If mixed language tags are present, keep candidate but lower score.
+            if non_preferred_languages:
+                score -= 3.0
+            score += 5.0
         else:
-            # No languages tagged - assume English (safe assumption for most content)
+            # When untagged, still reject if explicit non-preferred markers appear in title.
+            if preferred_language == "english":
+                explicit_non_english = [
+                    lang for lang in ["italian", "french", "german", "spanish", "russian"]
+                    if _has_explicit_language_marker(candidate_title, lang)
+                ]
+                if explicit_non_english and not _has_explicit_language_marker(candidate_title, "english"):
+                    return _reject(
+                        f"Non-English language marker detected in release title: {','.join(explicit_non_english)}"
+                    )
             score += 2.0
             
     cand_codec = normalize_codec(parsed.video_codec or "")
@@ -239,7 +268,17 @@ def compare_release(
         resolution_score = 92.0
     else:
         resolution_score = 30.0
-    language_score = 100.0 if not parsed.languages else (95.0 if config.comparison.preferred_language.lower() in parsed.languages else 75.0 if "multi" in parsed.languages else 20.0)
+    language_score = 100.0
+    if parsed.languages and preferred_language:
+        parsed_langs = [lang.lower() for lang in parsed.languages]
+        if preferred_language in parsed_langs:
+            language_score = 95.0
+            if any(lang not in {preferred_language, "multi"} for lang in parsed_langs):
+                language_score = 80.0
+        elif "multi" in parsed_langs:
+            language_score = 70.0
+        else:
+            language_score = 20.0
     source_score = _source_quality_score(parsed.source)
     reliability_score = max(0.0, min(100.0, (indexer_reliability if indexer_reliability is not None else uploader_health) * 100.0))
     confidence_breakdown = {

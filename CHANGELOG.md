@@ -76,6 +76,29 @@ guards to make source installs seamless on any supported Python version.
   preflight, matrix, update/task actions, blacklist, settings test, and TV cleanup endpoints.
 - Added API contract test coverage to assert key routes keep declared response models.
 
+**Final release additions and platform polish**
+- Added stricter preferred-language filtering behavior in the comparison engine:
+  - candidates with explicit language tags must include the configured preferred language
+  - English preference now rejects explicit non-English title markers (for example ITA/French/German tags) when English is not present
+- Added schedule-window enforcement with timezone support for overnight cross-check workflows:
+  - new `schedule.timezone` config setting (`local` by default)
+  - scheduler now runs window-aware checks and skips cycles outside configured start/end times
+  - overnight windows spanning midnight (for example 23:00 -> 05:00) are supported
+- Added cycle guardrails so long-running cycles stop processing new movies once the configured schedule window closes.
+- Added regression test coverage for:
+  - English-preferred language rejection of Italian-tagged candidates
+  - overnight schedule-window evaluation logic
+- Centralized application version metadata in `backend/version.py` and wired runtime/system APIs to that source for consistent version reporting.
+- Aligned release metadata to `1.2.0.0` across backend runtime, frontend package metadata, installer metadata, and docs.
+- Updated updater behavior messaging and safeguards:
+  - clarified that `update.bat` is for git source checkouts only
+  - added early guard when `.git` is not present to avoid misleading "updated" flows on installer deployments
+- Improved installer build output quality:
+  - removed obsolete/deprecated Inno Setup directives from installer config to eliminate packaging warnings
+  - ensured installer config template generation includes schedule defaults for timezone/window settings
+- Reduced startup noise in common Windows deployments by pinning bcrypt to a passlib-compatible version (`bcrypt==4.0.1`).
+- Refreshed GitHub Pages docs site visuals and content hierarchy to highlight v1.2.0.0 improvements and improve release discoverability.
+
 ---
 
 ## [1.1.2.0] - 2026-05-04

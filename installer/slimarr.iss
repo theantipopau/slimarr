@@ -30,14 +30,13 @@ UninstallDisplayIcon={app}\{#MyAppExeName}
 Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern
-WizardResizable=no
 CloseApplications=yes
 RestartApplications=no
 ; Show license if present
 ; LicenseFile=..\LICENSE
 ; Minimum Windows version: Windows 10
 MinVersion=10.0
-ArchitecturesInstallIn64BitMode=x64
+ArchitecturesInstallIn64BitMode=x64compatible
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

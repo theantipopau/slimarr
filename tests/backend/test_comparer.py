@@ -66,6 +66,25 @@ class CompareReleaseTests(unittest.TestCase):
         self.assertIsInstance(result.confidence_breakdown, dict)
         self.assertIn("match_certainty", result.confidence_breakdown or {})
 
+    def test_rejects_italian_when_english_is_preferred(self) -> None:
+        cfg = self._cfg()
+        cfg.comparison.preferred_language = "english"
+
+        with patch("backend.core.comparer.get_config", return_value=cfg):
+            result = compare_release(
+                local_size=2_000_000_000,
+                local_resolution="1080p",
+                local_codec="h264",
+                candidate_size=1_200_000_000,
+                candidate_title="The.Matrix.2022.1080p.WEB-DL.x265.ITA-GRP",
+                candidate_age_days=10,
+                movie_title="The Matrix",
+                movie_year=2022,
+            )
+
+        self.assertEqual(result.decision, "reject")
+        self.assertIn("Preferred language", result.reject_reason or "")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -10,6 +10,7 @@ from loguru import logger
 from sqlalchemy import select
 
 from backend.core.download_workflow import process_search_result_download
+from backend.core.schedule_window import is_within_schedule_window
 from backend.core.scanner import scan_library
 from backend.core.searcher import search_for_movie
 from backend.database import Movie, async_session
@@ -88,6 +89,9 @@ async def run_full_cycle() -> dict:
     Full cycle: scan library → search + process movies that need improvement.
     """
     global _running, _stop_requested
+    from backend.config import get_config
+
+    config = get_config()
 
     if _lock.locked():
         return {"status": "already_running"}
@@ -117,6 +121,10 @@ async def run_full_cycle() -> dict:
         for movie in movies:
             if _stop_requested:
                 logger.info("Cycle stopped by request")
+                break
+
+            if not is_within_schedule_window(config):
+                logger.info("Cycle stopped: outside configured schedule window")
                 break
 
             try:

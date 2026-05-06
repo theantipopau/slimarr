@@ -1,5 +1,5 @@
 ﻿# build-installer.ps1 - Build the Slimarr Windows installer
-# Output: dist/installer/SlimarrSetup-1.1.2.0.exe
+# Output: dist/installer/SlimarrSetup-1.2.0.0.exe
 #
 # Prerequisites (install once):
 #   pip install pyinstaller          (in your venv)
@@ -32,9 +32,9 @@ function Test-FrontendManifest() {
     }
 
     $html = Get-Content $indexPath -Raw
-    $matches = [regex]::Matches($html, '(?:src|href)="(/assets/[^"]+)"')
+    $assetRefs = [regex]::Matches($html, '(?:src|href)="(/assets/[^"]+)"')
     $missing = @()
-    foreach ($match in $matches) {
+    foreach ($match in $assetRefs) {
         $asset = $match.Groups[1].Value.TrimStart("/")
         $assetPath = Join-Path "$Root\frontend\dist" $asset
         if (-not (Test-Path $assetPath)) {
@@ -45,7 +45,7 @@ function Test-FrontendManifest() {
     if ($missing.Count -gt 0) {
         Write-Err "frontend/dist references missing asset(s): $($missing -join ', ')"
     }
-    Write-Ok "frontend/dist asset manifest verified ($($matches.Count) asset reference(s))"
+    Write-Ok "frontend/dist asset manifest verified ($($assetRefs.Count) asset reference(s))"
 }
 function Test-BundleManifest() {
     $bundleRoot = "$Root\dist\Slimarr"
@@ -115,7 +115,7 @@ exit /b 0
 
 Write-Host ""
 Write-Host "  +-------------------------------------+" -ForegroundColor Green
-Write-Host "  |   Slimarr Installer Builder v1.1   |" -ForegroundColor Green
+Write-Host "  |   Slimarr Installer Builder v1.2   |" -ForegroundColor Green
 Write-Host "  +-------------------------------------+" -ForegroundColor Green
 
 # ---- 0. Sanity checks -------------------------------------------------------
@@ -201,6 +201,16 @@ $cfgLines = @(
     '  reject_upscaled: true',
     '  minimum_confidence_score: 55.0',
     '  require_year_match: true',
+    '',
+    'schedule:',
+    '  mode: nightly',
+    '  timezone: local',
+    '  start_time: "23:00"',
+    '  end_time: "05:00"',
+    '  days: [mon, tue, wed, thu, fri, sat, sun]',
+    '  max_downloads_per_night: 10',
+    '  throttle_seconds: 30',
+    '  max_active_download_hours: 24',
     '',
     'exclusions:',
     '  movie_ids: []',

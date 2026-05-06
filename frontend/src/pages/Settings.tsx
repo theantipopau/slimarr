@@ -614,7 +614,7 @@ export default function Settings() {
             <option value="russian">Russian</option>
             <option value="">Any (no language filter)</option>
           </select>
-          <p className="text-xs text-gray-500 mt-1">Candidates explicitly tagged with a different language will be rejected. Releases with no language tag are always allowed through.</p>
+          <p className="text-xs text-gray-500 mt-1">Candidates must include this language when language tags are present. For English preference, explicit non-English title markers are rejected.</p>
         </div>
         <div>
           <label className="block text-xs text-gray-400 mb-1">Preferred Codecs (comma-separated, e.g. av1, h265)</label>
@@ -748,8 +748,9 @@ export default function Settings() {
       {/* Schedule */}
       <section id="schedule" className="bg-gray-900 rounded-xl p-5 space-y-3 scroll-mt-4">
         <h2 className="font-semibold">Schedule</h2>
-        {field('Nightly Start Time (UTC, HH:MM)', ['schedule', 'start_time'])}
-        {field('Nightly End Time (UTC, HH:MM)', ['schedule', 'end_time'])}
+        {field('Schedule Time Zone (IANA or local)', ['schedule', 'timezone'])}
+        {field('Nightly Start Time (HH:MM)', ['schedule', 'start_time'])}
+        {field('Nightly End Time (HH:MM)', ['schedule', 'end_time'])}
         {field('Max Downloads per Night', ['schedule', 'max_downloads_per_night'], 'number')}
         {field('Throttle between downloads (seconds)', ['schedule', 'throttle_seconds'], 'number')}
         {field('Max Active Download Hours', ['schedule', 'max_active_download_hours'], 'number')}

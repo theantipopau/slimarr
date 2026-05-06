@@ -37,6 +37,7 @@ from backend.core.orchestrator import get_status, is_running, request_stop
 from backend.database import DecisionAuditLog, Download, Movie, async_session
 from backend.scheduler.scheduler import get_scheduler, list_jobs
 from backend.utils.responses import not_found, get_correlation_id
+from backend.version import APP_VERSION
 
 router = APIRouter(prefix="/system", tags=["system"])
 
@@ -66,7 +67,7 @@ async def _start_guarded_background_task(task_key: str, background: BackgroundTa
 _start_time = datetime.now(timezone.utc)
 
 
-CURRENT_VERSION = "1.2.0.0"
+CURRENT_VERSION = APP_VERSION
 GITHUB_REPO = "theantipopau/slimarr"
 
 _SERVICES_HEALTH_TTL_SECONDS = 20.0
