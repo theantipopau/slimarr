@@ -59,7 +59,7 @@ Name: "{userappdata}\Slimarr\data\recycling"
 [Icons]
 ; Start Menu
 Name: "{group}\Open {#MyAppName}"; Filename: "{app}\start.bat"; WorkingDir: "{app}"
-Name: "{group}\{#MyAppName} (Tray Only)"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"
+Name: "{group}\{#MyAppName} (Tray Only)"; Filename: "{app}\{#MyAppExeName}"; Parameters: "--tray"; WorkingDir: "{app}"
 Name: "{group}\Slimarr Data Folder"; Filename: "{win}\explorer.exe"; Parameters: """{userappdata}\Slimarr"""
 Name: "{group}\Slimarr Startup Log"; Filename: "{userappdata}\Slimarr\data\logs\startup.log"; Check: FileExists(ExpandConstant('{userappdata}\Slimarr\data\logs\startup.log'))
 Name: "{group}\Uninstall {#MyAppName}"; Filename: "{uninstallexe}"

@@ -95,7 +95,7 @@ if not exist "Slimarr.exe" (
 )
 
 set "SLIMARR_NO_AUTO_BROWSER=1"
-start "Slimarr" /min "Slimarr.exe"
+start "Slimarr" /min "Slimarr.exe" --headless
 
 echo Waiting for Slimarr to start (up to 60 seconds)...
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^

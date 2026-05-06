@@ -84,20 +84,36 @@ def _open_browser(icon=None, item=None) -> None:
     webbrowser.open(f'http://localhost:{port}')
 
 
+def _start_browser_after_health() -> None:
+    from backend.config import load_config
+
+    port = load_config(_ensure_data_dir()).server.port
+    health_url = f'http://127.0.0.1:{port}/api/v1/system/health'
+    deadline = time.time() + 60
+    while time.time() < deadline:
+        try:
+            with urllib.request.urlopen(health_url, timeout=1):
+                break
+        except Exception:
+            time.sleep(0.5)
+    _open_browser()
+
+
 _server_thread: threading.Thread | None = None
 _server_running = False
 
 
 def _start_server() -> None:
     global _server_running
-    import uvicorn
-    from backend.config import ensure_secrets, get_config, set_config_path
-
     try:
         cfg_path = _ensure_data_dir()
         data_dir = _data_dir()
         db_path = os.path.join(data_dir, 'data', 'slimarr.db')
         os.environ['SLIMARR_DB'] = db_path
+
+        import uvicorn
+        from backend.config import ensure_secrets, get_config, set_config_path
+        from backend.main import socket_app
 
         # Tell config module where to find config.yaml (important for bundled app).
         set_config_path(cfg_path)
@@ -114,12 +130,13 @@ def _start_server() -> None:
     _server_running = True
     try:
         uvicorn.run(
-            'backend.main:socket_app',
+            socket_app,
             host=config.server.host,
             port=config.server.port,
             log_level=config.server.log_level.lower(),
+            log_config=None,
         )
-    except Exception:
+    except BaseException:
         _log_startup('Server crashed:\n' + traceback.format_exc())
         raise
     finally:
@@ -144,6 +161,14 @@ def _exit_app(icon=None, item=None) -> None:
 def run_tray() -> None:
     import pystray
     from pystray import MenuItem as Item
+
+    # Seed runtime folders/config before the tray shell starts so failures are diagnosable.
+    try:
+        _ensure_data_dir()
+        _log_startup('Tray launcher initialised')
+    except Exception:
+        _log_startup('Tray bootstrap failed:\n' + traceback.format_exc())
+        raise
 
     icon_path = _get_icon_path()
     try:
@@ -172,21 +197,27 @@ def run_tray() -> None:
         icon.run()
         return
 
-    # Open browser after a brief delay
-    def _delayed_open():
-        from backend.config import load_config
-
-        port = load_config(_ensure_data_dir()).server.port
-        health_url = f'http://127.0.0.1:{port}/api/v1/system/health'
-        deadline = time.time() + 60
-        while time.time() < deadline:
-            try:
-                with urllib.request.urlopen(health_url, timeout=1):
-                    break
-            except Exception:
-                time.sleep(0.5)
-        _open_browser()
-
-    threading.Thread(target=_delayed_open, daemon=True).start()
+    threading.Thread(target=_start_browser_after_health, daemon=True).start()
 
     icon.run()
+
+
+def run_headless() -> None:
+    try:
+        _ensure_data_dir()
+        _log_startup('Headless launcher initialised')
+    except Exception:
+        _log_startup('Headless bootstrap failed:\n' + traceback.format_exc())
+        raise
+
+    if os.environ.get("SLIMARR_NO_AUTO_BROWSER", "").lower() not in {"1", "true", "yes"}:
+        threading.Thread(target=_start_browser_after_health, daemon=True).start()
+
+    _start_server()
+
+
+if __name__ == "__main__":
+    if "--tray" in sys.argv:
+        run_tray()
+    else:
+        run_headless()

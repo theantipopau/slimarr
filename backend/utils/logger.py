@@ -24,8 +24,9 @@ def _inject_correlation_id(record: dict) -> None:
 def setup_logger(log_level: str = "INFO", log_file: str = "data/logs/slimarr.log") -> None:
     logger.remove()
     logger.configure(patcher=_inject_correlation_id)
-    logger.add(sys.stderr, level=log_level, colorize=True,
-               format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <magenta>{extra[cid]}</magenta> | <cyan>{name}</cyan> - <level>{message}</level>")
+    if sys.stderr is not None:
+        logger.add(sys.stderr, level=log_level, colorize=True,
+                   format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <magenta>{extra[cid]}</magenta> | <cyan>{name}</cyan> - <level>{message}</level>")
     logger.add(
         log_file,
         level=log_level,

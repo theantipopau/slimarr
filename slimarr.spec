@@ -24,6 +24,9 @@ for pkg in ['uvicorn', 'fastapi', 'starlette', 'sqlalchemy', 'aiosqlite',
     binaries_extra += b
     hiddenimports_extra += h
 
+# Local app modules imported dynamically at runtime from the frozen tray entrypoint.
+hiddenimports_extra += collect_submodules('backend')
+
 hidden = hiddenimports_extra + [
     # uvicorn internals
     'uvicorn.logging',
