@@ -3,7 +3,7 @@
 ; Run build-installer.ps1 to generate this automatically.
 
 #define MyAppName "Slimarr"
-#define MyAppVersion "1.2.0.0"
+#define MyAppVersion "1.3.0.0"
 #define MyAppPublisher "Slimarr"
 #define MyAppURL "https://github.com/theantipopau/slimarr"
 #define MyAppExeName "Slimarr.exe"
@@ -47,7 +47,8 @@ Name: "startup"; Description: "Start Slimarr automatically when Windows starts";
 
 [Files]
 ; Main application (PyInstaller output)
-Source: "..\dist\Slimarr\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs restartreplace
+; Safety: never overwrite user runtime state even if a build accidentally contains it.
+Source: "..\dist\Slimarr\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs restartreplace; Excludes: "config.yaml,data\*"
 
 [Dirs]
 Name: "{userappdata}\Slimarr"

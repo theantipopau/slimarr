@@ -205,6 +205,12 @@ def _sr_dict(s: SearchResult) -> dict:
         confidence_breakdown = json.loads(s.confidence_breakdown or "{}")
     except json.JSONDecodeError:
         confidence_breakdown = {}
+    try:
+        media_health_reasons = json.loads(s.media_health_reasons or "[]")
+        if not isinstance(media_health_reasons, list):
+            media_health_reasons = []
+    except Exception:
+        media_health_reasons = []
 
     return {
         "id": s.id,
@@ -213,7 +219,14 @@ def _sr_dict(s: SearchResult) -> dict:
         "size": s.size,
         "resolution": s.resolution,
         "video_codec": s.video_codec,
+        "audio_codec": s.audio_codec,
+        "source": s.source,
         "age_days": s.age_days,
+        "hdr": s.hdr,
+        "languages": s.languages.split(",") if s.languages else [],
+        "media_health_score": s.media_health_score,
+        "media_health_rating": s.media_health_rating,
+        "media_health_reasons": media_health_reasons,
         "score": s.score,
         "confidence_score": s.confidence_score,
         "confidence_breakdown": confidence_breakdown,

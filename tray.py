@@ -43,6 +43,25 @@ def _ensure_data_dir() -> str:
     os.makedirs(os.path.join(data, 'data', 'logs'), exist_ok=True)
     os.makedirs(os.path.join(data, 'data', 'MediaCover'), exist_ok=True)
 
+    # One-time safety migration for older installs that stored state next to the EXE.
+    if getattr(sys, 'frozen', False):
+        legacy_root = os.path.dirname(sys.executable)
+        legacy_cfg = os.path.join(legacy_root, 'config.yaml')
+        target_cfg = os.path.join(data, 'config.yaml')
+        if os.path.exists(legacy_cfg) and not os.path.exists(target_cfg):
+            shutil.copy(legacy_cfg, target_cfg)
+
+        legacy_data = os.path.join(legacy_root, 'data')
+        target_data = os.path.join(data, 'data')
+        if os.path.isdir(legacy_data):
+            for child in ('slimarr.db', 'logs', 'MediaCover', 'recycling'):
+                src = os.path.join(legacy_data, child)
+                dst = os.path.join(target_data, child)
+                if os.path.isdir(src) and not os.path.exists(dst):
+                    shutil.copytree(src, dst)
+                elif os.path.isfile(src) and not os.path.exists(dst):
+                    shutil.copy(src, dst)
+
     cfg_path = os.path.join(data, 'config.yaml')
     if not os.path.exists(cfg_path):
         # Seed from bundled template if available

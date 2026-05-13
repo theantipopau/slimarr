@@ -18,6 +18,17 @@ class ParsedRelease:
     hdr: Optional[str] = None           # "hdr10" | "hdr10+" | "dolby vision" | None (SDR)
     group: Optional[str] = None
     languages: list[str] = field(default_factory=list)
+    audio_languages: list[str] = field(default_factory=list)
+    subtitle_markers: list[str] = field(default_factory=list)
+    audio_channels: Optional[str] = None
+    proper: bool = False
+    repack: bool = False
+    is_dual_audio: bool = False
+    is_multi_audio: bool = False
+    has_hardcoded_subs: bool = False
+    has_dolby_vision: bool = False
+    has_hdr_fallback: bool = False
+    is_low_quality_source: bool = False
     uploader: Optional[str] = None      # Release group/uploader name
     release_age_days: Optional[int] = None  # Days since release (if parseable)
 
@@ -29,6 +40,20 @@ RESOLUTION_RANK: dict[str, int] = {
     "720p": 2,
     "480p": 1,
     "sd": 0,
+}
+
+SOURCE_RANK: dict[str, int] = {
+    "cam": 5,
+    "hdcam": 8,
+    "ts": 10,
+    "hdts": 12,
+    "telecine": 20,
+    "dvdrip": 35,
+    "hdtv": 45,
+    "webrip": 60,
+    "web-dl": 75,
+    "bluray": 85,
+    "remux": 95,
 }
 
 # Codec efficiency ranking
@@ -73,7 +98,17 @@ def parse_release_title(title: str) -> ParsedRelease:
         result.video_codec = "mpeg2"
 
     # Source
-    if re.search(r'\bremux\b', t):
+    if re.search(r'\b(hd-?cam|hdcam)\b', t):
+        result.source = "hdcam"
+    elif re.search(r'\b(hd-?ts|hdts)\b', t):
+        result.source = "hdts"
+    elif re.search(r'\b(camrip|cam)\b', t):
+        result.source = "cam"
+    elif re.search(r'\b(telesync|tele-?sync|\bts\b)\b', t):
+        result.source = "ts"
+    elif re.search(r'\btelecine\b|\btc\b', t):
+        result.source = "telecine"
+    elif re.search(r'\bremux\b', t):
         result.source = "remux"
     elif re.search(r'blu-?ray|bdremux|bdrip', t):
         result.source = "bluray"
@@ -106,32 +141,68 @@ def parse_release_title(title: str) -> ParsedRelease:
     elif re.search(r'\bflac\b', t):
         result.audio_codec = "flac"
 
+    channel_match = re.search(r'\b(7[._ ]?1|5[._ ]?1|2[._ ]?0|1[._ ]?0)\b', t)
+    if channel_match:
+        result.audio_channels = channel_match.group(1).replace("_", ".").replace(" ", ".")
+
     # HDR
-    if re.search(r'dolby[\. ]?vision|dovi|\bdv\b', t):
-        result.hdr = "dolby vision"
-    elif re.search(r'hdr10\+|hdr10plus', t):
+    has_dv = re.search(r'dolby[\. ]?vision|dovi|\bdv\b', t) is not None
+    has_hdr10_plus = re.search(r'hdr10\+|hdr10plus', t) is not None
+    has_hdr10 = re.search(r'hdr10|\bhdr\b', t) is not None
+    if has_dv:
+        result.has_dolby_vision = True
+        result.has_hdr_fallback = bool(has_hdr10 or has_hdr10_plus or re.search(r'\bhybrid\b', t))
+        result.hdr = "dolby vision + hdr10" if result.has_hdr_fallback else "dolby vision"
+    elif has_hdr10_plus:
         result.hdr = "hdr10+"
-    elif re.search(r'hdr10|\bhdr\b', t):
+    elif has_hdr10:
         result.hdr = "hdr10"
     elif re.search(r'\bhlg\b', t):
         result.hdr = "hlg"
+    elif re.search(r'\bsdr\b', t):
+        result.hdr = "sdr"
 
     # Release group
     gm = re.search(r'-([a-zA-Z0-9]{2,20})(?:\.[a-z]{2,4})?$', title)
     if gm:
         result.group = gm.group(1)
 
-    # Language
-    langs = []
-    if re.search(r'\bfrench\b|\btruefrench\b|\bvff\b', t): langs.append('french')
-    if re.search(r'\bgerman\b', t): langs.append('german')
-    if re.search(r'\bitalian\b|\bita\b', t): langs.append('italian')
-    if re.search(r'\bspanish\b|\besp\b|\bcastellano\b', t): langs.append('spanish')
-    if re.search(r'\brussian\b|\brus\b', t): langs.append('russian')
-    if re.search(r'\bnordic\b', t): langs.append('nordic')
-    if re.search(r'\benglish\b|\beng\b', t): langs.append('english')
-    if re.search(r'\bmulti\b|\bdual[- ]?audio\b', t): langs.append('multi')
+    # Language and subtitle risk markers
+    lang_patterns = {
+        "english": r"\b(english|eng)\b",
+        "italian": r"\b(italian|ita|trueita)\b",
+        "german": r"\b(german|ger|deu)\b",
+        "french": r"\b(french|fre|fr|truefrench|vff)\b",
+        "spanish": r"\b(spanish|spa|esp|castellano|latino)\b",
+        "russian": r"\b(russian|rus)\b",
+        "korean": r"\b(korean|kor)\b",
+        "japanese": r"\b(japanese|jpn)\b",
+        "nordic": r"\bnordic\b",
+    }
+    langs = [name for name, pattern in lang_patterns.items() if re.search(pattern, t)]
+    result.is_dual_audio = re.search(r"\bdual[- ._]?audio\b|\bdual\b", t) is not None
+    result.is_multi_audio = re.search(r"\bmulti\b|\bmulti[- ._]?audio\b", t, re.IGNORECASE) is not None
+    if result.is_multi_audio and "multi" not in langs:
+        langs.append("multi")
+    if result.is_dual_audio and "multi" not in langs:
+        langs.append("multi")
     result.languages = langs
+    result.audio_languages = [lang for lang in langs if lang != "multi"]
+
+    subtitle_markers = []
+    subtitle_patterns = {
+        "korsub": r"\bkorsub\b",
+        "vostfr": r"\bvostfr\b",
+        "hc": r"\b(hc|hcsub|hcsubs|hardsub|hardsubs|hardcoded|subbed)\b",
+    }
+    for marker, pattern in subtitle_patterns.items():
+        if re.search(pattern, t):
+            subtitle_markers.append(marker)
+    result.subtitle_markers = subtitle_markers
+    result.has_hardcoded_subs = bool({"korsub", "vostfr", "hc"} & set(subtitle_markers))
+    result.proper = re.search(r"\bproper\b", t) is not None
+    result.repack = re.search(r"\brepack\b", t) is not None
+    result.is_low_quality_source = result.source in {"cam", "ts", "hdts", "hdcam", "telecine"}
     result.uploader = parse_uploader(title)
     result.release_age_days = parse_release_age(title)
 
@@ -164,6 +235,10 @@ def get_resolution_rank(resolution: str) -> int:
 
 def get_codec_rank(codec: str) -> int:
     return CODEC_RANK.get(normalize_codec(codec), 0)
+
+
+def get_source_rank(source: str | None) -> int:
+    return SOURCE_RANK.get((source or "unknown").lower(), 50)
 
 
 def parse_release_age(title: str) -> Optional[int]:

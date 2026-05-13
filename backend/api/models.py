@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ActionStatusResponse(BaseModel):
@@ -11,6 +11,43 @@ class ActionStatusResponse(BaseModel):
     movie_id: int | None = None
     task_id: str | None = None
     search_result_id: int | None = None
+
+
+class SearchTestRequest(BaseModel):
+    title: str
+    year: int | None = None
+    imdb_id: str | None = None
+    include_raw: bool = True
+
+
+class SearchDiagnosticsResponse(BaseModel):
+    checked_at: str
+    degradation: dict[str, Any]
+    recent_events: list[dict[str, Any]]
+    warnings: list[dict[str, Any]]
+    failure_heatmap: dict[str, int]
+    indexer_reliability: dict[str, dict[str, Any]]
+    last_successful_search: dict[str, Any] | None = None
+
+
+class SearchDiagnosticsHistoryResponse(BaseModel):
+    page: int
+    per_page: int
+    total: int
+    pages: int
+    items: list[dict[str, Any]]
+
+
+class SearchTestResponse(BaseModel):
+    query: dict[str, Any]
+    providers: list[dict[str, Any]]
+    raw_total: int
+    parsed_total: int
+    accepted_count: int
+    rejected_count: int
+    rejected_results: list[dict[str, Any]]
+    accepted_results: list[dict[str, Any]]
+    filtering_stages: list[dict[str, Any]]
 
 
 class AuthCheckResponse(BaseModel):
@@ -45,7 +82,14 @@ class SearchResultOut(BaseModel):
     size: int
     resolution: str | None = None
     video_codec: str | None = None
+    audio_codec: str | None = None
+    source: str | None = None
     age_days: int | None = None
+    hdr: str | None = None
+    languages: list[str] = Field(default_factory=list)
+    media_health_score: float | None = None
+    media_health_rating: str | None = None
+    media_health_reasons: list[str] = Field(default_factory=list)
     score: float | None = None
     confidence_score: float | None = None
     confidence_breakdown: dict[str, float] | dict[str, Any]
@@ -267,6 +311,9 @@ class DecisionAuditItem(BaseModel):
     score: float | None = None
     confidence_score: float | None = None
     confidence_breakdown: dict[str, Any]
+    media_health_score: float | None = None
+    media_health_rating: str | None = None
+    media_health_reasons: list[str] = Field(default_factory=list)
     savings_bytes: int | None = None
     savings_pct: float | None = None
     reject_reason: str | None = None

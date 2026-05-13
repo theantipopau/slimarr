@@ -11,6 +11,7 @@ from loguru import logger
 from sqlalchemy import select
 
 from backend.core.parser import normalize_codec, normalize_resolution
+from backend.core.media_probe import probe_media_file
 from backend.database import ActivityLog, Movie, async_session
 from backend.realtime.events import emit_event
 
@@ -126,6 +127,20 @@ async def _run_scan() -> int:
 
         # Short-lived DB write per movie
         try:
+            probe: dict[str, object] = {}
+            file_path = pm.get("file_path")
+            should_probe = bool(
+                file_path
+                and (
+                    not pm.get("bitrate")
+                    or not pm.get("video_codec")
+                    or not pm.get("resolution")
+                    or not pm.get("audio_codec")
+                )
+            )
+            if should_probe:
+                probe = await asyncio.to_thread(probe_media_file, str(file_path))
+
             async with async_session() as db:
                 result = await db.execute(
                     select(Movie).where(Movie.plex_rating_key == pm["plex_rating_key"])
@@ -142,10 +157,10 @@ async def _run_scan() -> int:
                 movie.tmdb_id = tmdb_id_found or pm.get("tmdb_id") or movie.tmdb_id
                 movie.file_path = pm.get("file_path")
                 movie.file_size = pm.get("file_size") or 0
-                movie.resolution = normalize_resolution(pm.get("resolution") or "")
-                movie.video_codec = normalize_codec(pm.get("video_codec") or "")
-                movie.audio_codec = pm.get("audio_codec")
-                movie.bitrate = pm.get("bitrate") or 0
+                movie.resolution = normalize_resolution(pm.get("resolution") or probe.get("resolution") or "")
+                movie.video_codec = normalize_codec(pm.get("video_codec") or probe.get("video_codec") or "")
+                movie.audio_codec = pm.get("audio_codec") or probe.get("audio_codec")
+                movie.bitrate = pm.get("bitrate") or probe.get("bitrate_kbps") or 0
                 movie.last_scanned = datetime.now(timezone.utc)
 
                 if movie.original_file_size is None:

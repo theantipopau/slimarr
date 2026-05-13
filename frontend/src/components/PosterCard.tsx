@@ -1,6 +1,7 @@
 ﻿import type { Movie } from '@/lib/types'
 import QualityBadge from './QualityBadge'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
 import { CheckCircle, Loader } from 'lucide-react'
 
 interface Props {
@@ -22,17 +23,54 @@ const statusBorder: Record<string, string> = {
 export default function PosterCard({ movie }: Props) {
   const navigate = useNavigate()
   const location = useLocation()
+  const cardRef = useRef<HTMLDivElement | null>(null)
+  const [inView, setInView] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageError, setImageError] = useState(false)
   const posterUrl = movie.poster_path
     ? `/api/v1/images/${movie.id}/poster`
     : null
 
+  useEffect(() => {
+    if (!cardRef.current || inView) return
+    const node = cardRef.current
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setInView(true)
+            observer.disconnect()
+            break
+          }
+        }
+      },
+      { rootMargin: '240px 0px' }
+    )
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [inView])
+
   return (
     <div
+      ref={cardRef}
       className={`bg-gray-900 rounded-lg overflow-hidden cursor-pointer border ${statusBorder[movie.status] ?? 'border-gray-700'} hover:-translate-y-1 hover:border-gray-500 hover:shadow-2xl hover:shadow-black/30 transition-all relative group`}
       onClick={() => navigate(`/library/${movie.id}`, { state: { fromLibrary: `${location.pathname}${location.search}` } })}
     >
-      {posterUrl ? (
-        <img src={posterUrl} alt={movie.title} className="w-full aspect-[2/3] object-cover" loading="lazy" />
+      {posterUrl && !imageError ? (
+        <div className="relative w-full aspect-[2/3] bg-gray-800">
+          {!imageLoaded ? <div className="absolute inset-0 animate-pulse bg-gray-800" /> : null}
+          {inView ? (
+            <img
+              src={posterUrl}
+              alt={movie.title}
+              className={`w-full h-full object-cover transition-opacity ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              loading="lazy"
+              decoding="async"
+              onLoad={() => setImageLoaded(true)}
+              onError={() => setImageError(true)}
+            />
+          ) : null}
+        </div>
       ) : (
         <div className="w-full aspect-[2/3] bg-gray-800 flex items-center justify-center text-gray-600 text-xs text-center p-2">
           {movie.title}

@@ -101,6 +101,11 @@ class SearchResult(Base):
     score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     confidence_score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     confidence_breakdown: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    hdr: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    languages: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    media_health_score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    media_health_rating: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    media_health_reasons: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     decision: Mapped[str] = mapped_column(String, default="pending")
     reject_reason: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     searched_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
@@ -224,6 +229,9 @@ class DecisionAuditLog(Base):
     score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     confidence_score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     confidence_breakdown: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    media_health_score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    media_health_rating: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    media_health_reasons: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     savings_bytes: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     savings_pct: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     reject_reason: Mapped[Optional[str]] = mapped_column(String, nullable=True)
@@ -282,10 +290,18 @@ async def _run_lightweight_migrations(conn) -> None:
     await _add_column_if_missing(conn, "search_results", search_result_columns, "age_days", "INTEGER")
     await _add_column_if_missing(conn, "search_results", search_result_columns, "confidence_score", "FLOAT")
     await _add_column_if_missing(conn, "search_results", search_result_columns, "confidence_breakdown", "TEXT")
+    await _add_column_if_missing(conn, "search_results", search_result_columns, "hdr", "VARCHAR")
+    await _add_column_if_missing(conn, "search_results", search_result_columns, "languages", "VARCHAR")
+    await _add_column_if_missing(conn, "search_results", search_result_columns, "media_health_score", "FLOAT")
+    await _add_column_if_missing(conn, "search_results", search_result_columns, "media_health_rating", "VARCHAR")
+    await _add_column_if_missing(conn, "search_results", search_result_columns, "media_health_reasons", "TEXT")
 
     decision_columns = await _table_columns(conn, "decision_audit_log")
     await _add_column_if_missing(conn, "decision_audit_log", decision_columns, "confidence_score", "FLOAT")
     await _add_column_if_missing(conn, "decision_audit_log", decision_columns, "confidence_breakdown", "TEXT")
+    await _add_column_if_missing(conn, "decision_audit_log", decision_columns, "media_health_score", "FLOAT")
+    await _add_column_if_missing(conn, "decision_audit_log", decision_columns, "media_health_rating", "VARCHAR")
+    await _add_column_if_missing(conn, "decision_audit_log", decision_columns, "media_health_reasons", "TEXT")
 
     movie_columns = await _table_columns(conn, "movies")
     await _add_column_if_missing(conn, "movies", movie_columns, "slimarr_locked", "INTEGER DEFAULT 0")
@@ -293,6 +309,19 @@ async def _run_lightweight_migrations(conn) -> None:
     activity_columns = await _table_columns(conn, "activity_log")
     await _add_column_if_missing(conn, "activity_log", activity_columns, "actor", "VARCHAR")
     await _add_column_if_missing(conn, "activity_log", activity_columns, "details", "TEXT")
+
+    await conn.exec_driver_sql(
+        "CREATE INDEX IF NOT EXISTS ix_search_results_movie_decision_score "
+        "ON search_results (movie_id, decision, score)"
+    )
+    await conn.exec_driver_sql(
+        "CREATE INDEX IF NOT EXISTS ix_decision_audit_created_decision "
+        "ON decision_audit_log (created_at, decision)"
+    )
+    await conn.exec_driver_sql(
+        "CREATE INDEX IF NOT EXISTS ix_activity_log_created_event "
+        "ON activity_log (created_at, event)"
+    )
 
 
 async def get_db() -> AsyncSession:  # type: ignore[return]

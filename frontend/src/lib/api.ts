@@ -101,6 +101,11 @@ export const api = {
   preflight: () => client.get('/system/preflight').then((r) => r.data),
   decisionAudit: (params?: { limit?: number; decision?: 'accept' | 'reject' }) =>
     client.get('/system/decision-audit', { params }).then((r) => r.data),
+  searchDiagnostics: () => client.get('/system/search-diagnostics').then((r) => r.data),
+  searchDiagnosticsHistory: (params?: { page?: number; per_page?: number; event_type?: string; q?: string }) =>
+    client.get('/system/search-diagnostics/history', { params }).then((r) => r.data),
+  runSearchDiagnosticsTest: (data: { title: string; year?: number; imdb_id?: string; include_raw?: boolean }) =>
+    client.post('/system/search-diagnostics/test', data).then((r) => r.data),
   updateCheck: () => client.get('/system/update-check').then((r) => r.data),
   scanLibrary: () => client.post('/system/scan').then((r) => r.data),
   tasks: () => client.get('/system/tasks').then((r) => r.data),

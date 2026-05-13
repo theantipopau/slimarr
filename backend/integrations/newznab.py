@@ -2,19 +2,35 @@
 from __future__ import annotations
 
 import xml.etree.ElementTree as ET
-from typing import Optional
+import time
+from typing import Any
 
 import httpx
 
 from backend.config import IndexerConfig
+from backend.core.search_diagnostics import (
+    normalize_exception,
+    raw_preview,
+    record_indexer_request,
+    record_indexer_response,
+)
+
+
+class NewznabSearchError(RuntimeError):
+    """Raised when an indexer returns an explicit Newznab error payload."""
+
+
+class NewznabParserError(RuntimeError):
+    """Raised when an indexer returns a malformed XML payload."""
 
 
 class NewznabClient:
-    def __init__(self, indexer: IndexerConfig) -> None:
+    def __init__(self, indexer: IndexerConfig, transport: httpx.AsyncBaseTransport | None = None) -> None:
         self.name = indexer.name
         self.url = indexer.url.rstrip("/")
         self.api_key = indexer.api_key
         self.categories = indexer.categories
+        self._transport = transport
 
     def _cat_str(self) -> str:
         return ",".join(str(c) for c in self.categories)
@@ -42,22 +58,122 @@ class NewznabClient:
         return await self._do_search(params)
 
     async def _do_search(self, params: dict) -> list[dict]:
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            resp = await client.get(f"{self.url}/api", params=params)
-            resp.raise_for_status()
+        detail = await self.search_detailed(params)
+        if detail.get("error"):
+            raise detail["exception"]
+        return detail["parsed_results"]
+
+    async def search_detailed(self, params: dict, *, include_raw: bool = False) -> dict[str, Any]:
+        start = time.perf_counter()
+        timeout_seconds = 30.0
+        resp: httpx.Response | None = None
+        request_url = f"{self.url}/api"
+        try:
+            async with httpx.AsyncClient(timeout=timeout_seconds, transport=self._transport) as client:
+                request = client.build_request("GET", f"{self.url}/api", params=params)
+                request_url = str(request.url)
+                record_indexer_request(
+                    indexer_name=self.name,
+                    provider="newznab",
+                    query=str(params.get("q") or params.get("imdbid") or ""),
+                    request_url=request_url,
+                    categories=self.categories,
+                )
+                resp = await client.send(request)
+                resp.raise_for_status()
+        except Exception as exc:
+            elapsed_ms = (time.perf_counter() - start) * 1000
+            error = normalize_exception(exc, timeout_seconds=timeout_seconds)
+            record_indexer_response(
+                indexer_name=self.name,
+                provider="newznab",
+                query=str(params.get("q") or params.get("imdbid") or ""),
+                request_url=request_url,
+                status_code=resp.status_code if resp else None,
+                latency_ms=elapsed_ms,
+                error=error,
+                raw_response=raw_preview(resp.content if resp is not None else None) if include_raw else None,
+            )
+            return {
+                "indexer_name": self.name,
+                "provider": "newznab",
+                "request_url": request_url,
+                "status_code": resp.status_code if resp else None,
+                "latency_ms": round(elapsed_ms, 1),
+                "raw_count": 0,
+                "parsed_count": 0,
+                "parsed_results": [],
+                "raw_response": raw_preview(resp.content if resp is not None else None) if include_raw else "",
+                "error": error,
+                "exception": exc,
+            }
 
         results = []
         try:
             root = ET.fromstring(resp.content)
-        except Exception:
-            return results
+        except Exception as exc:
+            elapsed_ms = (time.perf_counter() - start) * 1000
+            error = normalize_exception(NewznabParserError(f"XML parse failed: {exc}"))
+            record_indexer_response(
+                indexer_name=self.name,
+                provider="newznab",
+                query=str(params.get("q") or params.get("imdbid") or ""),
+                request_url=request_url,
+                status_code=resp.status_code,
+                latency_ms=elapsed_ms,
+                error=error,
+                malformed=True,
+                raw_response=raw_preview(resp.content) if include_raw else None,
+            )
+            parser_exc = NewznabParserError(f"XML parse failed: {exc}")
+            return {
+                "indexer_name": self.name,
+                "provider": "newznab",
+                "request_url": request_url,
+                "status_code": resp.status_code,
+                "latency_ms": round(elapsed_ms, 1),
+                "raw_count": 0,
+                "parsed_count": 0,
+                "parsed_results": [],
+                "raw_response": raw_preview(resp.content) if include_raw else "",
+                "error": str(parser_exc),
+                "exception": parser_exc,
+            }
 
-        ns = {"newznab": "http://www.newznab.com/DTD/2010/feeds/attributes/"}
+        error_el = _find_first_by_local_name(root, "error")
+        if error_el is not None:
+            code = error_el.get("code", "unknown")
+            description = error_el.get("description", "Newznab error")
+            elapsed_ms = (time.perf_counter() - start) * 1000
+            exc = NewznabSearchError(f"code={code} description={description}")
+            record_indexer_response(
+                indexer_name=self.name,
+                provider="newznab",
+                query=str(params.get("q") or params.get("imdbid") or ""),
+                request_url=request_url,
+                status_code=resp.status_code,
+                latency_ms=elapsed_ms,
+                error=str(exc),
+                raw_response=raw_preview(resp.content) if include_raw else None,
+            )
+            return {
+                "indexer_name": self.name,
+                "provider": "newznab",
+                "request_url": request_url,
+                "status_code": resp.status_code,
+                "latency_ms": round(elapsed_ms, 1),
+                "raw_count": 0,
+                "parsed_count": 0,
+                "parsed_results": [],
+                "raw_response": raw_preview(resp.content) if include_raw else "",
+                "error": str(exc),
+                "exception": exc,
+            }
 
-        for item in root.findall(".//item"):
-            title = item.findtext("title", "")
-            link = item.findtext("link", "")
-            pub_date = item.findtext("pubDate", "")
+        for item in _iter_by_local_name(root, "item"):
+            title = _find_text_by_local_name(item, "title")
+            link = _find_text_by_local_name(item, "link")
+            pub_date = _find_text_by_local_name(item, "pubDate")
 
             size = 0
             enc = item.find("enclosure")
@@ -68,7 +184,7 @@ class NewznabClient:
                     pass
 
             attrs: dict[str, str] = {}
-            for attr in item.findall("newznab:attr", ns):
+            for attr in _iter_by_local_name(item, "attr"):
                 attrs[attr.get("name", "")] = attr.get("value", "")
 
             if size == 0:
@@ -76,6 +192,14 @@ class NewznabClient:
                     size = int(attrs.get("size", 0))
                 except (ValueError, TypeError):
                     pass
+
+            item_categories: list[int] = []
+            for value in [attrs.get("category", "")] + [_element_text(c) for c in _iter_by_local_name(item, "category")]:
+                for part in str(value).replace("|", ",").split(","):
+                    try:
+                        item_categories.append(int(part.strip()))
+                    except (TypeError, ValueError):
+                        pass
 
             results.append({
                 "indexer_name": self.name,
@@ -85,13 +209,40 @@ class NewznabClient:
                 "imdb_id": attrs.get("imdb", ""),
                 "pub_date": pub_date,
                 "grabs": int(attrs.get("grabs", 0) or 0),
+                "categories": sorted(set(item_categories)),
             })
 
-        return results
+        elapsed_ms = (time.perf_counter() - start) * 1000
+        record_indexer_response(
+            indexer_name=self.name,
+            provider="newznab",
+            query=str(params.get("q") or params.get("imdbid") or ""),
+            request_url=request_url,
+            status_code=resp.status_code,
+            latency_ms=elapsed_ms,
+            raw_count=len(results),
+            parsed_count=len(results),
+            categories=self.categories,
+            raw_response=raw_preview(resp.content) if include_raw else None,
+        )
+
+        return {
+            "indexer_name": self.name,
+            "provider": "newznab",
+            "request_url": request_url,
+            "status_code": resp.status_code,
+            "latency_ms": round(elapsed_ms, 1),
+            "raw_count": len(results),
+            "parsed_count": len(results),
+            "parsed_results": results,
+            "raw_response": raw_preview(resp.content) if include_raw else "",
+            "error": None,
+            "exception": None,
+        }
 
     async def test_connection(self) -> dict:
         try:
-            async with httpx.AsyncClient(timeout=10.0) as client:
+            async with httpx.AsyncClient(timeout=10.0, transport=self._transport) as client:
                 resp = await client.get(
                     f"{self.url}/api",
                     params={"t": "caps", "apikey": self.api_key},
@@ -102,4 +253,23 @@ class NewznabClient:
             title = server_el.get("title", "Connected") if server_el is not None else "Connected"
             return {"success": True, "indexer": self.name, "server": title}
         except Exception as e:
-            return {"success": False, "indexer": self.name, "error": str(e)}
+            return {"success": False, "indexer": self.name, "error": normalize_exception(e, timeout_seconds=10.0)}
+
+
+def _find_first_by_local_name(root: ET.Element, local_name: str) -> ET.Element | None:
+    for item in root.iter():
+        if item.tag.rsplit("}", 1)[-1] == local_name:
+            return item
+    return None
+
+
+def _iter_by_local_name(root: ET.Element, local_name: str) -> list[ET.Element]:
+    return [item for item in root.iter() if item.tag.rsplit("}", 1)[-1] == local_name]
+
+
+def _element_text(element: ET.Element | None) -> str:
+    return element.text or "" if element is not None else ""
+
+
+def _find_text_by_local_name(root: ET.Element, local_name: str) -> str:
+    return _element_text(_find_first_by_local_name(root, local_name))

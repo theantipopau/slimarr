@@ -14,7 +14,7 @@ import zipfile
 from datetime import datetime, timezone
 from typing import Any
 
-from fastapi import APIRouter, BackgroundTasks, Depends
+from fastapi import APIRouter, BackgroundTasks, Depends, Query
 from fastapi.responses import FileResponse
 from sqlalchemy import func, select
 from starlette.background import BackgroundTask
@@ -27,6 +27,10 @@ from backend.api.models import (
     PreflightResponse,
     RecyclingBinEmptyResponse,
     RecyclingBinInfoResponse,
+    SearchDiagnosticsResponse,
+    SearchDiagnosticsHistoryResponse,
+    SearchTestRequest,
+    SearchTestResponse,
     SystemHealthResponse,
     SystemInfoResponse,
     SystemStatusResponse,
@@ -139,6 +143,52 @@ def _redact_sensitive(data: Any) -> Any:
     return data
 
 
+def _serializable_search_detail(detail: dict[str, Any]) -> dict[str, Any]:
+    from backend.core.search_diagnostics import redact_text, redact_url
+
+    def _clean(value: Any) -> Any:
+        if isinstance(value, dict):
+            out: dict[str, Any] = {}
+            for key, item in value.items():
+                key_l = str(key).lower()
+                if any(marker in key_l for marker in ("api_key", "apikey", "token", "password", "secret")):
+                    out[key] = "***"
+                elif key_l.endswith("url") or key_l in {"link", "guid"}:
+                    out[key] = redact_url(str(item))
+                else:
+                    out[key] = _clean(item)
+            return out
+        if isinstance(value, list):
+            return [_clean(item) for item in value]
+        if isinstance(value, str):
+            return redact_text(value)
+        return value
+
+    cleaned = _clean(detail)
+    cleaned.pop("exception", None)
+    if cleaned.get("request_url"):
+        cleaned["request_url"] = redact_url(str(cleaned["request_url"]))
+    return cleaned
+
+
+def _json_object(value: str | None) -> dict[str, Any]:
+    try:
+        parsed = json.loads(value or "{}")
+        return parsed if isinstance(parsed, dict) else {}
+    except Exception:
+        return {}
+
+
+def _json_string_list(value: str | None) -> list[str]:
+    try:
+        parsed = json.loads(value or "[]")
+        if isinstance(parsed, list):
+            return [str(item) for item in parsed]
+    except Exception:
+        pass
+    return []
+
+
 def _read_log_tail(path: str, max_lines: int = 2000) -> str:
     if not os.path.isfile(path):
         return ""
@@ -216,6 +266,7 @@ async def diagnostics_bundle(user=Depends(get_current_user)):
     matrix = await integration_matrix(user)
     health = await health_matrix(user)
     info = await get_system_info(user)
+    search_diag = await search_diagnostics(user)
 
     with open(os.path.join(payload_dir, "config.redacted.json"), "w", encoding="utf-8") as f:
         json.dump(config_dump, f, indent=2)
@@ -227,6 +278,11 @@ async def diagnostics_bundle(user=Depends(get_current_user)):
         json.dump(matrix, f, indent=2)
     with open(os.path.join(payload_dir, "system.services.health.json"), "w", encoding="utf-8") as f:
         json.dump(services, f, indent=2)
+    with open(os.path.join(payload_dir, "system.search.diagnostics.json"), "w", encoding="utf-8") as f:
+        json.dump(search_diag, f, indent=2)
+    from backend.core.search_diagnostics import history as search_history
+    with open(os.path.join(payload_dir, "system.search.diagnostics.history.json"), "w", encoding="utf-8") as f:
+        json.dump(search_history(page=1, per_page=500), f, indent=2)
 
     log_tail = _read_log_tail(os.path.join("data", "logs", "slimarr.log"), max_lines=3000)
     with open(os.path.join(payload_dir, "logs.slimarr.tail.log"), "w", encoding="utf-8") as f:
@@ -361,6 +417,154 @@ async def get_system_status(user=Depends(get_current_user)):
         "cycle": get_status(),
         "scheduler_running": scheduler.running if scheduler else False,
         "jobs": list_jobs(),
+    }
+
+
+@router.get("/search-diagnostics", response_model=SearchDiagnosticsResponse)
+async def search_diagnostics(user=Depends(get_current_user)):
+    """Return live search pipeline diagnostics and degradation state."""
+    from backend.core.search_diagnostics import snapshot
+
+    return snapshot()
+
+
+@router.get("/search-diagnostics/history", response_model=SearchDiagnosticsHistoryResponse)
+async def search_diagnostics_history(
+    page: int = Query(default=1, ge=1),
+    per_page: int = Query(default=50, ge=1, le=200),
+    event_type: str | None = Query(default=None),
+    q: str | None = Query(default=None),
+    user=Depends(get_current_user),
+):
+    """Return persisted diagnostics history with basic search and pagination."""
+    from backend.core.search_diagnostics import history
+
+    return history(page=page, per_page=per_page, event_type=event_type, query=q)
+
+
+@router.post("/search-diagnostics/test", response_model=SearchTestResponse)
+async def search_test_harness(payload: SearchTestRequest, user=Depends(get_current_user)):
+    """Run a manual movie search and expose raw, parsed, and filtered stages."""
+    from backend.config import get_config
+    from backend.core.comparer import compare_release
+    from backend.core.parser import parse_release_title
+    from backend.integrations.newznab import NewznabClient
+    from backend.integrations.prowlarr import ProwlarrClient
+
+    cfg = get_config()
+    query = f"{payload.title} {payload.year}" if payload.year else payload.title
+    providers: list[dict[str, Any]] = []
+
+    if cfg.prowlarr.enabled and cfg.prowlarr.url:
+        prowlarr = ProwlarrClient()
+        detail = await prowlarr.search_detailed(
+            query=query,
+            imdb_id=payload.imdb_id or "",
+            include_raw=payload.include_raw,
+        )
+        providers.append(_serializable_search_detail(detail))
+
+    for idx in [item for item in cfg.indexers if item.name and item.url]:
+        client = NewznabClient(idx)
+        if payload.imdb_id:
+            clean_id = payload.imdb_id.lstrip("tt")
+            params = {
+                "t": "movie",
+                "imdbid": clean_id,
+                "apikey": idx.api_key,
+                "cat": ",".join(str(cat) for cat in idx.categories),
+                "limit": 100,
+            }
+        else:
+            params = {
+                "t": "search",
+                "q": query,
+                "apikey": idx.api_key,
+                "cat": ",".join(str(cat) for cat in idx.categories),
+                "limit": 100,
+            }
+        detail = await client.search_detailed(params, include_raw=payload.include_raw)
+        providers.append(_serializable_search_detail(detail))
+
+    parsed_results: list[dict[str, Any]] = []
+    for provider in providers:
+        parsed_results.extend(provider.get("parsed_results", []))
+
+    filtering_stages = [
+        {"stage": "provider_raw", "count": sum(int(p.get("raw_count") or 0) for p in providers)},
+        {"stage": "provider_parsed", "count": len(parsed_results)},
+    ]
+
+    seen_urls: set[str] = set()
+    unique_results: list[dict[str, Any]] = []
+    duplicate_count = 0
+    for result in parsed_results:
+        url = result.get("nzb_url", "")
+        if url and url in seen_urls:
+            duplicate_count += 1
+            continue
+        if url:
+            seen_urls.add(url)
+        unique_results.append(result)
+
+    filtering_stages.append({"stage": "deduplicated", "count": len(unique_results), "removed": duplicate_count})
+
+    accepted: list[dict[str, Any]] = []
+    rejected: list[dict[str, Any]] = []
+    local_size = 10 * 1024 * 1024 * 1024
+    for result in unique_results:
+        parsed = parse_release_title(result.get("release_title", ""))
+        cmp = compare_release(
+            local_size=local_size,
+            local_resolution="1080p",
+            local_codec="h264",
+            candidate_size=int(result.get("size") or 0),
+            candidate_title=result.get("release_title", ""),
+            movie_title=payload.title,
+            movie_year=payload.year,
+        )
+        item = {
+            **result,
+            "resolution": parsed.resolution,
+            "video_codec": parsed.video_codec,
+            "source": parsed.source,
+            "hdr": parsed.hdr,
+            "languages": parsed.languages,
+            "subtitle_markers": parsed.subtitle_markers,
+            "media_health_score": cmp.media_health_score,
+            "media_health_rating": cmp.media_health_rating,
+            "media_health_reasons": cmp.media_health_reasons or [],
+            "decision": cmp.decision,
+            "score": cmp.score,
+            "confidence_score": cmp.confidence_score,
+            "confidence_breakdown": cmp.confidence_breakdown,
+            "reject_reason": cmp.reject_reason,
+            "savings_pct": cmp.savings_pct,
+        }
+        if cmp.decision == "accept":
+            accepted.append(item)
+        else:
+            rejected.append(item)
+
+    filtering_stages.append({"stage": "accepted", "count": len(accepted)})
+    filtering_stages.append({"stage": "rejected", "count": len(rejected)})
+
+    return {
+        "query": {
+            "title": payload.title,
+            "year": payload.year,
+            "imdb_id": payload.imdb_id,
+            "query": query,
+            "comparison_baseline": "10 GiB 1080p h264 local file",
+        },
+        "providers": providers,
+        "raw_total": sum(int(p.get("raw_count") or 0) for p in providers),
+        "parsed_total": len(parsed_results),
+        "accepted_count": len(accepted),
+        "rejected_count": len(rejected),
+        "accepted_results": accepted[:100],
+        "rejected_results": rejected[:100],
+        "filtering_stages": filtering_stages,
     }
 
 
@@ -899,6 +1103,22 @@ async def health_matrix(user=Depends(get_current_user)):
     else:
         components["orchestrator"] = {"status": "healthy", "detail": "Idle"}
 
+    from backend.core.search_diagnostics import degradation_status
+
+    search_state = degradation_status()
+    if search_state.get("degraded"):
+        components["search_pipeline"] = {
+            "status": "degraded",
+            "detail": "; ".join(search_state.get("reasons") or ["Search degraded"]),
+            **search_state,
+        }
+    else:
+        components["search_pipeline"] = {
+            "status": "healthy",
+            "detail": "No search degradation detected",
+            **search_state,
+        }
+
     recycle_path = _get_recycling_bin_path()
     if not recycle_path:
         components["recycling_bin"] = {"status": "disabled", "detail": "Not configured"}
@@ -986,7 +1206,10 @@ async def decision_audit(limit: int = 50, decision: str = "", user=Depends(get_c
             "decision": row.decision,
             "score": row.score,
             "confidence_score": row.confidence_score,
-            "confidence_breakdown": json.loads(row.confidence_breakdown or "{}"),
+            "confidence_breakdown": _json_object(row.confidence_breakdown),
+            "media_health_score": row.media_health_score,
+            "media_health_rating": row.media_health_rating,
+            "media_health_reasons": _json_string_list(row.media_health_reasons),
             "savings_bytes": row.savings_bytes,
             "savings_pct": row.savings_pct,
             "reject_reason": row.reject_reason,

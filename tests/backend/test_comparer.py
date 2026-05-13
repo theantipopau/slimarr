@@ -83,7 +83,7 @@ class CompareReleaseTests(unittest.TestCase):
             )
 
         self.assertEqual(result.decision, "reject")
-        self.assertIn("Preferred language", result.reject_reason or "")
+        self.assertIn("English audio required", result.reject_reason or "")
 
 
 if __name__ == "__main__":

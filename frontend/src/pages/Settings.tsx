@@ -82,6 +82,8 @@ export default function Settings() {
       ['Downgrade min savings %', ['comparison', 'downgrade_min_savings_percent'], 0, 100],
       ['Minimum file size MB', ['comparison', 'minimum_file_size_mb'], 1, 1000000],
       ['Max candidate age days', ['comparison', 'max_candidate_age_days'], 1, 36500],
+      ['Max quality upgrade size GB', ['comparison', 'max_quality_upgrade_size_gb'], 1, 100],
+      ['Max quality upgrade size increase %', ['comparison', 'max_size_increase_percent_for_quality_upgrade'], 0, 1000],
       ['Recycling cleanup days', ['files', 'recycling_bin_cleanup_days'], 1, 3650],
       ['Max downloads per night', ['schedule', 'max_downloads_per_night'], 1, 1000],
       ['Throttle seconds', ['schedule', 'throttle_seconds'], 0, 86400],
@@ -639,6 +641,30 @@ export default function Settings() {
           />
           <label htmlFor="allow_downgrade" className="text-sm">Allow resolution downgrade (if savings are large enough)</label>
         </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {field('Max Quality Upgrade Size (GB)', ['comparison', 'max_quality_upgrade_size_gb'], 'number')}
+          {field('Max Quality Upgrade Increase %', ['comparison', 'max_size_increase_percent_for_quality_upgrade'], 'number')}
+        </div>
+        {[
+          ['avoid_dolby_vision', 'Avoid Dolby Vision releases'],
+          ['allow_dolby_vision_with_hdr_fallback', 'Allow DV when HDR fallback is detected'],
+          ['require_english_audio', 'Require English audio when English is preferred'],
+          ['reject_dual_audio', 'Reject dual-audio releases'],
+          ['reject_multi_audio', 'Reject multi-audio releases'],
+          ['reject_hardcoded_subs', 'Reject hardcoded subtitle releases'],
+          ['allow_size_increase_for_low_quality', 'Allow bounded size increase for poor-quality local copies'],
+        ].map(([key, label]) => (
+          <div key={key} className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              id={key}
+              checked={!!((settings?.comparison as Record<string,unknown>)?.[key])}
+              onChange={(e) => set(['comparison', key], e.target.checked)}
+              className="w-4 h-4 accent-brand-green"
+            />
+            <label htmlFor={key} className="text-sm">{label}</label>
+          </div>
+        ))}
       </section>
 
       {/* Files */}

@@ -4,6 +4,67 @@ All notable changes to Slimarr are documented here.
 
 ---
 
+## [1.3.0.0] - 2026-05-13
+
+### Search diagnostics and degraded-pipeline safety
+
+- Added end-to-end search diagnostics for Prowlarr and direct Newznab searches:
+  request URLs with secrets redacted, response status, latency, raw/parsed result counts,
+  parser failures, timeouts, malformed payloads, indexer reliability, and rejection summaries.
+- Added a dedicated Search Diagnostics page with live requests, indexer responses,
+  filtered-vs-accepted counts, failure heatmap, last successful search, reliability metrics,
+  and a manual Search Test Harness with raw payload inspection.
+- Added degraded-search detection so automation no longer appears healthy while searches are
+  effectively failing:
+  100 consecutive zero-result searches, repeated all-provider failures, missing search
+  providers, malformed payloads, and category mismatch warnings are surfaced to the UI.
+- Hardened Newznab parsing so auth errors and malformed XML are no longer silently treated as
+  empty result sets.
+- Added regression tests for Prowlarr request construction, Newznab parsing, empty results,
+  malformed payloads, auth failures, timeout diagnostics, category extraction, and degraded
+  zero-result detection.
+- Tightened diagnostics security and retention:
+  raw payload previews are truncated, API keys/tokens/passwords/auth headers are redacted,
+  diagnostics history is bounded, and search diagnostics are included in support bundles.
+- Split degraded-search state into warnings and blocking failures so 100+ zero-result searches
+  no longer pause automation by itself, while repeated all-provider failures still block cycles.
+- Improved Newznab compatibility by parsing namespaced or unprefixed Newznab attributes and
+  namespaced error payloads.
+- Added persisted diagnostics history stored on disk with pagination and basic text search via
+  `GET /system/search-diagnostics/history`.
+- Expanded Search Diagnostics UI with persisted-history controls (filter, search, pagination)
+  so incident review is no longer limited to in-memory session events.
+- Included persisted diagnostics history in support bundles (`system.search.diagnostics.history.json`).
+- Hardened diagnostics redaction to also mask bearer/basic credential payloads in quoted
+  authorization fields.
+
+### Media Intelligence and automation safety
+
+- Added Quality Intelligence V2 parsing for source type, resolution, codec, HDR/Dolby Vision,
+  audio codec/channels, language markers, subtitle risk markers, PROPER/REPACK, release group,
+  and low-quality source detection.
+- Added Media Health scoring for candidate releases and local media with ratings:
+  Excellent, Good, Acceptable, Risky, and Reject.
+- Added Dolby Vision safety mode defaults:
+  `comparison.avoid_dolby_vision: true` and
+  `comparison.allow_dolby_vision_with_hdr_fallback: false`.
+- Added language/audio safety defaults:
+  `comparison.require_english_audio: true`, optional dual/multi-audio rejection, and
+  hardcoded subtitle rejection.
+- Comparison decisions now expose media health score/rating/reasons in search results,
+  Movie Detail candidate drawers, and decision audit responses.
+- Quality upgrades can now accept a larger file only when the existing copy is clearly poor
+  quality and the candidate is a bounded good-source 1080p upgrade.
+- Added regression tests for Dolby Vision filtering, language/subtitle safeguards,
+  low-quality source rejection, bounded quality upgrades, diagnostics redaction, and
+  retention limits.
+- Added MediaInfo-backed local stream probing during library scans to enrich missing
+  resolution/video codec/audio codec/bitrate metadata from actual files.
+- Improved library poster rendering performance with viewport-aware staged image loading,
+  skeleton placeholders, and async image decoding for large libraries.
+
+---
+
 ## [1.2.0.0] - 2026-05-04
 
 ### Release focus

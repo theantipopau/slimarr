@@ -16,6 +16,7 @@ const OrphanedDownloads = lazy(() => import('@/pages/OrphanedDownloads'))
 const BlacklistManagement = lazy(() => import('@/pages/BlacklistManagement'))
 const Settings = lazy(() => import('@/pages/Settings'))
 const System = lazy(() => import('@/pages/System'))
+const SearchDiagnostics = lazy(() => import('@/pages/SearchDiagnostics'))
 const TVShows = lazy(() => import('@/pages/TVShows'))
 
 function PageLoader() {
@@ -52,6 +53,7 @@ export default function App() {
                 <Route path="settings/blacklist" element={<BlacklistManagement />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="system" element={<System />} />
+                <Route path="system/search-diagnostics" element={<SearchDiagnostics />} />
                 <Route path="tv" element={<TVShows />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Route>

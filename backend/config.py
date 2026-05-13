@@ -91,6 +91,15 @@ class ComparisonConfig(BaseModel):
     reject_upscaled: bool = True
     minimum_confidence_score: float = 55.0
     require_year_match: bool = True
+    avoid_dolby_vision: bool = True
+    allow_dolby_vision_with_hdr_fallback: bool = False
+    require_english_audio: bool = True
+    reject_dual_audio: bool = False
+    reject_multi_audio: bool = False
+    reject_hardcoded_subs: bool = True
+    allow_size_increase_for_low_quality: bool = True
+    max_size_increase_percent_for_quality_upgrade: float = 250.0
+    max_quality_upgrade_size_gb: float = 8.0
 
 
 class PathMapping(BaseModel):

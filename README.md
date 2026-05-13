@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/react-18-61DAFB?logo=react&logoColor=black" />
   <img src="https://img.shields.io/badge/license-MIT-green" />
   <img src="https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white" />
-  <img src="https://img.shields.io/badge/release-1.2.0.0-success" />
+  <img src="https://img.shields.io/badge/release-1.3.0.0-success" />
 </p>
 
 <p align="center">
@@ -32,11 +32,20 @@ Scan Plex library -> Search Usenet indexers -> Compare releases
 -> Queue download via SABnzbd or NZBGet -> Replace file -> Refresh Plex -> Log savings
 ```
 
-**Core rule: never increase file size.** A release is only accepted if it is strictly smaller than your existing copy.
+**Core rule: save space safely.** A release is normally accepted only when it is smaller than your existing copy. In v1.3, Slimarr can make a bounded exception for clearly poor local media such as CAM/TS, weak 720p, or suspiciously low-bitrate files when the candidate is a strong 1080p quality upgrade.
 
 Slimarr is designed to look and feel like a native member of the **\*arr ecosystem** (Radarr, Sonarr, Prowlarr). If you're familiar with those tools, you'll feel right at home.
 
-Current stable release: **1.2.0.0**.
+Current release: **1.3.0.0** (2026-05-13).
+
+### What's New in 1.3.0.0
+
+- Search Diagnostics page and Search Test Harness for inspecting live Prowlarr/Newznab requests, redacted request URLs, status codes, latency, raw/parsed counts, parser failures, filtered results, and rejection reasons
+- Degraded-search detection that warns on suspicious zero-result streaks and pauses automation when all configured providers repeatedly fail
+- Quality Intelligence V2 for detecting poor existing copies and preferring good 1080p WEB-DL, BluRay, WEBRip, and efficient encodes
+- Dolby Vision safety mode enabled by default to avoid DV-only releases unless an HDR fallback is explicitly allowed
+- Expanded language/audio/subtitle safeguards for English audio requirements, hardcoded subtitle blocking, and dual/multi-audio visibility
+- Media Health scoring with Excellent, Good, Acceptable, Risky, and Reject ratings on candidates and decision audit records
 
 ### What's New in 1.2.0.0
 
@@ -69,6 +78,8 @@ Current stable release: **1.2.0.0**.
 - **Plex sync** - reads your library via PlexAPI, refreshes Plex after each replacement
 - **TMDB enrichment** - posters, backdrops, and metadata fetched and cached locally
 - **Smart comparison engine** - configurable minimum savings %, resolution downgrade protection, codec preferences, language filtering
+- **Search diagnostics** - v1.3 adds live visibility into indexer requests, parser failures, raw/parsed counts, filtering stages, and provider reliability
+- **Media Health scoring** - v1.3 rates release quality and explains risky candidates before automation can act
 - **Path mappings** - translate Plex-reported file paths to locally accessible paths when Plex and Slimarr run on different machines or use different mount points
 - **Language filtering** - reject candidates in unwanted languages; prefer English (or any configured language)
 - **AV1/h265 preference** - codec scoring bonus for modern efficient codecs
@@ -102,11 +113,11 @@ Current stable release: **1.2.0.0**.
 
 ### Option A - Installer (recommended for sharing)
 
-Download `SlimarrSetup-1.2.0.0.exe` (or the latest `SlimarrSetup-*.exe`) from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies - no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
+Download `SlimarrSetup-1.3.0.0.exe` (or the latest `SlimarrSetup-*.exe`) from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies - no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
 
 At the end of setup, the installer shows `Do you want to open Slimarr?` (checked by default). If selected, Slimarr starts minimized and your browser opens automatically to `http://localhost:9494` when the backend is ready.
 
-`1.2.0.0` is the current installer target. Newer `main` branch changes may land before the next installer is cut; if you want those immediately, run Slimarr from source or build a fresh installer from `main`.
+`1.3.0.0` is the current installer target. Newer `main` branch changes may land before the next installer is cut; if you want those immediately, run Slimarr from source or build a fresh installer from `main`.
 
 ### Option B - From source
 
@@ -243,6 +254,13 @@ comparison:
   preferred_codecs: ["av1", "h265"]
   preferred_language: "english"       # Reject foreign-language releases
   minimum_file_size_mb: 500           # Ignore candidates below this size
+  avoid_dolby_vision: true            # v1.3: block DV-only releases by default
+  allow_dolby_vision_with_hdr_fallback: false
+  require_english_audio: true
+  reject_hardcoded_subs: true
+  allow_size_increase_for_low_quality: true
+  max_size_increase_percent_for_quality_upgrade: 250.0
+  max_quality_upgrade_size_gb: 8.0
 
 radarr:
   enabled: false
@@ -331,16 +349,27 @@ C:\Slimarr\
 Slimarr reads every movie from your configured Plex sections via PlexAPI, upserts them into the local SQLite database, and enriches each entry with TMDB metadata (poster, backdrop, overview, genres). Progress is emitted in real time via Socket.IO.
 
 ### 2. Search
-For each `pending` movie, Slimarr queries Prowlarr (or direct Newznab indexers) by IMDb ID or title. Results are parsed for resolution, codec, source, and size.
+For each `pending` movie, Slimarr queries Prowlarr (or direct Newznab indexers) by IMDb ID or title. Results are parsed for resolution, codec, source, size, HDR/Dolby Vision markers, language/audio markers, subtitles, release group, and quality risk signals.
 
 ### 3. Compare
 Each result is scored against the local file:
-- **Hard reject** if the candidate is not smaller
+- **Reject by default** if the candidate is not smaller
+- **Configurable exception** for clearly low-quality local files when the candidate is a bounded 1080p quality upgrade
 - **Hard reject** if savings fall below `min_savings_percent`
 - **Hard reject** if candidate falls below `minimum_file_size_mb`
 - **Hard reject** if candidate has a foreign-language tag and doesn't match `preferred_language`
+- **Hard reject** if Dolby Vision safety mode blocks a DV-only release
+- **Hard reject** if hardcoded foreign subtitles are detected and subtitle safety is enabled
 - **Configurable** resolution downgrade protection
-- Score considers savings %, codec preference (AV1 > h265 > h264), language match bonus, and release quality
+- Score considers savings %, codec preference (AV1 > h265 > h264), source quality, media health, language/subtitle risk, uploader reliability, and title/year confidence
+
+### Search Diagnostics and Test Harness
+
+Slimarr v1.3 adds `/system/search-diagnostics` in the UI and `/api/v1/system/search-diagnostics` in the API. It records a bounded in-memory history of search requests and responses with secrets redacted, including provider name, request URL, HTTP status, response timing, raw and parsed counts, parser/auth/timeout failures, category warnings, rejection summaries, and last successful search.
+
+The Search Test Harness runs a manual movie search without downloading anything or mutating library state. It shows raw payload previews, parsed releases, accepted candidates, rejected candidates, and filtering stages so support cases can answer why Slimarr accepted or rejected a release.
+
+Known limitations: live in-memory diagnostics counters reset on restart (persisted diagnostics history remains available); raw payload previews are truncated; Media Health currently relies on parser plus best-effort MediaInfo enrichment rather than ffprobe parity.
 
 ### 4. Download
 The best accepted candidate is submitted to the active download client as an NZB. Slimarr currently supports SABnzbd and NZBGet, then polls for progress and emits `download:progress` events for the live progress bar.

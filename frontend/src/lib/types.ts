@@ -25,7 +25,14 @@ export interface SearchResultItem {
   size?: number | null
   resolution?: string
   video_codec?: string
+  audio_codec?: string | null
+  source?: string | null
   age_days?: number
+  hdr?: string | null
+  languages?: string[]
+  media_health_score?: number | null
+  media_health_rating?: string | null
+  media_health_reasons?: string[]
   score?: number | null
   confidence_score?: number | null
   confidence_breakdown?: Record<string, number | null>
@@ -159,4 +166,63 @@ export interface DecisionAuditEntry {
   reject_reason?: string
   notes?: string
   created_at?: string
+}
+
+export interface SearchDiagnosticEvent {
+  type: string
+  timestamp: string
+  indexer_name?: string
+  provider?: string
+  title?: string
+  query?: string
+  request_url?: string
+  status_code?: number | null
+  latency_ms?: number
+  raw_count?: number
+  parsed_count?: number
+  accepted_count?: number
+  rejected_count?: number
+  error?: string | null
+  malformed?: boolean
+  rejection_reasons?: Record<string, number>
+  [key: string]: unknown
+}
+
+export interface SearchDiagnostics {
+  checked_at: string
+  degradation: {
+    degraded: boolean
+    blocking: boolean
+    reasons: string[]
+    warning_reasons?: string[]
+    blocking_reasons?: string[]
+    consecutive_zero_searches: number
+    consecutive_failed_searches: number
+    last_successful_search?: Record<string, unknown> | null
+  }
+  recent_events: SearchDiagnosticEvent[]
+  warnings: Array<{ timestamp: string; message: string; detail?: Record<string, unknown> }>
+  failure_heatmap: Record<string, number>
+  indexer_reliability: Record<string, Record<string, unknown>>
+  last_successful_search?: Record<string, unknown> | null
+}
+
+export interface SearchDiagnosticsHistoryResponse {
+  page: number
+  per_page: number
+  total: number
+  pages: number
+  items: SearchDiagnosticEvent[]
+}
+
+export interface SearchTestResponse {
+  query: Record<string, unknown>
+  providers: Array<Record<string, unknown>>
+  raw_total: number
+  parsed_total: number
+  accepted_count: number
+  rejected_count: number
+  accepted_results: Array<Record<string, unknown>>
+  rejected_results: Array<Record<string, unknown>>
+  filtering_stages: Array<Record<string, unknown>>
 }

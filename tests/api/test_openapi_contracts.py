@@ -20,6 +20,8 @@ class OpenAPIContractTests(unittest.TestCase):
             ("GET", "/api/v1/system/info"),
             ("GET", "/api/v1/system/preflight"),
             ("GET", "/api/v1/system/decision-audit"),
+            ("GET", "/api/v1/system/search-diagnostics"),
+            ("POST", "/api/v1/system/search-diagnostics/test"),
             ("POST", "/api/v1/system/cycle/start"),
             ("GET", "/api/v1/settings"),
             ("POST", "/api/v1/settings/test/{service}"),

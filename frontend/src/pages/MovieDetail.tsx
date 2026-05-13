@@ -180,7 +180,7 @@ export default function MovieDetail() {
           <div className="px-4 py-3 border-b border-gray-800 text-sm font-semibold">
             Search Results ({results.length} - {accepted.length} accepted)
           </div>
-          <div className="hidden md:grid grid-cols-[minmax(0,1fr)_5rem_5rem_6rem_5rem_5rem_7rem] gap-4 px-4 py-2 border-b border-gray-800 text-xs uppercase text-gray-500">
+          <div className="hidden md:grid grid-cols-[minmax(0,1fr)_10rem_5rem_6rem_5rem_5rem_7rem] gap-4 px-4 py-2 border-b border-gray-800 text-xs uppercase text-gray-500">
             <span>Release</span>
             <span>Res</span>
             <span>Age</span>
@@ -191,12 +191,15 @@ export default function MovieDetail() {
           </div>
           <div className="divide-y divide-gray-800">
             {results.map((r) => (
-              <div key={r.id} className="px-4 py-3 grid grid-cols-[auto_minmax(0,1fr)_auto] md:grid-cols-[auto_minmax(0,1fr)_5rem_5rem_6rem_5rem_5rem_7rem] items-center gap-3 md:gap-4 text-sm">
+              <div key={r.id} className="px-4 py-3 grid grid-cols-[auto_minmax(0,1fr)_auto] md:grid-cols-[auto_minmax(0,1fr)_10rem_5rem_6rem_5rem_5rem_7rem] items-center gap-3 md:gap-4 text-sm">
                 <div className={`w-2 h-2 rounded-full shrink-0 ${r.decision === 'accept' ? 'bg-green-500' : 'bg-red-500'}`} />
                 <div className="flex-1 min-w-0">
                   <p className="truncate">{r.release_title}</p>
                   <div className="mt-1 flex flex-wrap gap-2 text-xs text-gray-500 md:hidden">
                     <span>{r.resolution || 'Unknown res'}</span>
+                    {r.source && <span>{r.source}</span>}
+                    {r.hdr && <span>{r.hdr}</span>}
+                    {r.media_health_rating && <span>{r.media_health_rating}</span>}
                     <span>{fmtAge(r.age_days)}</span>
                     <span>{fmt(r.size)}</span>
                     <span>score {fmtFixed(r.score)}</span>
@@ -204,7 +207,12 @@ export default function MovieDetail() {
                   </div>
                   {r.reject_reason && <p className="text-xs text-red-400">{r.reject_reason}</p>}
                 </div>
-                <div className="hidden md:block text-gray-300">{r.resolution || '-'}</div>
+                <div className="hidden md:flex flex-wrap gap-1 text-gray-300">
+                  {r.resolution ? <QualityBadge type="res" value={r.resolution} /> : '-'}
+                  {r.source && <QualityBadge type="status" value={r.source} />}
+                  {r.hdr && <QualityBadge type="hdr" value={r.hdr} />}
+                  {r.media_health_rating && <QualityBadge type="health" value={r.media_health_rating} />}
+                </div>
                 <div className="hidden md:block text-gray-400">{fmtAge(r.age_days)}</div>
                 <div className="hidden md:block text-right shrink-0">
                   <p>{fmt(r.size)}</p>
@@ -263,11 +271,27 @@ export default function MovieDetail() {
               </div>
               <div className="rounded-lg bg-gray-900 p-3">
                 <p className="text-xs uppercase text-gray-500">Release</p>
-                <p className="text-sm">{selectedResult.resolution || 'Unknown resolution'} / {selectedResult.video_codec || 'Unknown codec'} / {fmtAge(selectedResult.age_days)}</p>
+                <p className="text-sm">{selectedResult.resolution || 'Unknown resolution'} / {selectedResult.video_codec || 'Unknown codec'} / {selectedResult.source || 'Unknown source'} / {fmtAge(selectedResult.age_days)}</p>
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {selectedResult.hdr && <QualityBadge type="hdr" value={selectedResult.hdr} />}
+                  {(selectedResult.languages ?? []).map((lang) => (
+                    <QualityBadge key={lang} type="language" value={lang} />
+                  ))}
+                </div>
               </div>
               <div className="rounded-lg bg-gray-900 p-3">
                 <p className="text-xs uppercase text-gray-500">Confidence</p>
                 <p className="font-semibold">{typeof selectedResult.confidence_score === 'number' ? `${fmtFixed(selectedResult.confidence_score, 0)} / 100` : 'Not scored'}</p>
+              </div>
+              <div className="rounded-lg bg-gray-900 p-3 sm:col-span-2">
+                <p className="text-xs uppercase text-gray-500">Media Health</p>
+                <p className="font-semibold">{selectedResult.media_health_rating ?? 'Unknown'}{typeof selectedResult.media_health_score === 'number' ? ` / ${fmtFixed(selectedResult.media_health_score, 0)}` : ''}</p>
+                {(selectedResult.media_health_reasons ?? []).length > 0 && (
+                  <p className="mt-1 text-sm text-gray-400">{selectedResult.media_health_reasons?.join(', ')}</p>
+                )}
+                {selectedResult.hdr?.toLowerCase().includes('dolby vision') && (
+                  <p className="mt-2 text-sm text-yellow-300">Dolby Vision may not play correctly on every Plex client.</p>
+                )}
               </div>
             </div>
             {selectedResult.confidence_breakdown && Object.keys(selectedResult.confidence_breakdown).length > 0 && (
