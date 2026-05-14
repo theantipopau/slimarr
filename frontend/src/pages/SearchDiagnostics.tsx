@@ -229,9 +229,9 @@ export default function SearchDiagnostics() {
                 <div key={`${event.timestamp}-${idx}`} className="px-4 py-3 text-sm">
                   <div className="flex justify-between gap-3">
                     <span className="font-medium truncate">{event.title ?? 'Unknown movie'}</span>
-                    <span className="text-xs text-gray-500">{event.accepted_count ?? 0}/{event.stored_count ?? 0} accepted</span>
+                    <span className="text-xs text-gray-500">{count(event.accepted_count)}/{count(event.stored_count)} accepted</span>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Raw {event.raw_count ?? 0} - Unique {event.unique_count ?? 0} - Rejected {event.rejected_count ?? 0}</p>
+                  <p className="text-xs text-gray-500 mt-1">Raw {count(event.raw_count)} - Unique {count(event.unique_count)} - Rejected {count(event.rejected_count)}</p>
                 </div>
               ))}
             </div>

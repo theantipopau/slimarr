@@ -63,6 +63,23 @@ All notable changes to Slimarr are documented here.
 - Improved library poster rendering performance with viewport-aware staged image loading,
   skeleton placeholders, and async image decoding for large libraries.
 
+### Stability hardening and operator overrides
+
+- Hardened candidate scoring and downloader health calculations against null numeric values
+  so a single malformed row no longer aborts processing with `float(None)` errors.
+- Added malformed search-result guardrails in the search pipeline: results with missing titles,
+  invalid sizes, or per-item processing exceptions are now logged and skipped instead of
+  stopping movie processing.
+- Added force-download controls in Movie Detail so operators can explicitly queue a
+  non-recommended release after confirmation.
+- Added persistent per-movie preferred release override:
+  - backend support via `movies.preferred_release_title`
+  - API endpoints to set/clear preferred release from existing search results
+  - orchestrator selection path that prioritizes preferred release when present,
+    with fallback to normal scoring when absent
+  - UI controls to set/clear preferred release and warning text when the preferred
+    release is not present in the current search pass
+
 ---
 
 ## [1.2.0.0] - 2026-05-04

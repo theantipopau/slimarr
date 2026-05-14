@@ -4,7 +4,7 @@ import { api } from '@/lib/api'
 import { useToast } from '@/components/Toast'
 import type { Movie, SearchResultItem } from '@/lib/types'
 import QualityBadge from '@/components/QualityBadge'
-import { ArrowLeft, Search, Zap, Download, Info, X, Lock, Unlock } from 'lucide-react'
+import { ArrowLeft, Search, Zap, Download, Info, X, Lock, Unlock, Star } from 'lucide-react'
 
 function fmt(bytes?: number | null) {
   if (!bytes) return '-'
@@ -41,6 +41,8 @@ export default function MovieDetail() {
   const [downloadingId, setDownloadingId] = useState<number | null>(null)
   const [selectedResult, setSelectedResult] = useState<SearchResultItem | null>(null)
   const [locking, setLocking] = useState(false)
+  const [preferringId, setPreferringId] = useState<number | null>(null)
+  const [clearingPreferred, setClearingPreferred] = useState(false)
 
   useEffect(() => {
     api.movie(movieId).then(setMovie).catch(() => {})
@@ -76,11 +78,24 @@ export default function MovieDetail() {
     }
   }
 
-  const doDownloadResult = async (resultId: number) => {
+  const doDownloadResult = async (resultId: number, opts?: { force?: boolean }) => {
+    const force = Boolean(opts?.force)
+    if (force) {
+      const proceed = window.confirm(
+        'Force-download this release even though Slimarr did not rank it as best?'
+      )
+      if (!proceed) return
+    }
+
     setDownloadingId(resultId)
     try {
       await api.downloadResult(movieId, resultId)
-      toast('Download queued - check Queue page for progress', 'success')
+      toast(
+        force
+          ? 'Forced download queued - check Queue page for progress'
+          : 'Download queued - check Queue page for progress',
+        'success'
+      )
       setTimeout(() => api.movie(movieId).then(setMovie), 3000)
     } catch {
       toast('Failed to queue download', 'error')
@@ -108,10 +123,46 @@ export default function MovieDetail() {
     }
   }
 
+  const doSetPreferredRelease = async (resultId: number) => {
+    setPreferringId(resultId)
+    try {
+      await api.setPreferredRelease(movieId, resultId)
+      toast('Preferred release saved - future cycles will prioritize it when available', 'success')
+      await Promise.all([
+        api.movie(movieId).then(setMovie),
+        api.searchResults(movieId).then(setResults),
+      ])
+    } catch {
+      toast('Failed to set preferred release', 'error')
+    } finally {
+      setPreferringId(null)
+    }
+  }
+
+  const doClearPreferredRelease = async () => {
+    setClearingPreferred(true)
+    try {
+      await api.clearPreferredRelease(movieId)
+      toast('Preferred release cleared', 'success')
+      await api.movie(movieId).then(setMovie)
+    } catch {
+      toast('Failed to clear preferred release', 'error')
+    } finally {
+      setClearingPreferred(false)
+    }
+  }
+
   if (!movie) return <div className="text-gray-400">Loading...</div>
 
   const posterUrl = movie.poster_path ? `/api/v1/images/${movie.id}/poster` : null
   const accepted = results.filter((r) => r.decision === 'accept')
+  const preferredFoundInResults = movie.preferred_release_title
+    ? results.some(
+        (r) =>
+          String(r.release_title || '').trim().toLowerCase() ===
+          String(movie.preferred_release_title || '').trim().toLowerCase()
+      )
+    : false
 
   return (
     <div className="space-y-6">
@@ -141,6 +192,16 @@ export default function MovieDetail() {
               </p>
             )}
             <p>Status: <span className="capitalize text-white">{movie.status}</span></p>
+            {movie.preferred_release_title && (
+              <p>
+                Preferred release: <span className="text-yellow-300">{movie.preferred_release_title}</span>
+              </p>
+            )}
+            {movie.preferred_release_title && !preferredFoundInResults && (
+              <p className="text-xs text-yellow-200">
+                Preferred release is not in the current search results. Slimarr will fall back to normal scoring until it appears.
+              </p>
+            )}
           </div>
 
           <div className="flex gap-3 mt-4">
@@ -171,6 +232,16 @@ export default function MovieDetail() {
               {movie.slimarr_locked ? <Lock size={16} /> : <Unlock size={16} />}
               {movie.slimarr_locked ? 'Locked' : 'Lock'}
             </button>
+            {movie.preferred_release_title && (
+              <button
+                onClick={doClearPreferredRelease}
+                disabled={clearingPreferred}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-700 text-sm hover:bg-gray-600 disabled:opacity-50"
+                title="Clear persistent preferred release override"
+              >
+                <Star size={16} /> {clearingPreferred ? 'Clearing...' : 'Clear Preferred'}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -224,22 +295,50 @@ export default function MovieDetail() {
                 <div className="hidden md:block text-xs text-gray-500 shrink-0">{fmtFixed(r.confidence_score, 0)}</div>
                 <div className="flex items-center gap-2 justify-end">
                   <button
+                    onClick={() => doSetPreferredRelease(r.id)}
+                    disabled={preferringId === r.id || movie.preferred_release_title === r.release_title}
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded text-xs disabled:opacity-50 shrink-0 ${
+                      movie.preferred_release_title === r.release_title
+                        ? 'bg-yellow-700 text-yellow-100'
+                        : 'bg-gray-700 text-white hover:bg-gray-600'
+                    }`}
+                    title={
+                      movie.preferred_release_title === r.release_title
+                        ? 'Current preferred release'
+                        : 'Prefer this release for future cycle processing'
+                    }
+                  >
+                    <Star size={12} />
+                    {movie.preferred_release_title === r.release_title
+                      ? 'Preferred'
+                      : preferringId === r.id
+                        ? 'Saving...'
+                        : 'Prefer'}
+                  </button>
+                  <button
                     onClick={() => setSelectedResult(r)}
                     className="p-1.5 rounded bg-gray-800 text-gray-300 hover:bg-gray-700"
                     title="Show candidate details"
                   >
                     <Info size={13} />
                   </button>
-                  {r.decision === 'accept' && (
                   <button
-                    onClick={() => doDownloadResult(r.id)}
+                    onClick={() => doDownloadResult(r.id, { force: r.decision !== 'accept' })}
                     disabled={downloadingId === r.id}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded bg-brand-green text-white text-xs disabled:opacity-50 hover:bg-green-600 shrink-0"
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded text-white text-xs disabled:opacity-50 shrink-0 ${
+                      r.decision === 'accept'
+                        ? 'bg-brand-green hover:bg-green-600'
+                        : 'bg-yellow-600 hover:bg-yellow-500'
+                    }`}
+                    title={
+                      r.decision === 'accept'
+                        ? 'Download recommended release'
+                        : 'Force this non-recommended release'
+                    }
                   >
                     <Download size={12} />
-                    {downloadingId === r.id ? '...' : 'Download'}
+                    {downloadingId === r.id ? '...' : r.decision === 'accept' ? 'Download' : 'Force'}
                   </button>
-                  )}
                 </div>
               </div>
             ))}
@@ -309,6 +408,29 @@ export default function MovieDetail() {
                 ))}
               </div>
             )}
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => doDownloadResult(selectedResult.id, { force: selectedResult.decision !== 'accept' })}
+                disabled={downloadingId === selectedResult.id}
+                className={`flex items-center gap-2 px-3 py-2 rounded text-sm text-white disabled:opacity-50 ${
+                  selectedResult.decision === 'accept'
+                    ? 'bg-brand-green hover:bg-green-600'
+                    : 'bg-yellow-600 hover:bg-yellow-500'
+                }`}
+                title={
+                  selectedResult.decision === 'accept'
+                    ? 'Download recommended release'
+                    : 'Force this non-recommended release'
+                }
+              >
+                <Download size={14} />
+                {downloadingId === selectedResult.id
+                  ? 'Queueing...'
+                  : selectedResult.decision === 'accept'
+                    ? 'Download This Release'
+                    : 'Force This Release'}
+              </button>
+            </div>
           </div>
         </div>
       )}

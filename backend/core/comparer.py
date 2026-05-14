@@ -42,14 +42,16 @@ def _uploader_health_score(uploader: Optional[str]) -> float:
         return 0.5
 
     try:
-        conn = sqlite3.connect(db_path)
-        cur = conn.cursor()
-        cur.execute("SELECT health_score FROM uploader_stats WHERE uploader = ?", (uploader,))
-        row = cur.fetchone()
-        conn.close()
-        if not row:
+        with sqlite3.connect(db_path) as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT health_score FROM uploader_stats WHERE uploader = ?", (uploader,))
+            row = cur.fetchone()
+
+        if not row or row[0] is None:
             return 0.5
-        return max(0.0, min(1.0, float(row[0])))
+
+        score = float(row[0])
+        return max(0.0, min(1.0, score))
     except Exception:
         return 0.5
 

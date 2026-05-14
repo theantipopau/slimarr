@@ -166,68 +166,91 @@ async def search_for_movie(movie_id: int) -> list[dict]:
         stored = []
         audit_logs = []
         for r in unique_raw:
-            parsed = parse_release_title(r["release_title"])
-            age_days = r.get("age_days") if r.get("age_days") is not None else _nzb_age_days(r.get("pub_date"))
-            cmp = compare_release(
-                local_size=movie.file_size or 0,
-                local_resolution=movie.resolution or "",
-                local_codec=movie.video_codec or "",
-                candidate_size=r["size"],
-                candidate_title=r["release_title"],
-                candidate_age_days=age_days,
-                movie_title=movie.title,
-                movie_year=movie.year,
-                local_bitrate=movie.bitrate,
-                local_source_type=movie.source_type or "",
-            )
-            sr = SearchResult(
-                movie_id=movie.id,
-                indexer_name=r["indexer_name"],
-                release_title=r["release_title"],
-                nzb_url=r["nzb_url"],
-                size=r["size"],
-                resolution=parsed.resolution,
-                video_codec=parsed.video_codec,
-                audio_codec=parsed.audio_codec,
-                source=parsed.source,
-                hdr=parsed.hdr,
-                languages=",".join(parsed.languages or []),
-                age_days=age_days,
-                savings_bytes=cmp.savings_bytes,
-                savings_pct=cmp.savings_pct,
-                score=cmp.score,
-                confidence_score=cmp.confidence_score,
-                confidence_breakdown=json.dumps(cmp.confidence_breakdown or {}),
-                media_health_score=cmp.media_health_score,
-                media_health_rating=cmp.media_health_rating,
-                media_health_reasons=json.dumps(cmp.media_health_reasons or []),
-                decision=cmp.decision,
-                reject_reason=cmp.reject_reason,
-            )
-            db.add(sr)
-            stored.append(sr)
+            try:
+                release_title = str(r.get("release_title") or "").strip()
+                if not release_title:
+                    logger.warning("Skipping malformed search result for {}: missing release title", movie.title)
+                    continue
 
-            audit_logs.append(
-                DecisionAuditLog(
-                    movie_id=movie.id,
+                candidate_size = int(r.get("size") or 0)
+                if candidate_size <= 0:
+                    logger.warning(
+                        "Skipping malformed search result for {}: invalid size for '{}'",
+                        movie.title,
+                        release_title,
+                    )
+                    continue
+
+                parsed = parse_release_title(release_title)
+                age_days = r.get("age_days") if r.get("age_days") is not None else _nzb_age_days(r.get("pub_date"))
+                cmp = compare_release(
+                    local_size=movie.file_size or 0,
+                    local_resolution=movie.resolution or "",
+                    local_codec=movie.video_codec or "",
+                    candidate_size=candidate_size,
+                    candidate_title=release_title,
+                    candidate_age_days=age_days,
                     movie_title=movie.title,
-                    indexer_name=r.get("indexer_name"),
-                    release_title=r["release_title"],
-                    candidate_size=r.get("size"),
-                    local_size=movie.file_size,
-                    decision=cmp.decision,
+                    movie_year=movie.year,
+                    local_bitrate=movie.bitrate,
+                    local_source_type=movie.source_type or "",
+                )
+
+                sr = SearchResult(
+                    movie_id=movie.id,
+                    indexer_name=r.get("indexer_name") or "unknown",
+                    release_title=release_title,
+                    nzb_url=r.get("nzb_url") or "",
+                    size=candidate_size,
+                    resolution=parsed.resolution,
+                    video_codec=parsed.video_codec,
+                    audio_codec=parsed.audio_codec,
+                    source=parsed.source,
+                    hdr=parsed.hdr,
+                    languages=",".join(parsed.languages or []),
+                    age_days=age_days,
+                    savings_bytes=cmp.savings_bytes,
+                    savings_pct=cmp.savings_pct,
                     score=cmp.score,
                     confidence_score=cmp.confidence_score,
                     confidence_breakdown=json.dumps(cmp.confidence_breakdown or {}),
                     media_health_score=cmp.media_health_score,
                     media_health_rating=cmp.media_health_rating,
                     media_health_reasons=json.dumps(cmp.media_health_reasons or []),
-                    savings_bytes=cmp.savings_bytes,
-                    savings_pct=cmp.savings_pct,
+                    decision=cmp.decision,
                     reject_reason=cmp.reject_reason,
-                    notes=cmp.notes or None,
                 )
-            )
+                db.add(sr)
+                stored.append(sr)
+
+                audit_logs.append(
+                    DecisionAuditLog(
+                        movie_id=movie.id,
+                        movie_title=movie.title,
+                        indexer_name=r.get("indexer_name"),
+                        release_title=release_title,
+                        candidate_size=candidate_size,
+                        local_size=movie.file_size,
+                        decision=cmp.decision,
+                        score=cmp.score,
+                        confidence_score=cmp.confidence_score,
+                        confidence_breakdown=json.dumps(cmp.confidence_breakdown or {}),
+                        media_health_score=cmp.media_health_score,
+                        media_health_rating=cmp.media_health_rating,
+                        media_health_reasons=json.dumps(cmp.media_health_reasons or []),
+                        savings_bytes=cmp.savings_bytes,
+                        savings_pct=cmp.savings_pct,
+                        reject_reason=cmp.reject_reason,
+                        notes=cmp.notes or None,
+                    )
+                )
+            except Exception as exc:
+                logger.error(
+                    "Skipping result for {} due to processing error: {}",
+                    movie.title,
+                    normalize_exception(exc),
+                )
+                continue
 
         if audit_logs:
             db.add_all(audit_logs)

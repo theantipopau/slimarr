@@ -71,6 +71,7 @@ class MovieOut(BaseModel):
     audio_codec: str | None = None
     status: str
     slimarr_locked: bool
+    preferred_release_title: str | None = None
     last_scanned: str | None = None
     last_searched: str | None = None
 

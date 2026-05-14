@@ -122,6 +122,50 @@ async def download_result(
     return {"status": "download_queued", "search_result_id": result_id}
 
 
+@router.post("/movies/{movie_id}/search-results/{result_id}/prefer", response_model=ActionStatusResponse)
+async def set_preferred_release(
+    movie_id: int,
+    result_id: int,
+    user=Depends(get_current_user),
+):
+    """Persist a preferred release title for this movie.
+
+    Future cycle/process runs will try to use this release when it appears in search results.
+    """
+    async with async_session() as db:
+        movie = await db.get(Movie, movie_id)
+        if not movie:
+            raise not_found("Movie", correlation_id=get_correlation_id())
+
+        result = await db.execute(
+            select(SearchResult).where(
+                SearchResult.id == result_id,
+                SearchResult.movie_id == movie_id,
+            )
+        )
+        sr = result.scalar_one_or_none()
+        if not sr:
+            raise not_found("Search result", correlation_id=get_correlation_id())
+
+        movie.preferred_release_title = sr.release_title
+        await db.commit()
+
+    return {"status": "preferred_release_set", "movie_id": movie_id, "search_result_id": result_id}
+
+
+@router.post("/movies/{movie_id}/preferred-release/clear", response_model=ActionStatusResponse)
+async def clear_preferred_release(movie_id: int, user=Depends(get_current_user)):
+    """Clear the per-movie preferred release override."""
+    async with async_session() as db:
+        movie = await db.get(Movie, movie_id)
+        if not movie:
+            raise not_found("Movie", correlation_id=get_correlation_id())
+        movie.preferred_release_title = None
+        await db.commit()
+
+    return {"status": "preferred_release_cleared", "movie_id": movie_id}
+
+
 @router.post("/movies/{movie_id}/search", response_model=ActionStatusResponse)
 async def trigger_search(movie_id: int, background: BackgroundTasks, user=Depends(get_current_user)):
     background.add_task(_run_search, movie_id)
@@ -195,6 +239,7 @@ def _movie_dict(m: Movie) -> dict:
         "audio_codec": m.audio_codec,
         "status": m.status,
         "slimarr_locked": bool(m.slimarr_locked),
+        "preferred_release_title": m.preferred_release_title,
         "last_scanned": m.last_scanned.isoformat() if m.last_scanned else None,
         "last_searched": m.last_searched.isoformat() if m.last_searched else None,
     }

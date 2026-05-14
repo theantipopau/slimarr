@@ -14,6 +14,7 @@ export interface Movie {
   audio_codec?: string
   status: string
   slimarr_locked?: boolean
+  preferred_release_title?: string | null
   last_scanned?: string
   last_searched?: string
 }

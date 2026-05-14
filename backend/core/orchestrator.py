@@ -47,26 +47,55 @@ async def process_single_movie(movie_id: int) -> dict:
     from backend.config import get_config
 
     config = get_config()
+    preferred_release_title: str | None = None
+    async with async_session() as db:
+        movie = await db.get(Movie, movie_id)
+        if movie:
+            preferred_release_title = movie.preferred_release_title
+
     results = await search_for_movie(movie_id)
     accepted = [r for r in results if r["decision"] == "accept"]
+    preferred = None
+    if preferred_release_title:
+        preferred_key = preferred_release_title.strip().lower()
+        preferred = next(
+            (
+                r
+                for r in results
+                if str(r.get("release_title") or "").strip().lower() == preferred_key
+            ),
+            None,
+        )
+        if not preferred:
+            logger.info(
+                "Preferred release override not found for movie {} in this search pass: {}",
+                movie_id,
+                preferred_release_title,
+            )
 
-    if not accepted:
+    if not accepted and not preferred:
         return {"movie_id": movie_id, "status": "no_candidates", "results": len(results)}
 
-    # Best candidate (highest score)
-    best = max(accepted, key=lambda x: x["score"])
+    selected = preferred if preferred else max(accepted, key=lambda x: x["score"])
+    if preferred:
+        logger.info(
+            "Using preferred release override for movie {}: {}",
+            movie_id,
+            selected.get("release_title"),
+        )
 
     if config.automation.dry_run:
         logger.info(
-            f"Dry-run: selected {best['release_title']} for movie {movie_id} "
+            f"Dry-run: selected {selected['release_title']} for movie {movie_id} "
             "without queueing a download"
         )
         return {
             "movie_id": movie_id,
             "status": "dry_run_candidate",
-            "search_result_id": best["id"],
+            "search_result_id": selected["id"],
             "results": len(results),
             "accepted": len(accepted),
+            "used_preferred_override": bool(preferred),
         }
 
     if config.automation.review_required:
@@ -80,13 +109,19 @@ async def process_single_movie(movie_id: int) -> dict:
         return {
             "movie_id": movie_id,
             "status": "review_required",
-            "search_result_id": best["id"],
+            "search_result_id": selected["id"],
             "results": len(results),
             "accepted": len(accepted),
+            "used_preferred_override": bool(preferred),
         }
 
-    result = await process_search_result_download(best["id"])
-    return {"movie_id": movie_id, "status": result.get("status", "unknown"), **result}
+    result = await process_search_result_download(selected["id"])
+    return {
+        "movie_id": movie_id,
+        "status": result.get("status", "unknown"),
+        "used_preferred_override": bool(preferred),
+        **result,
+    }
 
 
 async def run_full_cycle() -> dict:

@@ -89,7 +89,8 @@ async def _update_uploader_stats(release_title: str | None, success: bool) -> No
 
         total = int(stats.success_count or 0) + int(stats.failure_count or 0) + int(stats.corruption_count or 0)
         if total > 0:
-            stats.health_score = max(0.0, min(1.0, float(stats.success_count) / float(total)))
+            success_count = float(stats.success_count or 0)
+            stats.health_score = max(0.0, min(1.0, success_count / float(total)))
         stats.last_seen = _utc_now()
         await db.commit()
 
