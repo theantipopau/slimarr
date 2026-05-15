@@ -4,7 +4,7 @@ import { api } from '@/lib/api'
 import { useToast } from '@/components/Toast'
 import type { Movie, SearchResultItem } from '@/lib/types'
 import QualityBadge from '@/components/QualityBadge'
-import { ArrowLeft, Search, Zap, Download, Info, X, Lock, Unlock, Star } from 'lucide-react'
+import { ArrowLeft, Search, Zap, Download, Info, X, Lock, Unlock, Star, SlidersHorizontal, Save } from 'lucide-react'
 
 function fmt(bytes?: number | null) {
   if (!bytes) return '-'
@@ -43,10 +43,35 @@ export default function MovieDetail() {
   const [locking, setLocking] = useState(false)
   const [preferringId, setPreferringId] = useState<number | null>(null)
   const [clearingPreferred, setClearingPreferred] = useState(false)
+  const [savingQuality, setSavingQuality] = useState(false)
+  const [qualityIntent, setQualityIntent] = useState<Movie['quality_intent']>('space_saver')
+  const [forceKeep, setForceKeep] = useState(false)
+  const [allowLarger, setAllowLarger] = useState(false)
+  const [qualityOverrides, setQualityOverrides] = useState('{\n  "preferred_sources": [],\n  "preferred_codec": "",\n  "resolution_floor": ""\n}')
+
+  const loadMovie = async () => {
+    try {
+      const m = await api.movie(movieId)
+      setMovie(m)
+      setQualityIntent(m.quality_intent || 'space_saver')
+      setForceKeep(Boolean(m.force_keep))
+      setAllowLarger(Boolean(m.allow_larger_replacements))
+      setQualityOverrides(
+        JSON.stringify(
+          m.quality_profile_overrides || { preferred_sources: [], preferred_codec: '', resolution_floor: '' },
+          null,
+          2,
+        ),
+      )
+    } catch {
+      // keep existing state and let page continue rendering
+    }
+  }
 
   useEffect(() => {
-    api.movie(movieId).then(setMovie).catch(() => {})
+    void loadMovie()
     api.searchResults(movieId).then(setResults).catch(() => {})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [movieId])
 
   const { toast } = useToast()
@@ -115,7 +140,7 @@ export default function MovieDetail() {
         await api.lockMovie(movieId)
         toast('Movie locked — Slimarr will skip it in future cycles', 'info')
       }
-      api.movie(movieId).then(setMovie)
+      void loadMovie()
     } catch {
       toast('Failed to update lock', 'error')
     } finally {
@@ -129,7 +154,7 @@ export default function MovieDetail() {
       await api.setPreferredRelease(movieId, resultId)
       toast('Preferred release saved - future cycles will prioritize it when available', 'success')
       await Promise.all([
-        api.movie(movieId).then(setMovie),
+        loadMovie(),
         api.searchResults(movieId).then(setResults),
       ])
     } catch {
@@ -144,11 +169,37 @@ export default function MovieDetail() {
     try {
       await api.clearPreferredRelease(movieId)
       toast('Preferred release cleared', 'success')
-      await api.movie(movieId).then(setMovie)
+      await loadMovie()
     } catch {
       toast('Failed to clear preferred release', 'error')
     } finally {
       setClearingPreferred(false)
+    }
+  }
+
+  const doSaveQualityIntent = async () => {
+    setSavingQuality(true)
+    try {
+      let parsedOverrides: Record<string, unknown> = {}
+      try {
+        parsedOverrides = qualityOverrides.trim() ? JSON.parse(qualityOverrides) : {}
+      } catch {
+        toast('Quality overrides JSON is invalid', 'error')
+        return
+      }
+
+      await api.updateMovieQualityIntent(movieId, {
+        quality_intent: qualityIntent ?? 'space_saver',
+        force_keep: forceKeep,
+        allow_larger_replacements: allowLarger,
+        quality_profile_overrides: parsedOverrides,
+      })
+      toast('Quality policy updated', 'success')
+      await loadMovie()
+    } catch {
+      toast('Failed to update quality policy', 'error')
+    } finally {
+      setSavingQuality(false)
     }
   }
 
@@ -192,6 +243,17 @@ export default function MovieDetail() {
               </p>
             )}
             <p>Status: <span className="capitalize text-white">{movie.status}</span></p>
+            <p>
+              Quality intent:{' '}
+              <span className="inline-block rounded bg-indigo-900/40 px-2 py-0.5 text-xs font-medium text-indigo-300">
+                {movie.quality_intent || 'space_saver'}
+              </span>
+            </p>
+            {movie.force_keep && (
+              <p className="text-xs text-yellow-200">
+                Force-keep enabled: automation will never replace this title.
+              </p>
+            )}
             {movie.preferred_release_title && (
               <p>
                 Preferred release: <span className="text-yellow-300">{movie.preferred_release_title}</span>
@@ -246,6 +308,79 @@ export default function MovieDetail() {
         </div>
       </div>
 
+
+          <div className="mt-4 rounded-xl border border-gray-800 bg-gray-900 p-4">
+            <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-200">
+              <SlidersHorizontal size={16} className="text-brand-green" />
+              Quality Intent
+            </div>
+            <div className="grid gap-3 md:grid-cols-2">
+              <label className="space-y-1 text-sm text-gray-300">
+                <span className="text-xs uppercase text-gray-500">Profile</span>
+                <select
+                  value={qualityIntent || 'space_saver'}
+                  onChange={(e) => setQualityIntent(e.target.value as Movie['quality_intent'])}
+                  className="w-full rounded-lg border border-gray-700 bg-gray-950 px-3 py-2 text-sm text-white"
+                >
+                  <option value="space_saver">Space Saver</option>
+                  <option value="balanced">Balanced</option>
+                  <option value="premium">Premium</option>
+                  <option value="reference">Reference</option>
+                  <option value="locked">Locked</option>
+                  <option value="pinned">Pinned</option>
+                </select>
+              </label>
+              <div className="grid gap-2 text-sm text-gray-300">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={forceKeep}
+                    onChange={(e) => setForceKeep(e.target.checked)}
+                  />
+                  Force keep this title
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={allowLarger}
+                    disabled={qualityIntent === 'space_saver' || qualityIntent === 'locked' || qualityIntent === 'pinned'}
+                    onChange={(e) => setAllowLarger(e.target.checked)}
+                  />
+                  Allow larger replacements when policy allows
+                </label>
+              </div>
+            </div>
+
+            {(qualityIntent === 'space_saver' || qualityIntent === 'locked' || qualityIntent === 'pinned') && (
+              <p className="mt-2 text-xs text-gray-500">
+                Larger replacement mode is disabled for this profile.
+              </p>
+            )}
+
+            <label className="mt-3 block space-y-1 text-sm text-gray-300">
+              <span className="text-xs uppercase text-gray-500">Advanced overrides JSON</span>
+              <textarea
+                value={qualityOverrides}
+                onChange={(e) => setQualityOverrides(e.target.value)}
+                rows={5}
+                className="w-full rounded-lg border border-gray-700 bg-gray-950 px-3 py-2 font-mono text-xs text-white"
+              />
+            </label>
+
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <button
+                onClick={doSaveQualityIntent}
+                disabled={savingQuality}
+                className="flex items-center gap-2 rounded-lg bg-brand-green px-3 py-2 text-sm text-white disabled:opacity-50"
+              >
+                <Save size={14} />
+                {savingQuality ? 'Saving...' : 'Save Quality Policy'}
+              </button>
+              <span className="text-xs text-gray-500">
+                Use this to intentionally keep remuxes, archive-quality releases, or title-specific overrides.
+              </span>
+            </div>
+          </div>
       {results.length > 0 && (
         <div className="bg-gray-900 rounded-xl overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-800 text-sm font-semibold">

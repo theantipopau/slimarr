@@ -5,9 +5,10 @@ import os
 import re
 import sqlite3
 from dataclasses import dataclass
-from typing import Optional
+from typing import Any, Optional
 
 from backend.config import get_config
+from backend.database import get_db_backend
 from backend.core.media_health import score_local_media_health, score_release_health
 from backend.core.parser import (
     get_codec_rank,
@@ -37,7 +38,10 @@ def _uploader_health_score(uploader: Optional[str]) -> float:
     if not uploader:
         return 0.5
 
-    db_path = os.environ.get("SLIMARR_DB", "data/slimarr.db")
+    if get_db_backend() != "sqlite":
+        return 0.5
+
+    db_path = os.environ.get("SLIMARR_DB") or "data/slimarr.db"
     if not os.path.exists(db_path):
         return 0.5
 
@@ -125,6 +129,10 @@ def compare_release(
     indexer_reliability: float | None = None,
     local_bitrate: int | None = None,
     local_source_type: str = "",
+    quality_intent: str = "space_saver",
+    force_keep: bool = False,
+    allow_larger_replacements: bool = False,
+    quality_profile_overrides: dict[str, Any] | None = None,
 ) -> ComparisonResult:
     config = get_config()
     parsed = parse_release_title(candidate_title)
@@ -158,6 +166,11 @@ def compare_release(
     if candidate_size <= 0:
         return _reject("Candidate has no size information")
 
+    intent = (quality_intent or "space_saver").strip().lower()
+    overrides = quality_profile_overrides or {}
+    if force_keep or intent in {"locked", "pinned"}:
+        return _reject("Movie is pinned/force-kept by operator policy")
+
     cand_res = parsed.resolution or "unknown"
     cand_res_rank = get_resolution_rank(cand_res)
     local_res_rank = get_resolution_rank(local_resolution)
@@ -175,7 +188,32 @@ def compare_release(
         and size_increase_pct <= config.comparison.max_size_increase_percent_for_quality_upgrade
     )
 
-    if candidate_size >= local_size and not quality_upgrade_allows_larger:
+    source_rank_local = get_source_rank(local_source_type or "")
+    source_rank_candidate = get_source_rank(parsed.source)
+
+    intent_allows_larger = False
+    if candidate_size >= local_size:
+        if intent == "balanced" and allow_larger_replacements:
+            intent_allows_larger = (
+                size_increase_pct <= float(overrides.get("max_size_increase_pct", 15.0))
+                and cand_res_rank >= local_res_rank
+                and source_rank_candidate >= source_rank_local
+            )
+        elif intent == "premium" and allow_larger_replacements:
+            intent_allows_larger = (
+                size_increase_pct <= float(overrides.get("max_size_increase_pct", 80.0))
+                and cand_res_rank >= local_res_rank
+                and source_rank_candidate >= source_rank_local
+                and candidate_health.score >= (local_health.score + 4.0)
+            )
+        elif intent == "reference" and allow_larger_replacements:
+            intent_allows_larger = (
+                size_increase_pct <= float(overrides.get("max_size_increase_pct", 300.0))
+                and cand_res_rank >= local_res_rank
+                and source_rank_candidate >= source_rank_local
+            )
+
+    if candidate_size >= local_size and not quality_upgrade_allows_larger and not intent_allows_larger:
         diff_mb = (candidate_size - local_size) / 1_048_576
         return _reject(f"Candidate is not smaller (+{diff_mb:.0f} MB vs local)")
 
@@ -214,6 +252,10 @@ def compare_release(
     if parsed.is_low_quality_source:
         return _reject("candidate_is_low_quality")
 
+    reject_groups = [str(v).lower() for v in (overrides.get("reject_release_groups") or [])]
+    if reject_groups and (parsed.uploader or "").lower() in reject_groups:
+        return _reject("Release group blocked by movie quality policy")
+
     savings_bytes = local_size - candidate_size
     savings_pct = (savings_bytes / max(local_size, 1)) * 100
 
@@ -229,8 +271,14 @@ def compare_release(
     if movie_title and match_score < 70.0:
         return _reject(f"Title match confidence too low ({match_score:.0f}%)")
 
-    if savings_pct < config.comparison.min_savings_percent and not quality_upgrade_allows_larger:
-        return _reject(f"Savings {savings_pct:.1f}% < minimum {config.comparison.min_savings_percent}%")
+    min_savings_required = float(config.comparison.min_savings_percent)
+    if intent == "balanced":
+        min_savings_required = min(min_savings_required, 5.0)
+    elif intent in {"premium", "reference"}:
+        min_savings_required = 0.0
+
+    if savings_pct < min_savings_required and not quality_upgrade_allows_larger and not intent_allows_larger:
+        return _reject(f"Savings {savings_pct:.1f}% < minimum {min_savings_required:.1f}%")
 
     if cand_res_rank < local_res_rank:
         if not config.comparison.allow_resolution_downgrade:
@@ -248,6 +296,8 @@ def compare_release(
     score = savings_pct
     if quality_upgrade_allows_larger:
         score = 12.0 + min(35.0, (candidate_health.score - local_health.score) * 0.8)
+    elif intent_allows_larger:
+        score = 18.0 + min(40.0, (candidate_health.score - local_health.score) * 1.0)
 
     if cand_res_rank >= 4 and cand_res_rank > local_res_rank:
         score += 50.0
@@ -279,6 +329,34 @@ def compare_release(
         score += 20.0
     if cand_codec in [c.lower() for c in config.comparison.preferred_codecs]:
         score += 10.0
+
+    preferred_codec = str(overrides.get("preferred_codec") or "").lower().strip()
+    if preferred_codec and cand_codec == preferred_codec:
+        score += 12.0
+
+    preferred_sources = [str(v).lower() for v in (overrides.get("preferred_sources") or [])]
+    if preferred_sources and (parsed.source or "").lower() in preferred_sources:
+        score += 14.0
+
+    resolution_floor = str(overrides.get("resolution_floor") or "").strip().lower()
+    if resolution_floor and get_resolution_rank(cand_res) < get_resolution_rank(resolution_floor):
+        return _reject(f"Candidate below required resolution floor ({resolution_floor})")
+
+    if intent == "balanced":
+        score += (source_rank_candidate - source_rank_local) * 0.10
+        score += max(0.0, candidate_health.score - 60.0) * 0.05
+    elif intent == "premium":
+        score += (source_rank_candidate - source_rank_local) * 0.25
+        score += max(0.0, candidate_health.score - local_health.score) * 0.22
+        if parsed.hdr:
+            score += 6.0
+    elif intent == "reference":
+        score += (source_rank_candidate - source_rank_local) * 0.40
+        score += max(0.0, candidate_health.score - local_health.score) * 0.30
+        if parsed.source == "remux":
+            score += 12.0
+        if parsed.hdr:
+            score += 8.0
 
     age_days = candidate_age_days if candidate_age_days is not None else parsed.release_age_days
     stale_days = int(getattr(config.quality, "stale_release_days", 30) or 30)
@@ -347,6 +425,7 @@ def compare_release(
     notes = list(candidate_health.reasons)
     if local_health.rating in {"Risky", "Reject"}:
         notes.append("existing_copy_is_low_quality")
+    notes.append(f"quality_intent={intent}")
     if cand_res_rank > local_res_rank:
         notes.append("candidate_improves_resolution")
     if codec_delta > 0:

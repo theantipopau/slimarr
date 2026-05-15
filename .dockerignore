@@ -1,0 +1,59 @@
+# ── Python artefacts ──────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+ENV/
+env/
+
+# ── Node / Frontend build ─────────────────────────────────────────────────────
+frontend/node_modules/
+# Include the built dist so the image bundles the frontend
+# frontend/dist/   ← intentionally NOT ignored
+
+# ── Dev / test artefacts ──────────────────────────────────────────────────────
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+*.log
+
+# ── Runtime data (must come from volumes, not the image) ─────────────────────
+data/
+config.yaml         # Real config with secrets — use .env or bind-mount instead
+
+# ── IDE / OS noise ────────────────────────────────────────────────────────────
+.git/
+.github/
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# ── Docs (not needed in the image) ───────────────────────────────────────────
+docs/
+images/
+installer/
+scripts/
+
+# ── Windows packaging ────────────────────────────────────────────────────────
+*.spec
+*.iss
+build-installer.ps1
+package.ps1
+start.bat
+update.bat
+tray.py
+
+# ── Tests (not needed at runtime) ────────────────────────────────────────────
+tests/

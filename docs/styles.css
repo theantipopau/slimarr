@@ -6,7 +6,7 @@
   --accent: #36d79d;
   --accent-2: #6fb8ff;
   --warm: #ffd08a;
-  --panel: rgba(11, 33, 49, 0.72);
+  --panel: rgba(11, 33, 49, 0.78);
   --panel-strong: rgba(9, 29, 42, 0.92);
   --border: rgba(153, 200, 226, 0.22);
   --shadow: 0 20px 52px rgba(4, 11, 18, 0.55);
@@ -26,53 +26,9 @@ body {
 body {
   font-family: "Manrope", sans-serif;
   color: var(--text);
-  background: radial-gradient(circle at 10% 12%, #1a3f56 0%, transparent 35%),
-    radial-gradient(circle at 87% 12%, #214f68 0%, transparent 30%),
-    radial-gradient(circle at 35% 95%, #11374c 0%, transparent 40%),
-    linear-gradient(135deg, #07111a 0%, #0a1824 45%, #081521 100%);
+  background: linear-gradient(135deg, #07111a 0%, #0b1d2a 46%, #092013 100%);
   position: relative;
   overflow-x: hidden;
-}
-
-.bg-shapes {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.shape {
-  position: absolute;
-  border-radius: 999px;
-  opacity: 0.26;
-  filter: blur(8px);
-}
-
-.shape-a {
-  width: 420px;
-  height: 420px;
-  background: #2ad39a;
-  top: -130px;
-  left: -130px;
-  animation: drift 13s ease-in-out infinite;
-}
-
-.shape-b {
-  width: 460px;
-  height: 460px;
-  background: #4cb8ff;
-  right: -170px;
-  top: 160px;
-  animation: drift 16s ease-in-out infinite reverse;
-}
-
-.shape-c {
-  width: 300px;
-  height: 300px;
-  background: #46f0c5;
-  left: 35%;
-  bottom: -120px;
-  animation: drift 18s ease-in-out infinite;
 }
 
 .site-header,
@@ -192,6 +148,11 @@ main {
   border-color: rgba(177, 221, 240, 0.3);
 }
 
+.install-panel {
+  background: linear-gradient(140deg, rgba(11, 33, 49, 0.9), rgba(12, 42, 33, 0.86));
+  border-color: rgba(144, 230, 194, 0.26);
+}
+
 .release-grid {
   margin-top: 1rem;
   display: grid;
@@ -204,6 +165,48 @@ main {
   border: 1px solid rgba(191, 225, 242, 0.16);
   border-radius: 14px;
   padding: 0.95rem;
+}
+
+.install-grid {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.install-grid article {
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
+  border: 1px solid rgba(191, 225, 242, 0.16);
+  border-radius: 14px;
+  padding: 0.95rem;
+}
+
+.install-grid h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.install-grid p {
+  margin: 0.55rem 0 0;
+  color: var(--muted);
+  line-height: 1.48;
+  font-size: 0.92rem;
+}
+
+.install-grid pre {
+  overflow-x: auto;
+  margin: 0.65rem 0 0;
+  padding: 0.8rem;
+  border-radius: 8px;
+  background: rgba(2, 10, 17, 0.56);
+  border: 1px solid rgba(191, 225, 242, 0.12);
+}
+
+.install-grid code {
+  color: #d9fff0;
+  font-family: "Cascadia Code", "Consolas", monospace;
+  font-size: 0.78rem;
+  line-height: 1.45;
 }
 
 .release-grid h3 {
@@ -385,16 +388,6 @@ main {
   }
 }
 
-@keyframes drift {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(20px, -18px);
-  }
-}
-
 @media (max-width: 860px) {
   .site-header {
     flex-direction: column;
@@ -404,6 +397,7 @@ main {
 
   .feature-grid,
   .release-grid,
+  .install-grid,
   .shot-grid,
   .integration-grid {
     grid-template-columns: 1fr;

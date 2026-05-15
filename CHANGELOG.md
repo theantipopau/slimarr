@@ -4,6 +4,156 @@ All notable changes to Slimarr are documented here.
 
 ---
 
+## [1.5.0.0-draft] - 2026-05-15
+
+### v1.5 foundation (architecture and quality-intent groundwork)
+
+#### Database evolution groundwork
+
+- Added optional PostgreSQL backend support through `SLIMARR_DB_URL` while keeping
+  SQLite as the default backend.
+- Added startup database connection retry/backoff to better tolerate transient
+  startup races in containerized deployments.
+- Added pool configuration support for PostgreSQL (`SLIMARR_DB_POOL_SIZE`,
+  `SLIMARR_DB_MAX_OVERFLOW`, `SLIMARR_DB_POOL_TIMEOUT`, `SLIMARR_DB_POOL_RECYCLE`).
+- Added slow-query timing instrumentation with warning logs for expensive queries.
+- Added runtime database diagnostics exposure (`db_backend`, pool checked-out count)
+  in system info.
+
+#### Preferred Quality / Force-Keep foundation
+
+- Added per-movie quality policy fields:
+  `quality_intent`, `force_keep`, `allow_larger_replacements`, and
+  `quality_profile_overrides`.
+- Added new quality-intent API endpoint:
+  `POST /api/v1/library/movies/{movie_id}/quality-intent`.
+- Added compare-engine profile-aware decision logic for intents:
+  `space_saver`, `balanced`, `premium`, `reference`, `locked`, and `pinned`.
+- Added policy-level safeguards to block automated replacements for locked/pinned
+  or force-kept movies.
+- Added support for initial per-movie override hooks in compare decisions:
+  preferred codec, preferred sources, resolution floor, release-group rejects,
+  and max size increase policy.
+- Added automation-cycle safeguards to skip force-kept titles entirely.
+
+#### Documentation and roadmap
+
+- Added `docs/V1_5_FOUNDATION_ROADMAP.md` containing:
+  implementation plan, refactor roadmap, risk assessment, observability plan,
+  worker architecture proposal, ffprobe roadmap, security recommendations,
+  technical debt audit, performance analysis, migration guidance, and phased
+  priorities for v1.5+.
+- Added `docker-compose.postgres.yml` as an optional write-heavy deployment
+  template.
+- Expanded `docs/DOCKER.md` with PostgreSQL backend guidance.
+
+#### Tests
+
+- Added new regression tests for quality-intent compare behavior in
+  `tests/backend/test_quality_intent.py`.
+
+## [1.4.0.0] - 2026-05-15
+
+### Slimarr v1.4 — "Containerised"
+
+This release focuses on Linux-native operation, official Docker deployment, and
+production-grade observability. Windows installs continue to work unchanged.
+
+#### Full Linux & Docker Support
+
+- Added official multi-stage `Dockerfile` targeting `linux/amd64` and `linux/arm64`.
+- Added `docker-compose.yml` for basic self-hosted deployments and
+  `docker-compose.traefik.yml` for Traefik reverse proxy setups.
+- Added `.dockerignore` for lean images (no test artefacts, no secrets, no Windows
+  packaging files).
+- Added `.env.example` with a full reference of all supported environment variables.
+- Container runs as a non-root user (`UID/GID 1000`) by default; `PUID`/`PGID`
+  build args allow customisation.
+- Built-in `HEALTHCHECK` hits the `/api/v1/system/health` endpoint every 30 s.
+- Graceful shutdown is handled natively by uvicorn's SIGTERM/SIGINT handling.
+
+#### Environment Variable Configuration
+
+- Added `SLIMARR_*` environment variable override layer so the container can be
+  configured entirely without a `config.yaml`.
+- Supported variables cover all service connections: Plex, SABnzbd, NZBGet,
+  Prowlarr, Radarr, Sonarr, TMDB, server port, log level/format, and timezone.
+- Config precedence: `SLIMARR_*` env vars → `config.yaml` → built-in defaults.
+- `TZ` and `SLIMARR_TZ` both map to `schedule.timezone`.
+- Type coercion handles booleans, integers, and floats from string env values.
+
+#### Cross-Platform Filesystem Utilities
+
+- Added `backend/utils/platform.py` with:
+  - OS and Docker container detection (`is_docker()`, `container_id()`, `os_info()`).
+  - Cross-platform disk space helpers (`disk_free_bytes()`, `disk_total_bytes()`)
+    using `statvfs` on Linux/macOS and `GetDiskFreeSpaceExW` on Windows.
+  - `normalize_path()` for portable path expansion.
+  - `is_writable()` permission check.
+  - `safe_makedirs()` respecting container umask.
+- System info endpoint now returns `arch`, `in_docker`, and `container_id`.
+
+#### Startup Validation
+
+- Added `backend/core/startup.py` that runs once at application startup:
+  - Detects OS, architecture, Python version, Docker status.
+  - Creates and validates all required data directories.
+  - Checks disk space; emits `warn` (< 5 GB) or `critical` (< 1 GB) alerts.
+  - Logs a structured startup banner with provider summary and active env overrides.
+  - Exposes warnings via `GET /api/v1/system/startup` (authenticated) and reflects
+    them in the `/health` response.
+- Startup validation results are included in the diagnostics bundle.
+
+#### Observability & Logging
+
+- Logger now auto-detects runtime environment:
+  - Docker / no-TTY → plain structured text (no ANSI codes), Docker-friendly.
+  - `SLIMARR_LOG_FORMAT=json` → newline-delimited JSON to stderr (Loki, ELK, Splunk).
+  - Interactive terminal → existing colourised output unchanged.
+- Added `SLIMARR_LOG_LEVEL` and `SLIMARR_LOG_FILE` environment variable overrides.
+- Added `GET /api/v1/system/metrics` (unauthenticated) Prometheus-compatible
+  plain-text endpoint exposing:
+  `slimarr_uptime_seconds`, `slimarr_movies_total`, `slimarr_downloads_active`,
+  `slimarr_db_size_bytes`, `slimarr_disk_free_bytes`, `slimarr_cycle_running`,
+  `slimarr_search_degraded`, `slimarr_info`.
+- `/api/v1/system/health` now returns `{"status":"degraded","warnings":[…]}` when
+  startup checks found actionable issues, instead of always returning `ok`.
+
+#### Container Diagnostics UI
+
+- Added **System → Container** page (`/system/container`) showing:
+  - Runtime info: OS, architecture, Python version, Docker status, container ID.
+  - Data directory validation with per-path write-permission indicators.
+  - Disk space status with colour-coded warn/critical badges.
+  - Active config summary: providers, env overrides, download client, schedule mode.
+  - Copyable `docker-compose.yml` quick-start example.
+  - Linux volume and permissions troubleshooting guidance.
+- Added **Container** entry to the sidebar navigation.
+
+#### GitHub Actions CI/CD
+
+- Added `.github/workflows/ci.yml` — runs pytest and ruff lint on Ubuntu and
+  Windows for Python 3.11 and 3.12 on every push and PR.
+- Added `.github/workflows/docker.yml` — builds and publishes multi-arch Docker
+  images (`linux/amd64`, `linux/arm64`) to GHCR on push to `main` and version tags,
+  with layer caching, Docker metadata tagging, and Trivy vulnerability scanning.
+
+#### Documentation
+
+- Added `docs/DOCKER.md` — comprehensive Docker deployment guide covering:
+  quick start, environment variable reference, volume mapping, media path setup,
+  Traefik and nginx reverse proxy, Unraid, Synology, permissions, Prometheus metrics,
+  upgrading, troubleshooting, and migration from v1.3.
+
+#### Compatibility
+
+- All existing Windows installs, `config.yaml` files, and v1.3 databases are fully
+  compatible with v1.4. No manual migration steps required.
+- `run.py` already detected non-Windows platforms for headless mode; Docker uses
+  this path directly.
+
+---
+
 ## [1.3.0.0] - 2026-05-13
 
 ### Search diagnostics and degraded-pipeline safety

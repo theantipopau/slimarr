@@ -48,10 +48,16 @@ async def process_single_movie(movie_id: int) -> dict:
 
     config = get_config()
     preferred_release_title: str | None = None
+    force_keep = False
     async with async_session() as db:
         movie = await db.get(Movie, movie_id)
         if movie:
             preferred_release_title = movie.preferred_release_title
+            force_keep = bool(movie.force_keep)
+
+    if force_keep:
+        logger.info("Skipping movie {}: force-keep policy enabled", movie_id)
+        return {"movie_id": movie_id, "status": "force_kept"}
 
     results = await search_for_movie(movie_id)
     accepted = [r for r in results if r["decision"] == "accept"]
@@ -152,6 +158,7 @@ async def run_full_cycle() -> dict:
                 select(Movie).where(
                     Movie.status.in_(["pending", "failed"]),
                     Movie.slimarr_locked == False,  # noqa: E712
+                    Movie.force_keep == False,  # noqa: E712
                 )
             )
             movies = result.scalars().all()

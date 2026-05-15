@@ -229,22 +229,114 @@ def _disk_preflight_check(name: str, path: str, warn_below_gb: float = 10.0, blo
 
 @router.get("/health", response_model=SystemHealthResponse)
 async def health():
-    return {"status": "ok"}
+    """Lightweight health probe for Docker/k8s readiness checks.
+
+    Returns HTTP 200 if the API is accepting traffic.
+    Does NOT check external services — use /health/matrix for that.
+    """
+    from backend.core.startup import get_startup_warnings
+    warnings = get_startup_warnings()
+    return {
+        "status": "ok" if not warnings else "degraded",
+        **({"warnings": warnings} if warnings else {}),
+    }
+
+
+@router.get("/metrics")
+async def metrics():
+    """Prometheus-compatible plain-text metrics endpoint.
+
+    No authentication required so Prometheus can scrape without credentials.
+    Exposes basic counters/gauges for operational observability.
+    """
+    from backend.config import get_config
+    from backend.utils.platform import disk_free_bytes, is_docker
+
+    lines: list[str] = []
+
+    def _gauge(name: str, value: float | int, labels: dict[str, str] | None = None, help_text: str = "") -> None:
+        if help_text:
+            lines.append(f"# HELP {name} {help_text}")
+        lines.append(f"# TYPE {name} gauge")
+        label_str = ""
+        if labels:
+            label_str = "{" + ",".join(f'{k}="{v}"' for k, v in labels.items()) + "}"
+        lines.append(f"{name}{label_str} {value}")
+
+    uptime_seconds = int((datetime.now(timezone.utc) - _start_time).total_seconds())
+    _gauge("slimarr_uptime_seconds", uptime_seconds, help_text="Seconds since process start")
+
+    cfg = get_config()
+    _gauge("slimarr_info", 1, labels={"version": CURRENT_VERSION, "in_docker": str(is_docker()).lower()}, help_text="Slimarr build info")
+
+    try:
+        async with async_session() as db:
+            movies_total = (await db.execute(select(func.count()).select_from(Movie))).scalar_one()
+            active_downloads = (
+                await db.execute(
+                    select(func.count()).select_from(Download).where(
+                        Download.status.in_(["queued", "downloading", "processing"])
+                    )
+                )
+            ).scalar_one()
+        _gauge("slimarr_movies_total", int(movies_total), help_text="Total movies in the library")
+        _gauge("slimarr_downloads_active", int(active_downloads), help_text="Active downloads in queue")
+    except Exception:
+        pass
+
+    db_path = os.environ.get("SLIMARR_DB") or "data/slimarr.db"
+    if os.path.exists(db_path):
+        _gauge("slimarr_db_size_bytes", os.path.getsize(db_path), help_text="SQLite database file size in bytes")
+
+    free = disk_free_bytes("data")
+    if free is not None:
+        _gauge("slimarr_disk_free_bytes", free, help_text="Free bytes on the data partition")
+
+    cycle = get_status()
+    _gauge("slimarr_cycle_running", 1 if cycle.get("running") else 0, help_text="1 if an automation cycle is running")
+
+    from backend.core.search_diagnostics import degradation_status
+    degraded = degradation_status()
+    _gauge("slimarr_search_degraded", 1 if degraded.get("degraded") else 0, help_text="1 if search pipeline is degraded")
+
+    from fastapi.responses import PlainTextResponse
+    return PlainTextResponse("\n".join(lines) + "\n", media_type="text/plain; version=0.0.4")
+
+
+@router.get("/startup")
+async def startup_context(user=Depends(get_current_user)):
+    """Return the startup validation context (directories, disk, runtime, config summary)."""
+    from backend.core.startup import get_startup_context, get_startup_warnings
+    return {
+        "context": get_startup_context(),
+        "warnings": get_startup_warnings(),
+    }
 
 
 @router.get("/info", response_model=SystemInfoResponse)
 async def get_system_info(user=Depends(get_current_user)):
     """Return version, uptime, DB size, and platform info."""
     from backend.config import get_config
+    from backend.utils.platform import is_docker, container_id
+    from backend.database import database_runtime_info
     cfg = get_config()
-    db_path = "data/slimarr.db"
+    db_path = os.environ.get("SLIMARR_DB") or "data/slimarr.db"
     db_size = os.path.getsize(db_path) if os.path.exists(db_path) else 0
     uptime_seconds = int((datetime.now(timezone.utc) - _start_time).total_seconds())
+    db_runtime = database_runtime_info()
+    pool = db_runtime.get("pool") if isinstance(db_runtime, dict) else {}
+    if not isinstance(pool, dict):
+        pool = {}
 
     return {
         "version": CURRENT_VERSION,
         "python": sys.version.split()[0],
         "platform": platform.system(),
+        "arch": platform.machine(),
+        "db_backend": db_runtime.get("backend") if isinstance(db_runtime, dict) else None,
+        "db_pool_checked_out": pool.get("checked_out"),
+        "in_docker": is_docker(),
+        "container_id": container_id() or "",
         "uptime_seconds": uptime_seconds,
         "db_size_bytes": db_size,
         "port": cfg.server.port,

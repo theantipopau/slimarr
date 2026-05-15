@@ -6,7 +6,13 @@ import json
 from fastapi import APIRouter, BackgroundTasks, Depends
 from sqlalchemy import or_, select
 
-from backend.api.models import ActionStatusResponse, MovieListResponse, MovieOut, SearchResultOut
+from backend.api.models import (
+    ActionStatusResponse,
+    MovieListResponse,
+    MovieOut,
+    MovieQualityIntentUpdateRequest,
+    SearchResultOut,
+)
 from backend.auth.dependencies import get_current_user
 from backend.database import Movie, SearchResult, async_session
 from backend.utils.responses import not_found, get_correlation_id
@@ -204,6 +210,36 @@ async def unlock_movie(movie_id: int, user=Depends(get_current_user)):
     return {"status": "unlocked", "movie_id": movie_id}
 
 
+@router.post("/movies/{movie_id}/quality-intent", response_model=ActionStatusResponse)
+async def update_movie_quality_intent(
+    movie_id: int,
+    payload: MovieQualityIntentUpdateRequest,
+    user=Depends(get_current_user),
+):
+    """Update per-movie quality intent and force-keep overrides.
+
+    These settings directly influence compare-engine decisions for this movie.
+    """
+    async with async_session() as db:
+        result = await db.execute(select(Movie).where(Movie.id == movie_id))
+        movie = result.scalar_one_or_none()
+        if not movie:
+            raise not_found("Movie", correlation_id=get_correlation_id())
+
+        movie.quality_intent = payload.quality_intent
+        movie.force_keep = bool(payload.force_keep)
+        movie.allow_larger_replacements = bool(payload.allow_larger_replacements)
+        movie.quality_profile_overrides = json.dumps(payload.quality_profile_overrides or {})
+
+        # locked/pinned intent implies lock semantics for automation safety
+        if payload.quality_intent in {"locked", "pinned"}:
+            movie.slimarr_locked = True
+
+        await db.commit()
+
+    return {"status": "quality_intent_updated", "movie_id": movie_id}
+
+
 async def _run_search(movie_id: int) -> None:
     from backend.core.searcher import search_for_movie
     try:
@@ -223,6 +259,13 @@ async def _run_process(movie_id: int) -> None:
 
 
 def _movie_dict(m: Movie) -> dict:
+    try:
+        overrides = json.loads(m.quality_profile_overrides or "{}")
+        if not isinstance(overrides, dict):
+            overrides = {}
+    except Exception:
+        overrides = {}
+
     return {
         "id": m.id,
         "title": m.title,
@@ -240,6 +283,10 @@ def _movie_dict(m: Movie) -> dict:
         "status": m.status,
         "slimarr_locked": bool(m.slimarr_locked),
         "preferred_release_title": m.preferred_release_title,
+        "quality_intent": (m.quality_intent or "space_saver"),
+        "force_keep": bool(m.force_keep),
+        "allow_larger_replacements": bool(m.allow_larger_replacements),
+        "quality_profile_overrides": overrides,
         "last_scanned": m.last_scanned.isoformat() if m.last_scanned else None,
         "last_searched": m.last_searched.isoformat() if m.last_searched else None,
     }

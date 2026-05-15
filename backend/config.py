@@ -1,6 +1,6 @@
 """
 Configuration loader.
-Priority: config.yaml > defaults
+Priority: SLIMARR_* environment variables > config.yaml > defaults
 """
 from __future__ import annotations
 import os
@@ -172,7 +172,7 @@ class SlimarrConfig(BaseModel):
 
 
 # Module-level config path — can be overridden before first get_config() call
-_CONFIG_PATH = "config.yaml"
+_CONFIG_PATH = os.environ.get("SLIMARR_CONFIG", "config.yaml")
 _config: Optional[SlimarrConfig] = None
 
 
@@ -199,13 +199,115 @@ def load_config(path: str = "config.yaml") -> SlimarrConfig:
     if os.path.exists(path):
         with open(path, "r", encoding="utf-8") as f:
             raw = yaml.safe_load(f) or {}
-        return SlimarrConfig(**raw)
-    return SlimarrConfig()
+        config = SlimarrConfig(**raw)
+    else:
+        config = SlimarrConfig()
+    _apply_env_overrides(config)
+    return config
+
+
+# ── Environment variable overrides ───────────────────────────────────────────
+# Env vars take precedence over the YAML file.
+# This enables Docker-first deployments where secrets are injected via env.
+#
+# Supported variables (all prefixed SLIMARR_):
+#
+#   SLIMARR_HOST              server.host
+#   SLIMARR_PORT              server.port
+#   SLIMARR_LOG_LEVEL         server.log_level
+#   SLIMARR_SECRET_KEY        auth.secret_key
+#   SLIMARR_API_KEY           auth.api_key
+#   SLIMARR_PLEX_URL          plex.url
+#   SLIMARR_PLEX_TOKEN        plex.token
+#   SLIMARR_SABNZBD_URL       sabnzbd.url
+#   SLIMARR_SABNZBD_API_KEY   sabnzbd.api_key
+#   SLIMARR_NZBGET_URL        nzbget.url
+#   SLIMARR_NZBGET_USERNAME   nzbget.username
+#   SLIMARR_NZBGET_PASSWORD   nzbget.password
+#   SLIMARR_PROWLARR_URL      prowlarr.url
+#   SLIMARR_PROWLARR_API_KEY  prowlarr.api_key
+#   SLIMARR_RADARR_URL        radarr.url
+#   SLIMARR_RADARR_API_KEY    radarr.api_key
+#   SLIMARR_SONARR_URL        sonarr.url
+#   SLIMARR_SONARR_API_KEY    sonarr.api_key
+#   SLIMARR_TMDB_API_KEY      tmdb.api_key
+#   SLIMARR_RECYCLING_BIN     files.recycling_bin
+#   SLIMARR_DOWNLOAD_CLIENT   download_client
+#   SLIMARR_TZ                schedule.timezone  (alias)
+#   TZ                        schedule.timezone  (standard Docker TZ)
+
+_ENV_MAP: list[tuple[str, list[str]]] = [
+    ("SLIMARR_HOST",             ["server", "host"]),
+    ("SLIMARR_PORT",             ["server", "port"]),
+    ("SLIMARR_LOG_LEVEL",        ["server", "log_level"]),
+    ("SLIMARR_SECRET_KEY",       ["auth", "secret_key"]),
+    ("SLIMARR_API_KEY",          ["auth", "api_key"]),
+    ("SLIMARR_PLEX_URL",         ["plex", "url"]),
+    ("SLIMARR_PLEX_TOKEN",       ["plex", "token"]),
+    ("SLIMARR_SABNZBD_URL",      ["sabnzbd", "url"]),
+    ("SLIMARR_SABNZBD_API_KEY",  ["sabnzbd", "api_key"]),
+    ("SLIMARR_NZBGET_URL",       ["nzbget", "url"]),
+    ("SLIMARR_NZBGET_USERNAME",  ["nzbget", "username"]),
+    ("SLIMARR_NZBGET_PASSWORD",  ["nzbget", "password"]),
+    ("SLIMARR_PROWLARR_URL",     ["prowlarr", "url"]),
+    ("SLIMARR_PROWLARR_API_KEY", ["prowlarr", "api_key"]),
+    ("SLIMARR_RADARR_URL",       ["radarr", "url"]),
+    ("SLIMARR_RADARR_API_KEY",   ["radarr", "api_key"]),
+    ("SLIMARR_SONARR_URL",       ["sonarr", "url"]),
+    ("SLIMARR_SONARR_API_KEY",   ["sonarr", "api_key"]),
+    ("SLIMARR_TMDB_API_KEY",     ["tmdb", "api_key"]),
+    ("SLIMARR_RECYCLING_BIN",    ["files", "recycling_bin"]),
+    ("SLIMARR_DOWNLOAD_CLIENT",  ["download_client"]),
+]
+
+
+def _apply_env_overrides(config: SlimarrConfig) -> None:
+    """Overlay SLIMARR_* environment variables onto a loaded config object."""
+    for env_key, path in _ENV_MAP:
+        raw = os.environ.get(env_key)
+        if raw is None or raw == "":
+            continue
+        _set_nested(config, path, raw)
+
+    # TZ / SLIMARR_TZ → schedule.timezone
+    tz = os.environ.get("SLIMARR_TZ") or os.environ.get("TZ")
+    if tz:
+        config.schedule.timezone = tz
+
+
+def _set_nested(obj: object, path: list[str], value: str) -> None:
+    """Set a (possibly nested) attribute on a pydantic model using a dotted path.
+
+    Performs basic type coercion so string env values land as the correct type.
+    """
+    if len(path) == 1:
+        field = path[0]
+        # Coerce to the field's annotated type
+        try:
+            current = getattr(obj, field, None)
+            if isinstance(current, bool):
+                coerced = value.lower() in ("1", "true", "yes")
+            elif isinstance(current, int):
+                coerced: object = int(value)
+            elif isinstance(current, float):
+                coerced = float(value)
+            else:
+                coerced = value
+            setattr(obj, field, coerced)
+        except (ValueError, TypeError):
+            pass  # Leave existing value intact on coercion failure
+        return
+    child = getattr(obj, path[0], None)
+    if child is not None:
+        _set_nested(child, path[1:], value)
 
 
 def save_config(config: SlimarrConfig, path: str | None = None) -> None:
     target = path or _CONFIG_PATH
     data = config.model_dump()
+    parent = os.path.dirname(os.path.abspath(target))
+    if parent:
+        os.makedirs(parent, exist_ok=True)
     with open(target, "w", encoding="utf-8") as f:
         yaml.dump(data, f, default_flow_style=False, sort_keys=False, allow_unicode=True)
 

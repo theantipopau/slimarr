@@ -53,6 +53,15 @@ export const api = {
     client.post(`/library/movies/${movieId}/search-results/${resultId}/prefer`).then((r) => r.data),
   clearPreferredRelease: (movieId: number) =>
     client.post(`/library/movies/${movieId}/preferred-release/clear`).then((r) => r.data),
+  updateMovieQualityIntent: (
+    movieId: number,
+    body: {
+      quality_intent: 'space_saver' | 'balanced' | 'premium' | 'reference' | 'locked' | 'pinned'
+      force_keep?: boolean
+      allow_larger_replacements?: boolean
+      quality_profile_overrides?: Record<string, unknown>
+    },
+  ) => client.post(`/library/movies/${movieId}/quality-intent`, body).then((r) => r.data),
   lockMovie: (id: number) =>
     client.post(`/library/movies/${id}/lock`).then((r) => r.data),
   unlockMovie: (id: number) =>
@@ -103,6 +112,7 @@ export const api = {
   integrationMatrix: () => client.get('/system/integrations/matrix').then((r) => r.data),
   healthMatrix: () => client.get('/system/health/matrix').then((r) => r.data),
   preflight: () => client.get('/system/preflight').then((r) => r.data),
+  startupContext: () => client.get('/system/startup').then((r) => r.data),
   decisionAudit: (params?: { limit?: number; decision?: 'accept' | 'reject' }) =>
     client.get('/system/decision-audit', { params }).then((r) => r.data),
   searchDiagnostics: () => client.get('/system/search-diagnostics').then((r) => r.data),

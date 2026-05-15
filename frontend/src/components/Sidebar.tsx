@@ -11,6 +11,7 @@ import {
   ShieldBan,
   Settings,
   Server,
+  Container,
   LogOut,
   Coffee,
 } from 'lucide-react'
@@ -26,6 +27,7 @@ const links = [
   { to: '/queue/failed', icon: AlertCircle, label: 'Failed Downloads' },
   { to: '/queue/orphaned', icon: AlertCircle, label: 'Orphaned Downloads' },
   { to: '/system/search-diagnostics', icon: Radar, label: 'Search Diagnostics' },
+  { to: '/system/container', icon: Container, label: 'Container' },
   { to: '/settings/blacklist', icon: ShieldBan, label: 'Blacklist' },
   { to: '/settings', icon: Settings, label: 'Settings' },
   { to: '/system', icon: Server, label: 'System' },

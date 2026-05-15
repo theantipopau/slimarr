@@ -72,8 +72,21 @@ class MovieOut(BaseModel):
     status: str
     slimarr_locked: bool
     preferred_release_title: str | None = None
+    quality_intent: str = "space_saver"
+    force_keep: bool = False
+    allow_larger_replacements: bool = False
+    quality_profile_overrides: dict[str, Any] = Field(default_factory=dict)
     last_scanned: str | None = None
     last_searched: str | None = None
+
+
+class MovieQualityIntentUpdateRequest(BaseModel):
+    quality_intent: str = Field(
+        pattern="^(space_saver|balanced|premium|reference|locked|pinned)$"
+    )
+    force_keep: bool = False
+    allow_larger_replacements: bool = False
+    quality_profile_overrides: dict[str, Any] = Field(default_factory=dict)
 
 
 class SearchResultOut(BaseModel):
@@ -238,6 +251,11 @@ class SystemInfoResponse(BaseModel):
     version: str
     python: str
     platform: str
+    arch: str | None = None
+    db_backend: str | None = None
+    db_pool_checked_out: int | None = None
+    in_docker: bool | None = None
+    container_id: str | None = None
     uptime_seconds: int
     db_size_bytes: int
     port: int

@@ -1,0 +1,66 @@
+# Slimarr + PostgreSQL example (optional backend for write-heavy deployments)
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: slimarr-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: slimarr
+      POSTGRES_USER: slimarr
+      POSTGRES_PASSWORD: change_me
+    volumes:
+      - slimarr_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U slimarr -d slimarr"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  slimarr:
+    image: ghcr.io/theantipopau/slimarr:latest
+    container_name: slimarr
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "9494:9494"
+    environment:
+      # PostgreSQL backend
+      SLIMARR_DB_URL: postgresql+asyncpg://slimarr:change_me@postgres:5432/slimarr
+
+      # Optional pool tuning
+      SLIMARR_DB_POOL_SIZE: "10"
+      SLIMARR_DB_MAX_OVERFLOW: "20"
+      SLIMARR_DB_POOL_TIMEOUT: "30"
+
+      # Core integrations
+      SLIMARR_PLEX_URL: "${SLIMARR_PLEX_URL:-}"
+      SLIMARR_PLEX_TOKEN: "${SLIMARR_PLEX_TOKEN:-}"
+      SLIMARR_DOWNLOAD_CLIENT: "${SLIMARR_DOWNLOAD_CLIENT:-sabnzbd}"
+      SLIMARR_SABNZBD_URL: "${SLIMARR_SABNZBD_URL:-}"
+      SLIMARR_SABNZBD_API_KEY: "${SLIMARR_SABNZBD_API_KEY:-}"
+      SLIMARR_NZBGET_URL: "${SLIMARR_NZBGET_URL:-}"
+      SLIMARR_NZBGET_USERNAME: "${SLIMARR_NZBGET_USERNAME:-}"
+      SLIMARR_NZBGET_PASSWORD: "${SLIMARR_NZBGET_PASSWORD:-}"
+      SLIMARR_PROWLARR_URL: "${SLIMARR_PROWLARR_URL:-}"
+      SLIMARR_PROWLARR_API_KEY: "${SLIMARR_PROWLARR_API_KEY:-}"
+      SLIMARR_RADARR_URL: "${SLIMARR_RADARR_URL:-}"
+      SLIMARR_RADARR_API_KEY: "${SLIMARR_RADARR_API_KEY:-}"
+      SLIMARR_SONARR_URL: "${SLIMARR_SONARR_URL:-}"
+      SLIMARR_SONARR_API_KEY: "${SLIMARR_SONARR_API_KEY:-}"
+      SLIMARR_TMDB_API_KEY: "${SLIMARR_TMDB_API_KEY:-}"
+      SLIMARR_LOG_LEVEL: "${SLIMARR_LOG_LEVEL:-info}"
+      SLIMARR_LOG_FORMAT: "${SLIMARR_LOG_FORMAT:-plain}"
+      SLIMARR_SECRET_KEY: "${SLIMARR_SECRET_KEY:-}"
+      SLIMARR_API_KEY: "${SLIMARR_API_KEY:-}"
+      SLIMARR_RECYCLING_BIN: "${SLIMARR_RECYCLING_BIN:-}"
+      TZ: "${TZ:-UTC}"
+    volumes:
+      - slimarr_data:/app/data
+      - ./config:/app/config
+
+volumes:
+  slimarr_data:
+  slimarr_pg_data:

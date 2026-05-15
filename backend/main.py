@@ -58,6 +58,14 @@ async def lifespan(app: FastAPI):
         if directory:
             os.makedirs(directory, exist_ok=True)
 
+    # Run startup validation (directories, disk space, env audit, banner)
+    from backend.core.startup import run_startup_checks
+    config_path = os.environ.get(
+        "SLIMARR_CONFIG",
+        os.path.join(os.path.dirname(__file__), "..", "config.yaml"),
+    )
+    run_startup_checks(config_path=config_path)
+
     try:
         await init_db()
     except Exception as exc:

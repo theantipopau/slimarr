@@ -1,0 +1,84 @@
+# Slimarr v1.4 — Docker Compose (basic / self-hosted)
+#
+# Usage:
+#   1. Copy this file and .env.example to your server
+#   2. Edit the env vars (or create a config.yaml in ./config/)
+#   3. docker compose up -d
+#
+# Web UI will be available at http://<host>:9494
+
+services:
+  slimarr:
+    image: ghcr.io/theantipopau/slimarr:latest
+    # Alternatively build locally:
+    # build: .
+    container_name: slimarr
+    restart: unless-stopped
+
+    ports:
+      - "${SLIMARR_PORT:-9494}:9494"
+
+    environment:
+      # ── Required (set these or put them in config.yaml) ────────────────────
+      SLIMARR_PLEX_URL:         "${SLIMARR_PLEX_URL:-}"
+      SLIMARR_PLEX_TOKEN:       "${SLIMARR_PLEX_TOKEN:-}"
+
+      # ── Download client (sabnzbd | nzbget) ────────────────────────────────
+      SLIMARR_DOWNLOAD_CLIENT:  "${SLIMARR_DOWNLOAD_CLIENT:-sabnzbd}"
+      SLIMARR_SABNZBD_URL:      "${SLIMARR_SABNZBD_URL:-}"
+      SLIMARR_SABNZBD_API_KEY:  "${SLIMARR_SABNZBD_API_KEY:-}"
+      SLIMARR_NZBGET_URL:       "${SLIMARR_NZBGET_URL:-}"
+      SLIMARR_NZBGET_USERNAME:  "${SLIMARR_NZBGET_USERNAME:-}"
+      SLIMARR_NZBGET_PASSWORD:  "${SLIMARR_NZBGET_PASSWORD:-}"
+
+      # ── Indexer integration ────────────────────────────────────────────────
+      SLIMARR_PROWLARR_URL:     "${SLIMARR_PROWLARR_URL:-}"
+      SLIMARR_PROWLARR_API_KEY: "${SLIMARR_PROWLARR_API_KEY:-}"
+
+      # ── Arr integrations (optional) ────────────────────────────────────────
+      SLIMARR_RADARR_URL:       "${SLIMARR_RADARR_URL:-}"
+      SLIMARR_RADARR_API_KEY:   "${SLIMARR_RADARR_API_KEY:-}"
+      SLIMARR_SONARR_URL:       "${SLIMARR_SONARR_URL:-}"
+      SLIMARR_SONARR_API_KEY:   "${SLIMARR_SONARR_API_KEY:-}"
+
+      # ── Metadata ───────────────────────────────────────────────────────────
+      SLIMARR_TMDB_API_KEY:     "${SLIMARR_TMDB_API_KEY:-}"
+
+      # ── Server ─────────────────────────────────────────────────────────────
+      SLIMARR_LOG_LEVEL:        "${SLIMARR_LOG_LEVEL:-info}"
+      SLIMARR_LOG_FORMAT:       "${SLIMARR_LOG_FORMAT:-plain}"
+      SLIMARR_SECRET_KEY:       "${SLIMARR_SECRET_KEY:-}"
+      SLIMARR_API_KEY:          "${SLIMARR_API_KEY:-}"
+      SLIMARR_RECYCLING_BIN:    "${SLIMARR_RECYCLING_BIN:-}"
+      SLIMARR_DB:               "${SLIMARR_DB:-}"
+      SLIMARR_DB_URL:           "${SLIMARR_DB_URL:-}"
+      SLIMARR_DB_POOL_SIZE:     "${SLIMARR_DB_POOL_SIZE:-}"
+      SLIMARR_DB_MAX_OVERFLOW:  "${SLIMARR_DB_MAX_OVERFLOW:-}"
+      SLIMARR_DB_POOL_TIMEOUT:  "${SLIMARR_DB_POOL_TIMEOUT:-}"
+      SLIMARR_DB_POOL_RECYCLE:  "${SLIMARR_DB_POOL_RECYCLE:-}"
+      TZ:                       "${TZ:-UTC}"
+
+    volumes:
+      # Persistent data — database, logs, image cache
+      - slimarr_data:/app/data
+
+      # Config file (optional — use env vars instead if preferred)
+      - ./config:/app/config
+
+      # ── Media paths ────────────────────────────────────────────────────────
+      # Mount the same paths your Plex server uses so Slimarr can probe files.
+      # These are typically read-only unless you want Slimarr to replace files
+      # directly (path mappings are configured in config.yaml).
+      #
+      # Examples — uncomment and adjust:
+      # - /mnt/media/movies:/media/movies:ro
+      # - /mnt/media/tv:/media/tv:ro
+      # - /mnt/media/movies:/media/movies   # read-write for file replacement
+
+    # Resource limits — adjust for your hardware
+    # mem_limit: 512m
+    # cpus: "1.0"
+
+volumes:
+  slimarr_data:
+    driver: local

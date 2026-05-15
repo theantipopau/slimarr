@@ -71,6 +71,13 @@ async def search_for_movie(movie_id: int) -> list[dict]:
         if not movie:
             raise ValueError(f"Movie {movie_id} not found")
 
+        try:
+            quality_profile_overrides = json.loads(movie.quality_profile_overrides or "{}")
+            if not isinstance(quality_profile_overrides, dict):
+                quality_profile_overrides = {}
+        except Exception:
+            quality_profile_overrides = {}
+
         await emit_event("search:started", {"movie_id": movie.id, "title": movie.title})
         logger.info(f"Searching for: {movie.title} ({movie.year})")
 
@@ -194,6 +201,10 @@ async def search_for_movie(movie_id: int) -> list[dict]:
                     movie_year=movie.year,
                     local_bitrate=movie.bitrate,
                     local_source_type=movie.source_type or "",
+                    quality_intent=(movie.quality_intent or "space_saver"),
+                    force_keep=bool(movie.force_keep),
+                    allow_larger_replacements=bool(movie.allow_larger_replacements),
+                    quality_profile_overrides=quality_profile_overrides,
                 )
 
                 sr = SearchResult(

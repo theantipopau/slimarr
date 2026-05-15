@@ -1,0 +1,81 @@
+# Slimarr v1.4 — Docker Compose with Traefik reverse proxy
+#
+# Assumes Traefik is already running on the "proxy" network with:
+#   - An HTTPS entrypoint named "websecure"
+#   - A Let's Encrypt certificate resolver named "le"
+#
+# Usage:
+#   docker compose -f docker-compose.traefik.yml up -d
+
+networks:
+  proxy:
+    external: true    # Traefik's shared network
+  internal:
+    driver: bridge
+
+services:
+  slimarr:
+    image: ghcr.io/theantipopau/slimarr:latest
+    container_name: slimarr
+    restart: unless-stopped
+
+    # Do NOT expose port directly — Traefik handles ingress
+    expose:
+      - "9494"
+
+    networks:
+      - proxy
+      - internal
+
+    environment:
+      SLIMARR_PLEX_URL:         "${SLIMARR_PLEX_URL:-}"
+      SLIMARR_PLEX_TOKEN:       "${SLIMARR_PLEX_TOKEN:-}"
+      SLIMARR_DOWNLOAD_CLIENT:  "${SLIMARR_DOWNLOAD_CLIENT:-sabnzbd}"
+      SLIMARR_SABNZBD_URL:      "${SLIMARR_SABNZBD_URL:-}"
+      SLIMARR_SABNZBD_API_KEY:  "${SLIMARR_SABNZBD_API_KEY:-}"
+      SLIMARR_NZBGET_URL:       "${SLIMARR_NZBGET_URL:-}"
+      SLIMARR_NZBGET_USERNAME:  "${SLIMARR_NZBGET_USERNAME:-}"
+      SLIMARR_NZBGET_PASSWORD:  "${SLIMARR_NZBGET_PASSWORD:-}"
+      SLIMARR_PROWLARR_URL:     "${SLIMARR_PROWLARR_URL:-}"
+      SLIMARR_PROWLARR_API_KEY: "${SLIMARR_PROWLARR_API_KEY:-}"
+      SLIMARR_RADARR_URL:       "${SLIMARR_RADARR_URL:-}"
+      SLIMARR_RADARR_API_KEY:   "${SLIMARR_RADARR_API_KEY:-}"
+      SLIMARR_SONARR_URL:       "${SLIMARR_SONARR_URL:-}"
+      SLIMARR_SONARR_API_KEY:   "${SLIMARR_SONARR_API_KEY:-}"
+      SLIMARR_TMDB_API_KEY:     "${SLIMARR_TMDB_API_KEY:-}"
+      SLIMARR_LOG_LEVEL:        "${SLIMARR_LOG_LEVEL:-info}"
+      SLIMARR_LOG_FORMAT:       "${SLIMARR_LOG_FORMAT:-plain}"
+      SLIMARR_SECRET_KEY:       "${SLIMARR_SECRET_KEY:-}"
+      SLIMARR_API_KEY:          "${SLIMARR_API_KEY:-}"
+      SLIMARR_RECYCLING_BIN:    "${SLIMARR_RECYCLING_BIN:-}"
+      SLIMARR_DB:               "${SLIMARR_DB:-}"
+      SLIMARR_DB_URL:           "${SLIMARR_DB_URL:-}"
+      SLIMARR_DB_POOL_SIZE:     "${SLIMARR_DB_POOL_SIZE:-}"
+      SLIMARR_DB_MAX_OVERFLOW:  "${SLIMARR_DB_MAX_OVERFLOW:-}"
+      SLIMARR_DB_POOL_TIMEOUT:  "${SLIMARR_DB_POOL_TIMEOUT:-}"
+      SLIMARR_DB_POOL_RECYCLE:  "${SLIMARR_DB_POOL_RECYCLE:-}"
+      TZ:                       "${TZ:-UTC}"
+
+    volumes:
+      - slimarr_data:/app/data
+      - ./config:/app/config
+      # - /mnt/media/movies:/media/movies:ro
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      # HTTP → HTTPS redirect
+      - "traefik.http.routers.slimarr-http.rule=Host(`${SLIMARR_HOST}`)"
+      - "traefik.http.routers.slimarr-http.entrypoints=web"
+      - "traefik.http.routers.slimarr-http.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      # HTTPS router
+      - "traefik.http.routers.slimarr.rule=Host(`${SLIMARR_HOST}`)"
+      - "traefik.http.routers.slimarr.entrypoints=websecure"
+      - "traefik.http.routers.slimarr.tls=true"
+      - "traefik.http.routers.slimarr.tls.certresolver=le"
+      - "traefik.http.services.slimarr.loadbalancer.server.port=9494"
+
+volumes:
+  slimarr_data:
+    driver: local

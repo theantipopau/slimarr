@@ -5,27 +5,84 @@ Database: SQLite via aiosqlite.
 from __future__ import annotations
 
 import os
+import time
 from datetime import datetime, timezone
 from typing import Optional
 
 from sqlalchemy import (
     DateTime, Float, ForeignKey, Integer, String, Text, func,
 )
+from sqlalchemy import event
 from sqlalchemy.ext.asyncio import (
     AsyncSession, async_sessionmaker, create_async_engine,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-# Database file path — relative to cwd (the project root)
-_DB_PATH = os.environ.get("SLIMARR_DB", "data/slimarr.db")
-DATABASE_URL = f"sqlite+aiosqlite:///{_DB_PATH}"
+from backend.utils.platform import is_docker
 
-engine = create_async_engine(
-    DATABASE_URL,
-    echo=False,
-    connect_args={"check_same_thread": False},
-)
+# Database URL selection.
+#
+# Priority:
+# 1) SLIMARR_DB_URL (full SQLAlchemy async URL)
+# 2) SLIMARR_DB (SQLite path, legacy-compatible)
+#
+# Supported backends:
+# - sqlite+aiosqlite:///data/slimarr.db   (default)
+# - postgresql+asyncpg://user:pass@host/db
+_RAW_DB_URL = (os.environ.get("SLIMARR_DB_URL") or "").strip()
+_DB_PATH = os.environ.get("SLIMARR_DB") or "data/slimarr.db"
+
+if _RAW_DB_URL:
+    DATABASE_URL = _RAW_DB_URL
+else:
+    DATABASE_URL = f"sqlite+aiosqlite:///{_DB_PATH}"
+
+
+def get_db_backend() -> str:
+    url = DATABASE_URL.lower()
+    if url.startswith("postgresql+") or url.startswith("postgres+"):
+        return "postgresql"
+    return "sqlite"
+
+_engine_kwargs: dict = {
+    "echo": False,
+    "pool_pre_ping": True,
+}
+
+if get_db_backend() == "sqlite":
+    _engine_kwargs["connect_args"] = {"check_same_thread": False}
+else:
+    # Conservative defaults for homelab PostgreSQL usage.
+    _engine_kwargs.update(
+        {
+            "pool_size": int(os.environ.get("SLIMARR_DB_POOL_SIZE") or "10"),
+            "max_overflow": int(os.environ.get("SLIMARR_DB_MAX_OVERFLOW") or "20"),
+            "pool_timeout": int(os.environ.get("SLIMARR_DB_POOL_TIMEOUT") or "30"),
+            "pool_recycle": int(os.environ.get("SLIMARR_DB_POOL_RECYCLE") or "1800"),
+        }
+    )
+
+engine = create_async_engine(DATABASE_URL, **_engine_kwargs)
 async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+
+
+@event.listens_for(engine.sync_engine, "before_cursor_execute")
+def _before_cursor_execute(conn, cursor, statement, parameters, context, executemany):
+    context._query_start_time = time.perf_counter()
+
+
+@event.listens_for(engine.sync_engine, "after_cursor_execute")
+def _after_cursor_execute(conn, cursor, statement, parameters, context, executemany):
+    elapsed_ms = (time.perf_counter() - context._query_start_time) * 1000
+    if elapsed_ms >= float(os.environ.get("SLIMARR_DB_SLOW_QUERY_MS", "250")):
+        from loguru import logger
+
+        compact = " ".join((statement or "").split())
+        logger.warning(
+            "DB slow query ({:.1f} ms): {}",
+            elapsed_ms,
+            compact[:240],
+        )
 
 
 class Base(DeclarativeBase):
@@ -66,6 +123,10 @@ class Movie(Base):
     status: Mapped[str] = mapped_column(String, default="pending", index=True)
     slimarr_locked: Mapped[bool] = mapped_column(Integer, default=0)  # 0=False, 1=True (SQLite bool)
     preferred_release_title: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    quality_intent: Mapped[str] = mapped_column(String, default="space_saver", index=True)
+    force_keep: Mapped[bool] = mapped_column(Integer, default=0)
+    allow_larger_replacements: Mapped[bool] = mapped_column(Integer, default=0)
+    quality_profile_overrides: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     error_message: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
@@ -241,16 +302,66 @@ class DecisionAuditLog(Base):
 
 
 async def init_db() -> None:
-    """Create all tables if they don't exist."""
-    os.makedirs(os.path.dirname(os.path.abspath(_DB_PATH)), exist_ok=True)
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-        await _run_lightweight_migrations(conn)
+    """Create all tables if they don't exist.
+
+    Includes startup retry/backoff so transient DB startup races in Docker
+    (e.g. PostgreSQL not ready yet) do not hard-fail immediately.
+    """
+    backend = get_db_backend()
+
+    if backend == "sqlite":
+        os.makedirs(os.path.dirname(os.path.abspath(_DB_PATH)), exist_ok=True)
+
+    attempts = int(os.environ.get("SLIMARR_DB_CONNECT_RETRIES", "5"))
+    base_delay = float(os.environ.get("SLIMARR_DB_CONNECT_RETRY_BASE_SECONDS", "0.8"))
+    last_error: Exception | None = None
+
+    for attempt in range(1, attempts + 1):
+        try:
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+                await _run_lightweight_migrations(conn)
+            return
+        except Exception as exc:
+            last_error = exc
+            if attempt >= attempts:
+                break
+            from loguru import logger
+
+            delay = base_delay * (2 ** (attempt - 1))
+            jitter = min(0.5, delay * 0.15)
+            sleep_for = delay + jitter
+            logger.warning(
+                "DB init attempt {}/{} failed (backend={}): {}. Retrying in {:.2f}s",
+                attempt,
+                attempts,
+                backend,
+                exc,
+                sleep_for,
+            )
+            import asyncio
+
+            await asyncio.sleep(sleep_for)
+
+    if last_error is not None:
+        raise last_error
 
 
 async def _table_columns(conn, table_name: str) -> set[str]:
-    rows = await conn.exec_driver_sql(f"PRAGMA table_info({table_name})")
-    return {row[1] for row in rows.fetchall()}
+    backend = get_db_backend()
+    if backend == "sqlite":
+        rows = await conn.exec_driver_sql(f"PRAGMA table_info({table_name})")
+        return {row[1] for row in rows.fetchall()}
+
+    rows = await conn.exec_driver_sql(
+        """
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = :table_name
+        """,
+        {"table_name": table_name},
+    )
+    return {row[0] for row in rows.fetchall()}
 
 
 async def _add_column_if_missing(
@@ -307,6 +418,10 @@ async def _run_lightweight_migrations(conn) -> None:
     movie_columns = await _table_columns(conn, "movies")
     await _add_column_if_missing(conn, "movies", movie_columns, "slimarr_locked", "INTEGER DEFAULT 0")
     await _add_column_if_missing(conn, "movies", movie_columns, "preferred_release_title", "VARCHAR")
+    await _add_column_if_missing(conn, "movies", movie_columns, "quality_intent", "VARCHAR DEFAULT 'space_saver'")
+    await _add_column_if_missing(conn, "movies", movie_columns, "force_keep", "INTEGER DEFAULT 0")
+    await _add_column_if_missing(conn, "movies", movie_columns, "allow_larger_replacements", "INTEGER DEFAULT 0")
+    await _add_column_if_missing(conn, "movies", movie_columns, "quality_profile_overrides", "TEXT")
 
     activity_columns = await _table_columns(conn, "activity_log")
     await _add_column_if_missing(conn, "activity_log", activity_columns, "actor", "VARCHAR")
@@ -324,6 +439,37 @@ async def _run_lightweight_migrations(conn) -> None:
         "CREATE INDEX IF NOT EXISTS ix_activity_log_created_event "
         "ON activity_log (created_at, event)"
     )
+    await conn.exec_driver_sql(
+        "CREATE INDEX IF NOT EXISTS ix_movies_quality_intent "
+        "ON movies (quality_intent)"
+    )
+
+
+def database_runtime_info() -> dict[str, object]:
+    """Return non-secret database runtime metadata for diagnostics endpoints."""
+    backend = get_db_backend()
+    info: dict[str, object] = {
+        "backend": backend,
+        "url_driver": DATABASE_URL.split("://", 1)[0],
+        "pool": {
+            "size": getattr(engine.sync_engine.pool, "size", lambda: None)(),
+            "checked_in": getattr(engine.sync_engine.pool, "checkedin", lambda: None)(),
+            "checked_out": getattr(engine.sync_engine.pool, "checkedout", lambda: None)(),
+            "overflow": getattr(engine.sync_engine.pool, "overflow", lambda: None)(),
+        },
+    }
+
+    if backend == "sqlite":
+        db_path = os.environ.get("SLIMARR_DB") or "data/slimarr.db"
+        info["sqlite"] = {
+            "path": db_path,
+            "wal_enabled": bool(os.path.exists(db_path + "-wal")),
+            "size_bytes": os.path.getsize(db_path) if os.path.exists(db_path) else 0,
+            "vacuum_recommended": (
+                os.path.exists(db_path) and os.path.getsize(db_path) > 1_500_000_000
+            ),
+        }
+    return info
 
 
 async def get_db() -> AsyncSession:  # type: ignore[return]

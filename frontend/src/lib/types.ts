@@ -15,6 +15,10 @@ export interface Movie {
   status: string
   slimarr_locked?: boolean
   preferred_release_title?: string | null
+  quality_intent?: 'space_saver' | 'balanced' | 'premium' | 'reference' | 'locked' | 'pinned'
+  force_keep?: boolean
+  allow_larger_replacements?: boolean
+  quality_profile_overrides?: Record<string, unknown>
   last_scanned?: string
   last_searched?: string
 }

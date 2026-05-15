@@ -16,7 +16,7 @@ try:
     # Load config before anything else
     from backend.config import ensure_secrets, load_config
 
-    config_path = os.path.join(ROOT, "config.yaml")
+    config_path = os.environ.get("SLIMARR_CONFIG") or os.path.join(ROOT, "config.yaml")
     config = load_config(config_path)
     ensure_secrets(config, config_path)
 except Exception as e:

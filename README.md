@@ -7,12 +7,12 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/python-3.12%2B-blue?logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/python-3.11--3.13-blue?logo=python&logoColor=white" />
   <img src="https://img.shields.io/badge/fastapi-0.115-009688?logo=fastapi&logoColor=white" />
   <img src="https://img.shields.io/badge/react-18-61DAFB?logo=react&logoColor=black" />
   <img src="https://img.shields.io/badge/license-MIT-green" />
-  <img src="https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white" />
-  <img src="https://img.shields.io/badge/release-1.3.0.0-success" />
+  <img src="https://img.shields.io/badge/platform-Linux%20%7C%20Docker%20%7C%20Windows-0ea5e9" />
+  <img src="https://img.shields.io/badge/release-1.4.0.0-success" />
 </p>
 
 <p align="center">
@@ -32,11 +32,26 @@ Scan Plex library -> Search Usenet indexers -> Compare releases
 -> Queue download via SABnzbd or NZBGet -> Replace file -> Refresh Plex -> Log savings
 ```
 
-**Core rule: save space safely.** A release is normally accepted only when it is smaller than your existing copy. In v1.3, Slimarr can make a bounded exception for clearly poor local media such as CAM/TS, weak 720p, or suspiciously low-bitrate files when the candidate is a strong 1080p quality upgrade.
+**Core rule: save space safely.** A release is normally accepted only when it is smaller than your existing copy. Slimarr can make a bounded exception for clearly poor local media such as CAM/TS, weak 720p, or suspiciously low-bitrate files when the candidate is a strong 1080p quality upgrade.
 
 Slimarr is designed to look and feel like a native member of the **\*arr ecosystem** (Radarr, Sonarr, Prowlarr). If you're familiar with those tools, you'll feel right at home.
 
-Current release: **1.3.0.0** (2026-05-13).
+Current release: **1.4.0.0** (2026-05-15).
+
+### What's New in 1.4.0.0 — Containerised
+
+- Official Docker-first deployment model with multi-stage Docker build and compose templates
+- New environment-variable config model (`SLIMARR_*`) with precedence:
+  env vars -> config.yaml -> defaults
+- Linux-ready startup validation with mount/write checks, disk-space warnings,
+  runtime/architecture detection, and startup diagnostics
+- Prometheus-compatible metrics endpoint (`/api/v1/system/metrics`) and improved
+  health endpoint behavior for degraded startup conditions
+- Container diagnostics UI (`System -> Container`) showing runtime, mount health,
+  disk state, and copyable compose reference
+- New deployment docs for Docker, reverse proxy, Unraid, Synology, and migration
+
+See `docs/DOCKER.md` for full deployment guidance.
 
 ### What's New in 1.3.0.0
 
@@ -72,9 +87,13 @@ Current release: **1.3.0.0** (2026-05-13).
 
 ## Features
 
+- **Docker-first deployment** - official multi-stage image, compose templates, and non-root runtime
+- **Full Linux support** - validated startup checks, mount awareness, and container-safe defaults
+- **Environment-variable config** - `SLIMARR_*` overrides for secrets and runtime settings
+- **Operational observability** - health endpoints, startup diagnostics, and Prometheus metrics
 - **Nightly automation** - scheduled cycle searches, downloads and replaces movies while you sleep
 - **Usenet search** - supports Prowlarr (recommended) or direct Newznab/NZBGeek indexers
-- **Download client integration** - supports SABnzbd by default, with NZBGet support on the current `main` branch
+- **Download client integration** - supports SABnzbd by default, with NZBGet support included
 - **Plex sync** - reads your library via PlexAPI, refreshes Plex after each replacement
 - **TMDB enrichment** - posters, backdrops, and metadata fetched and cached locally
 - **Smart comparison engine** - configurable minimum savings %, resolution downgrade protection, codec preferences, language filtering
@@ -100,8 +119,9 @@ Current release: **1.3.0.0** (2026-05-13).
 
 | Dependency | Version | Notes |
 |------------|---------|-------|
-| Python | 3.11 – 3.13 | **3.14 is not yet supported** — use 3.12 or 3.13 |
-| Node.js | 18+ | For building the frontend |
+| Docker Engine + Compose | Current | Recommended deployment path for Linux/homelab |
+| Python | 3.11 – 3.13 | Required only for source install; **3.14 is not supported** |
+| Node.js | 18+ | Required only when building frontend from source |
 | Plex Media Server | Any | PlexAPI token required |
 | SABnzbd or NZBGet | Any | Configure at least one download client |
 | Prowlarr **or** Newznab indexer | Any | At least one required |
@@ -109,17 +129,40 @@ Current release: **1.3.0.0** (2026-05-13).
 
 ---
 
-## Installation (Windows)
+## Installation
 
-### Option A - Installer (recommended for sharing)
+### Option A - Docker (recommended)
 
-Download `SlimarrSetup-1.3.0.0.exe` (or the latest `SlimarrSetup-*.exe`) from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies - no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
+Slimarr v1.4 is Docker-first.
+
+1. Copy `docker-compose.yml` and `.env.example` from this repository.
+2. Rename `.env.example` to `.env` and fill in your service values.
+3. Start Slimarr with the direct compose command:
+
+```bash
+docker compose up -d
+```
+
+4. Open `http://<your-host>:9494` and complete first-run setup.
+
+For Traefik, Unraid, Synology, reverse proxy, volumes, and migration details,
+see `docs/DOCKER.md`.
+
+Optional PostgreSQL deployments use the companion template:
+
+```bash
+docker compose -f docker-compose.postgres.yml up -d
+```
+
+### Option B - Windows installer
+
+Download `SlimarrSetup-1.4.0.0.exe` (or the latest `SlimarrSetup-*.exe`) from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies - no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
 
 At the end of setup, the installer shows `Do you want to open Slimarr?` (checked by default). If selected, Slimarr starts minimized and your browser opens automatically to `http://localhost:9494` when the backend is ready.
 
-`1.3.0.0` is the current installer target. Newer `main` branch changes may land before the next installer is cut; if you want those immediately, run Slimarr from source or build a fresh installer from `main`.
+`1.4.0.0` is the current release target. Newer `main` branch changes may land before the next installer is cut; if you want those immediately, run Slimarr from source or Docker.
 
-### Option B - From source
+### Option C - From source
 
 **1. Clone the repository:**
 ```powershell
@@ -127,12 +170,12 @@ git clone https://github.com/theantipopau/slimarr.git C:\Slimarr
 cd C:\Slimarr
 ```
 
-**2. Run the installer:**
+**2. Run the source install script:**
 ```powershell
 .\install.ps1
 ```
 
-The installer will:
+The install script will:
 - Create a Python virtual environment
 - Install all Python dependencies
 - Install Node.js frontend dependencies and build the React app
@@ -164,6 +207,25 @@ Keep `config.yaml` and `data/` when upgrading. Your settings/database remain int
 ---
 
 ## Troubleshooting
+
+### Docker / Linux quick checks
+
+```bash
+# Container logs
+docker logs -f slimarr
+
+# Container health status
+docker inspect --format='{{json .State.Health}}' slimarr
+
+# API health endpoint
+curl -fsS http://localhost:9494/api/v1/system/health
+
+# Prometheus metrics endpoint
+curl -fsS http://localhost:9494/api/v1/system/metrics
+```
+
+If mounts or permissions are wrong, open **System -> Container** in the UI.
+Slimarr v1.4 surfaces startup mount checks, writable-path checks, and low-disk warnings there.
 
 ### "Building wheel for lxml failed" / "Building wheel for pydantic-core failed"
 
@@ -219,6 +281,18 @@ Your site URL will be:
 ## Configuration
 
 `config.yaml` is created automatically on first run. Key sections:
+
+In v1.4, configuration precedence is:
+
+```
+SLIMARR_* environment variables -> config.yaml -> built-in defaults
+```
+
+Common env vars include: `SLIMARR_PLEX_URL`, `SLIMARR_PLEX_TOKEN`,
+`SLIMARR_PROWLARR_URL`, `SLIMARR_PROWLARR_API_KEY`, `SLIMARR_SABNZBD_URL`,
+`SLIMARR_SABNZBD_API_KEY`, `SLIMARR_LOG_LEVEL`, `SLIMARR_LOG_FORMAT`, and `TZ`.
+
+See `.env.example` for the full list.
 
 ```yaml
 plex:
@@ -302,8 +376,8 @@ schedule:
 
 | Layer | Technology |
 |-------|------------|
-| Backend | Python 3.12, FastAPI, SQLAlchemy 2.0 async |
-| Database | SQLite via aiosqlite |
+| Backend | Python 3.11-3.13, FastAPI, SQLAlchemy 2.0 async |
+| Database | SQLite via aiosqlite; optional PostgreSQL via asyncpg |
 | Real-time | python-socketio (Socket.IO) |
 | Scheduling | APScheduler 3.10 |
 | Frontend | React 18, TypeScript, Vite, Tailwind CSS |
@@ -318,7 +392,7 @@ schedule:
 ## Architecture
 
 ```
-C:\Slimarr\
+slimarr/
 |-- backend/
 |   |-- api/          # FastAPI routers (library, queue, activity, settings, system, dashboard, tv)
 |   |-- auth/         # JWT authentication
@@ -334,8 +408,10 @@ C:\Slimarr\
 |       |-- hooks/    # useSocket, useAuth
 |       `-- lib/      # api.ts, socket.ts, types.ts
 |-- data/             # SQLite DB, MediaCover image cache, recycling bin
+|-- docs/             # GitHub Pages website and Docker deployment guide
 |-- images/           # Brand assets
-|-- run.py            # Entry point (tray or headless)
+|-- docker-compose.yml # Recommended Docker deployment template
+|-- run.py            # Entry point (headless on Linux/Docker, tray on Windows)
 |-- tray.py           # pystray system tray
 |-- install.ps1       # One-click installer
 `-- config.yaml       # User configuration
