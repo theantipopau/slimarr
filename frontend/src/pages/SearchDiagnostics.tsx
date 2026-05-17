@@ -208,6 +208,11 @@ export default function SearchDiagnostics() {
                   <span className="text-xs text-gray-500">
                     {event.type === 'indexer_request' ? 'started' : `HTTP ${event.status_code ?? 'n/a'} - ${fmtMs(event.latency_ms)}`}
                   </span>
+                  {event.rate_limited ? (
+                    <span className="rounded bg-yellow-500/20 px-1.5 py-0.5 text-[11px] text-yellow-100">
+                      quota
+                    </span>
+                  ) : null}
                 </div>
                 <p className="text-xs text-gray-400 break-all">{event.request_url}</p>
                 <p className="text-xs text-gray-500">
@@ -262,8 +267,9 @@ export default function SearchDiagnostics() {
                     <span className="text-xs text-gray-400">{String(item.success_rate ?? 'n/a')}% success</span>
                   </div>
                   <p className="text-xs text-gray-500 mt-1">
-                    Requests {String(item.requests ?? 0)} - Failures {String(item.failures ?? 0)} - Timeouts {String(item.timeouts ?? 0)} - Avg {fmtMs(item.avg_latency_ms)}
+                    Requests {String(item.requests ?? 0)} - Failures {String(item.failures ?? 0)} - Timeouts {String(item.timeouts ?? 0)} - Quota {String(item.rate_limited ?? 0)} - Avg {fmtMs(item.avg_latency_ms)}
                   </p>
+                  {item.last_rate_limit_at ? <p className="text-xs text-yellow-200 mt-1">Last quota/rate limit: {fmtTime(item.last_rate_limit_at)}</p> : null}
                   {item.last_error ? <p className="text-xs text-red-300 mt-1 truncate">{String(item.last_error)}</p> : null}
                 </div>
               ))}

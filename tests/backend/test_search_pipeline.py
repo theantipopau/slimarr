@@ -76,6 +76,21 @@ class SearchPipelineTests(unittest.IsolatedAsyncioTestCase):
         snapshot = search_diagnostics.snapshot()
         self.assertIn("Invalid API key", snapshot["indexer_reliability"]["TestIndexer"]["last_error"])
 
+    async def test_newznab_quota_error_warns_user(self) -> None:
+        async def handler(request: httpx.Request) -> httpx.Response:
+            return _response(200, '<error code="500" description="Daily API request limit reached" />', request)
+
+        client = NewznabClient(self._indexer(), transport=httpx.MockTransport(handler))
+
+        with self.assertRaises(NewznabSearchError):
+            await client.search_by_query("The Matrix 1999")
+
+        snapshot = search_diagnostics.snapshot()
+        self.assertEqual(1, snapshot["indexer_reliability"]["TestIndexer"]["rate_limited"])
+        self.assertTrue(snapshot["recent_events"][0]["rate_limited"])
+        self.assertEqual("Indexer API quota or rate limit reached.", snapshot["warnings"][0]["message"])
+        self.assertEqual("TestIndexer", snapshot["warnings"][0]["detail"]["indexer"])
+
     async def test_newznab_namespaced_error_is_not_silent_empty(self) -> None:
         async def handler(request: httpx.Request) -> httpx.Response:
             return _response(
@@ -146,6 +161,25 @@ class SearchPipelineTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual([2000], results[0]["categories"])
         event = search_diagnostics.snapshot()["recent_events"][0]
         self.assertNotIn("top-secret", event["request_url"])
+
+    async def test_prowlarr_http_429_warns_user(self) -> None:
+        cfg = SlimarrConfig()
+        cfg.prowlarr.enabled = True
+        cfg.prowlarr.url = "https://prowlarr.test"
+        cfg.prowlarr.api_key = "top-secret"
+
+        async def handler(request: httpx.Request) -> httpx.Response:
+            return _response(429, "Too Many Requests", request)
+
+        with patch("backend.integrations.prowlarr.get_config", return_value=cfg):
+            client = ProwlarrClient(transport=httpx.MockTransport(handler))
+            with self.assertRaises(httpx.HTTPStatusError):
+                await client.search("The Matrix 1999")
+
+        snapshot = search_diagnostics.snapshot()
+        self.assertEqual(1, snapshot["indexer_reliability"]["Prowlarr"]["rate_limited"])
+        self.assertTrue(snapshot["recent_events"][0]["rate_limited"])
+        self.assertEqual("Indexer API quota or rate limit reached.", snapshot["warnings"][0]["message"])
 
     async def test_diagnostics_redacts_text_and_raw_previews(self) -> None:
         preview = search_diagnostics.raw_preview(

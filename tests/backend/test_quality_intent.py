@@ -72,6 +72,40 @@ class QualityIntentCompareTests(unittest.TestCase):
             )
         )
 
+    def test_rejected_policy_decisions_include_quality_intent_note(self) -> None:
+        with patch("backend.core.comparer.get_config", return_value=self._cfg()):
+            result = compare_release(
+                local_size=2_000_000_000,
+                local_resolution="1080p",
+                local_codec="h264",
+                candidate_size=1_100_000_000,
+                candidate_title="Movie.Title.2022.1080p.WEB-DL.x265-GRP",
+                movie_title="Movie Title",
+                movie_year=2022,
+                force_keep=True,
+            )
+
+        self.assertEqual(result.decision, "reject")
+        self.assertIn("quality_intent=space_saver", result.notes)
+
+    def test_bad_numeric_override_falls_back_to_policy_default(self) -> None:
+        with patch("backend.core.comparer.get_config", return_value=self._cfg()):
+            result = compare_release(
+                local_size=2_000_000_000,
+                local_resolution="1080p",
+                local_codec="h264",
+                candidate_size=2_120_000_000,
+                candidate_title="Movie.Title.2022.1080p.WEB-DL.x265-GRP",
+                movie_title="Movie Title",
+                movie_year=2022,
+                local_source_type="webrip",
+                quality_intent="balanced",
+                allow_larger_replacements=True,
+                quality_profile_overrides={"max_size_increase_pct": "not-a-number"},
+            )
+
+        self.assertEqual(result.decision, "accept")
+
 
 if __name__ == "__main__":
     unittest.main()

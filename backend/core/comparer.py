@@ -102,6 +102,20 @@ def _source_quality_score(source: str | None) -> float:
     return scores.get(source, 55.0)
 
 
+def _override_float(overrides: dict[str, Any], key: str, default: float) -> float:
+    try:
+        return float(overrides.get(key, default))
+    except (TypeError, ValueError):
+        return default
+
+
+def _override_string_list(overrides: dict[str, Any], key: str) -> list[str]:
+    value = overrides.get(key) or []
+    if not isinstance(value, list):
+        return []
+    return [str(item).lower().strip() for item in value if str(item).strip()]
+
+
 def _has_explicit_language_marker(candidate_title: str, language: str) -> bool:
     checks = {
         "english": r"\b(eng|english|dual[- ._]?audio[ ._]?eng?)\b",
@@ -147,6 +161,9 @@ def compare_release(
         file_size=local_size,
     )
 
+    intent = (quality_intent or "space_saver").strip().lower()
+    overrides = quality_profile_overrides or {}
+
     def _reject(reason: str) -> ComparisonResult:
         savings = local_size - candidate_size
         pct = (savings / max(local_size, 1)) * 100
@@ -156,6 +173,7 @@ def compare_release(
             savings_bytes=savings,
             savings_pct=round(pct, 2),
             reject_reason=reason,
+            notes=f"quality_intent={intent}",
             confidence_score=0.0,
             confidence_breakdown={},
             media_health_score=candidate_health.score,
@@ -166,8 +184,6 @@ def compare_release(
     if candidate_size <= 0:
         return _reject("Candidate has no size information")
 
-    intent = (quality_intent or "space_saver").strip().lower()
-    overrides = quality_profile_overrides or {}
     if force_keep or intent in {"locked", "pinned"}:
         return _reject("Movie is pinned/force-kept by operator policy")
 
@@ -195,20 +211,20 @@ def compare_release(
     if candidate_size >= local_size:
         if intent == "balanced" and allow_larger_replacements:
             intent_allows_larger = (
-                size_increase_pct <= float(overrides.get("max_size_increase_pct", 15.0))
+                size_increase_pct <= _override_float(overrides, "max_size_increase_pct", 15.0)
                 and cand_res_rank >= local_res_rank
                 and source_rank_candidate >= source_rank_local
             )
         elif intent == "premium" and allow_larger_replacements:
             intent_allows_larger = (
-                size_increase_pct <= float(overrides.get("max_size_increase_pct", 80.0))
+                size_increase_pct <= _override_float(overrides, "max_size_increase_pct", 80.0)
                 and cand_res_rank >= local_res_rank
                 and source_rank_candidate >= source_rank_local
                 and candidate_health.score >= (local_health.score + 4.0)
             )
         elif intent == "reference" and allow_larger_replacements:
             intent_allows_larger = (
-                size_increase_pct <= float(overrides.get("max_size_increase_pct", 300.0))
+                size_increase_pct <= _override_float(overrides, "max_size_increase_pct", 300.0)
                 and cand_res_rank >= local_res_rank
                 and source_rank_candidate >= source_rank_local
             )
@@ -252,8 +268,9 @@ def compare_release(
     if parsed.is_low_quality_source:
         return _reject("candidate_is_low_quality")
 
-    reject_groups = [str(v).lower() for v in (overrides.get("reject_release_groups") or [])]
-    if reject_groups and (parsed.uploader or "").lower() in reject_groups:
+    reject_groups = _override_string_list(overrides, "reject_release_groups")
+    candidate_groups = {(parsed.uploader or "").lower(), (parsed.group or "").lower()}
+    if reject_groups and any(group in reject_groups for group in candidate_groups if group):
         return _reject("Release group blocked by movie quality policy")
 
     savings_bytes = local_size - candidate_size
@@ -334,7 +351,7 @@ def compare_release(
     if preferred_codec and cand_codec == preferred_codec:
         score += 12.0
 
-    preferred_sources = [str(v).lower() for v in (overrides.get("preferred_sources") or [])]
+    preferred_sources = _override_string_list(overrides, "preferred_sources")
     if preferred_sources and (parsed.source or "").lower() in preferred_sources:
         score += 14.0
 

@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/react-18-61DAFB?logo=react&logoColor=black" />
   <img src="https://img.shields.io/badge/license-MIT-green" />
   <img src="https://img.shields.io/badge/platform-Linux%20%7C%20Docker%20%7C%20Windows-0ea5e9" />
-  <img src="https://img.shields.io/badge/release-1.4.0.0-success" />
+  <img src="https://img.shields.io/badge/release-1.5.0.0-success" />
 </p>
 
 <p align="center">
@@ -36,9 +36,18 @@ Scan Plex library -> Search Usenet indexers -> Compare releases
 
 Slimarr is designed to look and feel like a native member of the **\*arr ecosystem** (Radarr, Sonarr, Prowlarr). If you're familiar with those tools, you'll feel right at home.
 
-Current release: **1.4.0.0** (2026-05-15).
+Current release: **1.5.0.0** (2026-05-15).
 
-### What's New in 1.4.0.0 — Containerised
+### What's New in 1.5.0.0 - Foundation
+
+- Optional PostgreSQL backend support through `SLIMARR_DB_URL` while SQLite remains the default
+- Per-movie quality intent controls for Space Saver, Balanced, Premium, Reference, Locked, and Pinned behavior
+- Force-keep and lock safeguards so protected titles are skipped consistently by automation
+- Profile-aware compare decisions with override controls for resolution floor, preferred codec, preferred sources, release-group rejects, and size-increase limits
+- Search diagnostics now detect indexer/Prowlarr quota and rate-limit responses and notify users immediately
+- Windows installer/startup launchers now start the tray app path so the tray icon appears on first launch
+
+### What's New in 1.4.0.0 - Containerised
 
 - Official Docker-first deployment model with multi-stage Docker build and compose templates
 - New environment-variable config model (`SLIMARR_*`) with precedence:
@@ -133,7 +142,7 @@ See `docs/DOCKER.md` for full deployment guidance.
 
 ### Option A - Docker (recommended)
 
-Slimarr v1.4 is Docker-first.
+Slimarr v1.5 keeps the v1.4 Docker-first deployment model and adds optional advanced runtime features.
 
 1. Copy `docker-compose.yml` and `.env.example` from this repository.
 2. Rename `.env.example` to `.env` and fill in your service values.
@@ -141,6 +150,28 @@ Slimarr v1.4 is Docker-first.
 
 ```bash
 docker compose up -d
+```
+
+No-file quick launch from shell (Linux/macOS):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/theantipopau/slimarr/main/docker-compose.yml | docker compose -f - up -d
+```
+
+No-file quick launch from shell (PowerShell):
+
+```powershell
+(Invoke-WebRequest -UseBasicParsing https://raw.githubusercontent.com/theantipopau/slimarr/main/docker-compose.yml).Content | docker compose -f - up -d
+```
+
+Repository helper wrappers are also available:
+
+```powershell
+./scripts/slimarr-compose.ps1 up -d
+```
+
+```bash
+./scripts/slimarr-compose.sh up -d
 ```
 
 4. Open `http://<your-host>:9494` and complete first-run setup.
@@ -156,11 +187,11 @@ docker compose -f docker-compose.postgres.yml up -d
 
 ### Option B - Windows installer
 
-Download `SlimarrSetup-1.4.0.0.exe` (or the latest `SlimarrSetup-*.exe`) from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies - no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
+Download `SlimarrSetup-1.5.0.0.exe` (or the latest `SlimarrSetup-*.exe`) from the [Releases](https://github.com/theantipopau/slimarr/releases) page and run it. The installer bundles Python and all dependencies - no manual setup required. After install, Slimarr appears in the Start Menu and optionally the system tray on login.
 
-At the end of setup, the installer shows `Do you want to open Slimarr?` (checked by default). If selected, Slimarr starts minimized and your browser opens automatically to `http://localhost:9494` when the backend is ready.
+At the end of setup, the installer shows `Start Slimarr now` (checked by default). If selected, Slimarr starts minimized with the tray icon available and your browser opens automatically to `http://localhost:9494` when the backend is ready.
 
-`1.4.0.0` is the current release target. Newer `main` branch changes may land before the next installer is cut; if you want those immediately, run Slimarr from source or Docker.
+`1.5.0.0` is the current release target. Newer `main` branch changes may land before the next installer is cut; if you want those immediately, run Slimarr from source or Docker.
 
 ### Option C - From source
 
@@ -225,7 +256,7 @@ curl -fsS http://localhost:9494/api/v1/system/metrics
 ```
 
 If mounts or permissions are wrong, open **System -> Container** in the UI.
-Slimarr v1.4 surfaces startup mount checks, writable-path checks, and low-disk warnings there.
+Slimarr v1.5 surfaces startup mount checks, writable-path checks, database backend details, and low-disk warnings there.
 
 ### "Building wheel for lxml failed" / "Building wheel for pydantic-core failed"
 

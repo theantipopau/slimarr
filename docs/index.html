@@ -16,7 +16,7 @@
         <img src="images/header-logo.PNG" alt="Slimarr" />
       </a>
       <nav class="nav-links">
-        <a href="#v1400">v1.4.0.0</a>
+        <a href="#v1500">v1.5.0.0</a>
         <a href="#install">Install</a>
         <a href="#features">Features</a>
         <a href="#screenshots">Screenshots</a>
@@ -31,8 +31,8 @@
         <h1>Stop hoarding bloated releases.<br />Let Slimarr slim your library overnight.</h1>
         <p class="subtitle">
           Slimarr scans your Plex library, finds smaller Usenet releases, and safely replaces media while you sleep.
-          Built to feel native in the *arr ecosystem, now Docker-first with Linux support, startup diagnostics,
-          Prometheus metrics, and the Windows installer path still intact.
+          Built to feel native in the *arr ecosystem, now with Docker-first deployment, quality-intent controls,
+          indexer quota warnings, PostgreSQL groundwork, and a smoother Windows tray installer.
         </p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="https://github.com/theantipopau/slimarr" target="_blank" rel="noopener noreferrer">View On GitHub</a>
@@ -40,27 +40,27 @@
         </div>
       </section>
 
-      <section id="v1400" class="panel release-panel reveal">
+      <section id="v1500" class="panel release-panel reveal">
         <div class="section-head">
-          <h2>What Is New In v1.4.0.0</h2>
-          <p>Official Docker deployment, Linux-ready runtime checks, and clearer operational visibility.</p>
+          <h2>What Is New In v1.5.0.0</h2>
+          <p>Foundation upgrades for protected titles, indexer visibility, optional PostgreSQL, and cleaner Windows launches.</p>
         </div>
         <div class="release-grid">
           <article>
-            <h3>Docker-First Deployment</h3>
-            <p>Multi-stage Docker image, compose templates, non-root runtime defaults, and a ready-to-edit environment file for homelab installs.</p>
+            <h3>Quality Intent Controls</h3>
+            <p>Set titles to Space Saver, Balanced, Premium, Reference, Locked, or Pinned, with safeguards for force-kept home-theater copies.</p>
           </article>
           <article>
-            <h3>Linux Startup Validation</h3>
-            <p>Startup checks now validate writable paths, data directories, disk space, architecture, Python version, and container runtime state.</p>
+            <h3>Indexer Quota Warnings</h3>
+            <p>Slimarr now detects API quota and rate-limit responses from Prowlarr/Newznab and warns immediately instead of looking silently empty.</p>
           </article>
           <article>
-            <h3>Metrics And Health</h3>
-            <p>Prometheus-compatible metrics, degraded health responses, structured logging options, and authenticated startup diagnostics.</p>
+            <h3>Database Foundation</h3>
+            <p>SQLite remains the default, with optional PostgreSQL support and runtime database diagnostics for write-heavy deployments.</p>
           </article>
           <article>
-            <h3>Container Diagnostics UI</h3>
-            <p>The System area now includes a Container page for runtime, mount, permissions, disk, and configuration troubleshooting.</p>
+            <h3>Installer Polish</h3>
+            <p>The Windows installer and Start Menu launchers now start the tray app path on first launch, so the tray icon appears immediately.</p>
           </article>
         </div>
       </section>
@@ -79,7 +79,7 @@ docker compose up -d</code></pre>
           </article>
           <article>
             <h3>Windows</h3>
-            <p>Download the latest <strong>SlimarrSetup-1.4.0.0.exe</strong> from GitHub Releases. The installer bundles Python and dependencies, then opens Slimarr at <strong>localhost:9494</strong>.</p>
+            <p>Download the latest <strong>SlimarrSetup-1.5.0.0.exe</strong> from GitHub Releases. The installer bundles Python and dependencies, starts the tray app, then opens Slimarr at <strong>localhost:9494</strong>.</p>
           </article>
         </div>
       </section>
@@ -146,7 +146,7 @@ docker compose up -d</code></pre>
         <h2>Ready To Ship A Leaner Library?</h2>
         <p>Install Slimarr, point it at Plex and your download stack, and let nightly automation keep your movie storage under control.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="https://github.com/theantipopau/slimarr/releases" target="_blank" rel="noopener noreferrer">Get Slimarr 1.4.0.0</a>
+          <a class="btn btn-primary" href="https://github.com/theantipopau/slimarr/releases" target="_blank" rel="noopener noreferrer">Get Slimarr 1.5.0.0</a>
           <a class="btn btn-ghost" href="https://github.com/theantipopau/slimarr/blob/main/README.md" target="_blank" rel="noopener noreferrer">Read Setup Guide</a>
         </div>
       </section>

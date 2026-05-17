@@ -189,6 +189,7 @@ export interface SearchDiagnosticEvent {
   rejected_count?: number
   error?: string | null
   malformed?: boolean
+  rate_limited?: boolean
   rejection_reasons?: Record<string, number>
   [key: string]: unknown
 }

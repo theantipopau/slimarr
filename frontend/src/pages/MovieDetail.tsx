@@ -27,6 +27,17 @@ function pctWidth(value?: number | null) {
   return `${Math.max(0, Math.min(100, value ?? 0))}%`
 }
 
+function listToInput(value: unknown) {
+  return Array.isArray(value) ? value.map(String).join(', ') : ''
+}
+
+function inputToList(value: string) {
+  return value
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
+
 export default function MovieDetail() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -47,7 +58,11 @@ export default function MovieDetail() {
   const [qualityIntent, setQualityIntent] = useState<Movie['quality_intent']>('space_saver')
   const [forceKeep, setForceKeep] = useState(false)
   const [allowLarger, setAllowLarger] = useState(false)
-  const [qualityOverrides, setQualityOverrides] = useState('{\n  "preferred_sources": [],\n  "preferred_codec": "",\n  "resolution_floor": ""\n}')
+  const [preferredCodec, setPreferredCodec] = useState('')
+  const [resolutionFloor, setResolutionFloor] = useState('')
+  const [maxSizeIncreasePct, setMaxSizeIncreasePct] = useState('')
+  const [preferredSources, setPreferredSources] = useState('')
+  const [rejectReleaseGroups, setRejectReleaseGroups] = useState('')
 
   const loadMovie = async () => {
     try {
@@ -56,13 +71,16 @@ export default function MovieDetail() {
       setQualityIntent(m.quality_intent || 'space_saver')
       setForceKeep(Boolean(m.force_keep))
       setAllowLarger(Boolean(m.allow_larger_replacements))
-      setQualityOverrides(
-        JSON.stringify(
-          m.quality_profile_overrides || { preferred_sources: [], preferred_codec: '', resolution_floor: '' },
-          null,
-          2,
-        ),
+      const overrides = m.quality_profile_overrides || {}
+      setPreferredCodec(String(overrides.preferred_codec || ''))
+      setResolutionFloor(String(overrides.resolution_floor || ''))
+      setMaxSizeIncreasePct(
+        overrides.max_size_increase_pct === undefined || overrides.max_size_increase_pct === null
+          ? ''
+          : String(overrides.max_size_increase_pct),
       )
+      setPreferredSources(listToInput(overrides.preferred_sources))
+      setRejectReleaseGroups(listToInput(overrides.reject_release_groups))
     } catch {
       // keep existing state and let page continue rendering
     }
@@ -180,13 +198,19 @@ export default function MovieDetail() {
   const doSaveQualityIntent = async () => {
     setSavingQuality(true)
     try {
-      let parsedOverrides: Record<string, unknown> = {}
-      try {
-        parsedOverrides = qualityOverrides.trim() ? JSON.parse(qualityOverrides) : {}
-      } catch {
-        toast('Quality overrides JSON is invalid', 'error')
+      const parsedMaxSize = maxSizeIncreasePct.trim() ? Number(maxSizeIncreasePct) : undefined
+      if (parsedMaxSize !== undefined && !Number.isFinite(parsedMaxSize)) {
+        toast('Max size increase must be a number', 'error')
         return
       }
+
+      const parsedOverrides: Record<string, unknown> = {
+        preferred_sources: inputToList(preferredSources),
+        reject_release_groups: inputToList(rejectReleaseGroups),
+      }
+      if (preferredCodec.trim()) parsedOverrides.preferred_codec = preferredCodec.trim()
+      if (resolutionFloor.trim()) parsedOverrides.resolution_floor = resolutionFloor.trim()
+      if (parsedMaxSize !== undefined) parsedOverrides.max_size_increase_pct = parsedMaxSize
 
       await api.updateMovieQualityIntent(movieId, {
         quality_intent: qualityIntent ?? 'space_saver',
@@ -357,15 +381,64 @@ export default function MovieDetail() {
               </p>
             )}
 
-            <label className="mt-3 block space-y-1 text-sm text-gray-300">
-              <span className="text-xs uppercase text-gray-500">Advanced overrides JSON</span>
-              <textarea
-                value={qualityOverrides}
-                onChange={(e) => setQualityOverrides(e.target.value)}
-                rows={5}
-                className="w-full rounded-lg border border-gray-700 bg-gray-950 px-3 py-2 font-mono text-xs text-white"
-              />
-            </label>
+            <div className="mt-3 grid gap-3 md:grid-cols-2">
+              <label className="space-y-1 text-sm text-gray-300">
+                <span className="text-xs uppercase text-gray-500">Resolution floor</span>
+                <select
+                  value={resolutionFloor}
+                  onChange={(e) => setResolutionFloor(e.target.value)}
+                  className="w-full rounded-lg border border-gray-700 bg-gray-950 px-3 py-2 text-sm text-white"
+                >
+                  <option value="">None</option>
+                  <option value="720p">720p</option>
+                  <option value="1080p">1080p</option>
+                  <option value="2160p">2160p</option>
+                </select>
+              </label>
+              <label className="space-y-1 text-sm text-gray-300">
+                <span className="text-xs uppercase text-gray-500">Preferred codec</span>
+                <select
+                  value={preferredCodec}
+                  onChange={(e) => setPreferredCodec(e.target.value)}
+                  className="w-full rounded-lg border border-gray-700 bg-gray-950 px-3 py-2 text-sm text-white"
+                >
+                  <option value="">Any</option>
+                  <option value="h264">H.264</option>
+                  <option value="h265">H.265 / HEVC</option>
+                  <option value="av1">AV1</option>
+                </select>
+              </label>
+              <label className="space-y-1 text-sm text-gray-300">
+                <span className="text-xs uppercase text-gray-500">Max size increase %</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={maxSizeIncreasePct}
+                  onChange={(e) => setMaxSizeIncreasePct(e.target.value)}
+                  placeholder={qualityIntent === 'reference' ? '300' : qualityIntent === 'premium' ? '80' : '15'}
+                  className="w-full rounded-lg border border-gray-700 bg-gray-950 px-3 py-2 text-sm text-white"
+                />
+              </label>
+              <label className="space-y-1 text-sm text-gray-300">
+                <span className="text-xs uppercase text-gray-500">Preferred sources</span>
+                <input
+                  value={preferredSources}
+                  onChange={(e) => setPreferredSources(e.target.value)}
+                  placeholder="remux, bluray, web-dl"
+                  className="w-full rounded-lg border border-gray-700 bg-gray-950 px-3 py-2 text-sm text-white"
+                />
+              </label>
+              <label className="space-y-1 text-sm text-gray-300 md:col-span-2">
+                <span className="text-xs uppercase text-gray-500">Rejected release groups</span>
+                <input
+                  value={rejectReleaseGroups}
+                  onChange={(e) => setRejectReleaseGroups(e.target.value)}
+                  placeholder="GROUP1, GROUP2"
+                  className="w-full rounded-lg border border-gray-700 bg-gray-950 px-3 py-2 text-sm text-white"
+                />
+              </label>
+            </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-3">
               <button
@@ -376,9 +449,6 @@ export default function MovieDetail() {
                 <Save size={14} />
                 {savingQuality ? 'Saving...' : 'Save Quality Policy'}
               </button>
-              <span className="text-xs text-gray-500">
-                Use this to intentionally keep remuxes, archive-quality releases, or title-specific overrides.
-              </span>
             </div>
           </div>
       {results.length > 0 && (

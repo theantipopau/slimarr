@@ -4,7 +4,7 @@ All notable changes to Slimarr are documented here.
 
 ---
 
-## [1.5.0.0-draft] - 2026-05-15
+## [1.5.0.0] - 2026-05-15
 
 ### v1.5 foundation (architecture and quality-intent groundwork)
 
@@ -35,6 +35,21 @@ All notable changes to Slimarr are documented here.
   preferred codec, preferred sources, resolution floor, release-group rejects,
   and max size increase policy.
 - Added automation-cycle safeguards to skip force-kept titles entirely.
+- Hardened protected-title automation so locked/pinned titles and force-kept
+  titles are skipped consistently during single-movie processing.
+- Hardened preferred-release automation so stored preferred releases only win
+  when the compare engine still accepts them; rejected preferred candidates now
+  fall back to normal scoring.
+- Hardened quality override parsing so malformed numeric/list overrides fall
+  back to policy defaults instead of aborting candidate comparison.
+- Replaced raw Movie Detail quality override JSON editing with explicit controls
+  for resolution floor, preferred codec, preferred sources, rejected groups, and
+  max size increase.
+- Added indexer/Prowlarr quota detection for HTTP 429, Newznab request-limit
+  errors, and common API limit/quota response text. Quota events now emit
+  actionable Search Diagnostics warnings, realtime user toasts, reliability
+  counters, and failure-heatmap entries instead of looking like silent empty
+  searches.
 
 #### Documentation and roadmap
 
@@ -61,6 +76,23 @@ All notable changes to Slimarr are documented here.
 - Added offline dependency fallback support in `install.ps1`:
   if online pip install fails due network restrictions, installer now tries local
   wheelhouse paths (`.\wheelhouse`, `.\dist\wheelhouse`, or `-WheelhousePath`).
+
+#### Home theater and quality-lock planning
+
+- Added v1.5 planning scope for a dedicated home-theater intent built on existing
+  `quality_intent` + lock semantics so users can preserve premium reference copies
+  (for example 4K HDR/DV high-bitrate with lossless/7.1 audio) instead of over-compressed
+  alternatives.
+- Added planning notes for optional curated title seeding (for example Oscar winners,
+  IMDB Top lists, and operator-imported watchlists) so "media center" movies can be
+  bulk-marked for premium retention policies.
+
+#### Docker launch UX
+
+- Added no-download launch path planning so operators can start Slimarr via shell
+  directly from the official compose template without manually copying files first.
+- Fixed Windows installer/start-menu launchers so first launch starts the tray app
+  path instead of headless-only mode, making the tray icon appear immediately.
 
 ## [1.4.0.0] - 2026-05-15
 

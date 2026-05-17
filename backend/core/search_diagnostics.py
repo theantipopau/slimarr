@@ -45,9 +45,11 @@ _indexer_metrics: dict[str, dict[str, Any]] = defaultdict(
         "empty": 0,
         "malformed": 0,
         "http_errors": 0,
+        "rate_limited": 0,
         "total_latency_ms": 0.0,
         "last_status_code": None,
         "last_error": None,
+        "last_rate_limit_at": None,
         "last_success_at": None,
         "last_request_at": None,
     }
@@ -104,6 +106,32 @@ def normalize_exception(exc: BaseException, *, timeout_seconds: float | None = N
         body = response.text[:500] if response is not None else ""
         return f"{cls_name}: HTTP {response.status_code if response else '?'} {body}".strip()
     return f"{cls_name}: {message or repr(exc)}"
+
+
+def is_rate_limit_signal(
+    *,
+    status_code: int | None = None,
+    error: str | None = None,
+    body: str | None = None,
+) -> bool:
+    """Detect indexer quota/rate-limit responses without relying on one vendor shape."""
+    if status_code == 429:
+        return True
+
+    haystack = " ".join([str(error or ""), str(body or "")]).lower()
+    if not haystack:
+        return False
+
+    patterns = [
+        r"\brate[- ]?limit(?:ed|ing)?\b",
+        r"\bapi (?:hit )?limit\b",
+        r"\bdaily (?:api )?(?:limit|quota)\b",
+        r"\bquota (?:exceeded|reached|used)\b",
+        r"\brequest limit (?:exceeded|reached)\b",
+        r"\btoo many requests\b",
+        r"\bcode=500\b.*\b(?:limit|quota|request)\b",
+    ]
+    return any(re.search(pattern, haystack) for pattern in patterns)
 
 
 def raw_preview(content: bytes | str | None, limit: int = RAW_PREVIEW_LIMIT) -> str:
@@ -193,8 +221,14 @@ def record_indexer_response(
     error: str | None = None,
     malformed: bool = False,
     raw_response: str | None = None,
+    rate_limited: bool = False,
 ) -> dict[str, Any]:
     safe_raw_preview = raw_preview(raw_response) if raw_response else ""
+    rate_limited = rate_limited or is_rate_limit_signal(
+        status_code=status_code,
+        error=error,
+        body=safe_raw_preview,
+    )
     with _lock:
         metrics = _indexer_metrics[indexer_name]
         metrics["requests"] += 1
@@ -207,6 +241,10 @@ def record_indexer_response(
         if error:
             metrics["failures"] += 1
             metrics["last_error"] = error
+            if rate_limited:
+                metrics["rate_limited"] += 1
+                metrics["last_rate_limit_at"] = utc_now()
+                _failure_heatmap[f"{indexer_name}:rate_limited"] += 1
             if "timeout" in error.lower() or "timed out" in error.lower():
                 metrics["timeouts"] += 1
                 _failure_heatmap[f"{indexer_name}:timeout"] += 1
@@ -238,6 +276,7 @@ def record_indexer_response(
             "categories": categories or [],
             "error": error,
             "malformed": malformed,
+            "rate_limited": rate_limited,
             "raw_preview": safe_raw_preview,
         }
     )

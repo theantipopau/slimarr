@@ -1,5 +1,5 @@
 ﻿# build-installer.ps1 - Build the Slimarr Windows installer
-# Output: dist/installer/SlimarrSetup-1.4.0.0.exe
+# Output: dist/installer/SlimarrSetup-1.5.0.0.exe
 #
 # Prerequisites (install once):
 #   pip install pyinstaller          (in your venv)
@@ -95,7 +95,7 @@ if not exist "Slimarr.exe" (
 )
 
 set "SLIMARR_NO_AUTO_BROWSER=1"
-start "Slimarr" /min "Slimarr.exe" --headless
+start "Slimarr" /min "Slimarr.exe"
 
 echo Waiting for Slimarr to start (up to 60 seconds)...
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
@@ -115,7 +115,7 @@ exit /b 0
 
 Write-Host ""
 Write-Host "  +-------------------------------------+" -ForegroundColor Green
-Write-Host "  |   Slimarr Installer Builder v1.4   |" -ForegroundColor Green
+Write-Host "  |   Slimarr Installer Builder v1.5   |" -ForegroundColor Green
 Write-Host "  +-------------------------------------+" -ForegroundColor Green
 
 # ---- 0. Sanity checks -------------------------------------------------------

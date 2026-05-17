@@ -16,6 +16,24 @@ into a production-grade self-hosted media optimization platform.
 - Advanced observability persistence and trend analytics.
 - ffprobe-powered media intelligence expansion.
 - Operational UX improvements for homelab deployment and supportability.
+- Home-theater-first quality controls with strong lock/preserve semantics for premium titles.
+
+## 1.1) Home Theater Quality-Lock Vision
+
+### Operator need
+- Some titles should prioritize reference experience over maximum savings.
+- Users need "do not downgrade this experience" controls that survive automation cycles.
+
+### Planned v1.5 behavior
+- Add a dedicated home-theater policy preset layered on existing `quality_intent` / lock controls.
+- Prefer high-fidelity candidates (4K HDR/DV where compatible, strong source rank, better audio channels,
+  and bounded size floors) when users opt in.
+- Prevent compressed side-grades for protected titles by default.
+
+### Curated-title cross-reference (optional)
+- Add import hooks for curated lists (for example Oscar winners, IMDB Top, or user-provided TMDB lists).
+- Support one-click bulk assignment of premium/home-theater quality intent for imported list members.
+- Keep this operator-controlled and reversible (no forced automatic list trust).
 
 ## 2) Architectural Refactor Roadmap
 
@@ -104,6 +122,7 @@ into a production-grade self-hosted media optimization platform.
 ### Metrics expansion
 - Search latency percentiles by provider.
 - Provider uptime/degradation counters.
+- Provider API quota/rate-limit counters and warnings.
 - Download lifecycle success/failure categories.
 - Compare decision distribution by quality intent.
 - Daily reclaim trend (`bytes_reclaimed_per_day`).
@@ -142,6 +161,7 @@ into a production-grade self-hosted media optimization platform.
 - First-run deployment wizard with compose/env generator.
 - Volume mapping assistant and writable-path tests.
 - Reverse-proxy helper and networking diagnostics.
+- No-download shell launch helpers that run official compose templates directly from GitHub.
 
 ### Platform templates
 - Unraid template.
@@ -258,6 +278,20 @@ backend/
 - Diagnostics domain has mixed in-memory and persisted pathways.
 - Add stricter typing for ad-hoc dict payloads in worker/diagnostic events.
 
+## 17) Core Engine and GUI Improvement Candidates (v1.5)
+
+### Core engine
+- Add profile-aware scorer telemetry so users can see why premium/reference decisions win.
+- Add bounded "best quality for acceptable size" policy rails with explicit per-title thresholds.
+- Add candidate explainability snapshots that compare kept-vs-rejected premium candidates side by side.
+- Add better retry prioritization based on historical indexer/uploader success for high-intent titles.
+
+### GUI
+- Add clearer movie-level policy presets: Space Saver, Balanced, Premium, Reference, Locked.
+- Add inline "home theater mode" helper text with real examples (for example LOTR-style reference copies).
+- Add bulk actions from Library view for lock/intent assignment.
+- Add curated-list import UI entry point for premium title tagging.
+
 ## 17) Performance Bottleneck Analysis
 
 ### Bottlenecks
@@ -309,6 +343,10 @@ backend/
 - `locked`/`pinned` or `force_keep=true`: automatic replacements rejected.
 - `balanced`/`premium`/`reference`: optional larger replacement acceptance based on profile gates.
 - Override hooks: `preferred_codec`, `preferred_sources`, `resolution_floor`, `reject_release_groups`, `max_size_increase_pct`.
+- Single-movie processing respects locked/pinned/force-keep protection before searching.
+- Preferred-release overrides only drive automation when the candidate is still accepted by comparison policy.
+- Movie Detail exposes common override hooks as form controls instead of requiring raw JSON editing.
+- Indexer/Prowlarr quota and rate-limit responses emit warnings, UI toasts, reliability counters, and heatmap entries.
 
 ### API
 - `POST /api/v1/library/movies/{movie_id}/quality-intent`

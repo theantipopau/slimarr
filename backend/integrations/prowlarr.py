@@ -7,6 +7,8 @@ from typing import Any
 
 from backend.config import get_config
 from backend.core.search_diagnostics import (
+    emit_search_warning,
+    is_rate_limit_signal,
     normalize_exception,
     raw_preview,
     record_indexer_request,
@@ -84,6 +86,12 @@ class ProwlarrClient:
             elapsed_ms = (time.perf_counter() - start) * 1000
             error = normalize_exception(exc, timeout_seconds=timeout_seconds)
             malformed = resp is not None and exc.__class__.__name__ == "JSONDecodeError"
+            preview = raw_preview(resp.content if resp is not None else None)
+            rate_limited = is_rate_limit_signal(
+                status_code=resp.status_code if resp else None,
+                error=error,
+                body=preview,
+            )
             record_indexer_response(
                 indexer_name="Prowlarr",
                 provider="prowlarr",
@@ -93,8 +101,19 @@ class ProwlarrClient:
                 latency_ms=elapsed_ms,
                 error=error,
                 malformed=malformed,
-                raw_response=raw_preview(resp.content if resp is not None else None) if include_raw else None,
+                raw_response=preview if include_raw else None,
+                rate_limited=rate_limited,
             )
+            if rate_limited:
+                await emit_search_warning(
+                    "Indexer API quota or rate limit reached.",
+                    {
+                        "indexer": "Prowlarr",
+                        "provider": "prowlarr",
+                        "status_code": resp.status_code if resp else None,
+                        "error": error,
+                    },
+                )
             return {
                 "indexer_name": "Prowlarr",
                 "provider": "prowlarr",
@@ -104,7 +123,7 @@ class ProwlarrClient:
                 "raw_count": 0,
                 "parsed_count": 0,
                 "parsed_results": [],
-                "raw_response": raw_preview(resp.content if resp is not None else None) if include_raw else "",
+                "raw_response": preview if include_raw else "",
                 "error": error,
                 "exception": exc,
             }

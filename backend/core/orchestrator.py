@@ -49,22 +49,32 @@ async def process_single_movie(movie_id: int) -> dict:
     config = get_config()
     preferred_release_title: str | None = None
     force_keep = False
+    slimarr_locked = False
+    quality_intent = "space_saver"
     async with async_session() as db:
         movie = await db.get(Movie, movie_id)
         if movie:
             preferred_release_title = movie.preferred_release_title
             force_keep = bool(movie.force_keep)
+            slimarr_locked = bool(movie.slimarr_locked)
+            quality_intent = movie.quality_intent or "space_saver"
 
-    if force_keep:
-        logger.info("Skipping movie {}: force-keep policy enabled", movie_id)
-        return {"movie_id": movie_id, "status": "force_kept"}
+    if force_keep or slimarr_locked or quality_intent in {"locked", "pinned"}:
+        logger.info(
+            "Skipping movie {}: protected by quality policy (locked={}, force_keep={}, intent={})",
+            movie_id,
+            slimarr_locked,
+            force_keep,
+            quality_intent,
+        )
+        return {"movie_id": movie_id, "status": "protected"}
 
     results = await search_for_movie(movie_id)
     accepted = [r for r in results if r["decision"] == "accept"]
     preferred = None
     if preferred_release_title:
         preferred_key = preferred_release_title.strip().lower()
-        preferred = next(
+        preferred_match = next(
             (
                 r
                 for r in results
@@ -72,7 +82,15 @@ async def process_single_movie(movie_id: int) -> dict:
             ),
             None,
         )
-        if not preferred:
+        if preferred_match and preferred_match.get("decision") == "accept":
+            preferred = preferred_match
+        elif preferred_match:
+            logger.info(
+                "Preferred release override for movie {} was found but rejected ({}); falling back to normal scoring",
+                movie_id,
+                preferred_match.get("reject_reason") or "no reject reason",
+            )
+        else:
             logger.info(
                 "Preferred release override not found for movie {} in this search pass: {}",
                 movie_id,

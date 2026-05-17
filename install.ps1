@@ -182,7 +182,8 @@ files:
 
 function Start-SlimarrUi([string]$PythonExePath) {
     Write-Step "Starting Slimarr"
-    Start-Process -FilePath $PythonExePath -ArgumentList @("run.py", "--headless") -WorkingDirectory $Root | Out-Null
+    $env:SLIMARR_NO_AUTO_BROWSER = "1"
+    Start-Process -FilePath $PythonExePath -ArgumentList @("run.py") -WorkingDirectory $Root | Out-Null
     Write-Ok "Slimarr started in background"
     Write-Host "    Waiting for backend to be ready..." -ForegroundColor DarkGray
     $deadline = (Get-Date).AddSeconds(60)
@@ -195,6 +196,7 @@ function Start-SlimarrUi([string]$PythonExePath) {
         Start-Sleep -Milliseconds 500
     }
     Start-Process "http://localhost:9494" | Out-Null
+    Remove-Item Env:\SLIMARR_NO_AUTO_BROWSER -ErrorAction SilentlyContinue
     if ($ready) {
         Write-Ok "Browser opened: http://localhost:9494"
     } else {

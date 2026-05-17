@@ -9,6 +9,8 @@ import httpx
 
 from backend.config import IndexerConfig
 from backend.core.search_diagnostics import (
+    emit_search_warning,
+    is_rate_limit_signal,
     normalize_exception,
     raw_preview,
     record_indexer_request,
@@ -84,6 +86,12 @@ class NewznabClient:
         except Exception as exc:
             elapsed_ms = (time.perf_counter() - start) * 1000
             error = normalize_exception(exc, timeout_seconds=timeout_seconds)
+            preview = raw_preview(resp.content if resp is not None else None)
+            rate_limited = is_rate_limit_signal(
+                status_code=resp.status_code if resp else None,
+                error=error,
+                body=preview,
+            )
             record_indexer_response(
                 indexer_name=self.name,
                 provider="newznab",
@@ -92,8 +100,19 @@ class NewznabClient:
                 status_code=resp.status_code if resp else None,
                 latency_ms=elapsed_ms,
                 error=error,
-                raw_response=raw_preview(resp.content if resp is not None else None) if include_raw else None,
+                raw_response=preview if include_raw else None,
+                rate_limited=rate_limited,
             )
+            if rate_limited:
+                await emit_search_warning(
+                    "Indexer API quota or rate limit reached.",
+                    {
+                        "indexer": self.name,
+                        "provider": "newznab",
+                        "status_code": resp.status_code if resp else None,
+                        "error": error,
+                    },
+                )
             return {
                 "indexer_name": self.name,
                 "provider": "newznab",
@@ -103,7 +122,7 @@ class NewznabClient:
                 "raw_count": 0,
                 "parsed_count": 0,
                 "parsed_results": [],
-                "raw_response": raw_preview(resp.content if resp is not None else None) if include_raw else "",
+                "raw_response": preview if include_raw else "",
                 "error": error,
                 "exception": exc,
             }
@@ -146,6 +165,11 @@ class NewznabClient:
             description = error_el.get("description", "Newznab error")
             elapsed_ms = (time.perf_counter() - start) * 1000
             exc = NewznabSearchError(f"code={code} description={description}")
+            rate_limited = is_rate_limit_signal(
+                status_code=resp.status_code,
+                error=str(exc),
+                body=description,
+            )
             record_indexer_response(
                 indexer_name=self.name,
                 provider="newznab",
@@ -155,7 +179,18 @@ class NewznabClient:
                 latency_ms=elapsed_ms,
                 error=str(exc),
                 raw_response=raw_preview(resp.content) if include_raw else None,
+                rate_limited=rate_limited,
             )
+            if rate_limited:
+                await emit_search_warning(
+                    "Indexer API quota or rate limit reached.",
+                    {
+                        "indexer": self.name,
+                        "provider": "newznab",
+                        "status_code": resp.status_code,
+                        "error": str(exc),
+                    },
+                )
             return {
                 "indexer_name": self.name,
                 "provider": "newznab",

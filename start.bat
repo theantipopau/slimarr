@@ -14,7 +14,8 @@ if not exist "%PY%" (
 )
 
 echo Starting Slimarr...
-start "Slimarr" "%PY%" "run.py" --headless
+set "SLIMARR_NO_AUTO_BROWSER=1"
+start "Slimarr" "%PY%" "run.py"
 
 echo Waiting for Slimarr to start (up to 60 seconds)...
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
