@@ -1,4 +1,4 @@
-# install.ps1 -- Slimarr source/portable installer for Windows
+﻿# install.ps1 -- Slimarr source/portable installer for Windows
 #
 # Usage:
 #   .\install.ps1
@@ -11,7 +11,8 @@ param(
     [switch]$SkipFrontend,
     [switch]$InstallService,
     [switch]$Uninstall,
-    [switch]$Start
+    [switch]$Start,
+    [string]$WheelhousePath = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -94,11 +95,59 @@ function Invoke-LoggedNative([scriptblock]$Command) {
     $oldPreference = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
     try {
-        & $Command *>> $LogFile
+        # Keep native output readable and avoid noisy NativeCommandError wrapping.
+        & $Command 2>&1 | Out-File -FilePath $LogFile -Append -Encoding utf8
         return $LASTEXITCODE
     } finally {
         $ErrorActionPreference = $oldPreference
     }
+}
+
+function Test-LogForNetworkInstallFailure([string]$Path) {
+    if (-not (Test-Path $Path)) { return $false }
+    try {
+        $tail = Get-Content -Path $Path -Tail 160 -ErrorAction Stop | Out-String
+    } catch {
+        return $false
+    }
+
+    if ($tail -match "WinError 10013") { return $true }
+    if ($tail -match "Failed to establish a new connection") { return $true }
+    if ($tail -match "Temporary failure in name resolution") { return $true }
+    if ($tail -match "Name or service not known") { return $true }
+    if ($tail -match "Connection timed out") { return $true }
+    return $false
+}
+
+function Resolve-WheelhouseCandidates {
+    $candidates = @()
+    if ($WheelhousePath -and $WheelhousePath.Trim().Length -gt 0) {
+        $candidates += $WheelhousePath.Trim()
+    }
+    $candidates += @(
+        (Join-Path $Root "wheelhouse"),
+        (Join-Path $Root "dist\wheelhouse")
+    )
+
+    $resolved = @()
+    foreach ($candidate in $candidates) {
+        $full = $null
+        try {
+            $full = [System.IO.Path]::GetFullPath($candidate)
+        } catch {
+            $full = $null
+        }
+
+        if (-not $full) {
+            continue
+        }
+
+        if ($resolved -notcontains $full) {
+            $resolved += $full
+        }
+    }
+
+    return $resolved
 }
 
 function Ensure-Config {
@@ -149,7 +198,7 @@ function Start-SlimarrUi([string]$PythonExePath) {
     if ($ready) {
         Write-Ok "Browser opened: http://localhost:9494"
     } else {
-        Write-Host "    Backend not ready after 60s — browser opened anyway." -ForegroundColor Yellow
+        Write-Host "    Backend not ready after 60s - browser opened anyway." -ForegroundColor Yellow
     }
 }
 
@@ -225,11 +274,51 @@ Write-Step "Installing Python dependencies"
 $requirements = Join-Path $Root "requirements.txt"
 $code = Invoke-LoggedNative { & $VenvPython -m pip install -r $requirements -q }
 if ($code -ne 0) {
+    $networkFailure = Test-LogForNetworkInstallFailure -Path $LogFile
+    if ($networkFailure) {
+        $wheelhouses = Resolve-WheelhouseCandidates
+        foreach ($wh in $wheelhouses) {
+            if (-not (Test-Path $wh)) {
+                continue
+            }
+            Write-Host "    Attempting offline install from wheelhouse: $wh" -ForegroundColor Yellow
+            $wheelCode = Invoke-LoggedNative { & $VenvPython -m pip install --no-index --find-links $wh -r $requirements -q }
+            if ($wheelCode -eq 0) {
+                $code = 0
+                break
+            }
+        }
+    }
+}
+
+if ($code -ne 0) {
+    $networkFailure = Test-LogForNetworkInstallFailure -Path $LogFile
+    $wheelhouses = Resolve-WheelhouseCandidates
+
     Write-Host ""
-    Write-Host "  Dependency install failed. Common causes:" -ForegroundColor Yellow
-    Write-Host "    - Python 3.14 was used (not yet supported — use 3.12 or 3.13)" -ForegroundColor Yellow
-    Write-Host "    - No internet access or firewall blocked PyPI (pypi.org:443)" -ForegroundColor Yellow
-    Write-Host "    - Missing Visual C++ Build Tools (required by pydantic-core on 3.14)" -ForegroundColor Yellow
+    if ($networkFailure) {
+        Write-Host "  Dependency install failed because Python could not reach package indexes." -ForegroundColor Yellow
+        Write-Host "  Detected network/socket errors in startup-error.log (for example WinError 10013)." -ForegroundColor Yellow
+        Write-Host ""
+        Write-Host "  Fix checklist:" -ForegroundColor Cyan
+        Write-Host "    - Allow outbound HTTPS (TCP 443) for python.exe and pip." -ForegroundColor Cyan
+        Write-Host "    - Check firewall/proxy policy for pypi.org and files.pythonhosted.org." -ForegroundColor Cyan
+        Write-Host "    - If needed, set HTTPS_PROXY and rerun install.ps1." -ForegroundColor Cyan
+        Write-Host "    - For offline installs, place wheels in .\wheelhouse and rerun install.ps1." -ForegroundColor Cyan
+        if ($WheelhousePath -and $WheelhousePath.Trim().Length -gt 0) {
+            Write-Host "      Custom wheelhouse path: $WheelhousePath" -ForegroundColor DarkGray
+        }
+        foreach ($wh in $wheelhouses) {
+            if (-not (Test-Path $wh)) {
+                Write-Host "      Not found: $wh" -ForegroundColor DarkGray
+            }
+        }
+    } else {
+        Write-Host "  Dependency install failed. Common causes:" -ForegroundColor Yellow
+        Write-Host "    - Python 3.14 was used (not yet supported - use 3.12 or 3.13)" -ForegroundColor Yellow
+        Write-Host "    - No internet access or firewall blocked PyPI (pypi.org:443)" -ForegroundColor Yellow
+        Write-Host "    - Missing Visual C++ Build Tools (required by pydantic-core on 3.14)" -ForegroundColor Yellow
+    }
     Write-Host "  See $LogFile for the full error." -ForegroundColor DarkGray
     Fail "Dependency install failed. See above for details."
 }

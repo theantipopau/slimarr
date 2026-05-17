@@ -52,6 +52,16 @@ All notable changes to Slimarr are documented here.
 - Added new regression tests for quality-intent compare behavior in
   `tests/backend/test_quality_intent.py`.
 
+#### Installer reliability
+
+- Improved `install.ps1` native-command logging so pip/network errors are written
+  cleanly to `startup-error.log` without noisy PowerShell wrapper output.
+- Added targeted install diagnostics for blocked package index access (for example
+  `WinError 10013`) with explicit firewall/proxy remediation guidance.
+- Added offline dependency fallback support in `install.ps1`:
+  if online pip install fails due network restrictions, installer now tries local
+  wheelhouse paths (`.\wheelhouse`, `.\dist\wheelhouse`, or `-WheelhousePath`).
+
 ## [1.4.0.0] - 2026-05-15
 
 ### Slimarr v1.4 — "Containerised"
