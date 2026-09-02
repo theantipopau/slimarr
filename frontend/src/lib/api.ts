@@ -169,6 +169,7 @@ export const api = {
     provider_id?: number
     sort?: string
   }) => client.get('/recommendations', { params }).then((r) => r.data),
+  recommendationProviders: () => client.get('/recommendations/providers').then((r) => r.data),
   recommendationCapabilities: () => client.get('/recommendations/capabilities').then((r) => r.data),
   refreshRecommendations: () => client.post('/recommendations/refresh').then((r) => r.data),
   dismissRecommendation: (id: number) => client.post(`/recommendations/${id}/dismiss`).then((r) => r.data),

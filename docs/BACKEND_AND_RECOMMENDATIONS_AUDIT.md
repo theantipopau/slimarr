@@ -147,3 +147,12 @@ Checked and deliberately left as-is (not bugs, or not worth the risk/complexity 
 
 Full suite after this pass: 282/282 passing (17 new regression tests since the previous 265/265 checkpoint). Ruff clean.
 3. The recommendation engine itself proceeds as new, additive code (new tables, new routers, new frontend section) and should not require touching the core replacement pipeline at all beyond the read-only Plex/Radarr/Sonarr state it needs to correlate against.
+
+## 7. Follow-up enhancements (2026-09-03, same day)
+
+Two Discovery-page gaps found by re-reading the shipped UI against what the backend already supported:
+
+- **Recommendations past the first page were unreachable.** `GET /recommendations` has always taken `page`/`per_page`, but the Discovery page fetched a single fixed `per_page=60` and never exposed a way to see the rest — a library with more than 60 active recommendations silently hid everything past #60, with `total` displayed but never actionable. Added a "Load more" control that fetches subsequent pages and appends to the grid.
+- **The `provider_id` filter (added in the QA pass above) had no UI.** Added `GET /recommendations/providers` (distinct provider id/name pairs actually present in `StreamingAvailability`, so the dropdown only ever offers filters that can match something) and wired a provider-filter dropdown into the Discovery page's filter bar, shown only when at least one provider exists in the data.
+
+284/284 passing (2 new tests for the providers endpoint). `tsc --noEmit` and production build clean. Verified live against the isolated preview environment with 76 seeded recommendations: pagination correctly showed "60 of 76" with a working "Load more" button, and the provider filter correctly narrowed results server-side.

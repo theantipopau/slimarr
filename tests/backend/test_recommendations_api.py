@@ -109,6 +109,37 @@ class RecommendationsAPITests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["total"], 0)
         self.assertEqual(result["recommendations"], [])
 
+    async def test_list_providers_returns_distinct_providers_present_in_availability(self):
+        rec_id = await self._seed(tmdb_id=1)
+        async with self.maker() as db:
+            rec = (await db.execute(select(Recommendation).where(Recommendation.id == rec_id))).scalar_one()
+            db.add(StreamingAvailability(
+                candidate_id=rec.candidate_id,
+                region="US", provider_id=8, provider_name="Netflix", availability_type="flatrate",
+                checked_at=datetime.now(timezone.utc), expires_at=datetime.now(timezone.utc) + timedelta(days=1),
+            ))
+            db.add(StreamingAvailability(
+                candidate_id=rec.candidate_id,
+                region="US", provider_id=9, provider_name="Amazon Prime Video", availability_type="rent",
+                checked_at=datetime.now(timezone.utc), expires_at=datetime.now(timezone.utc) + timedelta(days=1),
+            ))
+            await db.commit()
+
+        result = await api.list_providers(user="tester")
+
+        self.assertEqual(
+            result,
+            [
+                {"provider_id": 9, "provider_name": "Amazon Prime Video"},
+                {"provider_id": 8, "provider_name": "Netflix"},
+            ],
+        )
+
+    async def test_list_providers_is_empty_when_no_availability_rows_exist(self):
+        await self._seed(tmdb_id=1)
+        result = await api.list_providers(user="tester")
+        self.assertEqual(result, [])
+
     async def test_already_in_plex_is_correct_per_row_after_batching(self):
         # Regression guard for the N+1 -> batched rewrite of the Plex-
         # ownership check: each row must still get its own correct answer,

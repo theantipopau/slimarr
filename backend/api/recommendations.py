@@ -179,6 +179,23 @@ async def list_recommendations(
     return {"total": total, "page": page, "per_page": per_page, "recommendations": out}
 
 
+@router.get("/providers")
+async def list_providers(user=Depends(get_current_user)):
+    """Distinct streaming providers actually present among sourced candidates
+    - powers the Discovery page's provider filter. Scoped to what's really in
+    the table rather than TMDB's full global provider list, so the dropdown
+    never offers a filter that can't possibly match anything."""
+    async with async_session() as db:
+        rows = (
+            await db.execute(
+                select(StreamingAvailability.provider_id, StreamingAvailability.provider_name)
+                .distinct()
+                .order_by(StreamingAvailability.provider_name)
+            )
+        ).all()
+    return [{"provider_id": r[0], "provider_name": r[1]} for r in rows]
+
+
 @router.get("/capabilities", response_model=RecommendationCapabilitiesResponse)
 async def get_capabilities(user=Depends(get_current_user)):
     """Capability detection for hand-off actions — the frontend disables an

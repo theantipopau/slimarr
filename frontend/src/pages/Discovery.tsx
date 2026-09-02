@@ -4,13 +4,14 @@ import { useToast } from '@/components/Toast'
 import EmptyState from '@/components/EmptyState'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import { Skeleton } from '@/components/Skeleton'
-import type { HandoffOptions, RecommendationCapabilities, RecommendationItem } from '@/lib/types'
+import type { HandoffOptions, RecommendationCapabilities, RecommendationItem, RecommendationProviderOption } from '@/lib/types'
 import {
   Compass, RefreshCw, X, EyeOff, Bookmark, CheckCircle2, Sparkles,
   Send, Star, Calendar, Info, ExternalLink, Copy,
 } from 'lucide-react'
 
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w342'
+const PAGE_SIZE = 60
 
 const STATE_LABELS: Record<string, string> = {
   active: 'Suggested',
@@ -340,23 +341,39 @@ export default function Discovery() {
   const [category, setCategory] = useState('')
   const [state, setState] = useState('active')
   const [sort, setSort] = useState('relevance')
+  const [providerId, setProviderId] = useState<number | ''>('')
+  const [providerOptions, setProviderOptions] = useState<RecommendationProviderOption[]>([])
+  const [page, setPage] = useState(1)
+  const [loadingMore, setLoadingMore] = useState(false)
   const [disabled, setDisabled] = useState(false)
   const [handoff, setHandoff] = useState<{ item: RecommendationItem; service: 'radarr' | 'sonarr' } | null>(null)
 
-  const load = useCallback(() => {
-    setLoading(true)
-    api.recommendations({ media_type: mediaType || undefined, category: category || undefined, state, sort, per_page: 60 })
+  const fetchPage = useCallback((pageNum: number, append: boolean) => {
+    ;(append ? setLoadingMore : setLoading)(true)
+    api.recommendations({
+      media_type: mediaType || undefined,
+      category: category || undefined,
+      state,
+      sort,
+      provider_id: providerId === '' ? undefined : providerId,
+      page: pageNum,
+      per_page: PAGE_SIZE,
+    })
       .then((data) => {
-        setItems(data.recommendations)
+        setItems((prev) => (append ? [...prev, ...data.recommendations] : data.recommendations))
         setTotal(data.total)
+        setPage(pageNum)
       })
       .catch(() => {})
-      .finally(() => setLoading(false))
-  }, [mediaType, category, state, sort])
+      .finally(() => (append ? setLoadingMore : setLoading)(false))
+  }, [mediaType, category, state, sort, providerId])
+
+  const load = useCallback(() => fetchPage(1, false), [fetchPage])
 
   useEffect(() => { load() }, [load])
   useEffect(() => {
     api.recommendationCapabilities().then(setCapabilities).catch(() => {})
+    api.recommendationProviders().then(setProviderOptions).catch(() => {})
     // The list endpoint returns an empty result set whether the feature is
     // disabled or just has nothing to show yet — check the actual config so
     // the empty state can tell those two apart instead of always saying
@@ -453,6 +470,18 @@ export default function Discovery() {
           <option value="popularity">Sort: Popularity</option>
           <option value="release_date">Sort: Release Date</option>
         </select>
+        {providerOptions.length > 0 && (
+          <select
+            value={providerId}
+            onChange={(e) => setProviderId(e.target.value === '' ? '' : Number(e.target.value))}
+            className="rounded-lg bg-gray-800 px-3 py-2 text-sm outline-none"
+          >
+            <option value="">All Providers</option>
+            {providerOptions.map((p) => (
+              <option key={p.provider_id} value={p.provider_id}>{p.provider_name}</option>
+            ))}
+          </select>
+        )}
       </div>
 
       {disabled ? (
@@ -477,7 +506,7 @@ export default function Discovery() {
         />
       ) : (
         <>
-          <p className="text-xs text-gray-500">{total} recommendation{total === 1 ? '' : 's'}</p>
+          <p className="text-xs text-gray-500">{items.length} of {total} recommendation{total === 1 ? '' : 's'}</p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {items.map((item) => (
               <RecommendationCard
@@ -489,6 +518,17 @@ export default function Discovery() {
               />
             ))}
           </div>
+          {items.length < total && (
+            <div className="flex justify-center pt-2">
+              <button
+                onClick={() => fetchPage(page + 1, true)}
+                disabled={loadingMore}
+                className="rounded-lg border border-white/10 px-4 py-2 text-sm text-gray-300 hover:bg-white/5 disabled:opacity-50"
+              >
+                {loadingMore ? 'Loading…' : `Load more (${total - items.length} remaining)`}
+              </button>
+            </div>
+          )}
         </>
       )}
 

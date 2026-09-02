@@ -493,3 +493,8 @@ export interface HandoffOptions {
   root_folders: HandoffRootFolder[]
   quality_profiles: HandoffQualityProfile[]
 }
+
+export interface RecommendationProviderOption {
+  provider_id: number
+  provider_name: string
+}
