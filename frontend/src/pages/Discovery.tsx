@@ -7,7 +7,7 @@ import { Skeleton } from '@/components/Skeleton'
 import type { HandoffOptions, RecommendationCapabilities, RecommendationItem } from '@/lib/types'
 import {
   Compass, RefreshCw, X, EyeOff, Bookmark, CheckCircle2, Sparkles,
-  Send, Star, Calendar, Info,
+  Send, Star, Calendar, Info, ExternalLink, Copy,
 } from 'lucide-react'
 
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w342'
@@ -32,6 +32,10 @@ function posterUrl(path?: string | null): string | null {
   return path ? `${TMDB_IMAGE_BASE}${path}` : null
 }
 
+function tmdbDetailsUrl(item: RecommendationItem): string {
+  return `https://www.themoviedb.org/${item.media_type === 'tv' ? 'tv' : 'movie'}/${item.tmdb_id}`
+}
+
 function ReasonChip({ text }: { text: string }) {
   return (
     <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2 py-0.5 text-[10px] text-emerald-200">
@@ -52,9 +56,19 @@ function RecommendationCard({
   onAction: (id: number, action: 'dismiss' | 'hide' | 'watchlist' | 'mark-owned' | 'refresh-availability') => void
   onHandoff: (item: RecommendationItem, service: 'radarr' | 'sonarr') => void
 }) {
+  const { toast } = useToast()
   const poster = posterUrl(item.poster_path)
   const canSendToRadarr = item.media_type === 'movie' && capabilities?.radarr.available
   const canSendToSonarr = item.media_type === 'tv' && capabilities?.sonarr.available
+
+  const copyId = async () => {
+    try {
+      await navigator.clipboard.writeText(String(item.tmdb_id))
+      toast('TMDB ID copied', 'success')
+    } catch {
+      toast('Could not copy to clipboard', 'error')
+    }
+  }
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-xl border border-white/10 bg-gray-900/70 shadow-[0_16px_32px_-24px_rgba(0,0,0,0.8)] transition-transform hover:-translate-y-0.5">
@@ -83,7 +97,18 @@ function RecommendationCard({
 
       <div className="flex flex-1 flex-col gap-2 p-3">
         <div>
-          <p className="truncate text-sm font-semibold text-gray-100" title={item.title}>{item.title}</p>
+          <div className="flex items-center gap-1">
+            <p className="truncate text-sm font-semibold text-gray-100" title={item.title}>{item.title}</p>
+            <a
+              href={tmdbDetailsUrl(item)}
+              target="_blank"
+              rel="noreferrer"
+              className="shrink-0 text-gray-500 hover:text-gray-300"
+              title="Open details on TMDB"
+            >
+              <ExternalLink size={11} />
+            </a>
+          </div>
           <div className="mt-0.5 flex items-center gap-2 text-[11px] text-gray-500">
             {item.year && (
               <span className="flex items-center gap-1"><Calendar size={10} />{item.year}</span>
@@ -105,13 +130,26 @@ function RecommendationCard({
         {item.availability.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {item.availability.slice(0, 3).map((entry) => (
-              <span
-                key={`${entry.provider_id}-${entry.availability_type}`}
-                className={`rounded bg-cyan-500/10 px-1.5 py-0.5 text-[10px] text-cyan-200 ${entry.stale ? 'opacity-50' : ''}`}
-                title={entry.stale ? 'Availability may be stale — refresh to confirm' : undefined}
-              >
-                {entry.provider_name}
-              </span>
+              entry.source_url ? (
+                <a
+                  key={`${entry.provider_id}-${entry.availability_type}`}
+                  href={entry.source_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`rounded bg-cyan-500/10 px-1.5 py-0.5 text-[10px] text-cyan-200 hover:bg-cyan-500/20 ${entry.stale ? 'opacity-50' : ''}`}
+                  title={(entry.stale ? 'Availability may be stale — refresh to confirm. ' : '') + 'Open on TMDB'}
+                >
+                  {entry.provider_name}
+                </a>
+              ) : (
+                <span
+                  key={`${entry.provider_id}-${entry.availability_type}`}
+                  className={`rounded bg-cyan-500/10 px-1.5 py-0.5 text-[10px] text-cyan-200 ${entry.stale ? 'opacity-50' : ''}`}
+                  title={entry.stale ? 'Availability may be stale — refresh to confirm' : undefined}
+                >
+                  {entry.provider_name}
+                </span>
+              )
             ))}
           </div>
         )}
@@ -144,6 +182,13 @@ function RecommendationCard({
             title="Mark as already owned"
           >
             <CheckCircle2 size={12} /> Owned
+          </button>
+          <button
+            onClick={copyId}
+            className="flex items-center gap-1 rounded-md border border-white/10 px-2 py-1 text-[11px] text-gray-300 hover:bg-white/5"
+            title="Copy TMDB ID"
+          >
+            <Copy size={12} />
           </button>
           {(canSendToRadarr || canSendToSonarr) && (
             <button
