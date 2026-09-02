@@ -214,7 +214,6 @@ async def scan_and_clean_duplicates() -> dict:
                     file_path = inf["file"]
                     file_size = inf["size"]
 
-                    recycled = False
                     if config.files.recycling_bin:
                         # Use a unique name to avoid collisions between movies
                         base = os.path.basename(file_path)
@@ -229,9 +228,12 @@ async def scan_and_clean_duplicates() -> dict:
                         # touching it (matches the pattern already used for the
                         # main nightly replacement recycle in replacer.py) - a
                         # recycling bin misconfigured onto an unreachable or full
-                        # NAS share fails fast with a clear reason and falls back
-                        # to a straight delete, rather than blindly mkdir-ing and
-                        # attempting the move.
+                        # NAS share fails fast with a clear reason. Configuring a
+                        # recycling bin is an explicit request to never permanently
+                        # delete, so a blocked destination must skip this file
+                        # (retried on the next scan) rather than fall back to a
+                        # delete - that would silently destroy data exactly when
+                        # the safety net the user asked for is unavailable.
                         recycle_preflight = await asyncio.to_thread(
                             preflight_storage_path,
                             recycle_dest,
@@ -241,28 +243,27 @@ async def scan_and_clean_duplicates() -> dict:
                         )
                         if recycle_preflight.status == "block":
                             logger.warning(
-                                "Recycling bin preflight blocked move for {}; falling back to delete: {}",
+                                "Recycling bin preflight blocked move for {}; skipping (will retry next scan): {}",
                                 file_path,
                                 "; ".join(recycle_preflight.messages),
                             )
-                        else:
-                            await asyncio.to_thread(
-                                os.makedirs, config.files.recycling_bin, exist_ok=True
-                            )
-                            await move_path(
-                                file_path,
-                                recycle_dest,
-                                config,
-                                purpose="duplicate_cleanup_recycle",
-                                required_bytes=file_size,
-                            )
-                            logger.info(
-                                f"Recycled inferior duplicate: {file_path} → {recycle_dest} "
-                                f"(Res: {inf['resolution']}, Size: {file_size / 1024**2:.0f} MB)"
-                            )
-                            recycled = True
+                            continue
 
-                    if not recycled:
+                        await asyncio.to_thread(
+                            os.makedirs, config.files.recycling_bin, exist_ok=True
+                        )
+                        await move_path(
+                            file_path,
+                            recycle_dest,
+                            config,
+                            purpose="duplicate_cleanup_recycle",
+                            required_bytes=file_size,
+                        )
+                        logger.info(
+                            f"Recycled inferior duplicate: {file_path} → {recycle_dest} "
+                            f"(Res: {inf['resolution']}, Size: {file_size / 1024**2:.0f} MB)"
+                        )
+                    else:
                         await remove_path(file_path, config, purpose="duplicate_cleanup_delete")
                         logger.info(
                             f"Deleted inferior duplicate: {file_path} "

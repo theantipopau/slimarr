@@ -202,6 +202,12 @@ export default function Settings() {
     })
   }
 
+  const toggleInArray = (path: string[], item: string, checked: boolean) => {
+    const current = (path.reduce((o: unknown, k) => (o as Record<string, unknown>)?.[k], settings) as string[] | undefined) ?? []
+    const next = checked ? [...new Set([...current, item])] : current.filter((v) => v !== item)
+    set(path, next as unknown as string)
+  }
+
   if (!settings) {
     return (
       <div className="space-y-4">
@@ -308,6 +314,7 @@ export default function Settings() {
           ['#integrations', 'Integrations'],
           ['#rules', 'Rules'],
           ['#files', 'Files'],
+          ['#discovery', 'Discovery'],
           ['#schedule', 'Schedule'],
         ].map(([href, label]) => (
           <a key={href} href={href} className="shrink-0 rounded-full bg-gray-900 px-3 py-1.5 text-gray-300 hover:bg-gray-800">
@@ -972,6 +979,184 @@ export default function Settings() {
           }}
           className="text-sm text-brand-green hover:text-green-300"
         >+ Add Mapping</button>
+      </section>
+
+      {/* Discovery & Recommendations */}
+      <section id="discovery" className="bg-gray-900 rounded-xl p-5 space-y-3 scroll-mt-4">
+        <div>
+          <h2 className="font-semibold">Discovery &amp; Recommendations</h2>
+          <p className="text-xs text-gray-400 mt-1">
+            Deterministic suggestions for missing collection entries, sequels/prequels, and related titles based on
+            what you already own. Nothing here is ever downloaded automatically.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="recommendations_enabled"
+            checked={!!((settings?.recommendations as Record<string,unknown>)?.enabled)}
+            onChange={(e) => set(['recommendations', 'enabled'], e.target.checked)}
+            className="w-4 h-4 accent-brand-green"
+          />
+          <label htmlFor="recommendations_enabled" className="text-sm">Enable Discovery &amp; Recommendations</label>
+        </div>
+        {field('Region (ISO 3166-1 alpha-2, e.g. US, AU, GB)', ['recommendations', 'region'], 'text', 'Required for streaming-availability lookups via TMDB. Left empty, availability is never checked - the region is never guessed.')}
+        <div>
+          <label className="block text-xs text-gray-400 mb-1">Subscribed Streaming Providers (comma-separated TMDB provider IDs)</label>
+          <input
+            type="text"
+            value={((settings?.recommendations as Record<string,unknown>)?.subscribed_providers as number[] | undefined)?.join(', ') ?? ''}
+            onChange={(e) => {
+              const val = e.target.value.split(',').map((s) => parseInt(s.trim(), 10)).filter((n) => Number.isFinite(n))
+              set(['recommendations', 'subscribed_providers'], val as unknown as string)
+            }}
+            className="w-full bg-gray-800 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
+            placeholder="8, 337, 384"
+          />
+          <p className="text-xs text-gray-500 mt-1">Leave empty to show availability across all providers rather than just the ones you subscribe to.</p>
+        </div>
+        <div>
+          <label className="block text-xs text-gray-400 mb-2">Recommendation Sources</label>
+          <div className="flex flex-col gap-2">
+            {[
+              ['collection_completion', 'Missing collection entries'],
+              ['sequel_prequel', 'Sequels & prequels'],
+              ['related_title', 'Related / similar titles'],
+            ].map(([key, label]) => (
+              <div key={key} className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id={`rec_category_${key}`}
+                  checked={((settings?.recommendations as Record<string,unknown>)?.enabled_categories as string[] | undefined ?? []).includes(key)}
+                  onChange={(e) => toggleInArray(['recommendations', 'enabled_categories'], key, e.target.checked)}
+                  className="w-4 h-4 accent-brand-green"
+                />
+                <label htmlFor={`rec_category_${key}`} className="text-sm">{label}</label>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-gray-500 mt-1">TV recommendations are not sourced yet in this release - movies only.</p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {field('Minimum Score (0-100)', ['recommendations', 'minimum_score'], 'number', 'Candidates scoring below this are never shown.')}
+          {field('Refresh Interval (hours)', ['recommendations', 'refresh_interval_hours'], 'number')}
+          {field('Max Recommendations Retained', ['recommendations', 'max_recommendations_retained'], 'number', 'Oldest, lowest-scored active recommendations are expired beyond this cap.')}
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Languages (comma-separated, empty = no restriction)</label>
+            <input
+              type="text"
+              value={((settings?.recommendations as Record<string,unknown>)?.languages as string[] | undefined)?.join(', ') ?? ''}
+              onChange={(e) => {
+                const val = e.target.value.split(',').map((s) => s.trim().toLowerCase()).filter(Boolean)
+                set(['recommendations', 'languages'], val as unknown as string)
+              }}
+              className="w-full bg-gray-800 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
+              placeholder="english"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Excluded Keywords (comma-separated)</label>
+            <input
+              type="text"
+              value={((settings?.recommendations as Record<string,unknown>)?.excluded_keywords as string[] | undefined)?.join(', ') ?? ''}
+              onChange={(e) => {
+                const val = e.target.value.split(',').map((s) => s.trim()).filter(Boolean)
+                set(['recommendations', 'excluded_keywords'], val as unknown as string)
+              }}
+              className="w-full bg-gray-800 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
+              placeholder="anime, documentary"
+            />
+          </div>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Genres to Include (comma-separated, empty = all)</label>
+            <input
+              type="text"
+              value={((settings?.recommendations as Record<string,unknown>)?.genres_include as string[] | undefined)?.join(', ') ?? ''}
+              onChange={(e) => {
+                const val = e.target.value.split(',').map((s) => s.trim()).filter(Boolean)
+                set(['recommendations', 'genres_include'], val as unknown as string)
+              }}
+              className="w-full bg-gray-800 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Genres to Exclude (comma-separated)</label>
+            <input
+              type="text"
+              value={((settings?.recommendations as Record<string,unknown>)?.genres_exclude as string[] | undefined)?.join(', ') ?? ''}
+              onChange={(e) => {
+                const val = e.target.value.split(',').map((s) => s.trim()).filter(Boolean)
+                set(['recommendations', 'genres_exclude'], val as unknown as string)
+              }}
+              className="w-full bg-gray-800 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
+            />
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="rec_use_watch_history"
+            checked={!!((settings?.recommendations as Record<string,unknown>)?.use_plex_watch_history)}
+            onChange={(e) => set(['recommendations', 'use_plex_watch_history'], e.target.checked)}
+            className="w-4 h-4 accent-brand-green"
+          />
+          <label htmlFor="rec_use_watch_history" className="text-sm">Use Plex watch history for personalized scoring <span className="text-gray-500 text-xs">(opt-in)</span></label>
+        </div>
+
+        <div className="pt-2 mt-2 border-t border-gray-800">
+          <h3 className="text-sm font-semibold">Optional AI Reranking</h3>
+          <p className="text-xs text-gray-400 mt-1">
+            Disabled by default. When enabled, AI only reranks or explains the candidate list Slimarr already
+            sourced deterministically - it never invents titles or availability, never sees your Plex token or file
+            paths, and every AI-returned ID is re-validated against TMDB before it can appear on screen.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="rec_ai_enabled"
+            checked={!!((settings?.recommendations as Record<string,unknown> | undefined)?.ai as Record<string,unknown> | undefined)?.enabled}
+            onChange={(e) => set(['recommendations', 'ai', 'enabled'], e.target.checked)}
+            className="w-4 h-4 accent-brand-green"
+          />
+          <label htmlFor="rec_ai_enabled" className="text-sm">Enable AI reranking</label>
+        </div>
+        <div>
+          <label className="block text-xs text-gray-400 mb-1">AI Provider</label>
+          <select
+            value={(((settings?.recommendations as Record<string,unknown> | undefined)?.ai as Record<string,unknown> | undefined)?.provider as string) ?? 'none'}
+            onChange={(e) => set(['recommendations', 'ai', 'provider'], e.target.value)}
+            className="w-full bg-gray-800 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
+          >
+            <option value="none">None</option>
+            <option value="openai_compatible">OpenAI-compatible</option>
+            <option value="anthropic">Anthropic</option>
+            <option value="ollama">Ollama</option>
+          </select>
+          <p className="text-xs text-gray-500 mt-1">Only the interface and a no-op provider ship in this release - real adapters are documented as future work in docs/RECOMMENDATION_ARCHITECTURE.md.</p>
+        </div>
+        {field('AI Base URL', ['recommendations', 'ai', 'base_url'])}
+        <div className="grid gap-3 sm:grid-cols-2">
+          {field('AI Model', ['recommendations', 'ai', 'model'])}
+          {field('AI Timeout (seconds)', ['recommendations', 'ai', 'timeout_seconds'], 'number')}
+        </div>
+        {field('AI API Key', ['recommendations', 'ai', 'api_key'], 'password')}
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="rec_ai_share_history"
+            checked={!!((settings?.recommendations as Record<string,unknown> | undefined)?.ai as Record<string,unknown> | undefined)?.share_watch_history}
+            onChange={(e) => set(['recommendations', 'ai', 'share_watch_history'], e.target.checked)}
+            className="w-4 h-4 accent-brand-green"
+          />
+          <label htmlFor="rec_ai_share_history" className="text-sm">
+            Share watch history with AI provider <span className="text-gray-500 text-xs">(separate opt-in from watch-history scoring above)</span>
+          </label>
+        </div>
       </section>
 
       {/* Schedule */}

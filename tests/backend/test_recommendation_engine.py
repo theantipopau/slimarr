@@ -7,7 +7,12 @@ from unittest.mock import AsyncMock, patch
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from backend.core.recommendations.engine import _apply_retention, record_feedback, run_recommendation_refresh
+from backend.core.recommendations.engine import (
+    _apply_retention,
+    _expire_if_below_threshold,
+    record_feedback,
+    run_recommendation_refresh,
+)
 from backend.database import (
     Base,
     Movie,
@@ -90,12 +95,13 @@ class RecommendationEngineTests(unittest.IsolatedAsyncioTestCase):
             await db.refresh(movie)
         return movie
 
-    def _mock_tmdb(self, movie_detail=None, collection=None, external_ids=None):
+    def _mock_tmdb(self, movie_detail=None, collection=None, external_ids=None, genre_map=None):
         client = AsyncMock()
         client.get_movie_full = AsyncMock(return_value=movie_detail or {})
         client.get_collection = AsyncMock(return_value=collection or {"parts": []})
         client.get_external_ids = AsyncMock(return_value=external_ids or {})
         client.get_watch_providers = AsyncMock(return_value={"results": {}})
+        client.get_genre_map = AsyncMock(return_value=genre_map or {})
         return client
 
     async def test_disabled_config_short_circuits_without_touching_tmdb(self):
@@ -126,6 +132,43 @@ class RecommendationEngineTests(unittest.IsolatedAsyncioTestCase):
             self.assertGreater(rec.score, 0)
             reasons = (await db.execute(select(RecommendationReason))).scalars().all()
             self.assertTrue(any(r.reason_code == "missing_collection_member" for r in reasons))
+
+    async def test_genre_ids_are_resolved_and_excluded_genres_are_filtered_out(self):
+        # Regression: collection/related-title items only carry numeric
+        # genre_ids, never names - without resolving them via the genre map,
+        # genres_exclude/genres_include could never match anything and
+        # silently did nothing (see docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md).
+        self.rec_config.genres_exclude = ["Horror"]
+        await self._seed_movie()
+        tmdb = self._mock_tmdb(
+            movie_detail={"belongs_to_collection": {"id": 10, "name": "X"}},
+            collection={"parts": [
+                {"id": 1},
+                {"id": 863, "title": "Toy Story 2", "genre_ids": [27]},
+            ]},
+            genre_map={27: "Horror", 16: "Animation"},
+        )
+        with patch("backend.core.recommendations.engine.TMDBClient", return_value=tmdb):
+            summary = await run_recommendation_refresh()
+
+        self.assertEqual(summary["created"], 0)
+        async with self.maker() as db:
+            self.assertEqual((await db.execute(select(Recommendation))).scalars().all(), [])
+
+    async def test_genre_map_fetch_failure_disables_genre_filtering_without_aborting_refresh(self):
+        self.rec_config.genres_exclude = ["Horror"]
+        await self._seed_movie()
+        tmdb = self._mock_tmdb(
+            movie_detail={"belongs_to_collection": {"id": 10, "name": "X"}},
+            collection={"parts": [{"id": 1}, {"id": 863, "title": "Toy Story 2", "genre_ids": [27]}]},
+        )
+        tmdb.get_genre_map = AsyncMock(side_effect=RuntimeError("TMDB down"))
+        with patch("backend.core.recommendations.engine.TMDBClient", return_value=tmdb):
+            summary = await run_recommendation_refresh()
+
+        # Genre filtering can't apply without a map, but the refresh itself
+        # must not abort - the candidate is still sourced and scored.
+        self.assertEqual(summary["created"], 1)
 
     async def test_running_refresh_twice_does_not_create_duplicate_rows(self):
         await self._seed_movie()
@@ -167,6 +210,33 @@ class RecommendationEngineTests(unittest.IsolatedAsyncioTestCase):
             rec = (await db.execute(select(Recommendation))).scalars().first()
             self.assertEqual(rec.state, "dismissed")
 
+    async def test_manually_marked_owned_recommendation_is_not_reverted_by_a_later_refresh(self):
+        # Regression: mark_owned_recommendation() (an explicit user action,
+        # e.g. "I own this on physical media") sets state=already_available.
+        # Without protecting that state, a later refresh whose correlation
+        # check still can't see the title as owned would flip it straight
+        # back to "active", silently undoing the user's action.
+        await self._seed_movie()
+        tmdb = self._mock_tmdb(
+            movie_detail={"belongs_to_collection": {"id": 10, "name": "X"}},
+            collection={"parts": [{"id": 1}, {"id": 863, "title": "Toy Story 2"}]},
+        )
+        with patch("backend.core.recommendations.engine.TMDBClient", return_value=tmdb):
+            await run_recommendation_refresh()
+
+        async with self.maker() as db:
+            rec = (await db.execute(select(Recommendation))).scalars().first()
+            rec.state = "already_available"
+            await db.commit()
+
+        with patch("backend.core.recommendations.engine.TMDBClient", return_value=tmdb):
+            summary = await run_recommendation_refresh()
+
+        self.assertEqual(summary["skipped_protected"], 1)
+        async with self.maker() as db:
+            rec = (await db.execute(select(Recommendation))).scalars().first()
+            self.assertEqual(rec.state, "already_available")
+
     async def test_already_owned_collection_members_never_get_a_recommendation_row(self):
         await self._seed_movie(tmdb_id=1)
         await self._seed_movie(plex_rating_key="key-2", title="Toy Story 2", tmdb_id=863, imdb_id="tt0120363")
@@ -195,7 +265,11 @@ class RecommendationEngineTests(unittest.IsolatedAsyncioTestCase):
             summary = await run_recommendation_refresh()
 
         self.assertEqual(summary["created"], 0)
-        self.assertEqual(summary["skipped_excluded"], 1)
+        # Persisted-but-not-actionable outcomes get their own counter,
+        # distinct from "skipped_excluded" (which means no row was touched
+        # at all) - see engine.py's _upsert_recommendation docstring.
+        self.assertEqual(summary["already_managed"], 1)
+        self.assertEqual(summary["skipped_excluded"], 0)
         async with self.maker() as db:
             rec = (await db.execute(select(Recommendation))).scalars().first()
             self.assertEqual(rec.state, "already_managed")
@@ -213,6 +287,54 @@ class RecommendationEngineTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(summary["created"], 0)
         async with self.maker() as db:
             self.assertEqual((await db.execute(select(Recommendation))).scalars().all(), [])
+
+    async def test_a_previously_active_recommendation_is_expired_once_it_drops_below_minimum_score(self):
+        # Regression: raising minimum_score (or a popularity drop) after a
+        # recommendation was already created used to leave the old row
+        # frozen at its stale score forever - the short-circuit that skips
+        # extra API calls for a sub-threshold candidate never touched the
+        # existing DB row at all. _apply_retention only prunes by count, so
+        # nothing else would ever catch this.
+        await self._seed_movie()
+        tmdb = self._mock_tmdb(
+            movie_detail={"belongs_to_collection": {"id": 10, "name": "X"}},
+            collection={"parts": [{"id": 1}, {"id": 863, "title": "Toy Story 2"}]},
+        )
+        with patch("backend.core.recommendations.engine.TMDBClient", return_value=tmdb):
+            first = await run_recommendation_refresh()
+        self.assertEqual(first["created"], 1)
+
+        self.rec_config.minimum_score = 999.0  # nothing can clear this now
+        with patch("backend.core.recommendations.engine.TMDBClient", return_value=tmdb):
+            second = await run_recommendation_refresh()
+
+        self.assertEqual(second["expired_below_threshold"], 1)
+        async with self.maker() as db:
+            rec = (await db.execute(select(Recommendation))).scalars().first()
+            self.assertEqual(rec.state, "expired")
+
+    async def test_expire_if_below_threshold_ignores_protected_states(self):
+        await self._seed_movie()
+        async with self.maker() as db:
+            candidate = RecommendationCandidate(media_type="movie", tmdb_id=863, title="Toy Story 2")
+            db.add(candidate)
+            await db.flush()
+            rec = Recommendation(candidate_id=candidate.id, category="collection_completion", state="watchlisted", score=50.0)
+            db.add(rec)
+            await db.commit()
+
+            expired = await _expire_if_below_threshold(db, "movie", 863, "collection_completion")
+            await db.commit()
+
+        self.assertFalse(expired)
+        async with self.maker() as db:
+            rec = (await db.execute(select(Recommendation))).scalars().first()
+            self.assertEqual(rec.state, "watchlisted")
+
+    async def test_expire_if_below_threshold_is_a_noop_when_no_row_exists(self):
+        async with self.maker() as db:
+            expired = await _expire_if_below_threshold(db, "movie", 999999, "collection_completion")
+        self.assertFalse(expired)
 
     async def test_fetched_imdb_id_is_persisted_onto_the_candidate_row(self):
         """Regression test: get_external_ids() was fetched during refresh to

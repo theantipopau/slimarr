@@ -7,26 +7,15 @@ import httpx
 from loguru import logger
 
 from backend.config import get_config
+from backend.integrations.shared_http import get_shared_client
 
 
 def _shared_client(tls_verify: bool) -> httpx.AsyncClient | None:
-    """Return the app-wide pooled httpx client if it's usable for this call.
-
-    The shared client (see backend.main.get_http_client) is always built
-    with verify=True. A Radarr instance configured with tls_verify=False
-    (self-signed certs, common on a NAS/homelab setup) must never silently
-    have that setting overridden by reusing a client that ignores it - so
-    pooling is only used when the two agree, and a private per-call client
-    is used otherwise. See docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md (A5).
-    """
-    if not tls_verify:
-        return None
-    try:
-        from backend.main import get_http_client
-
-        return get_http_client()
-    except Exception:
-        return None
+    """Thin per-module wrapper around the shared reuse-or-private decision
+    (backend.integrations.shared_http) - kept as a real function here (not
+    just an alias) so existing tests can still patch it per-module. See
+    docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md (A5)."""
+    return get_shared_client(tls_verify=tls_verify)
 
 
 class RadarrClient:

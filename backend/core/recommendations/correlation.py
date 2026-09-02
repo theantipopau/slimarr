@@ -10,6 +10,7 @@ specific hot-path concern, without touching RadarrClient itself.
 """
 from __future__ import annotations
 
+import asyncio
 from dataclasses import dataclass, field
 
 from loguru import logger
@@ -63,9 +64,16 @@ async def _sonarr_owned_titles(config) -> frozenset[str]:
 
 
 async def build_correlation_snapshot(config) -> CorrelationSnapshot:
-    plex_tmdb_ids, plex_imdb_ids = await _plex_owned_ids()
-    radarr_imdb_ids = await _radarr_owned_imdb_ids(config)
-    sonarr_titles = await _sonarr_owned_titles(config)
+    # These three fetches are fully independent (no shared state, each
+    # already contains its own failures) - run them concurrently so the
+    # snapshot's total latency is the slowest of the three rather than their
+    # sum. Radarr/Sonarr's full-library fetches in particular can each take
+    # a second or more on a large library.
+    (plex_tmdb_ids, plex_imdb_ids), radarr_imdb_ids, sonarr_titles = await asyncio.gather(
+        _plex_owned_ids(),
+        _radarr_owned_imdb_ids(config),
+        _sonarr_owned_titles(config),
+    )
     return CorrelationSnapshot(
         plex_tmdb_ids=plex_tmdb_ids,
         plex_imdb_ids=plex_imdb_ids,

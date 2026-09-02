@@ -10,6 +10,7 @@ import httpx
 from loguru import logger
 
 from backend.config import get_config
+from backend.integrations.shared_http import get_shared_client
 
 
 class TMDBError(RuntimeError):
@@ -26,18 +27,13 @@ TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p"
 
 
 def _shared_client() -> httpx.AsyncClient | None:
-    """Return the app-wide pooled httpx client if the FastAPI lifespan has
-    started it, else None (e.g. in a unit test, or a call made before
-    startup finishes). TMDB has no user-configurable TLS setting, so unlike
-    Radarr/Sonarr there's no correctness reason to ever prefer a private
-    client here - see docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md finding A5.
-    """
-    try:
-        from backend.main import get_http_client
-
-        return get_http_client()
-    except Exception:
-        return None
+    """Thin per-module wrapper around the shared reuse-or-private decision
+    (backend.integrations.shared_http) - kept as a real function here (not
+    just an alias) so existing tests can still patch it per-module. TMDB has
+    no user-configurable TLS setting, so unlike Radarr/Sonarr there's no
+    correctness reason to ever prefer a private client here - see
+    docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md finding A5."""
+    return get_shared_client()
 
 
 class TMDBClient:
@@ -112,20 +108,13 @@ class TMDBClient:
     async def _get_with_retry(
         self, path: str, params: dict, *, attempts: int = 3, timeout: float = 15.0
     ) -> dict:
-        client = _shared_client()
-        owns_client = client is None
-        if owns_client:
-            client = httpx.AsyncClient(timeout=timeout)
-
-        try:
+        async with self._client(timeout=timeout) as client:
             last_error: Exception | None = None
             for attempt in range(1, attempts + 1):
                 try:
                     resp = await client.get(f"{TMDB_BASE}{path}", params=params, timeout=timeout)
                     if resp.status_code == 429 or resp.status_code >= 500:
-                        retry_after = resp.headers.get("Retry-After")
-                        delay = float(retry_after) if retry_after else min(2.0 ** attempt, 10.0)
-                        delay += random.uniform(0, 0.5)  # jitter, avoids synchronized retry storms
+                        delay = self._retry_delay(resp.headers.get("Retry-After"), attempt)
                         if attempt < attempts:
                             logger.debug(
                                 "TMDB {} returned {}; retrying in {:.1f}s (attempt {}/{})",
@@ -148,9 +137,20 @@ class TMDBClient:
                         delay = min(2.0 ** attempt, 10.0) + random.uniform(0, 0.5)
                         await asyncio.sleep(delay)
             raise TMDBError(f"TMDB request failed after {attempts} attempts: {last_error}") from last_error
-        finally:
-            if owns_client:
-                await client.aclose()
+
+    @staticmethod
+    def _retry_delay(retry_after: str | None, attempt: int) -> float:
+        """Retry-After is usually delay-seconds, but RFC 7231 also allows an
+        HTTP-date string - float() on that raises ValueError, which must
+        never escape as a bare exception here (defeats the whole point of
+        TMDBError's narrow, callers-can-catch-it contract). Falls back to
+        exponential backoff for anything that isn't a plain number."""
+        if retry_after:
+            try:
+                return float(retry_after) + random.uniform(0, 0.5)
+            except ValueError:
+                pass
+        return min(2.0 ** attempt, 10.0) + random.uniform(0, 0.5)
 
     async def get_movie_full(self, tmdb_id: int) -> dict:
         """Movie details plus collection/credits/recommendations/similar in
@@ -171,6 +171,16 @@ class TMDBClient:
         which key on IMDb ID rather than TMDB ID."""
         media_type = "tv" if media_type == "tv" else "movie"
         return await self._get_with_retry(f"/{media_type}/{tmdb_id}/external_ids", self._params())
+
+    async def get_genre_map(self, media_type: str = "movie") -> dict[int, str]:
+        """TMDB genre id -> name, for resolving the genre_ids TMDB embeds in
+        collection/recommendations/similar list items (those payloads never
+        include genre names directly). This list is small (~19 entries) and
+        essentially static, so callers fetch it once per refresh run rather
+        than per candidate."""
+        media_type = "tv" if media_type == "tv" else "movie"
+        data = await self._get_with_retry(f"/genre/{media_type}/list", self._params())
+        return {g["id"]: g["name"] for g in data.get("genres", []) if g.get("id") is not None}
 
     async def get_watch_providers(self, tmdb_id: int, media_type: str = "movie") -> dict:
         """Returns TMDB's region-keyed watch/providers payload. Callers pick

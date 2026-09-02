@@ -61,6 +61,17 @@ def _year_from_release_date(value: str | None) -> int | None:
         return None
 
 
+def _resolve_genres(genre_ids: list | None, genre_map: dict[int, str]) -> tuple[str, ...]:
+    """Collection/recommendations/similar list items only carry numeric
+    genre_ids, never names - resolve via a genre map fetched once per
+    refresh (see TMDBClient.get_genre_map). Falls back to an empty tuple if
+    the map is empty (e.g. the genre-list fetch failed) rather than raising,
+    since genre filtering is an optional signal, not a required one."""
+    if not genre_ids or not genre_map:
+        return ()
+    return tuple(genre_map[gid] for gid in genre_ids if gid in genre_map)
+
+
 async def source_candidates_for_owned_movie(
     *,
     movie_id: int,
@@ -70,6 +81,7 @@ async def source_candidates_for_owned_movie(
     tmdb: TMDBClient,
     snapshot: CorrelationSnapshot,
     collection_cache: dict[int, dict] | None = None,
+    genre_map: dict[int, str] | None = None,
     max_related: int = 5,
 ) -> list[SourcedCandidate]:
     """One TMDB call for the seed movie (collection + recommendations +
@@ -78,6 +90,7 @@ async def source_candidates_for_owned_movie(
     owned movies can share the same franchise collection).
     """
     collection_cache = collection_cache if collection_cache is not None else {}
+    genre_map = genre_map if genre_map is not None else {}
     candidates: list[SourcedCandidate] = []
 
     try:
@@ -123,7 +136,7 @@ async def source_candidates_for_owned_movie(
                 overview=part.get("overview"),
                 popularity=part.get("popularity"),
                 vote_average=part.get("vote_average"),
-                genres=(),
+                genres=_resolve_genres(part.get("genre_ids"), genre_map),
                 category="collection_completion",
                 collection_name=collection.get("name") or belongs_to.get("name"),
                 collection_owned_count=owned_count,
@@ -153,7 +166,7 @@ async def source_candidates_for_owned_movie(
                 overview=item.get("overview"),
                 popularity=item.get("popularity"),
                 vote_average=item.get("vote_average"),
-                genres=(),
+                genres=_resolve_genres(item.get("genre_ids"), genre_map),
                 category="related_title",
                 related_to_title=movie_title,
                 related_to_movie_id=movie_id,

@@ -99,6 +99,29 @@ class TMDBRecommendationMethodsTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(call_count, 3)
         self.assertEqual(result["id"], 862)
 
+    async def test_http_date_retry_after_does_not_crash_with_a_raw_valueerror(self):
+        # Regression: Retry-After may legally be an HTTP-date per RFC 7231,
+        # not just delay-seconds. float() on that string raised a bare
+        # ValueError that escaped TMDBError's contract entirely - callers
+        # that only catch TMDBError (sourcing.py, engine.py, streaming.py)
+        # would see it as an unhandled exception instead of a typed error.
+        call_count = 0
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            nonlocal call_count
+            call_count += 1
+            if call_count < 2:
+                return httpx.Response(429, headers={"Retry-After": "Wed, 21 Oct 2026 07:28:00 GMT"})
+            return httpx.Response(200, json={"id": 862})
+
+        with patch("backend.integrations.tmdb._shared_client", return_value=_client_with_handler(handler)), patch(
+            "backend.integrations.tmdb.asyncio.sleep", AsyncMock()
+        ):
+            result = await self.client.get_movie_full(862)
+
+        self.assertEqual(call_count, 2)
+        self.assertEqual(result["id"], 862)
+
     async def test_transient_5xx_exhausting_all_attempts_raises_typed_error(self):
         call_count = 0
 

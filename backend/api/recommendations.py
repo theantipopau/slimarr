@@ -24,7 +24,7 @@ from backend.api.models import (
 )
 from backend.auth.dependencies import get_current_user
 from backend.core.recommendations.streaming import is_stale as availability_is_stale
-from backend.database import Movie, Recommendation, RecommendationCandidate, async_session
+from backend.database import Movie, Recommendation, RecommendationCandidate, StreamingAvailability, async_session
 from backend.utils.responses import get_correlation_id, not_found, service_unavailable, validation_error
 
 router = APIRouter(prefix="/recommendations", tags=["recommendations"])
@@ -41,17 +41,23 @@ def _utc_now_naive() -> datetime:
     return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
-async def _is_already_in_plex(db, tmdb_id: int, imdb_id: str | None) -> bool:
-    query = select(func.count()).select_from(Movie).where(Movie.tmdb_id == tmdb_id)
-    count = (await db.execute(query)).scalar_one()
-    if count > 0:
-        return True
-    if imdb_id:
-        count = (
-            await db.execute(select(func.count()).select_from(Movie).where(Movie.imdb_id == imdb_id))
-        ).scalar_one()
-        return count > 0
-    return False
+async def _owned_tmdb_and_imdb_ids(db, tmdb_ids: list[int], imdb_ids: list[str]) -> tuple[set[int], set[str]]:
+    """Batched replacement for checking Plex ownership one row at a time -
+    a page of results otherwise ran two SELECTs per recommendation (up to
+    2 x per_page queries on every list call, a hot/paginated endpoint)."""
+    owned_tmdb: set[int] = set()
+    owned_imdb: set[str] = set()
+    if tmdb_ids:
+        rows = (
+            await db.execute(select(Movie.tmdb_id).where(Movie.tmdb_id.in_(tmdb_ids)))
+        ).scalars().all()
+        owned_tmdb = {r for r in rows if r is not None}
+    if imdb_ids:
+        rows = (
+            await db.execute(select(Movie.imdb_id).where(Movie.imdb_id.in_(imdb_ids)))
+        ).scalars().all()
+        owned_imdb = {r for r in rows if r is not None}
+    return owned_tmdb, owned_imdb
 
 
 def _serialize(rec: Recommendation, candidate: RecommendationCandidate, already_in_plex: bool) -> dict:
@@ -134,6 +140,23 @@ async def list_recommendations(
         if media_type:
             query = query.where(RecommendationCandidate.media_type == media_type)
             count_query = count_query.where(RecommendationCandidate.media_type == media_type)
+        if provider_id is not None:
+            # Filter at the SQL level, before pagination - filtering the page
+            # of already-paginated rows in Python instead would both corrupt
+            # `total` (computed without the filter) and could return fewer
+            # rows per page than requested, or duplicate/skip rows across
+            # pages, since offset/limit windows wouldn't align with the
+            # actually-matching result set.
+            availability_exists = (
+                select(StreamingAvailability.id)
+                .where(
+                    StreamingAvailability.candidate_id == RecommendationCandidate.id,
+                    StreamingAvailability.provider_id == provider_id,
+                )
+                .exists()
+            )
+            query = query.where(availability_exists)
+            count_query = count_query.where(availability_exists)
 
         total = (await db.execute(count_query)).scalar_one()
 
@@ -141,15 +164,16 @@ async def list_recommendations(
         query = query.offset((page - 1) * per_page).limit(per_page)
         recs = (await db.execute(query)).unique().scalars().all()
 
-        if provider_id is not None:
-            recs = [
-                r for r in recs
-                if any(a.provider_id == provider_id for a in r.candidate.availability)
-            ]
-
+        owned_tmdb, owned_imdb = await _owned_tmdb_and_imdb_ids(
+            db,
+            [r.candidate.tmdb_id for r in recs],
+            [r.candidate.imdb_id for r in recs if r.candidate.imdb_id],
+        )
         out = []
         for rec in recs:
-            already_owned = await _is_already_in_plex(db, rec.candidate.tmdb_id, rec.candidate.imdb_id)
+            already_owned = rec.candidate.tmdb_id in owned_tmdb or (
+                bool(rec.candidate.imdb_id) and rec.candidate.imdb_id in owned_imdb
+            )
             out.append(_serialize(rec, rec.candidate, already_owned))
 
     return {"total": total, "page": page, "per_page": per_page, "recommendations": out}
@@ -283,6 +307,44 @@ async def refresh_availability(recommendation_id: int, user=Depends(get_current_
     from backend.core.recommendations.engine import record_feedback
     await record_feedback(recommendation_id, "availability_refreshed")
     return {"success": True, "id": recommendation_id, "state": state, "message": f"{len(entries)} provider(s) found"}
+
+
+@router.get("/radarr/options")
+async def radarr_handoff_options(user=Depends(get_current_user)):
+    """Root folders + quality profiles for the send-to-Radarr hand-off form."""
+    from backend.config import get_config
+    from backend.integrations.radarr import RadarrClient
+
+    config = get_config()
+    if not (config.radarr.enabled and config.radarr.url and config.radarr.api_key):
+        raise service_unavailable("Radarr", correlation_id=get_correlation_id())
+
+    client = RadarrClient()
+    root_folders = await client.get_root_folders()
+    quality_profiles = await client.get_quality_profiles()
+    return {
+        "root_folders": [{"path": f.get("path")} for f in root_folders if f.get("path")],
+        "quality_profiles": [{"id": p.get("id"), "name": p.get("name")} for p in quality_profiles],
+    }
+
+
+@router.get("/sonarr/options")
+async def sonarr_handoff_options(user=Depends(get_current_user)):
+    """Root folders + quality profiles for the send-to-Sonarr hand-off form."""
+    from backend.config import get_config
+    from backend.integrations.sonarr import SonarrClient
+
+    config = get_config()
+    if not (config.sonarr.enabled and config.sonarr.url and config.sonarr.api_key):
+        raise service_unavailable("Sonarr", correlation_id=get_correlation_id())
+
+    client = SonarrClient()
+    root_folders = await client.get_root_folders()
+    quality_profiles = await client.get_quality_profiles()
+    return {
+        "root_folders": [{"path": f.get("path")} for f in root_folders if f.get("path")],
+        "quality_profiles": [{"id": p.get("id"), "name": p.get("name")} for p in quality_profiles],
+    }
 
 
 @router.post("/{recommendation_id}/send-to-radarr", response_model=RecommendationActionResponse)

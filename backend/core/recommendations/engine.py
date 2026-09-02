@@ -38,11 +38,18 @@ from backend.database import (
 )
 from backend.integrations.tmdb import TMDBClient, TMDBError
 
-# Recommendations already dismissed/hidden/actioned/watchlisted are never
-# silently overwritten by a later refresh — a fresh scan re-surfacing a title
-# the user explicitly dismissed would be exactly the kind of "the app ignores
-# what I told it" behavior this feature must not have.
-_PROTECTED_STATES = {"dismissed", "hidden", "watchlisted", "actioned"}
+# Recommendations already dismissed/hidden/actioned/watchlisted/marked-owned
+# are never silently overwritten by a later refresh — a fresh scan
+# re-surfacing a title the user explicitly dismissed would be exactly the
+# kind of "the app ignores what I told it" behavior this feature must not
+# have. already_available/already_managed are included because
+# mark_owned_recommendation() (an explicit user action) sets
+# already_available - without protecting it, the next refresh's correlation
+# check (which can't see e.g. a physical-media copy or a library Slimarr
+# doesn't scan) would flip it straight back to "active", undoing the user's
+# action. If a title is later genuinely removed from the library, dismissing
+# it directly resets it - refresh is not the mechanism for that.
+_PROTECTED_STATES = {"dismissed", "hidden", "watchlisted", "actioned", "already_available", "already_managed"}
 
 
 def _utc_now_naive() -> datetime:
@@ -108,6 +115,8 @@ async def _get_or_create_candidate(
         existing.overview = sourced.overview or existing.overview
         existing.popularity = sourced.popularity
         existing.vote_average = sourced.vote_average
+        if sourced.genres:
+            existing.genres = json.dumps(list(sourced.genres))
         existing.last_refreshed_at = now
 
     return existing
@@ -150,7 +159,11 @@ async def _upsert_availability(db, candidate: RecommendationCandidate, entries) 
 async def _upsert_recommendation(
     db, candidate: RecommendationCandidate, category: str, scored,
 ) -> str:
-    """Returns one of: "created" | "updated" | "skipped_protected" | "skipped_excluded".
+    """Returns one of: "created" | "updated" | "skipped_protected" |
+    "skipped_excluded" | "already_available" | "already_managed". The latter
+    two are returned distinctly from "skipped_excluded" even though a row IS
+    persisted for them, so refresh-summary counters don't conflate "nothing
+    was touched" with "a row was written but isn't actionable".
 
     scored.state == "excluded" (blocked keyword/person/genre, disabled media
     type) is a config-level filter, not a per-title state worth its own audit
@@ -182,7 +195,7 @@ async def _upsert_recommendation(
         existing.state = scored.state
         existing.score = scored.score
         await _replace_reasons(db, existing, scored.reasons)
-        return "skipped_excluded"
+        return scored.state
 
     if existing is None:
         existing = Recommendation(candidate_id=candidate.id, category=category, state="active")
@@ -196,6 +209,43 @@ async def _upsert_recommendation(
     existing.state = "active"
     await _replace_reasons(db, existing, scored.reasons)
     return "updated"
+
+
+async def _expire_if_below_threshold(db, media_type: str, tmdb_id: int, category: str) -> bool:
+    """A candidate that no longer clears minimum_score (popularity dropped,
+    config filters tightened, etc.) must not leave a previously-persisted
+    "active" Recommendation frozen at its old score forever - retention only
+    prunes by count, not by "does this still qualify", so nothing else would
+    ever catch a stale row here. Expires it instead of leaving it untouched.
+    Never touches a protected state - dismissing/hiding/watchlisting is still
+    the user's call, not something a score drop should override.
+
+    Returns True if a row was found and expired (for summary counting).
+    """
+    candidate = (
+        await db.execute(
+            select(RecommendationCandidate).where(
+                RecommendationCandidate.media_type == media_type,
+                RecommendationCandidate.tmdb_id == tmdb_id,
+            )
+        )
+    ).scalar_one_or_none()
+    if candidate is None:
+        return False
+
+    existing = (
+        await db.execute(
+            select(Recommendation).where(
+                Recommendation.candidate_id == candidate.id,
+                Recommendation.category == category,
+            )
+        )
+    ).scalar_one_or_none()
+    if existing is None or existing.state in _PROTECTED_STATES or existing.state == "expired":
+        return False
+
+    existing.state = "expired"
+    return True
 
 
 async def _replace_reasons(db, recommendation: Recommendation, reasons) -> None:
@@ -282,6 +332,9 @@ async def run_recommendation_refresh(*, max_movies: int = 200) -> dict:
         "updated": 0,
         "skipped_excluded": 0,
         "skipped_protected": 0,
+        "already_available": 0,
+        "already_managed": 0,
+        "expired_below_threshold": 0,
         "errors": 0,
     }
 
@@ -291,6 +344,11 @@ async def run_recommendation_refresh(*, max_movies: int = 200) -> dict:
 
     tmdb = TMDBClient()
     snapshot = await build_correlation_snapshot(config)
+    try:
+        genre_map = await tmdb.get_genre_map()
+    except Exception as exc:  # genre filtering is an optional signal, not required for a refresh to proceed
+        logger.warning("Recommendation refresh: genre map fetch failed, genre filtering disabled this run: {}", exc)
+        genre_map = {}
 
     async with async_session() as db:
         movies = (
@@ -311,7 +369,7 @@ async def run_recommendation_refresh(*, max_movies: int = 200) -> dict:
         try:
             candidates = await source_candidates_for_owned_movie(
                 movie_id=movie_id, movie_title=title, movie_year=year, tmdb_id=tmdb_id,
-                tmdb=tmdb, snapshot=snapshot, collection_cache=collection_cache,
+                tmdb=tmdb, snapshot=snapshot, collection_cache=collection_cache, genre_map=genre_map,
             )
         except Exception as exc:  # sourcing failures for one movie must not abort the whole refresh
             logger.warning("Recommendation sourcing failed for movie_id={}: {}", movie_id, exc)
@@ -346,6 +404,10 @@ async def run_recommendation_refresh(*, max_movies: int = 200) -> dict:
             )
             preliminary = score_candidate(preliminary_signals)
             if preliminary.state == "active" and preliminary.score < rec_config.minimum_score:
+                async with async_session() as db:
+                    if await _expire_if_below_threshold(db, sourced.media_type, tmdb_id, sourced.category):
+                        summary["expired_below_threshold"] += 1
+                        await db.commit()
                 continue
             if preliminary.state != "active":
                 # Hard-excluded already (blocked keyword, unsupported media
@@ -380,10 +442,13 @@ async def run_recommendation_refresh(*, max_movies: int = 200) -> dict:
                 if availability:
                     await _upsert_availability(db, candidate_row, availability)
                 if final.state == "active" and final.score < rec_config.minimum_score:
-                    outcome = "skipped_excluded"
+                    if await _expire_if_below_threshold(db, sourced.media_type, tmdb_id, sourced.category):
+                        summary["expired_below_threshold"] += 1
+                    else:
+                        summary["skipped_excluded"] += 1
                 else:
                     outcome = await _upsert_recommendation(db, candidate_row, sourced.category, final)
-                summary[outcome] += 1
+                    summary[outcome] += 1
                 await db.commit()
 
         except Exception as exc:

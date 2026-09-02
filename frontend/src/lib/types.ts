@@ -479,3 +479,17 @@ export interface RecommendationCapabilities {
   sonarr: RecommendationCapability
   seerr: RecommendationCapability
 }
+
+export interface HandoffQualityProfile {
+  id: number
+  name: string
+}
+
+export interface HandoffRootFolder {
+  path: string
+}
+
+export interface HandoffOptions {
+  root_folders: HandoffRootFolder[]
+  quality_profiles: HandoffQualityProfile[]
+}

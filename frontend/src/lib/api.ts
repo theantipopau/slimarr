@@ -185,4 +185,6 @@ export const api = {
     id: number,
     body: { root_folder_path: string; quality_profile_id: number; monitored?: boolean; search_now?: boolean },
   ) => client.post(`/recommendations/${id}/send-to-sonarr`, body).then((r) => r.data),
+  radarrHandoffOptions: () => client.get('/recommendations/radarr/options').then((r) => r.data),
+  sonarrHandoffOptions: () => client.get('/recommendations/sonarr/options').then((r) => r.data),
 }

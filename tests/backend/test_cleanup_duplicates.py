@@ -137,10 +137,13 @@ class DuplicateCleanupTests(unittest.IsolatedAsyncioTestCase):
             self.assertFalse(inferior.exists())
             self.assertTrue((recycle_dir / "movie.720p.mkv").exists())
 
-    async def test_falls_back_to_delete_when_recycling_bin_preflight_is_blocked(self):
+    async def test_skips_deletion_when_recycling_bin_preflight_is_blocked(self):
         # A recycling bin whose parent path doesn't exist anywhere on disk
-        # fails preflight ("No accessible parent path found") - this must
-        # fall back to a straight delete instead of raising out of the loop.
+        # fails preflight ("No accessible parent path found"). Configuring a
+        # recycling bin is an explicit request to never permanently delete,
+        # so this must skip the file (retried on the next scan) rather than
+        # fall back to a delete - that would destroy data exactly when the
+        # safety net the user asked for is unavailable.
         with TemporaryDirectory() as temp_dir:
             best = Path(temp_dir) / "movie.1080p.mkv"
             inferior = Path(temp_dir) / "movie.720p.mkv"
@@ -165,10 +168,10 @@ class DuplicateCleanupTests(unittest.IsolatedAsyncioTestCase):
             ):
                 summary = await scan_and_clean_duplicates()
 
-            self.assertEqual(1, summary["files_removed"])
+            self.assertEqual(0, summary["files_removed"])
             self.assertEqual(0, summary["errors"])
             self.assertTrue(best.exists())
-            self.assertFalse(inferior.exists())
+            self.assertTrue(inferior.exists())
 
 
 if __name__ == "__main__":
