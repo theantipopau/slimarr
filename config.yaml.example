@@ -120,3 +120,43 @@ files:
   plex_path_mappings: []
 
 indexers: []
+
+# Recommendation & Collection Completion (optional — v2.0.0+).
+# The whole feature is inert until enabled: true. It never downloads or
+# replaces anything itself — it only surfaces suggestions with a Radarr/
+# Sonarr/Seerr hand-off action that always requires an explicit click.
+# See docs/RECOMMENDATION_ARCHITECTURE.md and docs/RECOMMENDATION_PRIVACY.md.
+recommendations:
+  enabled: false
+  # ISO 3166-1 alpha-2 region code, e.g. "US", "AU", "GB". Leave blank to
+  # disable streaming-availability lookups entirely (no region is assumed).
+  region: ""
+  # TMDB watch-provider IDs you actually subscribe to. Availability is still
+  # computed for other providers, but these are highlighted/prioritized.
+  subscribed_providers: []
+  enabled_categories:
+    - collection_completion
+    - sequel_prequel
+    - related_title
+  media_types: [movie]
+  minimum_score: 40.0
+  languages: []
+  genres_include: []
+  genres_exclude: []
+  excluded_keywords: []
+  # Opt-in. If true, Plex watch history informs personalized scoring.
+  use_plex_watch_history: false
+  refresh_interval_hours: 24
+  max_recommendations_retained: 500
+  ai:
+    # Optional and disabled by default. AI only reranks/explains an
+    # already-generated candidate set — never invents titles or availability.
+    enabled: false
+    provider: "none"  # none | openai_compatible | anthropic | ollama
+    base_url: ""
+    model: ""
+    api_key: ""
+    timeout_seconds: 20
+    # Separate from use_plex_watch_history above — must be turned on
+    # independently before any watch-history signal reaches an AI provider.
+    share_watch_history: false

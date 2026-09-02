@@ -267,6 +267,7 @@ See `docs/DOCKER.md` for full deployment guidance.
 - **Activity log** - full history of every replacement with old/new size and savings %
 - **Update checker** - System page shows a badge when a newer version is available on GitHub
 - **Radarr-compatible feel** - sidebar nav, poster grid, quality badges, test connection buttons
+- **Discovery & recommendations** - deterministic suggestions for missing collection entries, sequels/prequels, and related titles based on what you already own; region-specific streaming availability via TMDB; optional explicit hand-off to Radarr/Sonarr - nothing is ever downloaded automatically
 
 ---
 
@@ -552,6 +553,35 @@ schedule:
   max_downloads_per_night: 10
   throttle_seconds: 30
   max_active_download_hours: 24
+
+recommendations:
+  enabled: false            # Off by default - nothing is sourced or scored until enabled
+  region: ""                # Two-letter TMDB region (e.g. "US", "AU"); leave empty to disable
+                             # streaming-availability lookups entirely - never guessed
+  subscribed_providers: []  # TMDB watch-provider IDs to highlight; empty means "show all"
+  enabled_categories:
+    - "collection_completion"
+    - "sequel_prequel"
+    - "related_title"
+  media_types:
+    - "movie"                # TV recommendations are not implemented in this release
+  minimum_score: 40.0
+  languages: []              # Restrict to specific original languages; empty = no restriction
+  genres_include: []
+  genres_exclude: []
+  excluded_keywords: []
+  use_plex_watch_history: false  # Opt-in: required before any watch-history signal is used
+  refresh_interval_hours: 24
+  max_recommendations_retained: 500
+  ai:
+    enabled: false           # Off by default; only reranks/explains an already-sourced list -
+                              # never invents titles, availability, or triggers downloads
+    provider: "none"         # "none" | "openai_compatible" | "anthropic" | "ollama"
+    base_url: ""
+    model: ""
+    api_key: ""
+    timeout_seconds: 20
+    share_watch_history: false  # Separate opt-in from use_plex_watch_history above
 ```
 
 > **Note on disk space:** By default `recycling_bin` is empty, meaning old files are deleted immediately when a replacement succeeds. If you configure a recycling bin path, be aware that replaced movie files (typically 10-50 GB each) accumulate there until the nightly cleanup runs. Use a path on a drive with plenty of headroom, or leave the setting empty.
@@ -671,6 +701,17 @@ Duplicate cleanup now follows a safer flow:
 3. Explicitly confirm cleanup before any delete/recycle action
 
 This keeps optimization actions technically honest, non-destructive by default, and aligned with real system state.
+
+### 9. Discovery & Recommendations
+The **Discovery** page suggests titles related to what you already own - missing entries in a collection you're partway through, sequels/prequels, and related or similar titles - so you can decide what to add next. Recommendations are entirely deterministic by default: no AI is required or contacted unless you explicitly configure and enable it.
+
+- **Sourcing** - for each owned movie with a TMDB match, Slimarr checks its collection (missing members become `collection_completion` candidates) and its related/recommended titles (`related_title` candidates), skipping anything already in Plex or already managed in Radarr/Sonarr.
+- **Scoring** - every candidate gets a transparent numeric score built from named positive signals (collection completion, sequel/prequel, genre/creator affinity, popularity, streaming availability) and negative ones (wrong year/language/region, blocked keywords), each with a human-readable reason attached - never a generic "recommended for you."
+- **Streaming availability** - looked up per-region via TMDB's own `/watch/providers` endpoint only. No streaming service is ever scraped or asked for credentials. Availability carries a "last checked" timestamp and is treated as time-sensitive; it is never shown as current once stale. Region must be explicitly configured - it is never assumed from IP or locale.
+- **Actions, not automation** - each recommendation can be dismissed, hidden permanently, added to your watchlist, or marked as already owned. Sending a title to Radarr or Sonarr is a separate, explicit action that requires you to confirm the root folder and quality profile - Slimarr never downloads a recommended title on its own, and Radarr/Sonarr remain the system of record afterward.
+- **Optional AI** - if you configure and enable an AI provider, it may only rerank the candidate list Slimarr already sourced or generate short explanations - it cannot invent titles or availability, cannot see your Plex token or file paths, and every ID it returns is re-validated against TMDB before it can appear on screen. No AI provider ships enabled or pre-configured; only Radarr/Sonarr hand-off (capability-checked against your own instance) is available at launch, and Seerr hand-off is intentionally not implemented yet - see `docs/RECOMMENDATION_INTEGRATIONS.md` for why.
+
+See `docs/RECOMMENDATION_ARCHITECTURE.md`, `docs/RECOMMENDATION_PRIVACY.md`, and `docs/RECOMMENDATION_INTEGRATIONS.md` for full design, privacy, and integration details.
 
 ---
 

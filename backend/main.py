@@ -179,6 +179,7 @@ from backend.api.images import router as images_router
 from backend.api.jobs import router as jobs_router
 from backend.api.library import router as library_router
 from backend.api.queue import router as queue_router
+from backend.api.recommendations import router as recommendations_router
 from backend.api.settings import router as settings_router
 from backend.api.system import router as system_router
 from backend.api.tv import router as tv_router
@@ -195,6 +196,7 @@ app.include_router(settings_router, prefix=API_PREFIX)
 app.include_router(queue_router, prefix=API_PREFIX)
 app.include_router(system_router, prefix=API_PREFIX)
 app.include_router(tv_router, prefix=API_PREFIX)
+app.include_router(recommendations_router, prefix=API_PREFIX)
 app.include_router(images_router, prefix=API_PREFIX)
 
 # ── Frontend static files ─────────────────────────────────────────────

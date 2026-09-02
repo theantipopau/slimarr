@@ -16,6 +16,7 @@ import {
   LogOut,
   Coffee,
   Layers,
+  Compass,
 } from 'lucide-react'
 import { auth } from '@/lib/auth'
 import { api } from '@/lib/api'
@@ -49,6 +50,7 @@ const groups: NavGroup[] = [
     items: [
       { to: '/library', icon: Film, label: 'Movies' },
       { to: '/tv', icon: Tv2, label: 'TV Shows' },
+      { to: '/discovery', icon: Compass, label: 'Discovery' },
     ],
   },
   {

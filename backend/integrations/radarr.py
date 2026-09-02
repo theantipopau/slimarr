@@ -131,3 +131,39 @@ class RadarrClient:
             }
         except Exception as e:
             return {"success": False, "error": str(e)}
+
+    # ── Recommendation hand-off ──────────────────────────────────────────
+    # These exist solely so a user can explicitly send a recommended movie to
+    # Radarr — Slimarr never calls add_movie() on its own initiative. See
+    # docs/RECOMMENDATION_INTEGRATIONS.md.
+
+    async def get_quality_profiles(self) -> list[dict]:
+        return await self._get("/qualityprofile")  # type: ignore[return-value]
+
+    async def get_root_folders(self) -> list[dict]:
+        return await self._get("/rootfolder")  # type: ignore[return-value]
+
+    async def add_movie(
+        self,
+        *,
+        tmdb_id: int,
+        title: str,
+        year: int | None,
+        root_folder_path: str,
+        quality_profile_id: int,
+        monitored: bool = True,
+        search_now: bool = False,
+    ) -> dict:
+        """Adds a new movie to Radarr. Requires explicit root folder + quality
+        profile from the caller — Slimarr never guesses these (brief:
+        'present root folder, quality profile and monitoring settings')."""
+        body = {
+            "tmdbId": tmdb_id,
+            "title": title,
+            "year": year,
+            "qualityProfileId": quality_profile_id,
+            "rootFolderPath": root_folder_path,
+            "monitored": monitored,
+            "addOptions": {"searchForMovie": search_now},
+        }
+        return await self._post("/movie", body)

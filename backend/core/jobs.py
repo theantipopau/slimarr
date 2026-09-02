@@ -132,6 +132,13 @@ async def _execute_job_kind(kind: str, payload: dict[str, Any]) -> dict[str, Any
         await scan_and_clean_duplicates()
         return {"status": "cleanup_completed"}
 
+    if kind == "recommendation_refresh":
+        from backend.core.recommendations.engine import run_recommendation_refresh
+
+        return await run_recommendation_refresh(
+            max_movies=int(payload.get("max_movies") or 200),
+        )
+
     if kind == "scheduler_task":
         from backend.scheduler.scheduler import get_scheduler
 

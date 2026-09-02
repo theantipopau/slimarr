@@ -101,3 +101,46 @@ class SonarrClient:
             }
         except Exception as e:
             return {"success": False, "error": str(e)}
+
+    # ── Recommendation hand-off ──────────────────────────────────────────
+    # Exists solely so a user can explicitly send a recommended series to
+    # Sonarr — Slimarr never calls add_series() on its own initiative. See
+    # docs/RECOMMENDATION_INTEGRATIONS.md.
+
+    async def get_quality_profiles(self) -> list[dict]:
+        async with self._http() as client:
+            resp = await client.get(f"{self.url}/api/v3/qualityprofile", headers=self._headers())
+            resp.raise_for_status()
+            return resp.json()
+
+    async def get_root_folders(self) -> list[dict]:
+        async with self._http() as client:
+            resp = await client.get(f"{self.url}/api/v3/rootfolder", headers=self._headers())
+            resp.raise_for_status()
+            return resp.json()
+
+    async def add_series(
+        self,
+        *,
+        tvdb_id: int,
+        title: str,
+        root_folder_path: str,
+        quality_profile_id: int,
+        monitored: bool = True,
+        search_now: bool = False,
+    ) -> dict:
+        """Adds a new series to Sonarr. Requires explicit root folder +
+        quality profile from the caller (brief: 'present root folder, quality
+        profile and monitoring settings')."""
+        body = {
+            "tvdbId": tvdb_id,
+            "title": title,
+            "qualityProfileId": quality_profile_id,
+            "rootFolderPath": root_folder_path,
+            "monitored": monitored,
+            "addOptions": {"searchForMissingEpisodes": search_now},
+        }
+        async with self._http() as client:
+            resp = await client.post(f"{self.url}/api/v3/series", json=body, headers=self._headers())
+            resp.raise_for_status()
+            return resp.json()

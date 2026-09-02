@@ -1,14 +1,46 @@
 """TMDB API client."""
 from __future__ import annotations
 
+import asyncio
+import random
 from typing import Optional
 
 import httpx
+from loguru import logger
 
 from backend.config import get_config
 
+
+class TMDBError(RuntimeError):
+    """Typed error for TMDB request failures, distinct from a bare Exception
+    so callers (the recommendation engine) can decide whether a failure
+    should abort a whole refresh job or just skip one candidate."""
+
+    def __init__(self, message: str, *, status_code: int | None = None) -> None:
+        super().__init__(message)
+        self.status_code = status_code
+
 TMDB_BASE = "https://api.themoviedb.org/3"
 TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p"
+
+
+def _shared_client() -> httpx.AsyncClient | None:
+    """Return the app-wide pooled httpx client if the FastAPI lifespan has
+    started it, else None. Used only by the newer recommendation-engine
+    methods below (get_collection/get_movie_recommendations/get_similar/
+    get_watch_providers) — these are called far more often per scan than the
+    original enrichment methods above, so connection reuse actually matters
+    for them. The original methods are left on their existing
+    per-call-client pattern for this release (see
+    docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md finding A5) rather than
+    retrofitting behavior that scan/enrichment already depends on.
+    """
+    try:
+        from backend.main import get_http_client
+
+        return get_http_client()
+    except Exception:
+        return None
 
 
 class TMDBClient:
@@ -60,3 +92,85 @@ class TMDBClient:
             return {"success": True, "test_title": result.get("title") if result else "no results"}
         except Exception as e:
             return {"success": False, "error": str(e)}
+
+    # ── Recommendation-engine methods ────────────────────────────────────
+    # These use the shared pooled client (see _shared_client above) and a
+    # small retry-with-jitter policy for transient failures (429/5xx) — the
+    # recommendation engine calls these once per candidate per refresh, an
+    # order of magnitude more traffic than the per-movie-scan enrichment
+    # methods above, so both pooling and backoff actually matter here.
+
+    async def _get_with_retry(
+        self, path: str, params: dict, *, attempts: int = 3, timeout: float = 15.0
+    ) -> dict:
+        client = _shared_client()
+        owns_client = client is None
+        if owns_client:
+            client = httpx.AsyncClient(timeout=timeout)
+
+        try:
+            last_error: Exception | None = None
+            for attempt in range(1, attempts + 1):
+                try:
+                    resp = await client.get(f"{TMDB_BASE}{path}", params=params, timeout=timeout)
+                    if resp.status_code == 429 or resp.status_code >= 500:
+                        retry_after = resp.headers.get("Retry-After")
+                        delay = float(retry_after) if retry_after else min(2.0 ** attempt, 10.0)
+                        delay += random.uniform(0, 0.5)  # jitter, avoids synchronized retry storms
+                        if attempt < attempts:
+                            logger.debug(
+                                "TMDB {} returned {}; retrying in {:.1f}s (attempt {}/{})",
+                                path, resp.status_code, delay, attempt, attempts,
+                            )
+                            await asyncio.sleep(delay)
+                            continue
+                    resp.raise_for_status()
+                    return resp.json()
+                except httpx.HTTPStatusError as exc:
+                    status = exc.response.status_code if exc.response is not None else None
+                    # 4xx other than 429 is a permanent failure (bad ID, bad key) —
+                    # never retry those, only transient 429/5xx handled above.
+                    if status is not None and status < 500 and status != 429:
+                        raise TMDBError(f"TMDB request failed: HTTP {status}", status_code=status) from exc
+                    last_error = exc
+                except (httpx.TimeoutException, httpx.ConnectError) as exc:
+                    last_error = exc
+                    if attempt < attempts:
+                        delay = min(2.0 ** attempt, 10.0) + random.uniform(0, 0.5)
+                        await asyncio.sleep(delay)
+            raise TMDBError(f"TMDB request failed after {attempts} attempts: {last_error}") from last_error
+        finally:
+            if owns_client:
+                await client.aclose()
+
+    async def get_movie_full(self, tmdb_id: int) -> dict:
+        """Movie details plus collection/credits/recommendations/similar in
+        one call via TMDB's append_to_response — avoids four separate
+        round-trips per candidate."""
+        return await self._get_with_retry(
+            f"/movie/{tmdb_id}",
+            self._params({"append_to_response": "belongs_to_collection,credits,recommendations,similar"}),
+        )
+
+    async def get_collection(self, collection_id: int) -> dict:
+        return await self._get_with_retry(f"/collection/{collection_id}", self._params())
+
+    async def get_external_ids(self, tmdb_id: int, media_type: str = "movie") -> dict:
+        """IMDb/TVDB IDs for a title TMDB returned from a collection/
+        recommendations/similar listing (those payloads don't include external
+        IDs) — needed to correlate a sourced candidate against Radarr/Sonarr,
+        which key on IMDb ID rather than TMDB ID."""
+        media_type = "tv" if media_type == "tv" else "movie"
+        return await self._get_with_retry(f"/{media_type}/{tmdb_id}/external_ids", self._params())
+
+    async def get_watch_providers(self, tmdb_id: int, media_type: str = "movie") -> dict:
+        """Returns TMDB's region-keyed watch/providers payload. Callers pick
+        the region key themselves — this method makes no assumption about
+        which region the caller wants (see docs/RECOMMENDATION_ARCHITECTURE.md:
+        streaming availability requires an explicit configured region, never
+        a silently-assumed default)."""
+        media_type = "tv" if media_type == "tv" else "movie"
+        return await self._get_with_retry(
+            f"/{media_type}/{tmdb_id}/watch/providers",
+            {"api_key": self.api_key},
+        )

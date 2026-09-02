@@ -291,11 +291,20 @@ async def cleanup_orphaned_download(orphan_id: int) -> tuple[bool, Optional[str]
 async def auto_cleanup_old_orphans(days_old: int = 7) -> int:
     """
     Auto-delete orphaned downloads older than specified days.
-    Returns count deleted.
+
+    Only removes the tracking row once the on-disk folder is actually gone
+    (or there was never a storage path to remove) — mirroring
+    cleanup_orphaned_download()'s success-gated deletion. A failed removal
+    (permission error, transient lock, already-gone parent dir) instead marks
+    the row cleanup_scheduled so it stops cluttering the active orphan list
+    but is retried on the next daily run, rather than deleting Slimarr's only
+    record that the file might still be sitting on disk.
+
+    Returns count of tracking rows actually deleted.
     """
     cutoff = datetime.now(timezone.utc) - timedelta(days=days_old)
     deleted_count = 0
-    
+
     async with async_session() as session:
         # Find old orphans
         result = await session.execute(
@@ -304,30 +313,38 @@ async def auto_cleanup_old_orphans(days_old: int = 7) -> int:
             )
         )
         orphans = result.scalars().all()
-        
+
         for orphan in orphans:
+            folder_deleted = True
             if orphan.storage_path:
+                folder_deleted = False
                 try:
-                    await remove_path(
+                    result = await remove_path(
                         orphan.storage_path,
                         get_config(),
                         purpose="old_orphan_auto_cleanup",
                         recursive=True,
                     )
+                    folder_deleted = result.status in {"completed", "skipped"}
                 except Exception as e:
                     logger.warning(
                         "Failed to delete orphan path '{}': {}",
                         orphan.storage_path,
                         redact_text(str(e)),
                     )
-            await session.delete(orphan)
-            deleted_count += 1
-        
+
+            if folder_deleted:
+                await session.delete(orphan)
+                deleted_count += 1
+            else:
+                orphan.cleanup_scheduled = True
+                orphan.cleanup_at = datetime.now(timezone.utc)
+
         await session.commit()
-    
+
     if deleted_count > 0:
         logger.info(f"Auto-cleaned {deleted_count} old orphaned downloads (>{days_old} days)")
-    
+
     return deleted_count
 
 

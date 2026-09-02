@@ -2036,6 +2036,51 @@ async def health_matrix(user=Depends(get_current_user)):
         "summary": integration_summary,
     }
 
+    try:
+        from backend.config import get_config
+        from backend.database import Recommendation, StreamingAvailability
+        from backend.core.recommendations.streaming import is_stale as availability_is_stale
+
+        rec_config = get_config().recommendations
+        if not rec_config.enabled:
+            components["recommendations"] = {"status": "disabled", "detail": "Not enabled"}
+        else:
+            async with async_session() as db:
+                active_count = (
+                    await db.execute(
+                        select(func.count()).select_from(Recommendation).where(Recommendation.state == "active")
+                    )
+                ).scalar_one()
+                latest_availability = (
+                    await db.execute(
+                        select(StreamingAvailability.checked_at)
+                        .order_by(StreamingAvailability.checked_at.desc())
+                        .limit(1)
+                    )
+                ).scalar_one_or_none()
+
+            issues: list[str] = []
+            if not rec_config.region:
+                issues.append("no region configured — streaming availability disabled")
+            if latest_availability and availability_is_stale(latest_availability):
+                issues.append("streaming availability cache is stale")
+
+            components["recommendations"] = {
+                "status": "degraded" if issues else "healthy",
+                "detail": "; ".join(issues) if issues else f"{int(active_count)} active recommendation(s)",
+                "active_count": int(active_count),
+                "region_configured": bool(rec_config.region),
+                "ai_enabled": bool(rec_config.ai.enabled),
+                "last_availability_check": (
+                    latest_availability.isoformat() if latest_availability else None
+                ),
+            }
+    except Exception as exc:
+        components["recommendations"] = {
+            "status": "degraded",
+            "detail": f"Recommendation telemetry unavailable: {exc}",
+        }
+
     down_count = sum(1 for comp in components.values() if comp.get("status") == "down")
     degraded_count = sum(1 for comp in components.values() if comp.get("status") == "degraded")
     overall = "healthy"

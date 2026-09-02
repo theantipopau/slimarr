@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from typing import Optional
 
 from sqlalchemy import (
-    DateTime, Float, ForeignKey, Index, Integer, String, Text, func,
+    DateTime, Float, ForeignKey, Index, Integer, String, Text, UniqueConstraint, func,
 )
 from sqlalchemy import event
 from sqlalchemy.ext.asyncio import (
@@ -433,6 +433,134 @@ class JobEvent(Base):
     job: Mapped[JobRecord] = relationship(back_populates="events")
 
 
+# ── Recommendation & Collection Completion (see docs/RECOMMENDATION_ARCHITECTURE.md) ──
+#
+# RecommendationCandidate rows are never Movie rows — no shared primary-key space,
+# no shared status vocabulary, and process_single_movie() only ever looks at the
+# Movie table. This keeps "recommended" and "queued for replacement" structurally
+# impossible to confuse.
+
+
+class RecommendationCandidate(Base):
+    __tablename__ = "recommendation_candidates"
+    __table_args__ = (
+        UniqueConstraint("media_type", "tmdb_id", name="uq_candidate_media_tmdb"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    media_type: Mapped[str] = mapped_column(String, nullable=False, index=True)  # "movie" | "tv"
+    title: Mapped[str] = mapped_column(String, nullable=False)
+    year: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+
+    tmdb_id: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
+    imdb_id: Mapped[Optional[str]] = mapped_column(String, nullable=True, index=True)
+    tvdb_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True, index=True)
+
+    poster_path: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    backdrop_path: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    overview: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    popularity: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    vote_average: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    genres: Mapped[Optional[str]] = mapped_column(String, nullable=True)  # JSON array string
+
+    first_seen_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    last_refreshed_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    recommendations: Mapped[list["Recommendation"]] = relationship(
+        back_populates="candidate", cascade="all, delete-orphan"
+    )
+    availability: Mapped[list["StreamingAvailability"]] = relationship(
+        back_populates="candidate", cascade="all, delete-orphan"
+    )
+
+
+class Recommendation(Base):
+    __tablename__ = "recommendations"
+    __table_args__ = (
+        UniqueConstraint("candidate_id", "category", name="uq_recommendation_candidate_category"),
+        Index("ix_recommendations_state_score", "state", "score"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    candidate_id: Mapped[int] = mapped_column(ForeignKey("recommendation_candidates.id"), index=True)
+
+    # Single-user app today — always "default" in this release. Exists so a
+    # future multi-user migration doesn't require a schema rewrite; not
+    # exposed anywhere in the API/UI as a selectable dimension yet.
+    user_scope: Mapped[str] = mapped_column(String, default="default", index=True)
+
+    category: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    score: Mapped[float] = mapped_column(Float, default=0.0, index=True)
+    state: Mapped[str] = mapped_column(String, default="active", index=True)
+    # active | dismissed | hidden | watchlisted | actioned | already_available
+    # | already_managed | expired
+
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc), index=True)
+    expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    dismissed_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    acted_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+
+    candidate: Mapped[RecommendationCandidate] = relationship(back_populates="recommendations")
+    reasons: Mapped[list["RecommendationReason"]] = relationship(
+        back_populates="recommendation", cascade="all, delete-orphan"
+    )
+    feedback: Mapped[list["RecommendationFeedback"]] = relationship(
+        back_populates="recommendation", cascade="all, delete-orphan"
+    )
+
+
+class RecommendationReason(Base):
+    __tablename__ = "recommendation_reasons"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    recommendation_id: Mapped[int] = mapped_column(ForeignKey("recommendations.id"), index=True)
+    reason_code: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    explanation: Mapped[str] = mapped_column(String, nullable=False)
+    source_movie_id: Mapped[Optional[int]] = mapped_column(ForeignKey("movies.id"), nullable=True)
+    source_provider: Mapped[Optional[str]] = mapped_column(String, nullable=True)  # "tmdb" | "plex" | "ai"
+    weight: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+
+    recommendation: Mapped[Recommendation] = relationship(back_populates="reasons")
+
+
+class StreamingAvailability(Base):
+    __tablename__ = "streaming_availability"
+    __table_args__ = (
+        UniqueConstraint(
+            "candidate_id", "region", "provider_id", "availability_type",
+            name="uq_availability_candidate_region_provider_type",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    candidate_id: Mapped[int] = mapped_column(ForeignKey("recommendation_candidates.id"), index=True)
+    region: Mapped[str] = mapped_column(String, nullable=False, index=True)  # ISO 3166-1 alpha-2, e.g. "AU"
+    provider_id: Mapped[int] = mapped_column(Integer, nullable=False)  # TMDB provider_id
+    provider_name: Mapped[str] = mapped_column(String, nullable=False)
+    display_priority: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    availability_type: Mapped[str] = mapped_column(String, nullable=False)  # flatrate|rent|buy|ads|free
+    source: Mapped[str] = mapped_column(String, default="tmdb")
+    source_url: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    checked_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc), index=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+
+    candidate: Mapped[RecommendationCandidate] = relationship(back_populates="availability")
+
+
+class RecommendationFeedback(Base):
+    __tablename__ = "recommendation_feedback"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    recommendation_id: Mapped[int] = mapped_column(ForeignKey("recommendations.id"), index=True)
+    action: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    # shown|opened|dismissed|hidden|watchlisted|sent_to_radarr|sent_to_sonarr
+    # |sent_to_seerr|marked_owned|availability_refreshed
+    detail: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # JSON
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc), index=True)
+
+    recommendation: Mapped[Recommendation] = relationship(back_populates="feedback")
+
+
 async def init_db() -> None:
     """Create all tables if they don't exist.
 
@@ -530,8 +658,10 @@ async def _add_column_if_missing(
 
 
 # Current migration generation - increment whenever a new migration step is added
-# to _run_lightweight_migrations().  Used in diagnostics bundle.
-SCHEMA_VERSION = 5
+# to _run_lightweight_migrations(), OR when new tables are added (even though
+# Base.metadata.create_all() creates those automatically with no migration step
+# needed) so the diagnostics bundle reflects the schema generation accurately.
+SCHEMA_VERSION = 6
 
 
 async def _run_lightweight_migrations(conn) -> None:

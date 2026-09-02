@@ -20,6 +20,7 @@ const Operations = lazy(() => import('@/pages/Operations'))
 const SearchDiagnostics = lazy(() => import('@/pages/SearchDiagnostics'))
 const ContainerDiagnostics = lazy(() => import('@/pages/ContainerDiagnostics'))
 const TVShows = lazy(() => import('@/pages/TVShows'))
+const Discovery = lazy(() => import('@/pages/Discovery'))
 const WelcomeSetup = lazy(() => import('@/pages/WelcomeSetup'))
 
 function PageLoader() {
@@ -61,6 +62,7 @@ export default function App() {
                 <Route path="system/search-diagnostics" element={<SearchDiagnostics />} />
                 <Route path="system/container" element={<ContainerDiagnostics />} />
                 <Route path="tv" element={<TVShows />} />
+                <Route path="discovery" element={<Discovery />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Route>
             </Routes>

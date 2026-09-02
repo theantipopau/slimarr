@@ -4,6 +4,51 @@ All notable changes to Slimarr are documented here.
 
 ---
 
+## [Unreleased]
+
+Standalone release summary: `docs/UPGRADE_NOTES_2.0.0.md`
+
+A full backend/frontend audit against the actual implementation (not README
+claims), a competitive gap analysis against mature *arr platforms, two
+confirmed correctness fixes, and a new deterministic **Discovery &
+Recommendations** feature.
+
+- **New: Discovery & Recommendations.** Slimarr can now suggest titles
+  related to what you already own - missing collection entries, sequels/
+  prequels, and related titles - scored deterministically with a
+  transparent, human-readable reason for every suggestion. Off by default
+  (`recommendations.enabled: false`). See `docs/RECOMMENDATION_ARCHITECTURE.md`.
+- **New: region-specific streaming availability.** Looked up per-title via
+  TMDB's own `/watch/providers` endpoint only - no streaming service is
+  scraped or asked for credentials, and availability is timestamped and
+  treated as stale after 24 hours rather than shown as current indefinitely.
+- **New: explicit hand-off to Radarr/Sonarr from Discovery.** Sending a
+  recommendation to Radarr or Sonarr requires you to confirm the root
+  folder and quality profile; it's a separate, explicit action, never an
+  automatic one, and duplicate-checked against the live instance first.
+  Seerr hand-off is intentionally not implemented this release - see
+  `docs/RECOMMENDATION_INTEGRATIONS.md` for the capability-detection
+  rationale.
+- **New: optional, provider-neutral AI reranking abstraction** (disabled by
+  default, no provider shipped enabled). It can only rerank a candidate
+  list Slimarr already sourced or produce short explanations - it cannot
+  invent titles or availability, cannot see your Plex token, file paths, or
+  more watch history than explicitly opted in, and cannot trigger a
+  download. Every AI-returned ID is re-validated against TMDB before
+  display.
+- **Fixed:** `auto_cleanup_old_orphans()` deleted its tracking row before
+  confirming the underlying file removal actually succeeded, so a failed
+  cleanup could silently lose track of an orphaned download. It now checks
+  the removal outcome first and only clears the row on confirmed success.
+- **Fixed:** SABnzbd connection-test and job-purge error paths could log an
+  API key embedded in a request URL inside an exception message. Errors are
+  now redacted before logging, matching the existing redaction behavior
+  used elsewhere in the codebase.
+- Full audit findings: `docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md`.
+  Competitive analysis: `docs/ARR_PLATFORM_GAP_ANALYSIS.md`.
+
+---
+
 ## [1.9.0.0] - 2026-07-20
 
 Standalone release summary: `docs/CHANGELOG_v1.9.0.0.md`

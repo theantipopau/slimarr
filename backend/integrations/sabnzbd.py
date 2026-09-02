@@ -7,6 +7,7 @@ import httpx
 from loguru import logger
 
 from backend.config import get_config
+from backend.core.search_diagnostics import redact_text
 
 
 def _safe_float(value, default: float = 0.0) -> float:
@@ -104,7 +105,11 @@ class SABnzbdClient:
             version = result.get("version", "unknown")
             return {"success": True, "version": version}
         except Exception as e:
-            return {"success": False, "error": str(e)}
+            # httpx's exception message embeds the full request URL, and the
+            # SABnzbd API key travels as a query param on every request (unlike
+            # NZBGet, which uses HTTP Basic auth) — redact before this reaches
+            # logs or an API response.
+            return {"success": False, "error": redact_text(str(e))}
 
     async def purge_job(self, nzo_id: str) -> bool:
         """Remove job from SABnzbd queue/history. Returns True if successful."""
@@ -115,7 +120,7 @@ class SABnzbdClient:
                 purged = True
                 logger.info(f"SABnzbd purged job {nzo_id}")
         except Exception as e:
-            logger.debug(f"SABnzbd queue purge skipped/failed for {nzo_id}: {e}")
+            logger.debug("SABnzbd queue purge skipped/failed for {}: {}", nzo_id, redact_text(str(e)))
 
         try:
             history_result = await self._api("history", {"name": "delete", "value": nzo_id})
@@ -123,6 +128,6 @@ class SABnzbdClient:
                 purged = True
                 logger.info(f"SABnzbd purged history job {nzo_id}")
         except Exception as e:
-            logger.warning(f"SABnzbd history purge failed for {nzo_id}: {e}")
+            logger.warning("SABnzbd history purge failed for {}: {}", nzo_id, redact_text(str(e)))
 
         return purged

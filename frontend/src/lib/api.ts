@@ -158,4 +158,31 @@ export const api = {
     ratingKey: string,
     body: { plex_rating_key: string; title: string; unmonitor_sonarr: boolean },
   ) => client.delete(`/tv/shows/${ratingKey}`, { data: body }).then((r) => r.data),
+
+  // Recommendations
+  recommendations: (params?: {
+    page?: number
+    per_page?: number
+    media_type?: string
+    category?: string
+    state?: string
+    provider_id?: number
+    sort?: string
+  }) => client.get('/recommendations', { params }).then((r) => r.data),
+  recommendationCapabilities: () => client.get('/recommendations/capabilities').then((r) => r.data),
+  refreshRecommendations: () => client.post('/recommendations/refresh').then((r) => r.data),
+  dismissRecommendation: (id: number) => client.post(`/recommendations/${id}/dismiss`).then((r) => r.data),
+  hideRecommendation: (id: number) => client.post(`/recommendations/${id}/hide`).then((r) => r.data),
+  watchlistRecommendation: (id: number) => client.post(`/recommendations/${id}/watchlist`).then((r) => r.data),
+  markOwnedRecommendation: (id: number) => client.post(`/recommendations/${id}/mark-owned`).then((r) => r.data),
+  refreshRecommendationAvailability: (id: number) =>
+    client.post(`/recommendations/${id}/refresh-availability`).then((r) => r.data),
+  sendRecommendationToRadarr: (
+    id: number,
+    body: { root_folder_path: string; quality_profile_id: number; monitored?: boolean; search_now?: boolean },
+  ) => client.post(`/recommendations/${id}/send-to-radarr`, body).then((r) => r.data),
+  sendRecommendationToSonarr: (
+    id: number,
+    body: { root_folder_path: string; quality_profile_id: number; monitored?: boolean; search_now?: boolean },
+  ) => client.post(`/recommendations/${id}/send-to-sonarr`, body).then((r) => r.data),
 }

@@ -467,6 +467,96 @@ class TVShowsListResponse(BaseModel):
     shows: list[dict[str, Any]]
 
 
+# ── Recommendation & Collection Completion ───────────────────────────────
+# See docs/RECOMMENDATION_ARCHITECTURE.md for the data model these mirror.
+
+
+class RecommendationReasonOut(BaseModel):
+    reason_code: str
+    explanation: str
+    source_movie_id: int | None = None
+    source_provider: str | None = None
+    weight: float | None = None
+
+
+class StreamingAvailabilityOut(BaseModel):
+    region: str
+    provider_id: int
+    provider_name: str
+    display_priority: int | None = None
+    availability_type: str
+    source: str
+    source_url: str | None = None
+    checked_at: str | None = None
+    stale: bool = False
+
+
+class RecommendationOut(BaseModel):
+    id: int
+    candidate_id: int
+    media_type: str
+    title: str
+    year: int | None = None
+    tmdb_id: int
+    imdb_id: str | None = None
+    poster_path: str | None = None
+    backdrop_path: str | None = None
+    overview: str | None = None
+    popularity: float | None = None
+    vote_average: float | None = None
+    category: str
+    score: float
+    state: str
+    created_at: str | None = None
+    expires_at: str | None = None
+    reasons: list[RecommendationReasonOut] = Field(default_factory=list)
+    availability: list[StreamingAvailabilityOut] = Field(default_factory=list)
+    already_in_plex: bool = False
+
+
+class RecommendationListResponse(BaseModel):
+    total: int
+    page: int
+    per_page: int
+    recommendations: list[RecommendationOut]
+
+
+class RecommendationActionResponse(BaseModel):
+    success: bool
+    id: int
+    state: str
+    message: str | None = None
+
+
+class RecommendationRefreshResponse(BaseModel):
+    status: str
+    job_id: str | None = None
+    already_running: bool = False
+
+
+class RecommendationCapabilitiesResponse(BaseModel):
+    """Reports what each hand-off action can actually do right now — the
+    brief's 'capability detection, disable gracefully' requirement made
+    inspectable by the frontend rather than assumed."""
+    radarr: dict[str, Any]
+    sonarr: dict[str, Any]
+    seerr: dict[str, Any]
+
+
+class SendToRadarrRequest(BaseModel):
+    root_folder_path: str
+    quality_profile_id: int
+    monitored: bool = True
+    search_now: bool = False
+
+
+class SendToSonarrRequest(BaseModel):
+    root_folder_path: str
+    quality_profile_id: int
+    monitored: bool = True
+    search_now: bool = False
+
+
 class TVDeleteResponse(BaseModel):
     title: str
     plex_rating_key: str

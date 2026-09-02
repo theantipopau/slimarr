@@ -167,6 +167,53 @@ class QualityConfig(BaseModel):
     reject_uploader_health_below: float = 0.3
 
 
+class RecommendationAIConfig(BaseModel):
+    """Optional, provider-neutral, disabled by default. AI is used only to
+    rerank/explain/theme an already-generated candidate set — it never
+    invents titles, availability, or franchise relationships, and every
+    AI-returned TMDB ID is re-validated against TMDB before use. See
+    docs/RECOMMENDATION_ARCHITECTURE.md and docs/RECOMMENDATION_PRIVACY.md.
+    """
+    enabled: bool = False
+    provider: str = "none"  # "none" | "openai_compatible" | "anthropic" | "ollama"
+    base_url: str = ""
+    model: str = ""
+    api_key: str = ""
+    timeout_seconds: int = 20
+    # Separate, more restrictive opt-in than recommendations.use_plex_watch_history —
+    # enabling watch-history-based scoring does NOT imply sharing it with an AI provider.
+    share_watch_history: bool = False
+
+
+class RecommendationsConfig(BaseModel):
+    """See docs/RECOMMENDATION_ARCHITECTURE.md for the full data model and
+    scoring design this backs. The whole feature is inert (no scans, no
+    external calls beyond what tmdb: already makes for poster enrichment)
+    until `enabled` is explicitly set true.
+    """
+    enabled: bool = False
+    # ISO 3166-1 alpha-2 region code (e.g. "US", "AU", "GB"). Deliberately
+    # empty by default rather than assuming a region — streaming-availability
+    # lookups are skipped entirely until this is set.
+    region: str = ""
+    subscribed_providers: list[int] = []  # TMDB watch-provider IDs
+    enabled_categories: list[str] = [
+        "collection_completion",
+        "sequel_prequel",
+        "related_title",
+    ]
+    media_types: list[str] = ["movie"]
+    minimum_score: float = 40.0
+    languages: list[str] = []
+    genres_include: list[str] = []
+    genres_exclude: list[str] = []
+    excluded_keywords: list[str] = []
+    use_plex_watch_history: bool = False
+    refresh_interval_hours: int = 24
+    max_recommendations_retained: int = 500
+    ai: RecommendationAIConfig = RecommendationAIConfig()
+
+
 class SlimarrConfig(BaseModel):
     server: ServerConfig = ServerConfig()
     auth: AuthConfig = AuthConfig()
@@ -186,6 +233,7 @@ class SlimarrConfig(BaseModel):
     exclusions: ExclusionConfig = ExclusionConfig()
     blacklist: BlacklistConfig = BlacklistConfig()
     quality: QualityConfig = QualityConfig()
+    recommendations: RecommendationsConfig = RecommendationsConfig()
 
 
 # Module-level config path — can be overridden before first get_config() call

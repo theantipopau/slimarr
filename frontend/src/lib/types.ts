@@ -408,3 +408,74 @@ export interface NasPressure {
   top_movies: NasPressureTopMovie[]
   recommendations: string[]
 }
+
+export interface RecommendationReason {
+  reason_code: string
+  explanation: string
+  source_movie_id?: number | null
+  source_provider?: string | null
+  weight?: number | null
+}
+
+export interface StreamingAvailabilityEntry {
+  region: string
+  provider_id: number
+  provider_name: string
+  display_priority?: number | null
+  availability_type: 'flatrate' | 'rent' | 'buy' | 'ads' | 'free' | string
+  source: string
+  source_url?: string | null
+  checked_at?: string | null
+  stale: boolean
+}
+
+export type RecommendationState =
+  | 'active'
+  | 'dismissed'
+  | 'hidden'
+  | 'watchlisted'
+  | 'actioned'
+  | 'already_available'
+  | 'already_managed'
+  | 'expired'
+
+export interface RecommendationItem {
+  id: number
+  candidate_id: number
+  media_type: 'movie' | 'tv'
+  title: string
+  year?: number | null
+  tmdb_id: number
+  imdb_id?: string | null
+  poster_path?: string | null
+  backdrop_path?: string | null
+  overview?: string | null
+  popularity?: number | null
+  vote_average?: number | null
+  category: string
+  score: number
+  state: RecommendationState
+  created_at?: string | null
+  expires_at?: string | null
+  reasons: RecommendationReason[]
+  availability: StreamingAvailabilityEntry[]
+  already_in_plex: boolean
+}
+
+export interface RecommendationListResponse {
+  total: number
+  page: number
+  per_page: number
+  recommendations: RecommendationItem[]
+}
+
+export interface RecommendationCapability {
+  available: boolean
+  reason?: string | null
+}
+
+export interface RecommendationCapabilities {
+  radarr: RecommendationCapability
+  sonarr: RecommendationCapability
+  seerr: RecommendationCapability
+}
