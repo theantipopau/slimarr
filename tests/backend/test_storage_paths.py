@@ -10,6 +10,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from backend.core.storage import (
+    StoragePolicyBlocked,
     classify_storage_path,
     configured_nas_prefixes,
     is_nas_path,
@@ -185,6 +186,75 @@ class StorageOperationTests(unittest.IsolatedAsyncioTestCase):
                 "Cross-device NAS copy uses chunked transfer without a rate limit",
                 result.messages,
             )
+
+    async def test_cross_device_directory_move_onto_nas_is_blocked(self):
+        # _copy_file_throttled only handles single files - a directory move
+        # falling through to shutil.move() would silently bypass rate
+        # limiting, .part staging, and NAS budget accounting entirely (F4 in
+        # docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md). Must refuse loudly
+        # rather than move the bytes unsafely.
+        with TemporaryDirectory() as temp_dir:
+            source_dir = Path(temp_dir) / "season-pack"
+            source_dir.mkdir()
+            (source_dir / "episode.mkv").write_bytes(b"video")
+            nas_dir = Path(temp_dir) / "nas"
+            nas_dir.mkdir()
+            target_dir = nas_dir / "season-pack"
+            cfg = SimpleNamespace(
+                files=SimpleNamespace(
+                    nas_path_prefixes=[str(nas_dir)],
+                    recycling_bin="",
+                    nas_max_write_gb_per_day=0,
+                    nas_max_replacements_per_day=0,
+                    nas_max_concurrent_operations=1,
+                    nas_failure_cooldown_minutes=0,
+                )
+            )
+
+            with (
+                patch("backend.core.storage._same_storage_device", return_value=False),
+                patch(
+                    "backend.core.storage._persisted_nas_usage_24h",
+                    AsyncMock(return_value=(0, 0)),
+                ),
+                self.assertRaises(StoragePolicyBlocked),
+            ):
+                await move_path(str(source_dir), str(target_dir), cfg, purpose="place_replacement")
+
+            self.assertTrue(source_dir.exists())
+            self.assertFalse(target_dir.exists())
+
+    async def test_same_device_directory_move_onto_nas_is_unaffected(self):
+        # A same-device directory move is a cheap os.rename() under the hood
+        # (via shutil.move) - only the unthrottled cross-device copy path is
+        # unsafe, so this must keep working exactly as before.
+        with TemporaryDirectory() as temp_dir:
+            nas_dir = Path(temp_dir) / "nas"
+            nas_dir.mkdir()
+            source_dir = nas_dir / "season-pack"
+            source_dir.mkdir()
+            (source_dir / "episode.mkv").write_bytes(b"video")
+            target_dir = nas_dir / "season-pack-renamed"
+            cfg = SimpleNamespace(
+                files=SimpleNamespace(
+                    nas_path_prefixes=[str(nas_dir)],
+                    recycling_bin="",
+                    nas_max_write_gb_per_day=0,
+                    nas_max_replacements_per_day=0,
+                    nas_max_concurrent_operations=1,
+                    nas_failure_cooldown_minutes=0,
+                )
+            )
+
+            with patch(
+                "backend.core.storage._persisted_nas_usage_24h",
+                AsyncMock(return_value=(0, 0)),
+            ):
+                result = await move_path(str(source_dir), str(target_dir), cfg, purpose="place_replacement")
+
+            self.assertEqual("completed", result.status)
+            self.assertFalse(source_dir.exists())
+            self.assertTrue((target_dir / "episode.mkv").exists())
 
     async def test_copy_throttled_reports_false_when_source_removal_fails(self):
         with TemporaryDirectory() as temp_dir:

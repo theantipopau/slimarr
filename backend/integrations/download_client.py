@@ -21,6 +21,13 @@ class DownloadClientCapabilities:
         return asdict(self)
 
 
+# This is a hand-maintained static compatibility table, NOT a live capability
+# probe of the external SABnzbd/NZBGet APIs - it describes what Slimarr's own
+# client wrappers below (sabnzbd.py / nzbget.py) actually implement, and must
+# be updated by hand whenever a wrapper gains or loses a method. Both entries
+# are currently identical because both wrappers genuinely implement the same
+# method set today; that's a coincidence of the current code, not something
+# this table verifies. See docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md (A4).
 _CLIENT_CAPABILITIES: dict[str, DownloadClientCapabilities] = {
     "sabnzbd": DownloadClientCapabilities(
         submit_url=True,

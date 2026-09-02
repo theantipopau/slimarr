@@ -1090,11 +1090,10 @@ def _move_path_sync(
         target_info.classification,
         estimated_bytes,
     )
-    if (
-        os.path.isfile(source)
-        and _operation_touches_nas(config, source, target)
-        and not _same_storage_device(source, target)
-    ):
+    is_file = os.path.isfile(source)
+    touches_nas = _operation_touches_nas(config, source, target)
+    same_device = _same_storage_device(source, target)
+    if is_file and touches_nas and not same_device:
         files = getattr(config, "files", None)
         max_mbps = max(0.0, float(getattr(files, "nas_max_transfer_mbps", 50.0) or 0.0))
         messages.append(
@@ -1107,6 +1106,21 @@ def _move_path_sync(
                 f"Copy to {target} succeeded but the source file could not be "
                 f"removed - a duplicate remains at {source} and needs manual cleanup"
             )
+    elif not is_file and os.path.isdir(source) and touches_nas and not same_device:
+        # _copy_file_throttled only handles single files. A directory move
+        # falling through to shutil.move() here would do its own untracked
+        # copytree+rmtree with no rate limit, no .part staging, and no NAS
+        # budget accounting - silently bypassing every safety control this
+        # module exists to provide. Nothing in this release actually produces
+        # a cross-device NAS directory move (movies are single-file), so
+        # refuse loudly rather than build unthrottled-directory-copy machinery
+        # for a caller that doesn't exist yet - see F4 in
+        # docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md.
+        raise StoragePolicyBlocked(
+            f"Refusing an unthrottled cross-device directory move onto a NAS/network "
+            f"path ({source} -> {target}); directory moves are not yet rate-limited "
+            f"or NAS-budget-aware."
+        )
     else:
         shutil.move(source, target)
     logger.info("Storage move completed: purpose={} target={}", purpose, target)
