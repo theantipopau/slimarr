@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/react-18-61DAFB?logo=react&logoColor=black" />
   <img src="https://img.shields.io/badge/license-MIT-green" />
   <img src="https://img.shields.io/badge/platform-Linux%20%7C%20Docker%20%7C%20Windows-0ea5e9" />
-  <img src="https://img.shields.io/badge/release-1.9.0.0-success" />
+  <img src="https://img.shields.io/badge/release-2.0.0.0-success" />
 </p>
 
 <p align="center">
@@ -36,7 +36,42 @@ Scan Plex library -> Search Usenet indexers -> Compare releases
 
 Slimarr is designed to look and feel like a native member of the **\*arr ecosystem** (Radarr, Sonarr, Prowlarr). If you're familiar with those tools, you'll feel right at home.
 
-Current release: **1.9.0.0** (2026-07-20).
+Current release: **2.0.0.0** (2026-09-02).
+
+### What's New in 2.0.0.0 - Discovery & Recommendations, Backend Audit, ARR Platform Gap Analysis
+
+- **New: Discovery & Recommendations.** A new page suggests titles related
+  to what you already own - missing collection entries, sequels/prequels,
+  and related titles - each with a deterministic score and a transparent,
+  human-readable reason. No AI is required or contacted by default
+  (`recommendations.enabled: false` out of the box).
+- **New: region-specific streaming availability**, sourced only from TMDB's
+  own `/watch/providers` endpoint - no streaming service is ever scraped or
+  asked for credentials - timestamped and treated as stale after 24 hours.
+- **New: explicit, capability-checked hand-off to Radarr/Sonarr** from a
+  recommendation. Sending a title requires you to confirm the root folder
+  and quality profile; it's never automatic, and it's duplicate-checked
+  against the live instance first. Seerr hand-off is intentionally not
+  implemented this release - see `docs/RECOMMENDATION_INTEGRATIONS.md`.
+- **New: optional, provider-neutral AI reranking abstraction**, disabled by
+  default with only a no-op provider shipped. It can only rerank a
+  candidate list Slimarr already sourced or produce short explanations - it
+  cannot invent titles or availability, cannot see your Plex token or file
+  paths, and every AI-returned ID is re-validated against TMDB. See
+  `docs/RECOMMENDATION_PRIVACY.md`.
+- **Full backend/frontend audit** against the actual implementation (not
+  README claims), plus a competitive gap analysis against Radarr, Sonarr,
+  Prowlarr, Seerr, Bazarr, Tautulli, and Recyclarr for transferable
+  architectural patterns. See `docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md`
+  and `docs/ARR_PLATFORM_GAP_ANALYSIS.md`.
+- **Fixed:** a failed orphan-file removal could still delete its own
+  tracking row, silently losing track of the orphan. Cleanup is now
+  success-gated.
+- **Fixed:** two SABnzbd error paths could log an API key embedded in a
+  request URL. Errors are now redacted before logging.
+
+Upgrade notes: `docs/UPGRADE_NOTES_2.0.0.md`. No existing config key, API
+route, or behavior changed - the new feature is entirely opt-in.
 
 ### What's New in 1.9.0.0 - Full Codebase Review, Config Correctness, and Navigation Rework
 

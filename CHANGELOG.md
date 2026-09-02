@@ -4,7 +4,7 @@ All notable changes to Slimarr are documented here.
 
 ---
 
-## [Unreleased]
+## [2.0.0.0] - 2026-09-02
 
 Standalone release summary: `docs/UPGRADE_NOTES_2.0.0.md`
 

@@ -3,7 +3,7 @@
 ; Run build-installer.ps1 to generate this automatically.
 
 #define MyAppName "Slimarr"
-#define MyAppVersion "1.9.0.0"
+#define MyAppVersion "2.0.0.0"
 #define MyAppPublisher "Slimarr"
 #define MyAppURL "https://github.com/theantipopau/slimarr"
 #define MyAppExeName "Slimarr.exe"

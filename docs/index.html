@@ -16,7 +16,7 @@
         <img src="images/header-logo.PNG" alt="Slimarr" />
       </a>
       <nav class="nav-links">
-        <a href="#v1900">v1.9.0.0</a>
+        <a href="#v2000">v2.0.0.0</a>
         <a href="#install">Install</a>
         <a href="#features">Features</a>
         <a href="#screenshots">Screenshots</a>
@@ -46,30 +46,30 @@
         </ul>
       </section>
 
-      <section id="v1900" class="panel release-panel reveal">
+      <section id="v2000" class="panel release-panel reveal">
         <div class="section-head">
-          <h2>What Is New In v1.9.0.0</h2>
-          <p>A full codebase review pass, then a second pass fixing what it found — a config feature that silently did nothing, a database reliability bug, and a navigation rework.</p>
+          <h2>What Is New In v2.0.0.0</h2>
+          <p>A full backend/frontend audit against the real implementation, a competitive gap analysis against mature *arr platforms, and a new deterministic Discovery &amp; Recommendations feature.</p>
         </div>
         <div class="release-grid">
           <article>
-            <h3>Exclusions, Actually Working</h3>
-            <p>The exclusions: config section was fully defined and validated but never read anywhere — personal footage sharing a library with movies was being sent to Usenet indexers every cycle. It's now enforced before a search is ever issued, with a Settings UI to configure it.</p>
+            <h3>Discovery &amp; Recommendations</h3>
+            <p>Missing collection entries, sequels/prequels, and related titles surfaced from what you already own — each with a deterministic score and a transparent, named reason. No AI required, and off by default.</p>
           </article>
           <article>
-            <h3>Database Reliability</h3>
-            <p>SQLite's default journal mode could throw "database is locked" under concurrent writes. WAL mode plus a busy-timeout are now set on every connection, and uploader-health scoring no longer blocks the event loop or silently breaks on PostgreSQL.</p>
+            <h3>Region-Specific Streaming Availability</h3>
+            <p>Sourced only from TMDB's own /watch/providers endpoint — no streaming service is ever scraped or asked for credentials. Availability is timestamped and treated as stale after 24 hours.</p>
           </article>
           <article>
-            <h3>Sharper Upgrade Decisions</h3>
-            <p>A local file's source type — read by the comparer's upgrade checks but never actually written — is now populated from the release title on replacement and guessed from the filename on scan.</p>
+            <h3>Explicit Radarr/Sonarr Hand-Off</h3>
+            <p>Sending a recommendation to Radarr or Sonarr is a separate, explicit action that requires confirming the root folder and quality profile, and is duplicate-checked against the live instance first. Nothing downloads automatically.</p>
           </article>
           <article>
-            <h3>Grouped Navigation</h3>
-            <p>The sidebar's flat list of links is now grouped into Library, Activity, System, and Settings sections, with live badge counts for failed and orphaned downloads.</p>
+            <h3>Optional, Provider-Neutral AI</h3>
+            <p>Disabled by default with only a no-op provider shipped. When enabled, it can only rerank an already-sourced candidate list or explain it — never invent titles, see your Plex token or file paths, or trigger a download.</p>
           </article>
         </div>
-        <p class="release-note">Full details: <a href="https://github.com/theantipopau/slimarr/blob/main/docs/CHANGELOG_v1.9.0.0.md" target="_blank" rel="noopener noreferrer">CHANGELOG_v1.9.0.0.md</a></p>
+        <p class="release-note">Full details: <a href="https://github.com/theantipopau/slimarr/blob/main/docs/UPGRADE_NOTES_2.0.0.md" target="_blank" rel="noopener noreferrer">UPGRADE_NOTES_2.0.0.md</a></p>
       </section>
 
       <section id="install" class="panel install-panel reveal">
@@ -86,7 +86,7 @@ docker compose up -d</code></pre>
           </article>
           <article>
             <h3>Windows</h3>
-            <p>Download the latest <strong>SlimarrSetup-1.9.0.0.exe</strong> from GitHub Releases. The installer bundles Python and dependencies, starts the tray app, then opens Slimarr at <strong>localhost:9494</strong>.</p>
+            <p>Download the latest <strong>SlimarrSetup-2.0.0.0.exe</strong> from GitHub Releases. The installer bundles Python and dependencies, starts the tray app, then opens Slimarr at <strong>localhost:9494</strong>.</p>
           </article>
         </div>
       </section>
@@ -153,7 +153,7 @@ docker compose up -d</code></pre>
         <h2>Ready To Ship A Leaner Library?</h2>
         <p>Install Slimarr, point it at Plex and your download stack, and let nightly automation keep your movie storage under control.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="https://github.com/theantipopau/slimarr/releases" target="_blank" rel="noopener noreferrer">Get Slimarr 1.9.0.0</a>
+          <a class="btn btn-primary" href="https://github.com/theantipopau/slimarr/releases" target="_blank" rel="noopener noreferrer">Get Slimarr 2.0.0.0</a>
           <a class="btn btn-ghost" href="https://github.com/theantipopau/slimarr/blob/main/README.md" target="_blank" rel="noopener noreferrer">Read Setup Guide</a>
         </div>
       </section>
@@ -161,7 +161,7 @@ docker compose up -d</code></pre>
 
     <footer class="site-footer">
       <p>Slimarr is an independent open-source project and is not affiliated with Sonarr, Radarr, SABnzbd, or Plex.</p>
-      <p class="footer-version">Current release: v1.9.0.0 &middot; <a href="https://github.com/theantipopau/slimarr/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Full changelog</a></p>
+      <p class="footer-version">Current release: v2.0.0.0 &middot; <a href="https://github.com/theantipopau/slimarr/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Full changelog</a></p>
     </footer>
   </body>
 </html>
