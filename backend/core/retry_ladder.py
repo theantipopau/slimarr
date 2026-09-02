@@ -25,17 +25,17 @@ async def can_retry_download(download_id: int) -> tuple[bool, Optional[str]]:
             select(Download).where(Download.id == download_id)
         )
         download = result.scalars().first()
-        
+
         if not download:
             return False, "Download not found"
-        
+
         max_retries = _max_retries()
         if download.retry_count >= max_retries:
             return False, f"Max retries ({max_retries}) reached"
-        
+
         if download.status not in ["failed", "error"]:
             return False, f"Download status is {download.status}, not failed"
-        
+
         return True, None
 
 
@@ -53,10 +53,10 @@ async def get_next_candidate(
             select(Download).where(Download.id == download_id)
         )
         download = result.scalars().first()
-        
+
         if not download or not download.movie_id:
             return None
-        
+
         attempted_result = await session.execute(
             select(Download.release_title).where(Download.movie_id == download.movie_id)
         )
@@ -72,7 +72,7 @@ async def get_next_candidate(
             ).order_by(SearchResult.score.desc())
         )
         candidates = candidates_result.scalars().all()
-        
+
         # Filter out already-attempted releases, then check the rest against
         # the blacklist in a single batched query instead of one query per
         # candidate (a movie can have dozens of accepted candidates).
@@ -90,7 +90,7 @@ async def get_next_candidate(
                 logger.debug(f"Skipping blacklisted: {candidate.release_title} ({reason})")
                 continue
             return candidate
-    
+
     return None
 
 
@@ -105,12 +105,12 @@ async def retry_failed_download(
     can_retry, reason = await can_retry_download(download_id)
     if not can_retry:
         return False, f"Cannot retry: {reason}", None
-    
+
     # Find next candidate
     next_candidate = await get_next_candidate(download_id)
     if not next_candidate:
         return False, "No alternative candidates available for retry", None
-    
+
     # Capture current failed release details and increment retry counter on the failed row.
     old_release_title: str | None = None
     old_retry_count = 0
@@ -178,16 +178,16 @@ async def mark_release_failed(
             select(Download).where(Download.id == download_id)
         )
         download = result.scalars().first()
-        
+
         if not download:
             return
-        
+
         retry_count = download.retry_count + 1
         if not download.release_title:
             return
 
         parsed = parse_release_title(download.release_title)
-        
+
         cfg = get_config()
         auto_expire_days = int(getattr(cfg.blacklist, "auto_expire_days", 30) or 30)
 

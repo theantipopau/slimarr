@@ -1,6 +1,6 @@
 import os
 import unittest
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
@@ -22,6 +22,7 @@ from backend.core.storage import (
     recent_storage_failures,
     remove_path,
     reset_storage_operation_telemetry,
+    restore_nas_cooldown_state,
     storage_operation_metrics,
     storage_operation_snapshot,
 )
@@ -381,6 +382,7 @@ class StorageOperationTests(unittest.IsolatedAsyncioTestCase):
             )
 
             with (
+                patch("backend.core.storage._same_storage_device", return_value=False),
                 patch(
                     "backend.core.storage._persisted_nas_usage_24h",
                     AsyncMock(return_value=(0, 0)),
@@ -393,6 +395,43 @@ class StorageOperationTests(unittest.IsolatedAsyncioTestCase):
             metrics = storage_operation_metrics()
             self.assertEqual(1, metrics.get("move:failed"))
             self.assertEqual(1, metrics.get("nas:write_budget_blocked"))
+
+    async def test_same_device_rename_is_not_charged_against_the_nas_write_budget(self):
+        # Regression for a same-directory rename (backup_existing_target's
+        # "<file>.slimarr-old" step) being billed at full file size even
+        # though a same-device os.rename() moves zero bytes - this could
+        # exhaust the whole daily write budget on phantom writes alone and
+        # fail every genuine replacement behind it (reported as a GitHub
+        # issue against a real production instance).
+        with TemporaryDirectory() as temp_dir:
+            nas_dir = Path(temp_dir) / "nas"
+            nas_dir.mkdir()
+            source = nas_dir / "movie.mkv"
+            target = nas_dir / "movie.mkv.slimarr-old"
+            source.write_bytes(b"x" * 1000)
+            cfg = SimpleNamespace(
+                files=SimpleNamespace(
+                    nas_path_prefixes=[str(nas_dir)],
+                    recycling_bin="",
+                    nas_max_write_gb_per_day=0.000000001,  # ~1 byte - any charged write blocks
+                    nas_max_replacements_per_day=0,
+                    nas_max_concurrent_operations=1,
+                    nas_failure_cooldown_minutes=0,
+                )
+            )
+
+            with patch(
+                "backend.core.storage._persisted_nas_usage_24h",
+                AsyncMock(return_value=(0, 0)),
+            ):
+                # source and target are both real paths under the same temp
+                # dir, so _same_storage_device() returns its real (True)
+                # answer here rather than being mocked - this exercises the
+                # actual fix, not just a mocked stand-in for it.
+                result = await move_path(str(source), str(target), cfg, purpose="backup_existing_target")
+
+            self.assertEqual("completed", result.status)
+            self.assertEqual(0, storage_operation_metrics().get("nas:write_budget_blocked", 0))
 
     async def test_nas_replacement_budget_counts_recent_replacements(self):
         with TemporaryDirectory() as temp_dir:
@@ -414,9 +453,12 @@ class StorageOperationTests(unittest.IsolatedAsyncioTestCase):
             first_source.write_bytes(b"first")
             second_source.write_bytes(b"second")
 
-            with patch(
-                "backend.core.storage._persisted_nas_usage_24h",
-                AsyncMock(return_value=(0, 0)),
+            with (
+                patch("backend.core.storage._same_storage_device", return_value=False),
+                patch(
+                    "backend.core.storage._persisted_nas_usage_24h",
+                    AsyncMock(return_value=(0, 0)),
+                ),
             ):
                 await move_path(str(first_source), str(nas_dir / "first.mkv"), cfg, purpose="place_replacement")
                 with self.assertRaises(OSError):
@@ -474,7 +516,10 @@ class StorageOperationTests(unittest.IsolatedAsyncioTestCase):
 
             try:
                 reset_storage_operation_telemetry()
-                with patch("backend.database.async_session", maker):
+                with (
+                    patch("backend.database.async_session", maker),
+                    patch("backend.core.storage._same_storage_device", return_value=False),
+                ):
                     with self.assertRaises(OSError):
                         await move_path(
                             str(source),
@@ -592,6 +637,80 @@ class StorageOperationTests(unittest.IsolatedAsyncioTestCase):
                 self.assertIsNotNone(health_rows[0].last_failure_at)
                 self.assertIsNotNone(health_rows[0].cooldown_until)
             finally:
+                await engine.dispose()
+
+    async def test_restore_nas_cooldown_state_rearms_an_active_persisted_cooldown(self):
+        with TemporaryDirectory() as temp_dir:
+            db_path = Path(temp_dir) / "storage.sqlite"
+            engine = create_async_engine(f"sqlite+aiosqlite:///{db_path}", connect_args={"check_same_thread": False})
+            maker = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+
+            future = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(minutes=5)
+            async with maker() as session:
+                session.add(
+                    StoragePathHealth(
+                        path_prefix="/mnt/nas/movies",
+                        classification="nas",
+                        cooldown_until=future,
+                        last_error_message="disk full",
+                    )
+                )
+                await session.commit()
+
+            try:
+                with patch("backend.database.async_session", maker):
+                    await restore_nas_cooldown_state()
+
+                snapshot = nas_policy_snapshot()
+                self.assertTrue(snapshot["cooldown_active"])
+                self.assertGreater(snapshot["cooldown_remaining_seconds"], 0)
+                self.assertLessEqual(snapshot["cooldown_remaining_seconds"], 300)
+                self.assertEqual("/mnt/nas/movies", snapshot["last_failure"]["path"])
+            finally:
+                reset_storage_operation_telemetry()
+                await engine.dispose()
+
+    async def test_restore_nas_cooldown_state_ignores_an_expired_cooldown(self):
+        with TemporaryDirectory() as temp_dir:
+            db_path = Path(temp_dir) / "storage.sqlite"
+            engine = create_async_engine(f"sqlite+aiosqlite:///{db_path}", connect_args={"check_same_thread": False})
+            maker = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+
+            past = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(minutes=5)
+            async with maker() as session:
+                session.add(
+                    StoragePathHealth(path_prefix="/mnt/nas/movies", classification="nas", cooldown_until=past)
+                )
+                await session.commit()
+
+            try:
+                with patch("backend.database.async_session", maker):
+                    await restore_nas_cooldown_state()
+
+                self.assertFalse(nas_policy_snapshot()["cooldown_active"])
+            finally:
+                reset_storage_operation_telemetry()
+                await engine.dispose()
+
+    async def test_restore_nas_cooldown_state_is_a_noop_with_no_health_rows(self):
+        with TemporaryDirectory() as temp_dir:
+            db_path = Path(temp_dir) / "storage.sqlite"
+            engine = create_async_engine(f"sqlite+aiosqlite:///{db_path}", connect_args={"check_same_thread": False})
+            maker = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+
+            try:
+                with patch("backend.database.async_session", maker):
+                    await restore_nas_cooldown_state()
+
+                self.assertFalse(nas_policy_snapshot()["cooldown_active"])
+            finally:
+                reset_storage_operation_telemetry()
                 await engine.dispose()
 
 

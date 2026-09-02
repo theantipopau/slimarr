@@ -15,7 +15,7 @@ from backend.core.parser import normalize_codec, normalize_resolution, parse_rel
 from backend.core.media_probe import probe_media_file
 from backend.core.search_diagnostics import redact_text
 from backend.core.storage import path_matches_prefix
-from backend.database import ActivityLog, Movie, async_session
+from backend.database import Movie, async_session
 from backend.realtime.events import emit_event
 
 
@@ -101,7 +101,6 @@ async def _run_scan() -> int:
                 needs_poster = existing is None or not existing.poster_path
                 existing_imdb = existing.imdb_id if existing else None
                 existing_tmdb = existing.tmdb_id if existing else None
-                existing_overview = existing.overview if existing else None
                 # Capture existing probe data so we can skip re-probing NAS files
                 existing_bitrate = existing.bitrate if existing else None
                 existing_video_codec = existing.video_codec if existing else None

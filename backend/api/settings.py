@@ -15,7 +15,7 @@ from backend.api.models import (
     ServiceCheckResponse,
 )
 from backend.auth.dependencies import get_current_user
-from backend.config import IndexerConfig, get_config, reload_config, save_config
+from backend.config import IndexerConfig, get_config, reload_config
 from backend.core.audit import log_audit_event
 from backend.utils.responses import validation_error, get_correlation_id
 
@@ -204,7 +204,7 @@ def _deep_merge(base: dict, override: dict) -> None:
 async def get_blacklist(user=Depends(get_current_user)):
     """Get all active blacklist entries."""
     from backend.core.blacklist import get_all_blacklist_entries
-    
+
     entries = await get_all_blacklist_entries()
     return [
         {
@@ -234,7 +234,7 @@ class BlacklistAddBody(BaseModel):
 async def add_blacklist_entry(body: BlacklistAddBody, user=Depends(get_current_user)):
     """Add a release to the blacklist."""
     from backend.core.blacklist import add_to_blacklist
-    
+
     entry = await add_to_blacklist(
         release_title=body.release_title,
         uploader=body.uploader,
@@ -243,7 +243,7 @@ async def add_blacklist_entry(body: BlacklistAddBody, user=Depends(get_current_u
         manual=True,
         expires_in_days=body.expires_in_days,
     )
-    
+
     return {
         "success": True,
         "id": entry.id,
@@ -255,9 +255,9 @@ async def add_blacklist_entry(body: BlacklistAddBody, user=Depends(get_current_u
 async def remove_blacklist_entry(release_hash: str, user=Depends(get_current_user)):
     """Remove a release from the blacklist."""
     from backend.core.blacklist import remove_from_blacklist
-    
+
     removed = await remove_from_blacklist(release_hash)
-    
+
     return {
         "success": removed,
         "message": "Blacklist entry removed" if removed else "Entry not found",

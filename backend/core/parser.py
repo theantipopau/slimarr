@@ -251,7 +251,7 @@ def parse_release_age(title: str) -> Optional[int]:
     """
     t = title.lower()
     now = datetime.now()
-    
+
     # Try ISO-like date patterns: YYYY.MM.DD or YYYY-MM-DD
     date_match = re.search(r'(\d{4})[.-](\d{1,2})[.-](\d{1,2})', title)
     if date_match:
@@ -262,7 +262,7 @@ def parse_release_age(title: str) -> Optional[int]:
             return max(0, age)  # Don't return negative ages
         except ValueError:
             pass
-    
+
     # Try month name patterns: Jan 15 2023, January 15 2023, etc.
     month_names = {
         'jan': 1, 'january': 1, 'feb': 2, 'february': 2, 'mar': 3, 'march': 3,
@@ -270,7 +270,7 @@ def parse_release_age(title: str) -> Optional[int]:
         'aug': 8, 'august': 8, 'sep': 9, 'september': 9, 'oct': 10, 'october': 10,
         'nov': 11, 'november': 11, 'dec': 12, 'december': 12
     }
-    
+
     for month_name, month_num in month_names.items():
         pattern = rf'{month_name}.*?(\d{{1,2}}).*?(\d{{4}})'
         match = re.search(pattern, t)
@@ -283,7 +283,7 @@ def parse_release_age(title: str) -> Optional[int]:
                 return max(0, age)
             except ValueError:
                 pass
-    
+
     return None
 
 
@@ -297,13 +297,13 @@ def parse_uploader(title: str) -> Optional[str]:
     group_match = re.search(r'-([a-zA-Z0-9]{2,20})(?:\.[a-z]{2,4})?$', title)
     if group_match:
         return group_match.group(1)
-    
+
     # Pattern 2: Group in brackets at end
     # Movie.Title.2023.1080p.BluRay.x264.[GROUPNAME]
     bracket_match = re.search(r'\[([a-zA-Z0-9]{2,20})\]$', title)
     if bracket_match:
         return bracket_match.group(1)
-    
+
     # Pattern 3: Before extension if no dash
     # Movie.Title.2023.1080p.BluRay.x264.GROUPNAME.mkv
     if not group_match:
@@ -313,5 +313,5 @@ def parse_uploader(title: str) -> Optional[str]:
             # Filter out common extensions
             if candidate.lower() not in ['mkv', 'avi', 'mp4', 'wmv', 'mov']:
                 return candidate
-    
+
     return None

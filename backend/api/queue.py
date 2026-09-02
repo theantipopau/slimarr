@@ -115,7 +115,7 @@ async def retry_failed_download_endpoint(
 
     if success and retried_download_id:
         background.add_task(finish_download_with_retries, retried_download_id)
-    
+
     return {
         "success": success,
         "message": message,
@@ -140,9 +140,9 @@ async def get_orphaned_downloads(limit: int = 100, user=Depends(get_current_user
 async def cleanup_orphaned_download_endpoint(orphan_id: int, user=Depends(get_current_user)):
     """Mark an orphaned download for cleanup."""
     from backend.core.orphan_scanner import cleanup_orphaned_download
-    
+
     success, message = await cleanup_orphaned_download(orphan_id)
-    
+
     return {
         "success": success,
         "message": message,

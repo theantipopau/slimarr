@@ -21,11 +21,11 @@ async def add_to_blacklist(
     # Generate hash from title + uploader + indexer for dedup
     hash_input = f"{release_title.lower()}:{uploader or ''}:{indexer_name or ''}"
     release_hash = hashlib.md5(hash_input.encode()).hexdigest()
-    
+
     expires_at = None
     if expires_in_days:
         expires_at = datetime.now(timezone.utc) + timedelta(days=expires_in_days)
-    
+
     async with async_session() as session:
         entry = DownloadBlacklist(
             release_title=release_title,
@@ -49,7 +49,7 @@ async def add_to_blacklist(
                 return found
             raise
         await session.refresh(entry)
-        
+
         logger.info(f"Added to blacklist: {release_title} (reason={reason}, expires={expires_at})")
         return entry
 
@@ -69,7 +69,7 @@ async def is_blacklisted(
     ]
     release_hashes = [hashlib.md5(value.encode()).hexdigest() for value in hash_inputs]
     now = datetime.now(timezone.utc)
-    
+
     async with async_session() as session:
         result = await session.execute(
             select(DownloadBlacklist).where(
@@ -77,7 +77,7 @@ async def is_blacklisted(
             )
         )
         entry = result.scalars().first()
-        
+
         if entry:
             # Check if expired
             if entry.expires_at and entry.expires_at < now:
@@ -85,9 +85,9 @@ async def is_blacklisted(
                 await session.delete(entry)
                 await session.commit()
                 return None
-            
+
             return entry.reason
-    
+
     return None
 
 
@@ -147,20 +147,20 @@ async def remove_from_blacklist(release_hash: str) -> bool:
             )
         )
         entry = result.scalars().first()
-        
+
         if entry:
             await session.delete(entry)
             await session.commit()
             logger.info(f"Removed from blacklist: {entry.release_title}")
             return True
-    
+
     return False
 
 
 async def get_all_blacklist_entries() -> list[DownloadBlacklist]:
     """Get all active (non-expired) blacklist entries."""
     now = datetime.now(timezone.utc)
-    
+
     async with async_session() as session:
         result = await session.execute(
             select(DownloadBlacklist).where(
@@ -174,7 +174,7 @@ async def get_all_blacklist_entries() -> list[DownloadBlacklist]:
 async def cleanup_expired_blacklist() -> int:
     """Remove expired blacklist entries. Returns count deleted."""
     now = datetime.now(timezone.utc)
-    
+
     async with async_session() as session:
         result = await session.execute(
             select(DownloadBlacklist).where(
@@ -183,13 +183,13 @@ async def cleanup_expired_blacklist() -> int:
             )
         )
         expired = result.scalars().all()
-        
+
         for entry in expired:
             await session.delete(entry)
-        
+
         await session.commit()
-        
+
         if expired:
             logger.info(f"Cleaned up {len(expired)} expired blacklist entries")
-        
+
         return len(expired)

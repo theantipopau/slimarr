@@ -10,7 +10,7 @@ from backend.api.models import AuthCheckResponse
 from backend.config import get_config
 from backend.core.audit import log_audit_event
 from backend.database import AsyncSession, User, get_db
-from backend.utils.responses import APIException, rate_limited, get_correlation_id
+from backend.utils.responses import rate_limited, get_correlation_id
 from loguru import logger
 
 router = APIRouter()

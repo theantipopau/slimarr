@@ -14,7 +14,7 @@ from loguru import logger
 
 from backend.config import get_config
 from backend.core.parser import get_codec_rank, get_resolution_rank
-from backend.core.storage import move_path, remove_path
+from backend.core.storage import move_path, preflight_storage_path, remove_path
 
 
 def _part_score(p: dict) -> tuple:
@@ -166,11 +166,11 @@ async def scan_and_clean_duplicates() -> dict:
     except Exception as e:
         logger.error(f"Plex connection failed during duplicate scan: {e}")
         return {"movies_scanned": 0, "duplicates_found": 0, "files_removed": 0, "bytes_reclaimed": 0, "errors": 1}
-    
+
     sections = plex.library_sections or [
         s.title for s in server.library.sections() if s.type == "movie"
     ]
-    
+
     summary = {
         "movies_scanned": 0,
         "duplicates_found": 0,
@@ -214,10 +214,8 @@ async def scan_and_clean_duplicates() -> dict:
                     file_path = inf["file"]
                     file_size = inf["size"]
 
+                    recycled = False
                     if config.files.recycling_bin:
-                        await asyncio.to_thread(
-                            os.makedirs, config.files.recycling_bin, exist_ok=True
-                        )
                         # Use a unique name to avoid collisions between movies
                         base = os.path.basename(file_path)
                         recycle_dest = os.path.join(config.files.recycling_bin, base)
@@ -227,18 +225,44 @@ async def scan_and_clean_duplicates() -> dict:
                                 config.files.recycling_bin,
                                 f"{name}_{plex_movie.ratingKey}{ext}",
                             )
-                        await move_path(
-                            file_path,
+                        # Classify/preflight the recycling bin destination before
+                        # touching it (matches the pattern already used for the
+                        # main nightly replacement recycle in replacer.py) - a
+                        # recycling bin misconfigured onto an unreachable or full
+                        # NAS share fails fast with a clear reason and falls back
+                        # to a straight delete, rather than blindly mkdir-ing and
+                        # attempting the move.
+                        recycle_preflight = await asyncio.to_thread(
+                            preflight_storage_path,
                             recycle_dest,
                             config,
-                            purpose="duplicate_cleanup_recycle",
                             required_bytes=file_size,
+                            purpose="duplicate_cleanup_recycle",
                         )
-                        logger.info(
-                            f"Recycled inferior duplicate: {file_path} → {recycle_dest} "
-                            f"(Res: {inf['resolution']}, Size: {file_size / 1024**2:.0f} MB)"
-                        )
-                    else:
+                        if recycle_preflight.status == "block":
+                            logger.warning(
+                                "Recycling bin preflight blocked move for {}; falling back to delete: {}",
+                                file_path,
+                                "; ".join(recycle_preflight.messages),
+                            )
+                        else:
+                            await asyncio.to_thread(
+                                os.makedirs, config.files.recycling_bin, exist_ok=True
+                            )
+                            await move_path(
+                                file_path,
+                                recycle_dest,
+                                config,
+                                purpose="duplicate_cleanup_recycle",
+                                required_bytes=file_size,
+                            )
+                            logger.info(
+                                f"Recycled inferior duplicate: {file_path} → {recycle_dest} "
+                                f"(Res: {inf['resolution']}, Size: {file_size / 1024**2:.0f} MB)"
+                            )
+                            recycled = True
+
+                    if not recycled:
                         await remove_path(file_path, config, purpose="duplicate_cleanup_delete")
                         logger.info(
                             f"Deleted inferior duplicate: {file_path} "
@@ -255,5 +279,5 @@ async def scan_and_clean_duplicates() -> dict:
         # Only refresh this section if we actually removed files from it
         if section_files_removed > 0:
             server.library.section(section_name).update()
-            
+
     return summary

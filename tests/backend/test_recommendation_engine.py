@@ -7,7 +7,6 @@ from unittest.mock import AsyncMock, patch
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from backend.core.recommendations.correlation import CorrelationSnapshot
 from backend.core.recommendations.engine import _apply_retention, record_feedback, run_recommendation_refresh
 from backend.database import (
     Base,

@@ -19,8 +19,6 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-from backend.utils.platform import is_docker
-
 # Database URL selection.
 #
 # Priority:

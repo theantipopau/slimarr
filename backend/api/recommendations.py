@@ -8,10 +8,9 @@ of existing auth coverage).
 """
 from __future__ import annotations
 
-import json
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends
 from sqlalchemy import func, select
 from sqlalchemy.orm import selectinload
 
@@ -19,12 +18,9 @@ from backend.api.models import (
     RecommendationActionResponse,
     RecommendationCapabilitiesResponse,
     RecommendationListResponse,
-    RecommendationOut,
-    RecommendationReasonOut,
     RecommendationRefreshResponse,
     SendToRadarrRequest,
     SendToSonarrRequest,
-    StreamingAvailabilityOut,
 )
 from backend.auth.dependencies import get_current_user
 from backend.core.recommendations.streaming import is_stale as availability_is_stale

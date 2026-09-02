@@ -19,7 +19,7 @@ async def scan_orphaned_downloads() -> int:
     config = get_config()
     downloader = config.download_client  # 'sabnzbd' | 'nzbget'
     new_orphans = 0
-    
+
     try:
         if downloader == "sabnzbd":
             new_orphans = await _scan_sabnzbd_orphans()
@@ -29,17 +29,17 @@ async def scan_orphaned_downloads() -> int:
             logger.warning(f"Unknown downloader: {downloader}")
     except Exception as e:
         logger.error("Error scanning orphans: {}", redact_text(str(e)))
-    
+
     return new_orphans
 
 
 async def _scan_sabnzbd_orphans() -> int:
     """Scan SABnzbd history for orphaned jobs."""
     from backend.integrations.sabnzbd import SABnzbdClient
-    
+
     client = SABnzbdClient()
     new_orphans = 0
-    
+
     try:
         # Get job history from SABnzbd (limit 5000 recent jobs)
         history = await client.get_history(limit=5000)
@@ -132,10 +132,10 @@ async def _scan_sabnzbd_orphans() -> int:
 async def _scan_nzbget_orphans() -> int:
     """Scan NZBGet history for orphaned jobs."""
     from backend.integrations.nzbget import NZBGetClient
-    
+
     client = NZBGetClient()
     new_orphans = 0
-    
+
     try:
         # Get full history from NZBGet
         history = await client.history(False)
@@ -233,7 +233,7 @@ async def cleanup_orphaned_download(orphan_id: int) -> tuple[bool, Optional[str]
             select(OrphanedDownload).where(OrphanedDownload.id == orphan_id)
         )
         orphan = result.scalars().first()
-        
+
         if not orphan:
             return False, "Orphan not found"
 
@@ -353,12 +353,12 @@ async def get_orphaned_downloads(limit: int = 100) -> list[dict]:
     async with async_session() as session:
         result = await session.execute(
             select(OrphanedDownload)
-            .where(OrphanedDownload.cleanup_scheduled == False)
+            .where(OrphanedDownload.cleanup_scheduled.is_(False))
             .order_by(OrphanedDownload.found_at.desc())
             .limit(limit)
         )
         orphans = result.scalars().all()
-    
+
     return [
         {
             "id": o.id,

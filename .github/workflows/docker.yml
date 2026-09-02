@@ -7,6 +7,7 @@ on:
       - "v*.*"
   pull_request:
     branches: [main, master]
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -105,12 +106,17 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Build and push Docker image
+      - name: Build Docker image (per-platform, cache only)
         uses: docker/build-push-action@v5
         with:
           context: .
           platforms: ${{ matrix.platform }}
-          push: ${{ github.event_name != 'pull_request' }}
+          # Never push here: two matrix jobs pushing the same tags would
+          # race and overwrite each other's single-platform image under the
+          # shared tag (e.g. "latest"). docker-merge below is the only job
+          # that pushes, building the real multi-arch manifest from these
+          # per-platform layers via the GHA cache populated here.
+          push: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha,scope=${{ matrix.platform }}

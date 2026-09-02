@@ -528,6 +528,56 @@ async def _persist_operation(result: StorageOperationResult) -> None:
         )
 
 
+async def restore_nas_cooldown_state() -> None:
+    """Re-arm any NAS failure cooldown that was still active when the
+    process last stopped.
+
+    _nas_cooldown_until is a time.monotonic() value and unconditionally
+    resets to 0 on restart - without this, a restart immediately after a
+    NAS failure silently drops the cooldown and the very next replacement
+    can hit the same failing share right away (see F5 in
+    docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md). Called once from the
+    FastAPI lifespan, after init_db(), mirroring recover_stale_jobs().
+    """
+    global _nas_cooldown_until, _nas_last_failure
+    try:
+        from sqlalchemy import select
+
+        from backend.database import StoragePathHealth, async_session
+
+        now_utc = datetime.now(timezone.utc).replace(tzinfo=None)
+        async with async_session() as session:
+            rows = (
+                await session.execute(
+                    select(StoragePathHealth).where(StoragePathHealth.cooldown_until.is_not(None))
+                )
+            ).scalars().all()
+
+        active = [row for row in rows if row.cooldown_until and row.cooldown_until > now_utc]
+        if not active:
+            return
+
+        latest = max(active, key=lambda row: row.cooldown_until)
+        remaining_seconds = (latest.cooldown_until - now_utc).total_seconds()
+        async with _nas_policy_guard:
+            _nas_cooldown_until = time.monotonic() + remaining_seconds
+            _nas_last_failure = {
+                "operation": "restored",
+                "purpose": "startup_restore",
+                "path": latest.path_prefix,
+                "target_path": None,
+                "error": latest.last_error_message or "NAS cooldown restored from a prior failure",
+                "at": _utc_iso(),
+            }
+        logger.warning(
+            "Restored an active NAS failure cooldown from a previous run: {} more second(s) for {}",
+            int(remaining_seconds),
+            latest.path_prefix,
+        )
+    except Exception as exc:
+        logger.warning("Failed to restore NAS cooldown state on startup: {}", exc)
+
+
 def _history_since(seconds: float) -> list[dict[str, Any]]:
     cutoff = time.time() - max(0.0, seconds)
     return [
@@ -799,7 +849,16 @@ async def _nas_policy_scope(
                 f"({_nas_active_operations}/{settings['max_concurrent_operations']} active)"
             )
 
-        if operation == "move" and target_path:
+        # A same-directory rename (e.g. backup_existing_target's
+        # "<file>.slimarr-old" step) is a metadata-only os.rename() that
+        # moves zero bytes - billing it against the NAS write budget at
+        # full file size can exhaust the daily cap on phantom writes alone
+        # and fail every genuine replacement behind it. _same_storage_device
+        # already exists and is used to choose rename over throttled copy at
+        # the execution site (see move_path below); reuse it here so the
+        # accounting path agrees with the execution path.
+        same_device = bool(source_path and target_path and _same_storage_device(source_path, target_path))
+        if operation == "move" and target_path and not same_device:
             target_info = classify_storage_path(target_path, config)
             if target_info.classification in {"nas", "network"}:
                 persisted_write, persisted_replacements = await _persisted_nas_usage_24h()
