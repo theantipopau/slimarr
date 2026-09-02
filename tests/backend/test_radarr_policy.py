@@ -2,7 +2,20 @@ import unittest
 from unittest.mock import AsyncMock, patch
 
 from backend.config import SlimarrConfig
-from backend.integrations.radarr import RadarrClient
+from backend.integrations.radarr import RadarrClient, _shared_client
+
+
+class SharedClientSelectionTests(unittest.TestCase):
+    def test_tls_verify_false_never_uses_the_shared_client(self):
+        # The shared client is always built with verify=True - reusing it for
+        # an instance configured with tls_verify=False would silently ignore
+        # that setting (e.g. a self-signed cert on a homelab NAS setup).
+        self.assertIsNone(_shared_client(False))
+
+    def test_tls_verify_true_falls_back_gracefully_outside_the_app_lifespan(self):
+        # get_http_client() raises RuntimeError until FastAPI's lifespan has
+        # started it (as in this unit test) - must degrade to None, not raise.
+        self.assertIsNone(_shared_client(True))
 
 
 class RadarrPolicyTests(unittest.IsolatedAsyncioTestCase):

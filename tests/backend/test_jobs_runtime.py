@@ -78,6 +78,33 @@ class JobRuntimeTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("recovery_required", detail["status"])
         self.assertEqual("Process restarted while job was active", detail["error_message"])
 
+    async def test_get_persistent_job_caps_events_to_the_most_recent(self):
+        from datetime import datetime, timedelta, timezone
+
+        async with self.maker() as session:
+            session.add(JobRecord(id="job-many-events", kind="manual_scan", status="completed", payload="{}"))
+            base = datetime.now(timezone.utc)
+            for i in range(250):
+                session.add(
+                    JobEvent(
+                        job_id="job-many-events",
+                        event=f"event-{i}",
+                        created_at=base + timedelta(seconds=i),
+                    )
+                )
+            await session.commit()
+
+        with patch("backend.core.jobs.async_session", self.maker):
+            detail = await get_persistent_job("job-many-events")
+
+        events = detail["events"]
+        self.assertEqual(200, len(events))
+        # The most recent 200 (event-50 .. event-249), in chronological order.
+        self.assertEqual("event-50", events[0]["event"])
+        self.assertEqual("event-249", events[-1]["event"])
+        indices = [int(e["event"].split("-")[1]) for e in events]
+        self.assertEqual(sorted(indices), indices)
+
     async def test_failed_job_records_failure_event(self):
         with patch("backend.core.jobs.async_session", self.maker):
             result = await enqueue_job("unsupported_kind", start=True)

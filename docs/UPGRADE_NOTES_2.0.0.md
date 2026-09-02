@@ -27,9 +27,15 @@ config changes at all leaves Slimarr behaving exactly as it did in 1.9.0.0.
   already-sourced candidate list or produce short explanations — nothing
   more. See `docs/RECOMMENDATION_PRIVACY.md` for exactly what it can and
   cannot see.
-- Two confirmed backend correctness fixes found during the audit (orphan
-  cleanup could lose track of a download on a failed removal; two SABnzbd
-  error paths could log an API key). See `docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md`.
+- Backend correctness fixes found during the audit: orphan cleanup could
+  lose track of a download on a failed removal; two SABnzbd error paths
+  could log an API key; a storage path with an embedded `..` could evade
+  NAS-prefix classification; classification was case-folded even on
+  case-sensitive filesystems; a cross-device NAS copy whose source-cleanup
+  step failed after a successful copy was misreported as a failed move; the
+  image-proxy endpoint could leak a raw exception; a job's event timeline
+  had no upper bound. TMDB/Radarr/Sonarr's original methods now reuse the
+  app's pooled HTTP client. See `docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md`.
 
 ## Do I need to do anything to upgrade?
 

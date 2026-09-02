@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import random
+from contextlib import asynccontextmanager
 from typing import Optional
 
 import httpx
@@ -26,14 +27,10 @@ TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p"
 
 def _shared_client() -> httpx.AsyncClient | None:
     """Return the app-wide pooled httpx client if the FastAPI lifespan has
-    started it, else None. Used only by the newer recommendation-engine
-    methods below (get_collection/get_movie_recommendations/get_similar/
-    get_watch_providers) — these are called far more often per scan than the
-    original enrichment methods above, so connection reuse actually matters
-    for them. The original methods are left on their existing
-    per-call-client pattern for this release (see
-    docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md finding A5) rather than
-    retrofitting behavior that scan/enrichment already depends on.
+    started it, else None (e.g. in a unit test, or a call made before
+    startup finishes). TMDB has no user-configurable TLS setting, so unlike
+    Radarr/Sonarr there's no correctness reason to ever prefer a private
+    client here - see docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md finding A5.
     """
     try:
         from backend.main import get_http_client
@@ -55,34 +52,46 @@ class TMDBClient:
             p.update(extra)
         return p
 
+    @asynccontextmanager
+    async def _client(self, timeout: float = 15.0):
+        client = _shared_client()
+        owns_client = client is None
+        if owns_client:
+            client = httpx.AsyncClient(timeout=timeout)
+        try:
+            yield client
+        finally:
+            if owns_client:
+                await client.aclose()
+
     async def search_movie(self, title: str, year: Optional[int] = None) -> Optional[dict]:
         params = self._params({"query": title})
         if year:
             params["year"] = year
-        async with httpx.AsyncClient(timeout=15.0) as client:
-            resp = await client.get(f"{TMDB_BASE}/search/movie", params=params)
+        async with self._client() as client:
+            resp = await client.get(f"{TMDB_BASE}/search/movie", params=params, timeout=15.0)
             resp.raise_for_status()
             results = resp.json().get("results", [])
             return results[0] if results else None
 
     async def get_movie(self, tmdb_id: int) -> dict:
-        async with httpx.AsyncClient(timeout=15.0) as client:
-            resp = await client.get(f"{TMDB_BASE}/movie/{tmdb_id}", params=self._params())
+        async with self._client() as client:
+            resp = await client.get(f"{TMDB_BASE}/movie/{tmdb_id}", params=self._params(), timeout=15.0)
             resp.raise_for_status()
             return resp.json()
 
     async def find_by_imdb(self, imdb_id: str) -> Optional[dict]:
         params = {"api_key": self.api_key, "external_source": "imdb_id"}
-        async with httpx.AsyncClient(timeout=15.0) as client:
-            resp = await client.get(f"{TMDB_BASE}/find/{imdb_id}", params=params)
+        async with self._client() as client:
+            resp = await client.get(f"{TMDB_BASE}/find/{imdb_id}", params=params, timeout=15.0)
             resp.raise_for_status()
             results = resp.json().get("movie_results", [])
             return results[0] if results else None
 
     async def download_image(self, path: str, size: str = "w300") -> bytes:
         url = f"{TMDB_IMAGE_BASE}/{size}{path}"
-        async with httpx.AsyncClient(timeout=20.0) as client:
-            resp = await client.get(url)
+        async with self._client(timeout=20.0) as client:
+            resp = await client.get(url, timeout=20.0)
             resp.raise_for_status()
             return resp.content
 

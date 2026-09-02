@@ -69,6 +69,17 @@ Current release: **2.0.0.0** (2026-09-02).
   success-gated.
 - **Fixed:** two SABnzbd error paths could log an API key embedded in a
   request URL. Errors are now redacted before logging.
+- **Fixed:** a path containing an embedded `..` could evade NAS-prefix
+  classification, and classification was case-folded even on case-sensitive
+  filesystems - both could bypass or falsely trigger NAS budget/throttle
+  protection.
+- **Fixed:** a cross-device NAS copy whose final source-cleanup step failed
+  after the copy itself succeeded was reported as a failed move (leaving a
+  duplicate and a misleading status) instead of a completed one with a
+  warning.
+- **Fixed:** the image-proxy endpoint could leak a raw exception, and a
+  job's event timeline had no upper bound. TMDB/Radarr/Sonarr's original
+  methods now reuse the app's pooled HTTP client for connection reuse.
 
 Upgrade notes: `docs/UPGRADE_NOTES_2.0.0.md`. No existing config key, API
 route, or behavior changed - the new feature is entirely opt-in.

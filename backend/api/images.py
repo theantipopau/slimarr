@@ -5,6 +5,7 @@ import os
 
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
+from loguru import logger
 
 from backend.core.image_cache import get_or_cache_image
 from backend.database import Movie, async_session
@@ -46,10 +47,12 @@ async def get_image(movie_id: int, image_type: str):
     try:
         file_path = await get_or_cache_image(movie_id, image_type, tmdb_path)
     except Exception as e:
-        raise internal_error(
-            f"Image fetch failed: {e}",
-            correlation_id=get_correlation_id(),
-        )
+        # This is Slimarr's one unauthenticated data-serving route besides
+        # /health and /metrics - the raw exception (which can contain a
+        # local filesystem path from a failed cache write) is logged
+        # server-side only, never returned to the client.
+        logger.warning("Image fetch failed for movie_id={} image_type={}: {}", movie_id, image_type, e)
+        raise internal_error(correlation_id=get_correlation_id())
 
     if not os.path.exists(file_path):
         raise not_found("Cached image", correlation_id=get_correlation_id())

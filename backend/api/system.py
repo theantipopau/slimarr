@@ -504,8 +504,11 @@ async def metrics():
         _gauge("slimarr_downloads_active", int(active_downloads), help_text="Active downloads in queue")
         _gauge("slimarr_jobs_active", int(active_jobs), help_text="Active persistent jobs")
         _counter("slimarr_jobs_failed_total", int(failed_jobs), help_text="Failed persistent jobs")
-    except Exception:
-        pass
+    except Exception as exc:
+        # /metrics degrading silently on a DB hiccup is an acceptable failure
+        # mode (Prometheus itself shows the resulting gap) - but it should
+        # still leave a trace for whoever is debugging why.
+        logger.debug("Metrics DB query block failed: {}", exc)
 
     db_path = os.environ.get("SLIMARR_DB") or "data/slimarr.db"
     if os.path.exists(db_path):
@@ -697,8 +700,8 @@ async def diagnostics_bundle(user=Depends(get_current_user)):
         }
         with open(os.path.join(payload_dir, "system.nas.classification.json"), "w", encoding="utf-8") as f:
             json.dump(nas_summary, f, indent=2)
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.debug("Diagnostics bundle NAS classification summary failed: {}", exc)
 
     log_tail = _read_log_tail(os.path.join("data", "logs", "slimarr.log"), max_lines=3000)
     with open(os.path.join(payload_dir, "logs.slimarr.tail.log"), "w", encoding="utf-8") as f:

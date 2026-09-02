@@ -44,6 +44,33 @@ Recommendations** feature.
   API key embedded in a request URL inside an exception message. Errors are
   now redacted before logging, matching the existing redaction behavior
   used elsewhere in the codebase.
+- **Fixed:** a storage path containing an embedded `..` segment (e.g.
+  `/mnt/local/../nas/movies`) could evade NAS-prefix classification,
+  skipping budget/throttle/cooldown protection entirely. Paths are now
+  collapsed before classification.
+- **Fixed:** on a case-sensitive filesystem (Linux/most Docker/NAS-via-NFS),
+  path classification lowercased unconditionally, which could cause a false
+  NAS match or a false miss depending on how `nas_path_prefixes` was cased.
+  Case is now only folded on Windows.
+- **Fixed:** if a cross-device NAS copy's final source-file cleanup failed
+  after the copy itself had already succeeded, the whole move was reported
+  as `failed` even though the target had a complete, correct copy - leaving
+  a duplicate and a misleading status. It's now reported as completed with
+  an explicit warning instead.
+- **Fixed:** the image-proxy endpoint could leak a raw exception (including
+  local filesystem paths) to any client on a cache-fetch failure; it's now
+  logged server-side only.
+- **Fixed:** a job's event timeline had no upper bound, so a job retried
+  many times returned an ever-growing array from `GET /jobs/{id}`. Capped
+  to the most recent 200 events.
+- TMDB, Radarr, and Sonarr's original API methods now reuse the app's
+  pooled HTTP client instead of opening a new connection per call (Radarr/
+  Sonarr only when the instance's own TLS-verification setting agrees with
+  the shared client's, so a self-signed-cert setup is never silently
+  affected).
+- Two low-severity silent-failure spots (`/metrics` DB query, diagnostics
+  bundle NAS summary) now leave a debug-level trace instead of swallowing
+  the exception entirely.
 - Full audit findings: `docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md`.
   Competitive analysis: `docs/ARR_PLATFORM_GAP_ANALYSIS.md`.
 

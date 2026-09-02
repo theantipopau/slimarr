@@ -1,9 +1,31 @@
 """Sonarr API client — used for unmonitoring series before TV show deletion."""
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
+
 import httpx
 from loguru import logger
 from backend.config import get_config
+
+
+def _shared_client(tls_verify: bool) -> httpx.AsyncClient | None:
+    """Return the app-wide pooled httpx client if it's usable for this call.
+
+    The shared client (see backend.main.get_http_client) is always built
+    with verify=True. A Sonarr instance configured with tls_verify=False
+    (self-signed certs, common on a NAS/homelab setup) must never silently
+    have that setting overridden by reusing a client that ignores it - so
+    pooling is only used when the two agree, and a private per-call client
+    is used otherwise. See docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md (A5).
+    """
+    if not tls_verify:
+        return None
+    try:
+        from backend.main import get_http_client
+
+        return get_http_client()
+    except Exception:
+        return None
 
 
 class SonarrClient:
@@ -16,9 +38,17 @@ class SonarrClient:
     def _headers(self) -> dict:
         return {"X-Api-Key": self.api_key, "Content-Type": "application/json"}
 
-    def _http(self) -> httpx.AsyncClient:
-        """TLS verification is configurable via sonarr.tls_verify."""
-        return httpx.AsyncClient(timeout=15.0, verify=self.tls_verify)
+    @asynccontextmanager
+    async def _http(self):
+        client = _shared_client(self.tls_verify)
+        owns_client = client is None
+        if owns_client:
+            client = httpx.AsyncClient(timeout=15.0, verify=self.tls_verify)
+        try:
+            yield client
+        finally:
+            if owns_client:
+                await client.aclose()
 
     async def get_all_series(self) -> list[dict]:
         async with self._http() as client:

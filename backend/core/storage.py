@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import os
+import posixpath
 import shutil
 import asyncio
 import time
@@ -108,8 +109,27 @@ class StorageOperationResult:
 
 
 def normalize_path(path: str | None) -> str:
-    """Normalize a path for prefix comparisons without changing the real path."""
-    return str(path or "").replace("\\", "/").strip().lower().rstrip("/")
+    """Normalize a path for prefix comparisons without changing the real path.
+
+    Collapses "." / ".." segments so an embedded traversal (e.g.
+    "/mnt/local/../nas/movies") can't evade NAS-prefix classification by
+    presenting differently than its resolved form, and only folds case on
+    platforms where the filesystem is actually case-insensitive (Windows) -
+    on case-sensitive Linux/NFS mounts, two differently-cased paths are
+    genuinely different locations and must not be treated as the same one.
+    A relative path that still escapes above its own root after collapsing
+    (e.g. "../secret") is left as-is; it then simply won't match any
+    configured (absolute) prefix, which fails closed rather than open.
+    """
+    text = str(path or "").replace("\\", "/").strip()
+    if not text:
+        return ""
+    collapsed = posixpath.normpath(text)
+    if collapsed == ".":
+        return ""
+    if os.name == "nt":
+        collapsed = collapsed.lower()
+    return collapsed.rstrip("/")
 
 
 def path_matches_prefix(path: str | None, prefixes: list[str] | tuple[str, ...]) -> bool:
@@ -287,8 +307,18 @@ def _same_storage_device(source: str, target: str) -> bool:
         return False
 
 
-def _copy_file_throttled(source: str, target: str, config: Any) -> None:
-    """Copy a file through a temporary target with optional NAS rate limiting."""
+def _copy_file_throttled(source: str, target: str, config: Any) -> bool:
+    """Copy a file through a temporary target with optional NAS rate limiting.
+
+    Returns True if the source was also removed after a successful copy,
+    or False if the copy/replace succeeded but the source could not be
+    removed afterwards. The latter is deliberately NOT raised as a
+    failure: the target already has a complete, correct copy at that
+    point, so reporting it as a failed move would be wrong and could
+    trigger a caller to retry the whole copy again on top of an already-
+    good target. It leaves a duplicate at `source` that needs manual
+    cleanup instead.
+    """
     files = getattr(config, "files", None)
     chunk_mb = max(1, int(getattr(files, "nas_copy_chunk_mb", 8) or 8))
     max_mbps = max(0.0, float(getattr(files, "nas_max_transfer_mbps", 50.0) or 0.0))
@@ -315,13 +345,25 @@ def _copy_file_throttled(source: str, target: str, config: Any) -> None:
         if os.path.exists(target):
             raise FileExistsError(f"Refusing to overwrite existing target: {target}")
         os.replace(temporary, target)
-        os.remove(source)
     except Exception:
         try:
             os.remove(temporary)
         except OSError:
             pass
         raise
+
+    try:
+        os.remove(source)
+        return True
+    except OSError as exc:
+        logger.warning(
+            "Copy to {} succeeded but the source {} could not be removed ({}); "
+            "a duplicate now exists at the source path and needs manual cleanup.",
+            target,
+            source,
+            exc,
+        )
+        return False
 
 
 def _utc_iso() -> str:
@@ -1001,7 +1043,11 @@ def _move_path_sync(
             if max_mbps > 0
             else "Cross-device NAS copy uses chunked transfer without a rate limit"
         )
-        _copy_file_throttled(source, target, config)
+        if not _copy_file_throttled(source, target, config):
+            messages.append(
+                f"Copy to {target} succeeded but the source file could not be "
+                f"removed - a duplicate remains at {source} and needs manual cleanup"
+            )
     else:
         shutil.move(source, target)
     logger.info("Storage move completed: purpose={} target={}", purpose, target)

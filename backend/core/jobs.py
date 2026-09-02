@@ -343,18 +343,27 @@ async def list_persistent_jobs(
     }
 
 
+_MAX_JOB_EVENTS_RETURNED = 200
+
+
 async def get_persistent_job(job_id: str) -> dict[str, Any] | None:
     async with async_session() as session:
         job = await session.get(JobRecord, job_id)
         if job is None:
             return None
+        # A job retried many times accumulates a started/completed/failed
+        # event per attempt with no upper bound - cap and take the most
+        # recent ones (consistent with the le=200 cap on the jobs list
+        # endpoint), then restore chronological order for display.
         events = (
             await session.execute(
                 select(JobEvent)
                 .where(JobEvent.job_id == job_id)
-                .order_by(JobEvent.created_at.asc(), JobEvent.id.asc())
+                .order_by(JobEvent.created_at.desc(), JobEvent.id.desc())
+                .limit(_MAX_JOB_EVENTS_RETURNED)
             )
         ).scalars().all()
+        events = list(reversed(events))
 
     payload = _job_payload(job)
     payload["events"] = [_event_payload(event) for event in events]

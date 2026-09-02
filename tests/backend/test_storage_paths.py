@@ -1,3 +1,4 @@
+import os
 import unittest
 from datetime import datetime, timezone
 from pathlib import Path
@@ -31,6 +32,31 @@ import backend.core.storage as storage
 class StoragePathTests(unittest.TestCase):
     def test_normalize_path_handles_windows_and_case(self):
         self.assertEqual("z:/movies/title", normalize_path("Z:\\Movies\\Title\\"))
+
+    def test_normalize_path_collapses_embedded_traversal_segments(self):
+        self.assertEqual(
+            normalize_path("/mnt/nas/movies"),
+            normalize_path("/mnt/local/../nas/movies"),
+        )
+        self.assertEqual("z:/movies2", normalize_path("Z:/Movies/../Movies2"))
+
+    def test_normalize_path_preserves_unc_double_slash_prefix(self):
+        self.assertTrue(normalize_path("//nas/share/A/file.mkv").startswith("//"))
+
+    def test_normalize_path_case_folding_is_platform_dependent(self):
+        with patch("backend.core.storage.os.name", "nt"):
+            self.assertEqual("z:/movies/title", normalize_path("Z:/Movies/Title"))
+        with patch("backend.core.storage.os.name", "posix"):
+            self.assertEqual("/mnt/NAS/Movies", normalize_path("/mnt/NAS/Movies"))
+
+    def test_classify_storage_path_traversal_cannot_evade_nas_classification(self):
+        cfg = SimpleNamespace(
+            files=SimpleNamespace(nas_path_prefixes=["/mnt/nas"], recycling_bin="")
+        )
+        self.assertEqual(
+            "nas",
+            classify_storage_path("/mnt/local/../nas/movies/file.mkv", cfg).classification,
+        )
 
     def test_path_matches_prefix_respects_path_boundaries(self):
         prefixes = ["Z:/Movies"]
@@ -156,6 +182,77 @@ class StorageOperationTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(b"movie", target.read_bytes())
             self.assertIn(
                 "Cross-device NAS copy uses chunked transfer without a rate limit",
+                result.messages,
+            )
+
+    async def test_copy_throttled_reports_false_when_source_removal_fails(self):
+        with TemporaryDirectory() as temp_dir:
+            source = Path(temp_dir) / "source.mkv"
+            target = Path(temp_dir) / "target.mkv"
+            source.write_bytes(b"movie")
+            cfg = SimpleNamespace(files=SimpleNamespace(nas_copy_chunk_mb=1, nas_max_transfer_mbps=0))
+
+            real_remove = os.remove
+
+            def fake_remove(path, *args, **kwargs):
+                if str(path) == str(source):
+                    raise OSError("permission denied")
+                return real_remove(path, *args, **kwargs)
+
+            with patch("backend.core.storage.os.remove", side_effect=fake_remove):
+                removed = storage._copy_file_throttled(str(source), str(target), cfg)
+
+            self.assertFalse(removed)
+            self.assertTrue(target.exists())
+            self.assertEqual(b"movie", target.read_bytes())
+            self.assertTrue(source.exists(), "source must be left in place, not silently lost")
+
+    async def test_move_reports_completed_with_warning_when_source_cleanup_fails(self):
+        with TemporaryDirectory() as temp_dir:
+            source = Path(temp_dir) / "source.mkv"
+            nas_dir = Path(temp_dir) / "nas"
+            target = nas_dir / "target.mkv"
+            nas_dir.mkdir()
+            source.write_bytes(b"movie")
+            cfg = SimpleNamespace(
+                files=SimpleNamespace(
+                    nas_path_prefixes=[str(nas_dir)],
+                    recycling_bin="",
+                    nas_max_write_gb_per_day=0,
+                    nas_max_replacements_per_day=0,
+                    nas_max_concurrent_operations=1,
+                    nas_failure_cooldown_minutes=0,
+                    nas_max_transfer_mbps=0,
+                    nas_copy_chunk_mb=1,
+                )
+            )
+
+            real_remove = os.remove
+
+            def fake_remove(path, *args, **kwargs):
+                if str(path) == str(source):
+                    raise OSError("permission denied")
+                return real_remove(path, *args, **kwargs)
+
+            with (
+                patch("backend.core.storage._same_storage_device", return_value=False),
+                patch(
+                    "backend.core.storage._persisted_nas_usage_24h",
+                    AsyncMock(return_value=(0, 0)),
+                ),
+                patch("backend.core.storage.os.remove", side_effect=fake_remove),
+            ):
+                result = await move_path(str(source), str(target), cfg, purpose="place_replacement")
+
+            # The copy genuinely succeeded - this must be reported as completed
+            # (with a warning), never as a failed move that could trigger a
+            # caller to redo the whole copy on top of an already-good target.
+            self.assertEqual("completed", result.status)
+            self.assertTrue(target.exists())
+            self.assertEqual(b"movie", target.read_bytes())
+            self.assertTrue(source.exists())
+            self.assertTrue(
+                any("could not be removed" in message for message in result.messages),
                 result.messages,
             )
 

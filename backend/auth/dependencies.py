@@ -21,8 +21,6 @@ async def get_current_user(
     2. Bearer JWT token (UI login)
     Returns the username string on success.
     """
-    from typing import Optional  # local import avoids top-level issues
-
     config = get_config()
 
     # API key check
@@ -41,7 +39,3 @@ async def get_current_user(
             raise unauthorized("Invalid or expired token", correlation_id=get_correlation_id())
 
     raise unauthorized("Authentication required", correlation_id=get_correlation_id())
-
-
-# Re-export for convenience
-from typing import Optional  # noqa: E402

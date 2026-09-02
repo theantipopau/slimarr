@@ -1,10 +1,32 @@
 """Radarr API v3 client (optional integration)."""
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
+
 import httpx
 from loguru import logger
 
 from backend.config import get_config
+
+
+def _shared_client(tls_verify: bool) -> httpx.AsyncClient | None:
+    """Return the app-wide pooled httpx client if it's usable for this call.
+
+    The shared client (see backend.main.get_http_client) is always built
+    with verify=True. A Radarr instance configured with tls_verify=False
+    (self-signed certs, common on a NAS/homelab setup) must never silently
+    have that setting overridden by reusing a client that ignores it - so
+    pooling is only used when the two agree, and a private per-call client
+    is used otherwise. See docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md (A5).
+    """
+    if not tls_verify:
+        return None
+    try:
+        from backend.main import get_http_client
+
+        return get_http_client()
+    except Exception:
+        return None
 
 
 class RadarrClient:
@@ -17,12 +39,20 @@ class RadarrClient:
     def _headers(self) -> dict:
         return {"X-Api-Key": self.api_key}
 
-    def _http(self) -> httpx.AsyncClient:
-        """Return an httpx client. TLS verification is configurable via radarr.tls_verify."""
-        return httpx.AsyncClient(timeout=15.0, verify=self.tls_verify)
+    @asynccontextmanager
+    async def _client(self):
+        client = _shared_client(self.tls_verify)
+        owns_client = client is None
+        if owns_client:
+            client = httpx.AsyncClient(timeout=15.0, verify=self.tls_verify)
+        try:
+            yield client
+        finally:
+            if owns_client:
+                await client.aclose()
 
     async def _get(self, endpoint: str, params: dict | None = None) -> dict | list:
-        async with self._http() as client:
+        async with self._client() as client:
             resp = await client.get(
                 f"{self.url}/api/v3{endpoint}",
                 params=params,
@@ -32,7 +62,7 @@ class RadarrClient:
             return resp.json()
 
     async def _post(self, endpoint: str, body: dict) -> dict:
-        async with self._http() as client:
+        async with self._client() as client:
             resp = await client.post(
                 f"{self.url}/api/v3{endpoint}",
                 json=body,
@@ -40,6 +70,15 @@ class RadarrClient:
             )
             resp.raise_for_status()
             return resp.json()
+
+    async def _put(self, endpoint: str, body: dict) -> None:
+        async with self._client() as client:
+            resp = await client.put(
+                f"{self.url}/api/v3{endpoint}",
+                json=body,
+                headers=self._headers(),
+            )
+            resp.raise_for_status()
 
     async def get_movies(self) -> list[dict]:
         return await self._get("/movie")  # type: ignore[return-value]
@@ -78,13 +117,7 @@ class RadarrClient:
     async def unmonitor_movie(self, radarr_id: int, movie_payload: dict) -> None:
         """Set a movie to unmonitored in Radarr so it won't be re-upgraded."""
         movie_payload["monitored"] = False
-        async with self._http() as client:
-            resp = await client.put(
-                f"{self.url}/api/v3/movie/{radarr_id}",
-                json=movie_payload,
-                headers=self._headers(),
-            )
-            resp.raise_for_status()
+        await self._put(f"/movie/{radarr_id}", movie_payload)
 
     async def rescan_by_imdb(self, imdb_id: str) -> bool:
         """Find movie in Radarr by IMDb ID and trigger a rescan. Returns True if found."""
