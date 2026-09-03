@@ -58,6 +58,38 @@ async def _find_video_file_async(directory: str) -> str | None:
     return await asyncio.to_thread(_find_video_file, directory)
 
 
+async def _remove_with_retry(
+    path: str,
+    config,
+    *,
+    purpose: str,
+    attempts: int = 4,
+    delay_seconds: float = 5.0,
+) -> None:
+    """remove_path(), retrying a few times on a transient file-lock error —
+    the delete-side counterpart to _move_with_retry below. Without this, a
+    brief lock (Plex/AV touching the file right after replacement) leaves a
+    stale copy behind permanently, since these cleanup steps run once,
+    after the movie/download rows have already moved on to their final
+    state, with nothing to retry them on the next cycle."""
+    for attempt in range(1, attempts + 1):
+        try:
+            return await remove_path(path, config, purpose=purpose)
+        except Exception as exc:
+            if attempt >= attempts or not _is_transient_lock_error(exc):
+                raise
+            logger.warning(
+                "{} attempt {}/{} hit a transient file lock on {!r}; retrying in {:.0f}s: {}",
+                purpose,
+                attempt,
+                attempts,
+                path,
+                delay_seconds,
+                exc,
+            )
+            await asyncio.sleep(delay_seconds)
+
+
 def _is_transient_lock_error(exc: BaseException) -> bool:
     """True for OS-level "file in use" errors (Windows WinError 32/33, or the
     POSIX equivalents) that are usually cleared within a few seconds — e.g. a
@@ -643,7 +675,7 @@ async def replace_file(download_id: int) -> bool:
 
         if fallback_backup_path and await _exists(fallback_backup_path):
             try:
-                await remove_path(
+                await _remove_with_retry(
                     fallback_backup_path,
                     config,
                     purpose="delete_fallback_backup_after_success",
@@ -662,7 +694,7 @@ async def replace_file(download_id: int) -> bool:
         # If not recycled and extensions differ, explicitly delete the old file
         if not recycled_successfully and mapped_path != target_path and await _exists(mapped_path):
             try:
-                await remove_path(mapped_path, config, purpose="delete_old_extension_after_replacement")
+                await _remove_with_retry(mapped_path, config, purpose="delete_old_extension_after_replacement")
                 logger.info(f"Deleted old file: {mapped_path}")
             except Exception as e:
                 logger.warning(f"Failed to delete old file: {e}")
