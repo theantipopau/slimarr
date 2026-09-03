@@ -33,14 +33,19 @@ import backend.core.storage as storage
 
 class StoragePathTests(unittest.TestCase):
     def test_normalize_path_handles_windows_and_case(self):
-        self.assertEqual("z:/movies/title", normalize_path("Z:\\Movies\\Title\\"))
+        # Case folding only happens on Windows (see F2) - simulate that
+        # platform explicitly so this test means the same thing on Linux CI
+        # as it does on a Windows dev machine.
+        with patch("backend.core.storage.os.name", "nt"):
+            self.assertEqual("z:/movies/title", normalize_path("Z:\\Movies\\Title\\"))
 
     def test_normalize_path_collapses_embedded_traversal_segments(self):
         self.assertEqual(
             normalize_path("/mnt/nas/movies"),
             normalize_path("/mnt/local/../nas/movies"),
         )
-        self.assertEqual("z:/movies2", normalize_path("Z:/Movies/../Movies2"))
+        with patch("backend.core.storage.os.name", "nt"):
+            self.assertEqual("z:/movies2", normalize_path("Z:/Movies/../Movies2"))
 
     def test_normalize_path_preserves_unc_double_slash_prefix(self):
         self.assertTrue(normalize_path("//nas/share/A/file.mkv").startswith("//"))

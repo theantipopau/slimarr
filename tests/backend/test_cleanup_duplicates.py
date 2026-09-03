@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from backend.core.cleanup import scan_and_clean_duplicates
 
@@ -138,19 +138,22 @@ class DuplicateCleanupTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue((recycle_dir / "movie.720p.mkv").exists())
 
     async def test_skips_deletion_when_recycling_bin_preflight_is_blocked(self):
-        # A recycling bin whose parent path doesn't exist anywhere on disk
-        # fails preflight ("No accessible parent path found"). Configuring a
-        # recycling bin is an explicit request to never permanently delete,
+        # An unreachable/full recycling-bin share fails preflight. Configuring
+        # a recycling bin is an explicit request to never permanently delete,
         # so this must skip the file (retried on the next scan) rather than
         # fall back to a delete - that would destroy data exactly when the
-        # safety net the user asked for is unavailable.
+        # safety net the user asked for is unavailable. The preflight result
+        # is mocked directly (rather than relying on an "obviously invalid"
+        # real path) because what counts as an inaccessible path is
+        # platform-specific - a Windows drive letter that can't exist is a
+        # perfectly normal, creatable relative path on Linux CI.
         with TemporaryDirectory() as temp_dir:
             best = Path(temp_dir) / "movie.1080p.mkv"
             inferior = Path(temp_dir) / "movie.720p.mkv"
             best.write_bytes(b"x" * 100)
             inferior.write_bytes(b"x" * 50)
 
-            unreachable_bin = "Q:/does/not/exist/recycle"
+            unreachable_bin = str(Path(temp_dir) / "unreachable_recycle")
 
             movie = FakeMovie(
                 "Some Movie",
@@ -161,10 +164,12 @@ class DuplicateCleanupTests(unittest.IsolatedAsyncioTestCase):
                 ],
             )
             server = FakeServer(FakeSection([movie]))
+            blocked_preflight = SimpleNamespace(status="block", messages=["NAS share unreachable"])
 
             with (
                 patch("backend.core.cleanup.get_config", return_value=self._config(unreachable_bin)),
                 patch("backend.integrations.plex.PlexClient", return_value=FakePlexClient(server)),
+                patch("backend.core.cleanup.preflight_storage_path", Mock(return_value=blocked_preflight)),
             ):
                 summary = await scan_and_clean_duplicates()
 
