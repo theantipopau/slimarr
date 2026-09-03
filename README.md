@@ -36,7 +36,7 @@ Scan Plex library -> Search Usenet indexers -> Compare releases
 
 Slimarr is designed to look and feel like a native member of the **\*arr ecosystem** (Radarr, Sonarr, Prowlarr). If you're familiar with those tools, you'll feel right at home.
 
-Current release: **2.0.0.0** (2026-09-02).
+Current release: **2.0.0.0** (2026-09-03).
 
 ### What's New in 2.0.0.0 - Discovery & Recommendations, Backend Audit, ARR Platform Gap Analysis
 

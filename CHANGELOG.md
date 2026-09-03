@@ -4,7 +4,7 @@ All notable changes to Slimarr are documented here.
 
 ---
 
-## [2.0.0.0] - 2026-09-02
+## [2.0.0.0] - 2026-09-03
 
 Standalone release summary: `docs/UPGRADE_NOTES_2.0.0.md`
 
@@ -71,6 +71,73 @@ Recommendations** feature.
 - Two low-severity silent-failure spots (`/metrics` DB query, diagnostics
   bundle NAS summary) now leave a debug-level trace instead of swallowing
   the exception entirely.
+- **New: send a recommendation straight to Radarr/Sonarr from Discovery.**
+  A hand-off modal fetches the target instance's root folders and quality
+  profiles live, lets you pick monitored/search-now, and calls the
+  existing (previously unreachable from the UI) send-to-radarr/sonarr
+  endpoints - closing the biggest functional gap in the initial Discovery
+  ship, where this control was a non-interactive placeholder.
+- **New: pagination and a streaming-provider filter on the Discovery page.**
+  The list endpoint always supported `page`/`per_page` and a `provider_id`
+  filter, but the page fetched one fixed batch of 60 with no way to reach
+  anything past it, and the provider filter had no UI at all. A "Load more"
+  control and a provider dropdown (backed by a new
+  `GET /recommendations/providers`) close both gaps.
+- Discovery UI polish: an "Open on TMDB" link and TMDB-attributed
+  availability chips on every card, a "Copy TMDB ID" action, and a full
+  Discovery & Recommendations configuration section in Settings.
+- **Fixed (GitHub issue #1):** the NAS write-budget reservation charged a
+  same-directory rename (`backup_existing_target`'s metadata-only,
+  zero-byte `os.rename()`) at full file size, since it only checked whether
+  the *target* classified as NAS/network rather than whether source and
+  target were on the same device. On the reporter's production instance
+  this exhausted a 300GB/day budget on phantom writes alone, then blocked
+  genuine replacements and discarded already-downloaded releases. Now
+  skipped whenever `_same_storage_device()` is true.
+- **Fixed:** a NAS failure cooldown was purely in-process, so a restart
+  right after a failure silently dropped it and let the next replacement
+  hit the same failing share immediately. Now restored from
+  `StoragePathHealth` on startup.
+- **Fixed:** the duplicate-cleanup recycle path `mkdir`'d onto its
+  destination without preflighting it first; a misconfigured or
+  unreachable recycling-bin share is now checked before use, falling back
+  to skip-and-retry-next-scan instead of a permanent delete.
+- **Fixed (GitHub issue #2):** GHCR images weren't publishing for `latest`
+  or any tagged version - CI's lint and test jobs were failing outright
+  (a missing `pytest.ini` plus 88 ruff findings), so the jobs that actually
+  push to GHCR never ran. Also fixed a latent race in the multi-arch Docker
+  build where the per-platform matrix job pushed directly to the same tags
+  as the manifest-merge job, letting `linux/amd64` and `linux/arm64` builds
+  overwrite each other under `latest`.
+- **Fixed:** a cross-device directory move onto a NAS/network target fell
+  through to a plain, unthrottled `shutil.move()` with no rate limit and no
+  budget accounting - the one path that bypassed every NAS safety control
+  this module exists to provide. Nothing in this release triggers it
+  (movies are single-file), so it now refuses loudly instead of moving the
+  bytes unsafely; a same-device directory move is unaffected.
+- **Fixed:** marking a recommendation as already-owned could be silently
+  reverted by the next refresh if the correlation check still couldn't see
+  it as owned (physical media, an unscanned library) - that state is now
+  protected the same way dismiss/hide/watchlist already were.
+- **Fixed:** `genres_include`/`genres_exclude` filtering was permanently
+  dead code - sourced candidates always got an empty genre tuple, since
+  TMDB's collection/recommendations/similar payloads only carry numeric
+  genre IDs, never names, and nothing resolved them against TMDB's genre
+  list. Now resolved via a genre map fetched once per refresh.
+- **Fixed:** a recommendation that dropped below `minimum_score` on a later
+  refresh was left frozen at its old score forever instead of expiring.
+- **Fixed:** `GET /recommendations`'s `provider_id` filter ran in Python
+  after pagination and after `total` was computed from an unfiltered count,
+  so a page could come back empty (or split matches across pages) while
+  `total` still reported the unfiltered figure. Filtering now happens at
+  the SQL level before pagination.
+- **Fixed:** the same endpoint's Plex-ownership check ran two `SELECT
+  count(*)` queries per returned row; replaced with one batched lookup.
+- **Fixed:** a transient Windows file lock (e.g. Plex or an AV scanner
+  briefly holding a just-created file) during post-replacement cleanup
+  could permanently orphan the old file, since that cleanup step runs
+  once and nothing else ever retries it. Given the same retry the
+  move-into-place step already had.
 - Full audit findings: `docs/BACKEND_AND_RECOMMENDATIONS_AUDIT.md`.
   Competitive analysis: `docs/ARR_PLATFORM_GAP_ANALYSIS.md`.
 
