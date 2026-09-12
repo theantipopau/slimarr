@@ -4,6 +4,39 @@ All notable changes to Slimarr are documented here.
 
 ---
 
+## [2.0.0.1] - 2026-09-12
+
+Small patch prompted by a real production log: a NAS reported intermittent
+freezing during Slimarr's overnight window.
+
+- **Fixed:** `recycle_cleanup` and `orphan_scanner` were hardcoded to fixed
+  clock times (03:00/04:00 UTC-relative) regardless of the configured
+  nightly window. For the *default* window (01:00 → 07:00), and for most
+  real configurations, that lands both jobs squarely in the middle of the
+  nightly cycle's own NAS I/O - stacking concurrent replacement + recycle +
+  orphan-scan load right when it's least wanted. Both now run a short while
+  after the configured window closes instead.
+- **Fixed:** a transient Windows file lock during post-replacement cleanup
+  (e.g. Plex or an AV scanner briefly holding a just-created file) could
+  permanently orphan the old file, since that cleanup step ran once with no
+  retry. Given the same retry the move-into-place step already had.
+- **Fixed (CI):** versioned Docker images had never actually published for
+  any tagged release, including 1.9.0.0 and 2.0.0.0 - only `latest` (via a
+  plain `main` branch push) worked. The workflow's semver tag rule silently
+  rejected Slimarr's 4-component version tags (`vMAJOR.MINOR.PATCH.BUILD`,
+  matching the Windows installer's own versioning), so `docker-merge` had
+  no tag to push with and failed outright on every release tag. `docker
+  compose pull` for a specific version tag should now work correctly.
+- **Fixed (CI):** the container security scan never authenticated to GHCR
+  before trying to pull the image it was meant to scan, and depended on
+  the wrong job (one that never actually pushes), so it always failed and
+  the scan had silently never run.
+- Discovery pagination and provider-filter UI, and small polish items
+  (Open on TMDB, Copy ID, provider deep-links) carried over from the tail
+  end of the 2.0.0.0 development cycle.
+
+---
+
 ## [2.0.0.0] - 2026-09-03
 
 Standalone release summary: `docs/UPGRADE_NOTES_2.0.0.md`

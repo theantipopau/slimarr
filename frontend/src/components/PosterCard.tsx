@@ -1,6 +1,6 @@
 ﻿import type { Movie } from '@/lib/types'
 import QualityBadge from './QualityBadge'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { memo, useEffect, useRef, useState } from 'react'
 import { CheckCircle, Loader } from 'lucide-react'
 import { formatGB } from '@/lib/format'
@@ -17,9 +17,8 @@ const statusBorder: Record<string, string> = {
 }
 
 function PosterCard({ movie }: Props) {
-  const navigate = useNavigate()
   const location = useLocation()
-  const cardRef = useRef<HTMLDivElement | null>(null)
+  const cardRef = useRef<HTMLAnchorElement | null>(null)
   const [inView, setInView] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
@@ -47,10 +46,11 @@ function PosterCard({ movie }: Props) {
   }, [inView])
 
   return (
-    <div
+    <Link
       ref={cardRef}
-      className={`bg-gray-900 rounded-lg overflow-hidden cursor-pointer border ${statusBorder[movie.status] ?? 'border-gray-700'} hover:-translate-y-1 hover:border-gray-500 hover:shadow-2xl hover:shadow-black/30 transition-all relative group`}
-      onClick={() => navigate(`/library/${movie.id}`, { state: { fromLibrary: `${location.pathname}${location.search}` } })}
+      to={`/library/${movie.id}`}
+      state={{ fromLibrary: `${location.pathname}${location.search}` }}
+      className={`block bg-gray-900 rounded-lg overflow-hidden cursor-pointer border ${statusBorder[movie.status] ?? 'border-gray-700'} hover:-translate-y-1 hover:border-gray-500 hover:shadow-2xl hover:shadow-black/30 transition-all relative group outline-none focus-visible:ring-2 focus-visible:ring-brand-green`}
     >
       {posterUrl && !imageError ? (
         <div className="relative w-full aspect-[2/3] bg-gray-800">
@@ -108,7 +108,7 @@ function PosterCard({ movie }: Props) {
           </div>
         )}
       </div>
-    </div>
+    </Link>
   )
 }
 

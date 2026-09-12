@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/react-18-61DAFB?logo=react&logoColor=black" />
   <img src="https://img.shields.io/badge/license-MIT-green" />
   <img src="https://img.shields.io/badge/platform-Linux%20%7C%20Docker%20%7C%20Windows-0ea5e9" />
-  <img src="https://img.shields.io/badge/release-2.0.0.0-success" />
+  <img src="https://img.shields.io/badge/release-2.0.0.1-success" />
 </p>
 
 <p align="center">
@@ -36,7 +36,7 @@ Scan Plex library -> Search Usenet indexers -> Compare releases
 
 Slimarr is designed to look and feel like a native member of the **\*arr ecosystem** (Radarr, Sonarr, Prowlarr). If you're familiar with those tools, you'll feel right at home.
 
-Current release: **2.0.0.0** (2026-09-03).
+Current release: **2.0.0.1** (2026-09-12).
 
 ### What's New in 2.0.0.0 - Discovery & Recommendations, Backend Audit, ARR Platform Gap Analysis
 
