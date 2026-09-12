@@ -34,6 +34,11 @@ freezing during Slimarr's overnight window.
 - Discovery pagination and provider-filter UI, and small polish items
   (Open on TMDB, Copy ID, provider deep-links) carried over from the tail
   end of the 2.0.0.0 development cycle.
+- **Fixed:** Library poster cards were plain click-only `<div>`s - not
+  keyboard-focusable, no visible focus state, no real link semantics (no
+  middle-click/ctrl-click to open in a new tab), and invisible to screen
+  readers as an interactive element. Converted to a proper `react-router`
+  `Link` with a focus-visible ring.
 
 ---
 
