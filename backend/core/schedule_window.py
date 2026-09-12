@@ -9,7 +9,7 @@ from backend.config import SlimarrConfig
 _VALID_DAYS = {"mon", "tue", "wed", "thu", "fri", "sat", "sun"}
 
 
-def _parse_time(value: str, fallback: str) -> time:
+def parse_schedule_time(value: str, fallback: str) -> time:
     raw = (value or fallback).strip()
     try:
         hour_s, minute_s = raw.split(":", 1)
@@ -42,8 +42,8 @@ def is_within_schedule_window(config: SlimarrConfig, now: datetime | None = None
     else:
         now = now.astimezone(tz)
 
-    start_t = _parse_time(config.schedule.start_time, "01:00")
-    end_t = _parse_time(config.schedule.end_time, "07:00")
+    start_t = parse_schedule_time(config.schedule.start_time, "01:00")
+    end_t = parse_schedule_time(config.schedule.end_time, "07:00")
     now_t = now.time().replace(second=0, microsecond=0)
     spans_midnight = end_t <= start_t
 

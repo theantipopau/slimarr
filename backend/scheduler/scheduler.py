@@ -2,13 +2,14 @@
 from __future__ import annotations
 
 import asyncio
+from datetime import datetime, timedelta
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.interval import IntervalTrigger
 from loguru import logger
 
-from backend.core.schedule_window import get_schedule_timezone, is_within_schedule_window
+from backend.core.schedule_window import get_schedule_timezone, is_within_schedule_window, parse_schedule_time
 
 _scheduler: AsyncIOScheduler | None = None
 
@@ -18,6 +19,15 @@ def get_scheduler() -> AsyncIOScheduler:
     if _scheduler is None:
         _scheduler = AsyncIOScheduler(timezone="UTC")
     return _scheduler
+
+
+def _time_after_window_end(config, *, offset_minutes: int) -> tuple[int, int]:
+    """A clock time `offset_minutes` after the configured nightly window
+    closes, for scheduling auxiliary cleanup jobs so they never overlap the
+    nightly cycle's own I/O (see start_scheduler)."""
+    end_t = parse_schedule_time(config.schedule.end_time, "07:00")
+    anchor = datetime(2000, 1, 1, end_t.hour, end_t.minute) + timedelta(minutes=offset_minutes)
+    return anchor.hour, anchor.minute
 
 
 async def _nightly_cycle() -> None:
@@ -160,18 +170,27 @@ def start_scheduler() -> None:
         f"Scheduled nightly cycle window {config.schedule.start_time} -> {config.schedule.end_time} ({get_schedule_timezone(config)})"
     )
 
-    # Recycle bin cleanup — daily at 03:00
+    # Recycle bin cleanup and orphan scanning both do their own filesystem
+    # I/O (deleting recycled files, stat-ing/removing orphaned download
+    # folders) and used to run at fixed clock times (03:00/04:00) regardless
+    # of the configured nightly window - for the *default* window
+    # (01:00 -> 07:00), and for most real configurations, that lands
+    # squarely in the middle of the nightly cycle's own replacement I/O,
+    # stacking concurrent NAS load right when it's least wanted. Scheduling
+    # them a short while after the window closes instead means they only
+    # ever run once the heavier nightly work has finished.
+    recycle_hour, recycle_minute = _time_after_window_end(config, offset_minutes=15)
     scheduler.add_job(
         _cleanup_recycle_bin,
-        CronTrigger(hour=3, minute=0),
+        CronTrigger(hour=recycle_hour, minute=recycle_minute),
         id="recycle_cleanup",
         replace_existing=True,
     )
 
-    # Orphan scanner — daily at 04:00 UTC
+    orphan_hour, orphan_minute = _time_after_window_end(config, offset_minutes=30)
     scheduler.add_job(
         _orphan_scanner,
-        CronTrigger(hour=4, minute=0),
+        CronTrigger(hour=orphan_hour, minute=orphan_minute),
         id="orphan_scanner",
         replace_existing=True,
     )
