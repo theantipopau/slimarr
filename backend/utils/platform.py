@@ -9,7 +9,6 @@ from __future__ import annotations
 import os
 import platform
 import sys
-from pathlib import Path
 from typing import Optional
 
 
@@ -17,14 +16,6 @@ from typing import Optional
 
 def is_windows() -> bool:
     return sys.platform == "win32"
-
-
-def is_linux() -> bool:
-    return sys.platform.startswith("linux")
-
-
-def is_macos() -> bool:
-    return sys.platform == "darwin"
 
 
 def is_docker() -> bool:
@@ -87,11 +78,6 @@ def normalize_path(path: str) -> str:
     return os.path.normpath(expanded)
 
 
-def to_posix(path: str) -> str:
-    """Convert a path string to forward-slash notation (useful for logging)."""
-    return Path(path).as_posix()
-
-
 def safe_makedirs(path: str, mode: int = 0o755) -> None:
     """Create *path* and all parents, respecting the container umask.
 
@@ -116,20 +102,6 @@ def disk_free_bytes(path: str) -> Optional[int]:
         return None
 
 
-def disk_total_bytes(path: str) -> Optional[int]:
-    """Return total bytes for the filesystem containing *path*, or None on error."""
-    try:
-        existing = _find_existing_ancestor(path)
-        if not existing:
-            return None
-        if is_windows():
-            return _win_disk_total(existing)
-        stat = os.statvfs(existing)
-        return stat.f_blocks * stat.f_frsize
-    except Exception:
-        return None
-
-
 def _find_existing_ancestor(path: str) -> Optional[str]:
     """Walk up *path* until an existing filesystem entry is found."""
     current = os.path.abspath(path)
@@ -150,18 +122,6 @@ def _win_disk_free(path: str) -> Optional[int]:
             ctypes.c_wchar_p(path), None, None, ctypes.pointer(free_bytes)
         )
         return free_bytes.value
-    except Exception:
-        return None
-
-
-def _win_disk_total(path: str) -> Optional[int]:
-    try:
-        import ctypes
-        total_bytes = ctypes.c_ulonglong(0)
-        ctypes.windll.kernel32.GetDiskFreeSpaceExW(  # type: ignore[attr-defined]
-            ctypes.c_wchar_p(path), None, ctypes.pointer(total_bytes), None
-        )
-        return total_bytes.value
     except Exception:
         return None
 

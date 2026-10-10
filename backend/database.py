@@ -662,6 +662,47 @@ async def _add_column_if_missing(
 SCHEMA_VERSION = 6
 
 
+# (table, [(column, DDL), ...]) for additive upgrades of existing installs.
+_ADDITIVE_COLUMNS: tuple[tuple[str, tuple[tuple[str, str], ...]], ...] = (
+    ("downloads", (
+        ("grabbed_at", "DATETIME"),
+        ("last_error_at", "DATETIME"),
+        ("blacklist_reason", "VARCHAR"),
+    )),
+    ("search_results", (
+        ("age_days", "INTEGER"),
+        ("audio_channels", "VARCHAR"),
+        ("confidence_score", "FLOAT"),
+        ("confidence_breakdown", "TEXT"),
+        ("hdr", "VARCHAR"),
+        ("languages", "VARCHAR"),
+        ("media_health_score", "FLOAT"),
+        ("media_health_rating", "VARCHAR"),
+        ("media_health_reasons", "TEXT"),
+    )),
+    ("decision_audit_log", (
+        ("confidence_score", "FLOAT"),
+        ("confidence_breakdown", "TEXT"),
+        ("media_health_score", "FLOAT"),
+        ("media_health_rating", "VARCHAR"),
+        ("media_health_reasons", "TEXT"),
+    )),
+    ("movies", (
+        ("slimarr_locked", "INTEGER DEFAULT 0"),
+        ("preferred_release_title", "VARCHAR"),
+        ("quality_intent", "VARCHAR DEFAULT 'space_saver'"),
+        ("force_keep", "INTEGER DEFAULT 0"),
+        ("allow_larger_replacements", "INTEGER DEFAULT 0"),
+        ("quality_profile_overrides", "TEXT"),
+        ("added_at", "DATETIME"),
+    )),
+    ("activity_log", (
+        ("actor", "VARCHAR"),
+        ("details", "TEXT"),
+    )),
+)
+
+
 async def _run_lightweight_migrations(conn) -> None:
     """Apply additive SQLite migrations for existing installs.
 
@@ -669,47 +710,10 @@ async def _run_lightweight_migrations(conn) -> None:
     not alter existing tables. Keep these migrations additive so upgrades do
     not risk user data.
     """
-    download_columns = await _table_columns(conn, "downloads")
-    await _add_column_if_missing(
-        conn, "downloads", download_columns, "cleanup_status", "VARCHAR DEFAULT 'pending'"
-    )
-    await _add_column_if_missing(
-        conn, "downloads", download_columns, "retry_count", "INTEGER DEFAULT 0"
-    )
-    await _add_column_if_missing(conn, "downloads", download_columns, "grabbed_at", "DATETIME")
-    await _add_column_if_missing(conn, "downloads", download_columns, "last_error_at", "DATETIME")
-    await _add_column_if_missing(conn, "downloads", download_columns, "blacklist_reason", "VARCHAR")
-
-    search_result_columns = await _table_columns(conn, "search_results")
-    await _add_column_if_missing(conn, "search_results", search_result_columns, "age_days", "INTEGER")
-    await _add_column_if_missing(conn, "search_results", search_result_columns, "audio_channels", "VARCHAR")
-    await _add_column_if_missing(conn, "search_results", search_result_columns, "confidence_score", "FLOAT")
-    await _add_column_if_missing(conn, "search_results", search_result_columns, "confidence_breakdown", "TEXT")
-    await _add_column_if_missing(conn, "search_results", search_result_columns, "hdr", "VARCHAR")
-    await _add_column_if_missing(conn, "search_results", search_result_columns, "languages", "VARCHAR")
-    await _add_column_if_missing(conn, "search_results", search_result_columns, "media_health_score", "FLOAT")
-    await _add_column_if_missing(conn, "search_results", search_result_columns, "media_health_rating", "VARCHAR")
-    await _add_column_if_missing(conn, "search_results", search_result_columns, "media_health_reasons", "TEXT")
-
-    decision_columns = await _table_columns(conn, "decision_audit_log")
-    await _add_column_if_missing(conn, "decision_audit_log", decision_columns, "confidence_score", "FLOAT")
-    await _add_column_if_missing(conn, "decision_audit_log", decision_columns, "confidence_breakdown", "TEXT")
-    await _add_column_if_missing(conn, "decision_audit_log", decision_columns, "media_health_score", "FLOAT")
-    await _add_column_if_missing(conn, "decision_audit_log", decision_columns, "media_health_rating", "VARCHAR")
-    await _add_column_if_missing(conn, "decision_audit_log", decision_columns, "media_health_reasons", "TEXT")
-
-    movie_columns = await _table_columns(conn, "movies")
-    await _add_column_if_missing(conn, "movies", movie_columns, "slimarr_locked", "INTEGER DEFAULT 0")
-    await _add_column_if_missing(conn, "movies", movie_columns, "preferred_release_title", "VARCHAR")
-    await _add_column_if_missing(conn, "movies", movie_columns, "quality_intent", "VARCHAR DEFAULT 'space_saver'")
-    await _add_column_if_missing(conn, "movies", movie_columns, "force_keep", "INTEGER DEFAULT 0")
-    await _add_column_if_missing(conn, "movies", movie_columns, "allow_larger_replacements", "INTEGER DEFAULT 0")
-    await _add_column_if_missing(conn, "movies", movie_columns, "quality_profile_overrides", "TEXT")
-    await _add_column_if_missing(conn, "movies", movie_columns, "added_at", "DATETIME")
-
-    activity_columns = await _table_columns(conn, "activity_log")
-    await _add_column_if_missing(conn, "activity_log", activity_columns, "actor", "VARCHAR")
-    await _add_column_if_missing(conn, "activity_log", activity_columns, "details", "TEXT")
+    for table, columns in _ADDITIVE_COLUMNS:
+        existing = await _table_columns(conn, table)
+        for column, definition in columns:
+            await _add_column_if_missing(conn, table, existing, column, definition)
 
     await conn.exec_driver_sql(
         "CREATE INDEX IF NOT EXISTS ix_search_results_movie_decision_score "

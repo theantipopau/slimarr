@@ -155,16 +155,6 @@ async def retry_failed_download(
     return True, f"Retry #{old_retry_count + 1} started: {next_candidate.release_title}", new_dl.id
 
 
-async def get_download_retry_count(download_id: int) -> int:
-    """Get current retry count for a download."""
-    async with async_session() as session:
-        result = await session.execute(
-            select(Download.retry_count).where(Download.id == download_id)
-        )
-        count = result.scalars().first()
-        return count if count is not None else 0
-
-
 async def mark_release_failed(
     download_id: int,
     reason: str = "unknown",

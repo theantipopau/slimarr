@@ -8,13 +8,11 @@ Provides:
 """
 from __future__ import annotations
 
-from typing import Any, Generic, TypeVar
+from typing import Any
 from uuid import uuid4
 from contextvars import ContextVar
 
 from pydantic import BaseModel
-
-T = TypeVar("T")
 
 # Context variable for correlation ID (one per request)
 _correlation_id: ContextVar[str] = ContextVar("correlation_id", default="")
@@ -33,16 +31,6 @@ def get_correlation_id() -> str:
 def set_correlation_id(cid: str) -> None:
     """Set the correlation ID for the current context (used by middleware)."""
     _correlation_id.set(cid)
-
-
-class APIResponse(BaseModel, Generic[T]):
-    """Standard successful response envelope."""
-
-    success: bool = True
-    code: str  # e.g. "OK", "CREATED", "PARTIAL_SUCCESS"
-    message: str  # e.g. "Movies fetched successfully"
-    data: T  # Response payload
-    correlation_id: str  # For tracing across logs and integrations
 
 
 class ErrorResponse(BaseModel):
@@ -100,16 +88,6 @@ def unauthorized(reason: str = "Authentication required", correlation_id: str | 
         code="UNAUTHORIZED",
         message=reason,
         status_code=401,
-        correlation_id=correlation_id,
-    )
-
-
-def forbidden(reason: str = "Access denied", correlation_id: str | None = None) -> APIException:
-    """403 Forbidden."""
-    return APIException(
-        code="FORBIDDEN",
-        message=reason,
-        status_code=403,
         correlation_id=correlation_id,
     )
 

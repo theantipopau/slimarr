@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from loguru import logger
 from sqlalchemy import select
 
+from backend.utils.clock import utc_now
 from backend.config import get_config
 from backend.core.storage import remove_path
 from backend.database import Download, Movie, SearchResult, UploaderStats, async_session
@@ -30,10 +31,6 @@ TRANSIENT_HISTORY_STATUSES = {
 }
 
 
-def _utc_now() -> datetime:
-    return datetime.now(timezone.utc)
-
-
 def _as_utc(value: datetime | None) -> datetime | None:
     if value is None:
         return None
@@ -46,7 +43,7 @@ def _active_download_age_hours(dl: Download) -> float | None:
     started_at = _as_utc(dl.started_at)
     if not started_at:
         return None
-    return (_utc_now() - started_at).total_seconds() / 3600
+    return (utc_now() - started_at).total_seconds() / 3600
 
 
 def _max_active_download_hours() -> int:
@@ -62,8 +59,8 @@ def _mark_download_failed(
 ) -> None:
     dl.status = "failed"
     dl.error_message = message
-    dl.last_error_at = _utc_now()
-    dl.completed_at = _utc_now()
+    dl.last_error_at = utc_now()
+    dl.completed_at = utc_now()
     if storage_path is not None:
         dl.storage_path = storage_path
 
@@ -93,7 +90,7 @@ async def _update_uploader_stats(release_title: str | None, success: bool) -> No
         if total > 0:
             success_count = float(stats.success_count or 0)
             stats.health_score = max(0.0, min(1.0, success_count / float(total)))
-        stats.last_seen = _utc_now()
+        stats.last_seen = utc_now()
         await db.commit()
 
 
@@ -153,7 +150,7 @@ async def start_download(search_result_id: int) -> Download:
             expected_size=sr.size,
             status="submitting",
             progress_pct=0.0,
-            started_at=_utc_now(),
+            started_at=utc_now(),
         )
         db.add(dl)
         movie.status = "downloading"
@@ -323,7 +320,7 @@ async def monitor_download(download_id: int, poll_interval: int = 5) -> str:
                         return "failed"
                     dl.status = "completed"
                     dl.progress_pct = 100.0
-                    dl.completed_at = _utc_now()
+                    dl.completed_at = utc_now()
                     await db.commit()
                     await _update_uploader_stats(dl.release_title, success=True)
                     await emit_event("download:completed", {

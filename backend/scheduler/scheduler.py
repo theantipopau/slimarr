@@ -124,6 +124,12 @@ async def _stale_download_recovery() -> None:
         logger.info(f"Stale download recovery resumed {resumed} workflow(s)")
 
 
+async def _refresh_recommendation_availability() -> None:
+    from backend.core.recommendations.engine import refresh_stale_availability
+
+    await refresh_stale_availability()
+
+
 async def _telemetry_retention_cleanup() -> None:
     """Purge old terminal job records and persisted storage operation logs."""
     from backend.core.jobs import purge_old_jobs
@@ -216,6 +222,14 @@ def start_scheduler() -> None:
         _telemetry_retention_cleanup,
         CronTrigger(hour=5, minute=0),
         id="telemetry_retention_cleanup",
+        replace_existing=True,
+    )
+
+    # Streaming availability for recommendations — daily at 12:30, deliberately outside the nightly window.
+    scheduler.add_job(
+        _refresh_recommendation_availability,
+        CronTrigger(hour=12, minute=30),
+        id="recommendation_availability_refresh",
         replace_existing=True,
     )
 

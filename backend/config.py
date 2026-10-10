@@ -164,25 +164,6 @@ class BlacklistConfig(BaseModel):
 
 class QualityConfig(BaseModel):
     stale_release_days: int = 30
-    reject_uploader_health_below: float = 0.3
-
-
-class RecommendationAIConfig(BaseModel):
-    """Optional, provider-neutral, disabled by default. AI is used only to
-    rerank/explain/theme an already-generated candidate set — it never
-    invents titles, availability, or franchise relationships, and every
-    AI-returned TMDB ID is re-validated against TMDB before use. See
-    docs/RECOMMENDATION_ARCHITECTURE.md and docs/RECOMMENDATION_PRIVACY.md.
-    """
-    enabled: bool = False
-    provider: str = "none"  # "none" | "openai_compatible" | "anthropic" | "ollama"
-    base_url: str = ""
-    model: str = ""
-    api_key: str = ""
-    timeout_seconds: int = 20
-    # Separate, more restrictive opt-in than recommendations.use_plex_watch_history —
-    # enabling watch-history-based scoring does NOT imply sharing it with an AI provider.
-    share_watch_history: bool = False
 
 
 class RecommendationsConfig(BaseModel):
@@ -211,7 +192,6 @@ class RecommendationsConfig(BaseModel):
     use_plex_watch_history: bool = False
     refresh_interval_hours: int = 24
     max_recommendations_retained: int = 500
-    ai: RecommendationAIConfig = RecommendationAIConfig()
 
 
 class SlimarrConfig(BaseModel):

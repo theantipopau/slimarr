@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from loguru import logger
 from sqlalchemy import select
 
+from backend.utils.clock import utc_now_naive
 from backend.core.media_probe import probe_media_file
 from backend.core.parser import normalize_codec, normalize_resolution, parse_release_title
 from backend.core.storage import move_path, path_matches_prefix, preflight_storage_path, remove_path
@@ -58,23 +59,11 @@ async def _find_video_file_async(directory: str) -> str | None:
     return await asyncio.to_thread(_find_video_file, directory)
 
 
-async def _remove_with_retry(
-    path: str,
-    config,
-    *,
-    purpose: str,
-    attempts: int = 4,
-    delay_seconds: float = 5.0,
-) -> None:
-    """remove_path(), retrying a few times on a transient file-lock error —
-    the delete-side counterpart to _move_with_retry below. Without this, a
-    brief lock (Plex/AV touching the file right after replacement) leaves a
-    stale copy behind permanently, since these cleanup steps run once,
-    after the movie/download rows have already moved on to their final
-    state, with nothing to retry them on the next cycle."""
+async def _retry_on_lock(op, *, path: str, purpose: str, attempts: int = 4, delay_seconds: float = 5.0):
+    """Await op(), retrying a few times on a transient file-lock error."""
     for attempt in range(1, attempts + 1):
         try:
-            return await remove_path(path, config, purpose=purpose)
+            return await op()
         except Exception as exc:
             if attempt >= attempts or not _is_transient_lock_error(exc):
                 raise
@@ -88,6 +77,24 @@ async def _remove_with_retry(
                 exc,
             )
             await asyncio.sleep(delay_seconds)
+
+
+async def _remove_with_retry(
+    path: str,
+    config,
+    *,
+    purpose: str,
+    attempts: int = 4,
+    delay_seconds: float = 5.0,
+) -> None:
+    """remove_path(), retrying on a transient lock. Delete-side counterpart to
+    _move_with_retry: a brief lock (Plex/AV touching the file right after
+    replacement) would otherwise leave a stale copy behind permanently, since
+    these cleanup steps run once with nothing to retry them on the next cycle."""
+    await _retry_on_lock(
+        lambda: remove_path(path, config, purpose=purpose),
+        path=path, purpose=purpose, attempts=attempts, delay_seconds=delay_seconds,
+    )
 
 
 def _is_transient_lock_error(exc: BaseException) -> bool:
@@ -116,22 +123,10 @@ async def _move_with_retry(
     delay_seconds: float = 5.0,
 ):
     """move_path(), retrying a few times on a transient file-lock error."""
-    for attempt in range(1, attempts + 1):
-        try:
-            return await move_path(source, target, config, purpose=purpose, required_bytes=required_bytes)
-        except Exception as exc:
-            if attempt >= attempts or not _is_transient_lock_error(exc):
-                raise
-            logger.warning(
-                "{} attempt {}/{} hit a transient file lock on {!r}; retrying in {:.0f}s: {}",
-                purpose,
-                attempt,
-                attempts,
-                target,
-                delay_seconds,
-                exc,
-            )
-            await asyncio.sleep(delay_seconds)
+    return await _retry_on_lock(
+        lambda: move_path(source, target, config, purpose=purpose, required_bytes=required_bytes),
+        path=target, purpose=purpose, attempts=attempts, delay_seconds=delay_seconds,
+    )
 
 
 async def _verify_downloaded_file(video_file: str, config) -> str | None:
@@ -198,10 +193,6 @@ def _apply_path_mapping(path: str, mappings: list) -> str:
     return path
 
 
-def _utc_now_naive() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
-
-
 async def _create_replacement_recovery_record(
     db,
     *,
@@ -225,7 +216,7 @@ async def _create_replacement_recovery_record(
         video_file_path=video_file_path,
         storage_path=storage_path,
         details=json.dumps({"quality_intent": getattr(movie, "quality_intent", None)}),
-        updated_at=_utc_now_naive(),
+        updated_at=utc_now_naive(),
     )
     db.add(record)
     await db.commit()
@@ -247,7 +238,7 @@ async def _mark_replacement_recovery(
         return
     record.phase = phase
     record.status = status
-    record.updated_at = _utc_now_naive()
+    record.updated_at = utc_now_naive()
     if error is not None:
         record.error_message = error
     if recycle_path is not None:
@@ -255,7 +246,7 @@ async def _mark_replacement_recovery(
     if fallback_backup_path is not None:
         record.fallback_backup_path = fallback_backup_path
     if status in {"completed", "failed", "recovery_required"}:
-        record.completed_at = _utc_now_naive()
+        record.completed_at = utc_now_naive()
     await db.commit()
 
 

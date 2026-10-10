@@ -57,27 +57,31 @@ class UploaderHealthBatchTests(unittest.IsolatedAsyncioTestCase):
 
 
 class CompareReleasePrecomputedUploaderHealthTests(unittest.TestCase):
-    def test_precomputed_score_bypasses_the_sync_lookup(self):
+    def _compare(self, **overrides):
         from backend.config import SlimarrConfig
         from backend.core.comparer import compare_release
 
-        cfg = SlimarrConfig()
-        with patch("backend.core.comparer.get_config", return_value=cfg), patch(
-            "backend.core.comparer._uploader_health_score"
-        ) as sync_lookup:
-            result = compare_release(
-                local_size=2_000_000_000,
-                local_resolution="1080p",
-                local_codec="h264",
-                candidate_size=1_100_000_000,
-                candidate_title="Movie.Title.2022.1080p.WEB-DL.x265-GRP",
-                movie_title="Movie Title",
-                movie_year=2022,
-                uploader_health_score=0.95,
-            )
+        kwargs = dict(
+            local_size=2_000_000_000,
+            local_resolution="1080p",
+            local_codec="h264",
+            candidate_size=1_100_000_000,
+            candidate_title="Movie.Title.2022.1080p.WEB-DL.x265-GRP",
+            movie_title="Movie Title",
+            movie_year=2022,
+        )
+        kwargs.update(overrides)
+        with patch("backend.core.comparer.get_config", return_value=SlimarrConfig()):
+            return compare_release(**kwargs)
 
-        sync_lookup.assert_not_called()
-        self.assertEqual(result.decision, "accept")
+    def test_precomputed_score_is_used(self):
+        high = self._compare(uploader_health_score=0.95)
+        low = self._compare(uploader_health_score=0.05)
+        self.assertEqual(high.decision, "accept")
+        self.assertNotEqual(high.score, low.score)
+
+    def test_missing_score_is_neutral(self):
+        self.assertEqual(self._compare().score, self._compare(uploader_health_score=0.5).score)
 
 
 if __name__ == "__main__":

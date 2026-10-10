@@ -850,7 +850,7 @@ export default function System() {
       <div className="bg-gray-900 rounded-xl overflow-hidden">
         <div className="px-4 py-3 border-b border-gray-800 text-sm font-semibold flex items-center justify-between">
           Integration Status
-          <button onClick={loadServices} className="text-xs text-gray-400 hover:text-white">
+          <button onClick={loadServices} aria-label="Refresh integration status" title="Refresh" className="text-xs text-gray-400 hover:text-white">
             <RefreshCw size={12} />
           </button>
         </div>
@@ -906,7 +906,7 @@ export default function System() {
       <div className="bg-gray-900 rounded-xl overflow-hidden">
         <div className="px-4 py-3 border-b border-gray-800 text-sm font-semibold flex items-center justify-between">
           Health Matrix
-          <button onClick={loadHealthMatrix} className="text-xs text-gray-400 hover:text-white">
+          <button onClick={loadHealthMatrix} aria-label="Refresh health matrix" title="Refresh" className="text-xs text-gray-400 hover:text-white">
             <RefreshCw size={12} />
           </button>
         </div>
@@ -943,7 +943,7 @@ export default function System() {
       <div className="bg-gray-900 rounded-xl overflow-hidden">
         <div className="px-4 py-3 border-b border-gray-800 text-sm font-semibold flex items-center justify-between">
           Release Decision Audit
-          <button onClick={loadDecisionAudit} className="text-xs text-gray-400 hover:text-white">
+          <button onClick={loadDecisionAudit} aria-label="Refresh decision audit" title="Refresh" className="text-xs text-gray-400 hover:text-white">
             <RefreshCw size={12} />
           </button>
         </div>

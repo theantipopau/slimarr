@@ -5,13 +5,13 @@ import json
 import os
 import re
 from collections import Counter, defaultdict, deque
-from datetime import datetime, timezone
 from threading import RLock
 from typing import Any
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import httpx
 
+from backend.utils.clock import utc_now_iso
 from backend.realtime.events import emit_event
 
 MAX_EVENTS = 500
@@ -59,10 +59,6 @@ _consecutive_zero_searches = 0
 _consecutive_failed_searches = 0
 _last_successful_search: dict[str, Any] | None = None
 _lock = RLock()
-
-
-def utc_now() -> str:
-    return datetime.now(timezone.utc).isoformat()
 
 
 def redact_url(url: str) -> str:
@@ -145,7 +141,7 @@ def raw_preview(content: bytes | str | None, limit: int = RAW_PREVIEW_LIMIT) -> 
 
 
 def _append_event(event: dict[str, Any]) -> dict[str, Any]:
-    event.setdefault("timestamp", utc_now())
+    event.setdefault("timestamp", utc_now_iso())
     with _lock:
         _events.appendleft(event)
     _append_history_record("event", event)
@@ -157,7 +153,7 @@ def _append_history_record(kind: str, payload: dict[str, Any]) -> None:
         os.makedirs(os.path.dirname(HISTORY_FILE), exist_ok=True)
         row = {
             "kind": kind,
-            "timestamp": payload.get("timestamp") or utc_now(),
+            "timestamp": payload.get("timestamp") or utc_now_iso(),
             "payload": payload,
         }
         with open(HISTORY_FILE, "a", encoding="utf-8") as handle:
@@ -209,7 +205,7 @@ async def emit_search_warning(
         for existing in list(_warnings)[:10]:
             if existing.get("message") == message and existing.get("detail") == detail:
                 return
-        warning = {"timestamp": utc_now(), "message": message, "detail": detail, "code": code}
+        warning = {"timestamp": utc_now_iso(), "message": message, "detail": detail, "code": code}
         _warnings.appendleft(warning)
     _append_history_record("warning", warning)
     await emit_event("search:warning", warning)
@@ -240,7 +236,7 @@ def record_indexer_response(
     with _lock:
         metrics = _indexer_metrics[indexer_name]
         metrics["requests"] += 1
-        metrics["last_request_at"] = utc_now()
+        metrics["last_request_at"] = utc_now_iso()
         metrics["total_latency_ms"] += latency_ms
         metrics["last_status_code"] = status_code
         if status_code and status_code >= 400:
@@ -251,7 +247,7 @@ def record_indexer_response(
             metrics["last_error"] = error
             if rate_limited:
                 metrics["rate_limited"] += 1
-                metrics["last_rate_limit_at"] = utc_now()
+                metrics["last_rate_limit_at"] = utc_now_iso()
                 _failure_heatmap[f"{indexer_name}:rate_limited"] += 1
             if "timeout" in error.lower() or "timed out" in error.lower():
                 metrics["timeouts"] += 1
@@ -266,7 +262,7 @@ def record_indexer_response(
         else:
             metrics["successes"] += 1
             metrics["last_error"] = None
-            metrics["last_success_at"] = utc_now()
+            metrics["last_success_at"] = utc_now_iso()
             if raw_count == 0:
                 metrics["empty"] += 1
 
@@ -337,7 +333,7 @@ async def record_movie_search_completed(
                 "title": title,
                 "raw_count": raw_count,
                 "accepted_count": accepted_count,
-                "timestamp": utc_now(),
+                "timestamp": utc_now_iso(),
             }
         else:
             _consecutive_zero_searches += 1
@@ -427,7 +423,7 @@ def snapshot() -> dict[str, Any]:
         warnings = list(_warnings)
         heatmap = dict(_failure_heatmap.most_common(50))
     return {
-        "checked_at": utc_now(),
+        "checked_at": utc_now_iso(),
         "degradation": degradation_status(),
         "recent_events": events,
         "warnings": warnings,

@@ -17,7 +17,7 @@ binaries_extra = []
 hiddenimports_extra = []
 
 for pkg in ['uvicorn', 'fastapi', 'starlette', 'sqlalchemy', 'aiosqlite',
-            'socketio', 'engineio', 'passlib', 'pystray', 'loguru',
+            'socketio', 'engineio', 'pystray', 'loguru',
             'apscheduler', 'httpx', 'anyio', 'h11']:
     d, b, h = collect_all(pkg)
     datas_extra += d
@@ -40,8 +40,7 @@ hidden = hiddenimports_extra + [
     'sqlalchemy.ext.asyncio',
     'aiosqlite',
     # Auth
-    'passlib.handlers.bcrypt',
-    'passlib.handlers.sha2_crypt',
+    'bcrypt',
     # SocketIO async
     'engineio.async_drivers.asgi',
     'socketio.async_namespace',

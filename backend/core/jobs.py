@@ -5,12 +5,13 @@ import asyncio
 import contextvars
 import json
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 from typing import Any
 
 from loguru import logger
 from sqlalchemy import select
 
+from backend.utils.clock import utc_now_naive
 from backend.database import JobEvent, JobRecord, async_session
 
 ACTIVE_JOB_STATUSES = {"queued", "running", "cancelling"}
@@ -26,10 +27,6 @@ _current_job_id: contextvars.ContextVar[str | None] = contextvars.ContextVar(
 
 def get_current_job_id() -> str | None:
     return _current_job_id.get()
-
-
-def _utc_now() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 def _encode_json(value: Any) -> str:
@@ -92,7 +89,7 @@ async def _add_event(
             event=event,
             message=message,
             details=_encode_json(details or {}),
-            created_at=_utc_now(),
+            created_at=utc_now_naive(),
         )
     )
 
@@ -161,7 +158,7 @@ async def _heartbeat_loop(job_id: str, stop_event: asyncio.Event) -> None:
                 job = await session.get(JobRecord, job_id)
                 if job is None or job.status not in {"running", "cancelling"}:
                     return
-                job.heartbeat_at = _utc_now()
+                job.heartbeat_at = utc_now_naive()
                 await session.commit()
         except Exception as exc:
             logger.debug("Job heartbeat failed for {}: {}", job_id, exc)
@@ -183,7 +180,7 @@ async def _run_job(job_id: str) -> None:
                 return
             if job.status not in {"queued", "running"}:
                 return
-            now = _utc_now()
+            now = utc_now_naive()
             job.status = "running"
             job.started_at = job.started_at or now
             job.heartbeat_at = now
@@ -201,7 +198,7 @@ async def _run_job(job_id: str) -> None:
             job = await session.get(JobRecord, job_id)
             if job is None:
                 return
-            now = _utc_now()
+            now = utc_now_naive()
             if job.cancel_requested_at:
                 job.status = "cancelled"
                 event = "cancelled"
@@ -220,7 +217,7 @@ async def _run_job(job_id: str) -> None:
         async with async_session() as session:
             job = await session.get(JobRecord, job_id)
             if job is not None:
-                now = _utc_now()
+                now = utc_now_naive()
                 job.status = "cancelled"
                 job.completed_at = now
                 job.heartbeat_at = now
@@ -232,7 +229,7 @@ async def _run_job(job_id: str) -> None:
         async with async_session() as session:
             job = await session.get(JobRecord, job_id)
             if job is not None:
-                now = _utc_now()
+                now = utc_now_naive()
                 job.status = "failed"
                 job.error_message = str(exc)
                 job.completed_at = now
@@ -303,7 +300,7 @@ async def enqueue_job(
             progress_total=1,
             attempt=0,
             max_attempts=max(1, int(max_attempts or 1)),
-            created_at=_utc_now(),
+            created_at=utc_now_naive(),
         )
         session.add(job)
         await session.flush()
@@ -377,7 +374,7 @@ async def cancel_job(job_id: str) -> dict[str, Any] | None:
             return None
         if job.status in TERMINAL_JOB_STATUSES:
             return _job_payload(job)
-        now = _utc_now()
+        now = utc_now_naive()
         job.cancel_requested_at = now
         job.status = "cancelling" if job.status == "running" else "cancelled"
         if job.status == "cancelled":
@@ -425,7 +422,7 @@ async def recover_stale_jobs() -> int:
                 select(JobRecord).where(JobRecord.status.in_(["running", "cancelling"]))
             )
         ).scalars().all()
-        now = _utc_now()
+        now = utc_now_naive()
         for job in rows:
             job.status = "recovery_required"
             job.completed_at = now
@@ -449,7 +446,7 @@ async def purge_old_jobs(keep_days: int = 30) -> int:
     """
     from sqlalchemy import delete
 
-    cutoff = _utc_now() - timedelta(days=max(1, int(keep_days)))
+    cutoff = utc_now_naive() - timedelta(days=max(1, int(keep_days)))
     try:
         async with async_session() as session:
             result = await session.execute(

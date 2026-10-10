@@ -13,11 +13,12 @@ for free — see docs/RECOMMENDATION_ARCHITECTURE.md.
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
 
 from loguru import logger
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
+from backend.utils.clock import utc_now_naive
 from backend.core.recommendations.correlation import (
     CorrelationSnapshot,
     build_correlation_snapshot,
@@ -26,7 +27,7 @@ from backend.core.recommendations.correlation import (
 )
 from backend.core.recommendations.scoring import CandidateSignals, score_candidate
 from backend.core.recommendations.sourcing import SourcedCandidate, source_candidates_for_owned_movie
-from backend.core.recommendations.streaming import fetch_availability
+from backend.core.recommendations.streaming import fetch_availability, is_stale
 from backend.database import (
     Movie,
     Recommendation,
@@ -50,10 +51,6 @@ from backend.integrations.tmdb import TMDBClient, TMDBError
 # action. If a title is later genuinely removed from the library, dismissing
 # it directly resets it - refresh is not the mechanism for that.
 _PROTECTED_STATES = {"dismissed", "hidden", "watchlisted", "actioned", "already_available", "already_managed"}
-
-
-def _utc_now_naive() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 def _excluded_genre(candidate_genres: tuple[str, ...], exclude: list[str]) -> str | None:
@@ -87,7 +84,7 @@ async def _get_or_create_candidate(
         )
     ).scalar_one_or_none()
 
-    now = _utc_now_naive()
+    now = utc_now_naive()
     if existing is None:
         existing = RecommendationCandidate(
             media_type=sourced.media_type,
@@ -472,7 +469,7 @@ async def _apply_retention(max_retained: int) -> None:
         ).scalars().all()
         if len(active) <= max_retained:
             return
-        now = _utc_now_naive()
+        now = utc_now_naive()
         for rec in active[max_retained:]:
             rec.state = "expired"
             rec.expires_at = now
@@ -494,3 +491,53 @@ async def record_feedback(recommendation_id: int, action: str, detail: dict | No
         ))
         await db.commit()
         return True
+
+
+# Refresh cap per run: each candidate is one TMDB call, and titles with no providers in the region
+# are re-checked on every run (nothing is written to mark them), so keep the daily budget small.
+_AVAILABILITY_REFRESH_LIMIT = 50
+
+
+async def refresh_stale_availability(limit: int = _AVAILABILITY_REFRESH_LIMIT) -> int:
+    """Re-check streaming availability for active recommendations whose cache is stale.
+
+    Scheduled daily. Does nothing unless recommendations are enabled and a region is set.
+    """
+    from backend.config import get_config
+
+    rec_config = get_config().recommendations
+    if not rec_config.enabled or not rec_config.region:
+        return 0
+
+    async with async_session() as db:
+        result = await db.execute(
+            select(RecommendationCandidate)
+            .join(Recommendation, Recommendation.candidate_id == RecommendationCandidate.id)
+            .where(Recommendation.state == "active")
+            .options(selectinload(RecommendationCandidate.availability))
+            .order_by(RecommendationCandidate.id)
+        )
+        candidates = result.scalars().unique().all()
+        stale = [
+            c for c in candidates
+            if not c.availability or any(is_stale(a.checked_at) for a in c.availability)
+        ][:limit]
+
+        tmdb = TMDBClient()
+        refreshed = 0
+        for candidate in stale:
+            try:
+                entries = await fetch_availability(
+                    tmdb=tmdb, tmdb_id=candidate.tmdb_id, media_type=candidate.media_type,
+                    region=rec_config.region,
+                )
+            except TMDBError as exc:
+                logger.warning(f"Availability refresh failed for candidate {candidate.id}: {exc}")
+                continue
+            await _upsert_availability(db, candidate, entries)
+            refreshed += 1
+        await db.commit()
+
+    if refreshed:
+        logger.info(f"Refreshed streaming availability for {refreshed} recommendation candidate(s)")
+    return refreshed

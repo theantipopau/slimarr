@@ -736,7 +736,7 @@ export default function Settings() {
           ['avoid_dolby_vision', 'Avoid Dolby Vision releases'],
           ['allow_dolby_vision_with_hdr_fallback', 'Allow DV when HDR fallback is detected'],
           ['require_preferred_audio_match', 'Require preferred audio match (strict mode)'],
-          ['require_english_audio', 'Require English audio when English is preferred'],
+          ['require_english_audio', 'Require English audio when English is preferred (also blocks MULTi releases whose only named track is French, e.g. VFF/VFi)'],
           ['reject_dual_audio', 'Reject dual-audio releases'],
           ['reject_multi_audio', 'Reject multi-audio releases'],
           ['reject_hardcoded_subs', 'Reject hardcoded subtitle releases'],
@@ -1107,56 +1107,6 @@ export default function Settings() {
           <label htmlFor="rec_use_watch_history" className="text-sm">Use Plex watch history for personalized scoring <span className="text-gray-500 text-xs">(opt-in)</span></label>
         </div>
 
-        <div className="pt-2 mt-2 border-t border-gray-800">
-          <h3 className="text-sm font-semibold">Optional AI Reranking</h3>
-          <p className="text-xs text-gray-400 mt-1">
-            Disabled by default. When enabled, AI only reranks or explains the candidate list Slimarr already
-            sourced deterministically - it never invents titles or availability, never sees your Plex token or file
-            paths, and every AI-returned ID is re-validated against TMDB before it can appear on screen.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <input
-            type="checkbox"
-            id="rec_ai_enabled"
-            checked={!!((settings?.recommendations as Record<string,unknown> | undefined)?.ai as Record<string,unknown> | undefined)?.enabled}
-            onChange={(e) => set(['recommendations', 'ai', 'enabled'], e.target.checked)}
-            className="w-4 h-4 accent-brand-green"
-          />
-          <label htmlFor="rec_ai_enabled" className="text-sm">Enable AI reranking</label>
-        </div>
-        <div>
-          <label className="block text-xs text-gray-400 mb-1">AI Provider</label>
-          <select
-            value={(((settings?.recommendations as Record<string,unknown> | undefined)?.ai as Record<string,unknown> | undefined)?.provider as string) ?? 'none'}
-            onChange={(e) => set(['recommendations', 'ai', 'provider'], e.target.value)}
-            className="w-full bg-gray-800 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
-          >
-            <option value="none">None</option>
-            <option value="openai_compatible">OpenAI-compatible</option>
-            <option value="anthropic">Anthropic</option>
-            <option value="ollama">Ollama</option>
-          </select>
-          <p className="text-xs text-gray-500 mt-1">Only the interface and a no-op provider ship in this release - real adapters are documented as future work in docs/RECOMMENDATION_ARCHITECTURE.md.</p>
-        </div>
-        {field('AI Base URL', ['recommendations', 'ai', 'base_url'])}
-        <div className="grid gap-3 sm:grid-cols-2">
-          {field('AI Model', ['recommendations', 'ai', 'model'])}
-          {field('AI Timeout (seconds)', ['recommendations', 'ai', 'timeout_seconds'], 'number')}
-        </div>
-        {field('AI API Key', ['recommendations', 'ai', 'api_key'], 'password')}
-        <div className="flex items-center gap-3">
-          <input
-            type="checkbox"
-            id="rec_ai_share_history"
-            checked={!!((settings?.recommendations as Record<string,unknown> | undefined)?.ai as Record<string,unknown> | undefined)?.share_watch_history}
-            onChange={(e) => set(['recommendations', 'ai', 'share_watch_history'], e.target.checked)}
-            className="w-4 h-4 accent-brand-green"
-          />
-          <label htmlFor="rec_ai_share_history" className="text-sm">
-            Share watch history with AI provider <span className="text-gray-500 text-xs">(separate opt-in from watch-history scoring above)</span>
-          </label>
-        </div>
       </section>
 
       {/* Schedule */}

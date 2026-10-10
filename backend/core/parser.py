@@ -172,7 +172,8 @@ def parse_release_title(title: str) -> ParsedRelease:
         "english": r"\b(english|eng)\b",
         "italian": r"\b(italian|ita|trueita)\b",
         "german": r"\b(german|ger|deu)\b",
-        "french": r"\b(french|fre|fr|truefrench|vff)\b",
+        # VF/VFF/VFQ/VFI/VF2 = French-dubbed ("version française") tags used by FR scene groups.
+        "french": r"\b(french|fre|fr|truefrench|vff|vfq|vfi|vf2|vf)\b",
         "spanish": r"\b(spanish|spa|esp|castellano|latino)\b",
         "russian": r"\b(russian|rus)\b",
         "korean": r"\b(korean|kor)\b",

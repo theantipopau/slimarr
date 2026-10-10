@@ -4,6 +4,41 @@ All notable changes to Slimarr are documented here.
 
 ---
 
+## [2.1.0.0] - 2026-10-10
+
+- **Fixed:** French-dubbed releases (`VFF`, `VFQ`, `VFi`, `VF2`, `TRUEFRENCH`) were being grabbed
+  when they were tagged `MULTi`. `MULTi` exempted a release from the English-audio requirement,
+  and the French version tags weren't recognised at all. A release with a French track and no
+  English track is now rejected while English is the preferred language. Plain `MULTi` releases
+  with no named language are still allowed.
+- **Changed:** Removed the "Optional AI Reranking" settings panel. It was a no-op: the only shipped
+  provider does nothing, and the settings were never read.
+- **Changed:** Dead code removed (unused helpers, a duplicate envelope model, an unused background-task
+  guard, an unused frontend component and hook). Duplicate UTC helpers consolidated into `backend/utils/clock.py`.
+  Upload-health scoring now batch-fetches in the search test harness, and the synchronous SQLite side
+  channel is gone. Lightweight migrations are table-driven.
+- **Changed:** Dependencies trimmed: `passlib` replaced by `bcrypt` (existing password hashes still verify),
+  `aiofiles` replaced by `asyncio.to_thread`, and unused `python-multipart`, `pydantic-settings`, and
+  `python-dotenv` removed.
+- **Improved:** Icon-only refresh buttons on the System page now have accessible names and tooltips.
+- **Security:** Upgraded `fastapi` 0.115.6 → 0.120.0 (starlette 0.48.0), `pyjwt` 2.10.1 → 2.15.1,
+  and `python-socketio` 5.12.1 → 5.17.0 to clear open Trivy alerts on the container image. Starlette's
+  newest releases were not adopted: fastapi 0.143 drops `response_model` from several routes, which
+  changes the OpenAPI contract, so it needs its own pass. The base-image OS alerts clear on the next
+  image rebuild.
+- **Changed:** CI now tests on Python 3.13 as well as 3.11 and 3.12.
+- **Upgrade note:** the `recommendations.ai` config block is no longer read. Existing keys are ignored.
+- **Fixed:** failed releases were re-grabbed every cycle. The orchestrator picked the top-scored accepted
+  release without checking the blacklist, so an aborted NZB (e.g. a French-dubbed `MULTi` release) was
+  submitted again and again. Blacklisted releases are now excluded before selection.
+- **Fixed:** streaming availability for recommendations was never refreshed automatically, so the health
+  matrix stayed "degraded" with a stale cache. A daily job (12:30) now refreshes up to 50 stale candidates,
+  and only when recommendations are enabled and a region is set.
+- **Fixed:** the Dashboard "Configure Search Provider" step ignored direct indexers and stayed incomplete
+  when only those were configured.
+
+---
+
 ## [2.0.0.1] - 2026-09-12
 
 Small patch prompted by a real production log: a NAS reported intermittent

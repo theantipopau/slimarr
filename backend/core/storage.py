@@ -1,6 +1,8 @@
 """Storage path helpers for NAS-aware safety decisions."""
 from __future__ import annotations
 
+from backend.utils.clock import utc_now_iso
+
 import os
 import posixpath
 import shutil
@@ -366,10 +368,6 @@ def _copy_file_throttled(source: str, target: str, config: Any) -> bool:
         return False
 
 
-def _utc_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
-
-
 def _redact_path(path: str | None) -> str | None:
     if not path:
         return path
@@ -567,7 +565,7 @@ async def restore_nas_cooldown_state() -> None:
                 "path": latest.path_prefix,
                 "target_path": None,
                 "error": latest.last_error_message or "NAS cooldown restored from a prior failure",
-                "at": _utc_iso(),
+                "at": utc_now_iso(),
             }
         logger.warning(
             "Restored an active NAS failure cooldown from a previous run: {} more second(s) for {}",
@@ -907,7 +905,7 @@ async def _nas_policy_scope(
                     "path": source_path,
                     "target_path": target_path,
                     "error": str(exc),
-                    "at": _utc_iso(),
+                    "at": utc_now_iso(),
                 }
                 _operation_counters["nas:cooldowns_started"] += 1
         raise
@@ -973,7 +971,7 @@ def _failed_operation_result(
         messages=[],
         error=str(error),
         started_at=started_at,
-        completed_at=_utc_iso(),
+        completed_at=utc_now_iso(),
         duration_ms=round((time.monotonic() - started_monotonic) * 1000, 2),
         job_id=get_current_job_id(),
     )
@@ -1145,7 +1143,7 @@ async def move_path(
     purpose: str = "move",
     required_bytes: int | None = None,
 ) -> StorageOperationResult:
-    started_at = _utc_iso()
+    started_at = utc_now_iso()
     started_monotonic = time.monotonic()
     async with _storage_operation_lock([source, target]):
         estimated_bytes = 0
@@ -1186,7 +1184,7 @@ async def move_path(
         completed = _operation_result_with_timing(
             result,
             started_at=started_at,
-            completed_at=_utc_iso(),
+            completed_at=utc_now_iso(),
             started_monotonic=started_monotonic,
         )
         _record_operation(completed)
@@ -1255,7 +1253,7 @@ async def remove_path(
     recursive: bool = False,
     estimated_bytes: int | None = None,
 ) -> StorageOperationResult:
-    started_at = _utc_iso()
+    started_at = utc_now_iso()
     started_monotonic = time.monotonic()
     async with _storage_operation_lock([path]):
         measured_bytes = max(0, int(estimated_bytes or 0))
@@ -1296,7 +1294,7 @@ async def remove_path(
         completed = _operation_result_with_timing(
             result,
             started_at=started_at,
-            completed_at=_utc_iso(),
+            completed_at=utc_now_iso(),
             started_monotonic=started_monotonic,
         )
         _record_operation(completed)

@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from loguru import logger
 from sqlalchemy import select
 
+from backend.core.blacklist import get_blacklist_reasons
 from backend.core.download_workflow import process_search_result_download
 from backend.core.exclusions import is_movie_excluded
 from backend.core.schedule_window import is_within_schedule_window
@@ -18,6 +19,7 @@ from backend.core.search_diagnostics import (
     raise_if_degraded,
 )
 from backend.core.scanner import scan_library
+from backend.core.parser import parse_release_title
 from backend.core.searcher import search_for_movie
 from backend.database import Movie, async_session
 from backend.realtime.events import emit_event
@@ -83,7 +85,10 @@ async def process_single_movie(movie_id: int) -> dict:
         return {"movie_id": movie_id, "status": "protected"}
 
     results = await search_for_movie(movie_id)
-    accepted = [r for r in results if r["decision"] == "accept"]
+    # Releases that already failed (SABnzbd aborted, etc.) sit on the blacklist. Without this
+    # filter the top-scored release is re-grabbed every cycle, which is what kept re-queuing the same NZBs.
+    blocked = await _blacklisted_titles(results)
+    accepted = [r for r in results if r["decision"] == "accept" and r.get("release_title") not in blocked]
     preferred = None
     if preferred_release_title:
         preferred_key = preferred_release_title.strip().lower()
@@ -95,7 +100,7 @@ async def process_single_movie(movie_id: int) -> dict:
             ),
             None,
         )
-        if preferred_match and preferred_match.get("decision") == "accept":
+        if preferred_match and preferred_match.get("decision") == "accept" and preferred_match.get("release_title") not in blocked:
             preferred = preferred_match
         elif preferred_match:
             logger.info(
@@ -159,6 +164,16 @@ async def process_single_movie(movie_id: int) -> dict:
         "used_preferred_override": bool(preferred),
         **result,
     }
+
+
+async def _blacklisted_titles(results: list[dict]) -> set[str]:
+    """Release titles from a search pass that are currently blacklisted."""
+    keys = []
+    for r in results:
+        title = str(r.get("release_title") or "")
+        keys.append((title, parse_release_title(title).uploader, r.get("indexer_name")))
+    reasons = await get_blacklist_reasons(keys)
+    return {keys[i][0] for i in reasons}
 
 
 async def run_full_cycle() -> dict:

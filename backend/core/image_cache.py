@@ -4,9 +4,10 @@ Images are cached to data/MediaCover/{movie_id}/
 """
 from __future__ import annotations
 
+import asyncio
 import os
+import pathlib
 
-import aiofiles
 import httpx
 
 from backend.integrations.tmdb import TMDBClient
@@ -51,7 +52,6 @@ async def get_or_cache_image(movie_id: int, image_type: str, image_path: str) ->
             client_tmdb = TMDBClient()
             image_bytes = await client_tmdb.download_image(image_path, _SIZE_MAP[image_type])
 
-        async with aiofiles.open(file_path, "wb") as f:
-            await f.write(image_bytes)
+        await asyncio.to_thread(pathlib.Path(file_path).write_bytes, image_bytes)
 
     return file_path

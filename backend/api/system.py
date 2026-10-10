@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import asyncio
-import inspect
 import json
 import os
 import platform
@@ -51,29 +50,6 @@ from backend.utils.responses import not_found, get_correlation_id
 from backend.version import APP_VERSION
 
 router = APIRouter(prefix="/system", tags=["system"])
-
-_active_manual_tasks: set[str] = set()
-_active_manual_tasks_lock = asyncio.Lock()
-
-
-async def _start_guarded_background_task(task_key: str, background: BackgroundTasks, task_func) -> bool:
-    """Start a background task once per key until completion."""
-    async with _active_manual_tasks_lock:
-        if task_key in _active_manual_tasks:
-            return False
-        _active_manual_tasks.add(task_key)
-
-    async def _runner() -> None:
-        try:
-            result = task_func()
-            if inspect.isawaitable(result):
-                await result
-        finally:
-            async with _active_manual_tasks_lock:
-                _active_manual_tasks.discard(task_key)
-
-    background.add_task(_runner)
-    return True
 
 _start_time = datetime.now(timezone.utc)
 
@@ -944,8 +920,12 @@ async def search_test_harness(payload: SearchTestRequest, user=Depends(get_curre
     accepted: list[dict[str, Any]] = []
     rejected: list[dict[str, Any]] = []
     local_size = 10 * 1024 * 1024 * 1024
-    for result in unique_results:
-        parsed = parse_release_title(result.get("release_title", ""))
+    from backend.core.downloader import get_uploader_health_scores
+    parsed_results = [parse_release_title(r.get("release_title", "")) for r in unique_results]
+    uploader_scores = await get_uploader_health_scores(
+        [p.uploader or p.group or "" for p in parsed_results]
+    )
+    for result, parsed in zip(unique_results, parsed_results):
         cmp = compare_release(
             local_size=local_size,
             local_resolution="1080p",
@@ -954,6 +934,7 @@ async def search_test_harness(payload: SearchTestRequest, user=Depends(get_curre
             candidate_title=result.get("release_title", ""),
             movie_title=payload.title,
             movie_year=payload.year,
+            uploader_health_score=uploader_scores.get(parsed.uploader or parsed.group or "", 0.5),
         )
         item = {
             **result,
@@ -2073,7 +2054,6 @@ async def health_matrix(user=Depends(get_current_user)):
                 "detail": "; ".join(issues) if issues else f"{int(active_count)} active recommendation(s)",
                 "active_count": int(active_count),
                 "region_configured": bool(rec_config.region),
-                "ai_enabled": bool(rec_config.ai.enabled),
                 "last_availability_check": (
                     latest_availability.isoformat() if latest_availability else None
                 ),

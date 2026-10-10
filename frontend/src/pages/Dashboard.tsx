@@ -94,7 +94,7 @@ export default function Dashboard() {
     {
       key: 'provider',
       label: 'Configure Search Provider',
-      done: !!matrix?.services?.some((s) => s.key === 'prowlarr' && (s.status === 'connected' || s.status === 'degraded')),
+      done: !!matrix?.services?.some((s) => (s.key === 'prowlarr' || s.key === 'indexers') && (s.status === 'connected' || s.status === 'degraded')),
       href: '/settings#indexers',
     },
     {

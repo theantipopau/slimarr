@@ -1,16 +1,12 @@
 """Comparison engine: decide whether a candidate should replace local media."""
 from __future__ import annotations
 
-import os
 import re
-import sqlite3
 from dataclasses import dataclass
 from typing import Any, Optional
 
-from loguru import logger
 
 from backend.config import get_config
-from backend.database import get_db_backend
 from backend.core.media_health import score_local_media_health, score_release_health
 from backend.core.storage import configured_nas_prefixes, is_nas_path
 from backend.core.parser import (
@@ -35,62 +31,6 @@ class ComparisonResult:
     media_health_score: float = 0.0
     media_health_rating: str = "Unknown"
     media_health_reasons: list[str] | None = None
-
-
-_uploader_health_conn: sqlite3.Connection | None = None
-_uploader_health_conn_path: str | None = None
-_uploader_health_warned = False
-
-
-def _get_uploader_health_conn(db_path: str) -> sqlite3.Connection:
-    """Reuse a single connection across calls instead of opening/closing a raw
-    sqlite file handle on every call.
-    """
-    global _uploader_health_conn, _uploader_health_conn_path
-    if _uploader_health_conn is None or _uploader_health_conn_path != db_path:
-        if _uploader_health_conn is not None:
-            _uploader_health_conn.close()
-        _uploader_health_conn = sqlite3.connect(db_path, check_same_thread=False)
-        _uploader_health_conn_path = db_path
-    return _uploader_health_conn
-
-
-def _uploader_health_score(uploader: Optional[str]) -> float:
-    """Synchronous, sqlite-only fallback for callers that don't pass
-    `uploader_health_score` to compare_release() — e.g. tests or one-off
-    calls outside the searcher's batch path. The searcher itself pre-fetches
-    scores via downloader.get_uploader_health_scores() (one async query for
-    the whole candidate list, works on any DB backend) specifically to avoid
-    calling this once per candidate on the event loop thread.
-    """
-    global _uploader_health_warned
-
-    if not uploader:
-        return 0.5
-
-    if get_db_backend() != "sqlite":
-        return 0.5
-
-    db_path = os.environ.get("SLIMARR_DB") or "data/slimarr.db"
-    if not os.path.exists(db_path):
-        return 0.5
-
-    try:
-        conn = _get_uploader_health_conn(db_path)
-        cur = conn.cursor()
-        cur.execute("SELECT health_score FROM uploader_stats WHERE uploader = ?", (uploader,))
-        row = cur.fetchone()
-
-        if not row or row[0] is None:
-            return 0.5
-
-        score = float(row[0])
-        return max(0.0, min(1.0, score))
-    except Exception as e:
-        if not _uploader_health_warned:
-            logger.warning("Uploader health lookup failed (will keep using default 0.5): {}", e)
-            _uploader_health_warned = True
-        return 0.5
 
 
 def _normalize_title(value: str) -> str:
@@ -331,17 +271,9 @@ def compare_release(
 ) -> ComparisonResult:
     config = get_config()
     parsed = parse_release_title(candidate_title)
-    # Callers processing a batch of candidates (the searcher's per-movie loop)
-    # should pre-fetch scores with downloader.get_uploader_health_scores() and
-    # pass the result here — it's one async query for the whole batch instead
-    # of a blocking sqlite3 call per candidate, and it works on PostgreSQL.
-    # Falling back to the synchronous per-call lookup keeps this function
-    # usable standalone (tests, one-off calls) without requiring callers to
-    # thread a score through.
-    if uploader_health_score is not None:
-        uploader_health = uploader_health_score
-    else:
-        uploader_health = _uploader_health_score(parsed.uploader or parsed.group)
+    # Callers pre-fetch scores with downloader.get_uploader_health_scores() (one
+    # async query per batch) and pass them in; None means no history, i.e. neutral.
+    uploader_health = uploader_health_score if uploader_health_score is not None else 0.5
     reliability = indexer_reliability if indexer_reliability is not None else uploader_health
     candidate_health = score_release_health(candidate_title, candidate_size, uploader_health=reliability)
     local_health = score_local_media_health(
@@ -460,7 +392,8 @@ def compare_release(
     detected_languages = [lang.lower() for lang in (parsed.languages or [])]
     explicit_audio_languages = [lang for lang in detected_languages if lang != "multi"]
     if config.comparison.require_english_audio and preferred_language == "english":
-        if explicit_audio_languages and "english" not in explicit_audio_languages and "multi" not in detected_languages:
+        # "MULTi" alone is ambiguous and still allowed; "MULTi.VFF" names a French track, so it must also name English.
+        if explicit_audio_languages and "english" not in explicit_audio_languages:
             return _reject(
                 f"English audio required; detected explicit non-English audio markers: {','.join(explicit_audio_languages)}"
             )

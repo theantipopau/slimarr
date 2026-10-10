@@ -1,6 +1,7 @@
 """Auth API router — login, register, check."""
 import time
 from collections import defaultdict
+import bcrypt
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 from sqlalchemy import select
@@ -99,13 +100,12 @@ async def check_auth_status(db: AsyncSession = Depends(get_db)):
 
 @router.post("/login", response_model=LoginResponse)
 async def login(body: LoginRequest, request: Request, db: AsyncSession = Depends(get_db)):
-    from passlib.hash import bcrypt
     ip = request.client.host if request.client else "unknown"
     _check_rate_limit(ip)
 
     result = await db.execute(select(User).where(User.username == body.username))
     user = result.scalar_one_or_none()
-    if not user or not bcrypt.verify(body.password, user.password_hash):
+    if not user or not bcrypt.checkpw(body.password.encode(), user.password_hash.encode()):
         _record_login_failure(ip)
         await log_audit_event(
             "auth:login_failed",
@@ -134,8 +134,6 @@ async def register(body: RegisterRequest, db: AsyncSession = Depends(get_db)):
     """
     First-run only. If any user already exists, registration is blocked.
     """
-    from passlib.hash import bcrypt
-
     result = await db.execute(select(User))
     if result.scalars().first() is not None:
         raise HTTPException(status_code=403, detail="Registration is disabled after first user is created.")
@@ -143,7 +141,7 @@ async def register(body: RegisterRequest, db: AsyncSession = Depends(get_db)):
     if len(body.password) < 8:
         raise HTTPException(status_code=400, detail="Password must be at least 8 characters.")
 
-    hashed = bcrypt.hash(body.password)
+    hashed = bcrypt.hashpw(body.password.encode(), bcrypt.gensalt()).decode()
     user = User(username=body.username, password_hash=hashed)
     db.add(user)
     await db.commit()

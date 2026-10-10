@@ -19,6 +19,7 @@ from datetime import datetime, timedelta, timezone
 
 from loguru import logger
 
+from backend.utils.clock import utc_now
 from backend.integrations.tmdb import TMDBClient, TMDBError
 
 # TMDB's own attribution requirement — every response must link back to the
@@ -50,7 +51,7 @@ class AvailabilityEntry:
 
 
 def _parse_region_block(region: str, media_type: str, tmdb_id: int, block: dict) -> list[AvailabilityEntry]:
-    now = _utc_now()
+    now = utc_now()
     expires = now + timedelta(hours=_CACHE_TTL_HOURS)
     attribution = _TMDB_ATTRIBUTION_URL_TEMPLATE.format(media_type=media_type, tmdb_id=tmdb_id, region=region)
     entries: list[AvailabilityEntry] = []
@@ -75,10 +76,6 @@ def _parse_region_block(region: str, media_type: str, tmdb_id: int, block: dict)
                 expires_at=expires,
             ))
     return entries
-
-
-def _utc_now() -> datetime:
-    return datetime.now(timezone.utc)
 
 
 async def fetch_availability(
@@ -108,7 +105,7 @@ async def fetch_availability(
 
 
 def is_stale(checked_at: datetime, *, now: datetime | None = None) -> bool:
-    now = now or _utc_now()
+    now = now or utc_now()
     if checked_at.tzinfo is None:
         checked_at = checked_at.replace(tzinfo=timezone.utc)
     return (now - checked_at) > timedelta(hours=_CACHE_TTL_HOURS)

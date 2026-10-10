@@ -8,12 +8,12 @@ of existing auth coverage).
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends
 from sqlalchemy import func, select
 from sqlalchemy.orm import selectinload
 
+from backend.utils.clock import utc_now_naive
 from backend.api.models import (
     RecommendationActionResponse,
     RecommendationCapabilitiesResponse,
@@ -35,10 +35,6 @@ _SORT_MAP = {
     "popularity": lambda: RecommendationCandidate.popularity.desc(),
     "release_date": lambda: RecommendationCandidate.year.desc(),
 }
-
-
-def _utc_now_naive() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 async def _owned_tmdb_and_imdb_ids(db, tmdb_ids: list[int], imdb_ids: list[str]) -> tuple[set[int], set[str]]:
@@ -267,9 +263,9 @@ async def _set_state_and_record(recommendation_id: int, new_state: str, action: 
         rec = await _get_recommendation_or_404(db, recommendation_id)
         rec.state = new_state
         if new_state == "dismissed":
-            rec.dismissed_at = _utc_now_naive()
+            rec.dismissed_at = utc_now_naive()
         if new_state == "actioned":
-            rec.acted_at = _utc_now_naive()
+            rec.acted_at = utc_now_naive()
         await db.commit()
         state = rec.state
 
@@ -396,7 +392,7 @@ async def send_to_radarr(recommendation_id: int, body: SendToRadarrRequest, user
             search_now=body.search_now,
         )
         rec.state = "actioned"
-        rec.acted_at = _utc_now_naive()
+        rec.acted_at = utc_now_naive()
         await db.commit()
         state = rec.state
 
@@ -441,7 +437,7 @@ async def send_to_sonarr(recommendation_id: int, body: SendToSonarrRequest, user
             search_now=body.search_now,
         )
         rec.state = "actioned"
-        rec.acted_at = _utc_now_naive()
+        rec.acted_at = utc_now_naive()
         await db.commit()
         state = rec.state
 
